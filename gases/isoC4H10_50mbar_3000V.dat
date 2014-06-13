@@ -1,0 +1,5 @@
+isoC4H10 50mbar 3000V
+------------------------
+v_drift (mm/ns)		5.16E-002
+D_trans (mm**2/ns)	6.77E-004
+D_long (mm**2/ns)	2.88E-004

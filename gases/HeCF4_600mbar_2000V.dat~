@@ -1,0 +1,65 @@
+HeCF4(2%) 600mbar 2000V
+------------------------
+v_drift (mm/ns)		1.00E-002
+D_trans (mm**2/ns)	6.16E-005
+D_long (mm**2/ns) 	4.84E-005
+
+HeCF4(2%) 600mbar 1500V
+------------------------
+v_drift (mm/ns)		8.03E-003
+D_trans (mm**2/ns)	6.17E-005
+D_long (mm**2/ns)	4.27E-005
+
+HeCF4(2%) 600mbar 2500V
+------------------------
+v_drift (mm/ns)		1.18E-002
+D_trans (mm**2/ns)	6.46E-005
+D_long (mm**2/ns)	5.45E-005
+	
+HeCF4(2%) 800mbar 2000V
+------------------------
+v_drift (mm/ns)		8.01E-003
+D_trans (mm**2/ns)	4.54E-005
+D_long (mm**2/ns)	3.81E-005
+
+isoC4H10 50mbar 2000V
+------------------------
+v_drift (mm/ns)		4.67E-002
+D_trans (mm**2/ns)	6.32E-004
+D_long (mm**2/ns)	3.45E-004
+
+isoC4H10 50mbar 2500V
+------------------------
+v_drift (mm/ns)		4.97E-002
+D_trans (mm**2/ns)	6.36E-004
+D_long (mm**2/ns)	2.98E-004
+
+isoC4H10 50mbar 3000V
+------------------------
+v_drift (mm/ns)		5.16E-002
+D_trans (mm**2/ns)	6.77E-004
+D_long (mm**2/ns)	2.88E-004
+
+isoC4H10 25mbar 1500V
+------------------------
+v_drift (mm/ns)		5.14E-002
+D_trans (mm**2/ns)	6.03E-004	
+D_long (mm**2/ns)	1.42E-003
+
+isoC4H10 25mbar 2000V
+------------------------
+v_drift (mm/ns)		5.33E-002
+D_trans (mm**2/ns)	5.80E-004	
+D_long (mm**2/ns)	1.46E-003
+
+ArCF4(2%) 1100mbar 2000V
+------------------------
+v_drift (mm/ns)		6.09E-002	
+D_trans (mm**2/ns)	4.43E+003
+D_long (mm**2/ns)	4.18E+003
+
+
+
+	
+	
+	

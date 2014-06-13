@@ -1,0 +1,60 @@
+#
+#  This file permits to customize, with commands,
+# the menu bar of the G4UIXm, G4UIQt, G4UIWin32 sessions.
+# It has no effect with G4UIterminal.
+#
+# File :
+/gui/addMenu g4file G4File
+/gui/addButton g4file Continue continue
+/gui/addButton g4file Exit "exit"
+#
+#ACTARSim menu
+#
+#/gui/addMenu actarsim ACTARSim
+#/gui/addButton actarsim "proton" "/ActarSim/gun/particle proton"
+#/gui/addButton actarsim "alpha"  "/ActarSim/gun/particle alpha"
+#/gui/addButton actarsim "ion"    "/ActarSim/gun/particle ion"
+#/gui/addButton actarsim "C-12"   "/ActarSim/gun/ion 6 12"
+
+# Run menu :
+/gui/addMenu run Run
+/gui/addButton run "Initialize" "/run/initialize"
+/gui/addButton run "beamOn 2" "/run/beamOn 2"
+#/gui/addButton run 134Snd "/control/execute 134Snd.mac"
+/gui/addButton run 132Sndp "/control/execute 132Sndp.mac"
+
+# Gun menu :
+#/gui/addMenu gun Gun
+#/gui/addButton gun "RandomTheta ON"  "/ActarSim/gun/randomTheta on"
+#/gui/addButton gun "RandomTheta OFF"  "/ActarSim/gun/randomTheta off"
+#/gui/addButton gun "50 MeV"  "/gun/energy 50 MeV"
+#/gui/addButton gun "5 MeV"   "/gun/energy 1 GeV"
+#/gui/addButton gun "e-"      "/gun/particle e-"
+#/gui/addButton gun "pi0"     "/gun/particle pi0"
+#/gui/addButton gun "pi+"     "/gun/particle pi+"
+#/gui/addButton gun "neutron" "/gun/particle neutron"
+#/gui/addButton gun "proton"  "/gun/particle proton"
+#
+# Detector menu
+#/gui/addMenu det Detector 
+#/gui/addButton det "He_1900"  "/ActarSim/det/gas/setGasMat He_1900"
+#/gui/addButton det "Deuterium (STP)"  "/ActarSim/det/gas/setGasMat D2_STP"
+
+#
+# Vis menu :
+#/gui/addMenu vis Vis
+#/gui/addButton vis DAWNFILE  "/control/execute visTutor/exN03Vis0.mac"
+#/gui/addButton vis OpenInventor "/control/execute visTutor/exN03Vis5.mac"
+#/gui/addButton vis TimeSlicing "/control/execute visTutor/exN03Vis12.mac"
+#/gui/addButton vis EmShower "/control/execute visTutor/exN03Vis13.mac"
+#
+# Viewer menu :
+/gui/addMenu viewer Viewer
+/gui/addButton viewer "Set style surface" "/vis/viewer/set/style surface"
+/gui/addButton viewer "Set style wireframe" "/vis/viewer/set/style wire"
+/gui/addButton viewer "Refresh viewer" "/vis/viewer/refresh"
+/gui/addButton viewer "Update viewer (interaction or end-of-file)" "/vis/viewer/update"
+/gui/addButton viewer "Flush viewer (= refresh + update)" "/vis/viewer/flush"
+/gui/addButton viewer "Update scene" "/vis/scene/notifyHandlers"
+#
+# To limit the output flow in the "dump" widget :

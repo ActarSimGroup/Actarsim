@@ -1,0 +1,5 @@
+isoC4H10 25mbar 2000V
+------------------------
+v_drift (mm/ns)		5.33E-002
+D_trans (mm**2/ns)	5.80E-004	
+D_long (mm**2/ns)	1.46E-003

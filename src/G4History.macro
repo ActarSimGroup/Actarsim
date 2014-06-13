@@ -1,0 +1,7 @@
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/ActarSim/phys/addPhysics standard
+/ActarSim/phys/addPhysics ion-standard
+/ActarSim/phys/verbose 0
+/run/initialize

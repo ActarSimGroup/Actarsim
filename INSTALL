@@ -1,0 +1,18 @@
+//INSTALLING ACTARSIM
+After uncompressing the file
+1. Create a new directory where the program will be compiled and installed and change to it
+
+$mkdir ../ActarSim-build
+$cd ../ActarSim-build
+
+2. Call cmake to create the makefile adapted to your system
+
+$cmake -DGean4_DIR=/pathToGeant4Instalation/lib/Geant<version> /pathToActarSimSource
+
+3. Compile
+
+$make
+
+4. Install
+
+$make install 

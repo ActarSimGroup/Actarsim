@@ -38,11 +38,9 @@ class ActarSimDetectorMessenger;
 class ActarSimGasSD;
 class ActarSimSilSD;
 class ActarSimSciSD;
-class ParisTrackerSD;
 class ActarSimGasDetectorConstruction;
 class ActarSimSilDetectorConstruction;
 class ActarSimSciDetectorConstruction;
-class ActarSimParisDetectorConstruction;
 
 class ActarSimDetectorConstruction : public G4VUserDetectorConstruction {  
 private:
@@ -50,7 +48,6 @@ private:
   ActarSimGasSD* gasSD;
   ActarSimSilSD* silSD;
   ActarSimSciSD* sciSD;
-  ParisTrackerSD* parisSD;
   // Volumes
   G4Box* solidWorld;
 
@@ -85,7 +82,6 @@ private:
   G4String gasGeoIncludedFlag;
   G4String silGeoIncludedFlag;
   G4String sciGeoIncludedFlag;
-  G4String parisGeoIncludedFlag;
   G4String plateIncludedFlag;
   G4String slitOrientation;
 
@@ -93,7 +89,6 @@ private:
   ActarSimGasDetectorConstruction* gasDet;  //target
   ActarSimSilDetectorConstruction* silDet;     //recoil si
   ActarSimSciDetectorConstruction* sciDet;     //calorimeter
-  ActarSimParisDetectorConstruction* parisDet;     //PARIS
 
   ActarSimDetectorMessenger* detectorMessenger;  //pointer to the Messenger
 
@@ -108,7 +103,6 @@ public:
   ActarSimGasSD* GetGasSD(void){return gasSD;}
   ActarSimSilSD* GetSilSD(void){return silSD;}
   ActarSimSciSD* GetSciSD(void){return sciSD;}
-  ParisTrackerSD*  GetParisSD(void){return parisSD;}
 
   G4VPhysicalVolume* Construct();
   
@@ -136,7 +130,6 @@ public:
   void SetGasGeoIncludedFlag(G4String val){gasGeoIncludedFlag=val;}
   void SetSilGeoIncludedFlag(G4String val){silGeoIncludedFlag=val;}
   void SetSciGeoIncludedFlag(G4String val){sciGeoIncludedFlag=val;}
-  void SetParisGeoIncludedFlag(G4String val){parisGeoIncludedFlag=val;}
   void SetPlateIncludedFlag(G4String val){plateIncludedFlag=val;}
   void SetSlitOrientation(G4String val){slitOrientation=val;}
 

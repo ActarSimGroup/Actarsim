@@ -61,15 +61,6 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   sciGeoIncludedFlagCmd->SetCandidates("on off");
   sciGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  parisGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/parisGeoIncludedFlag",this);
-  parisGeoIncludedFlagCmd->SetGuidance("Includes the geometry of the PARIS array in the simulation (default off).");
-  parisGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
-  parisGeoIncludedFlagCmd->SetParameterName("choice",true);
-  parisGeoIncludedFlagCmd->SetDefaultValue("off");
-  parisGeoIncludedFlagCmd->SetCandidates("on off");
-  parisGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
-
 
   plateIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/plateIncludedFlag",this); 
   plateIncludedFlagCmd->SetGuidance("Includes the Al plate in the simulation (default off).");
@@ -167,9 +158,6 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == sciGeoIncludedFlagCmd )
     ActarSimDetector->SetSciGeoIncludedFlag(newValue);
-
-  if( command == parisGeoIncludedFlagCmd )
-    ActarSimDetector->SetParisGeoIncludedFlag(newValue);
 
   if(command == plateIncludedFlagCmd)
     ActarSimDetector->SetPlateIncludedFlag(newValue);

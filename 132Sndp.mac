@@ -125,15 +125,6 @@
 /ActarSim/det/sci/zBoxHalfLength 150. mm
 /ActarSim/det/sci/print
 #
-#PARIS  DETECTOR ARRAY
-#
-/ActarSim/det/parisGeoIncludedFlag on
-# see above explanation in the equivalent command for the Silicons
-/ActarSim/det/paris/sideCoverage 1
-/ActarSim/det/paris/xBoxHalfLength 200. mm
-/ActarSim/det/paris/yBoxHalfLength 200. mm
-/ActarSim/det/paris/zBoxHalfLength 200. mm
-/ActarSim/det/paris/print
 
 
 

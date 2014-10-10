@@ -41,6 +41,7 @@ class ActarSimGasGeantHit : public G4VHit
   G4double      preToF;           //time before step
   G4double      postToF;          //time after step
   G4double      stepLength;       //length of the step
+  G4double      stepEnergy;        //particle energy before step
 
   public:
 
@@ -71,6 +72,7 @@ class ActarSimGasGeantHit : public G4VHit
   void SetDetName(G4String Name){ detName = Name; }
   void SetDetID(G4int id){ detID = id; }
   void SetStepLength(G4double len){ stepLength = len; }
+  void SetStepEnergy(G4double sten){ stepEnergy = sten; }
 
   G4int         GetTrackID(){ return trackID; }
   G4int         GetParentID(){ return parentID; }
@@ -78,7 +80,7 @@ class ActarSimGasGeantHit : public G4VHit
   G4double      GetEdep(){ return edep; }
   G4double      GetParticleCharge(){return particleCharge;}
   G4double      GetParticleMass(){return particleMass;}
-  G4int         GetParticleID(){return particleID;}
+  G4int         GetParticleID(){return particleID;} 
   G4ThreeVector GetPrePos(){ return prePos; }
   G4ThreeVector GetPostPos(){ return postPos; }
   G4String      GetDetName(){ return detName; }
@@ -86,6 +88,7 @@ class ActarSimGasGeantHit : public G4VHit
   G4double      GetPreToF(){ return preToF; }
   G4double      GetPostToF(){ return postToF; }
   G4double      GetStepLength(){ return stepLength; }
+  G4double      GetStepEnergy(){ return stepEnergy; }
 
 };
 

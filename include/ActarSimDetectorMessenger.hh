@@ -41,7 +41,6 @@ private:
   G4UIcmdWithAString* gasGeoIncludedFlagCmd;
   G4UIcmdWithAString* silGeoIncludedFlagCmd;
   G4UIcmdWithAString* sciGeoIncludedFlagCmd;
-  G4UIcmdWithAString* parisGeoIncludedFlagCmd;
   G4UIcmdWithAString* plateIncludedFlagCmd;
   G4UIcmdWithAString* plateOrientationCmd;
  

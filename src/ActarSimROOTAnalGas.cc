@@ -46,6 +46,8 @@
 #include "TClonesArray.h"
 #include "TProfile.h"
 
+#include "Randomize.hh"
+
 //for calculating the optical photon wavelenght for a given enegy
 static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 
@@ -88,13 +90,15 @@ void ActarSimROOTAnalGas::init(){
   //histograms of example
   hStepSumLengthOnGas1 = (TH1D *)0;
   hStepSumLengthOnGas2 = (TH1D *)0;
-//  hProtonLastPosition =(TH1D*)0; // moved to ActarSimData.hh
 
   htrackInPads = (TH2D *)0;
   htrack1InPads = (TH2D *)0;
   htrack2InPads = (TH2D *)0;
   htrackFromBeam = (TH2D *)0;
   htrack = (TH3D *)0;
+
+  hEdepInGas = (TH1D *)0;
+
 
 /////  The accumulated energy loss and track length of each step, dypang 080225
   hbeamEnergyAtRange=(TProfile *)0;
@@ -142,8 +146,8 @@ void ActarSimROOTAnalGas::init(){
   eventTree->Branch("simpleTrackData",&simpleTrackCA);
 
   //minStrideLength = 0.1 * mm; //default value for the minimum stride length
-  //minStrideLength = 1.0 * mm; //default value for the minimum stride length
-  minStrideLength = 0.5 * mm; //default value for the minimum stride length
+  minStrideLength = 1.0 * mm; //default value for the minimum stride length
+  //minStrideLength = 0.5 * mm; //default value for the minimum stride length
   //minStrideLength = 0.1 * mm; //default value for the minimum stride length
   //minStrideLength = 10 * mm; //default value for the minimum stride length
   //minStrideLength = 0. * mm; //default value for the minimum stride length
@@ -178,6 +182,8 @@ void ActarSimROOTAnalGas::GeneratePrimaries(const G4Event *anEvent){
   // E = Ekin + M
   primEnergy = momentumPrim.mag(); //in case the mass is not zero, NOT VALID
 }
+
+
 
 
 void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
@@ -287,6 +293,16 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
       htrack->SetXTitle("X [mm]");
     }
 
+    hEdepInGas =
+      (TH1D *)gROOT->FindObject("hEdepInGas");
+    if(hEdepInGas) hEdepInGas->Reset();
+    else {
+      hEdepInGas = new TH1D("hEdepInGas",
+			"Edep along Gas chamber ",
+			1000, 0, 300);
+      hEdepInGas->SetXTitle("Z [mm]");
+    }
+
     //Now, I will introduce the information of interest!
     // Total Energy Loss on Gas1
     hTotELossOnGas1  = (TH1D *)gROOT->FindObject("hTotELossOnGas1");
@@ -315,6 +331,19 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
 
 
 
+void ActarSimROOTAnalGas::EndOfRunAction(const G4Run *aRun) {
+
+  G4int nbofEvents = aRun->GetNumberOfEvent();
+
+  if(storeTrackHistosFlag == "on") {
+    //G4double binWidth = hEdepInGas->GetBinWidth();
+    hEdepInGas->Scale(1./nbofEvents);
+    //G4cout << "Number of events: "<< nbofEvents << G4endl;
+  }
+
+}
+
+
 void ActarSimROOTAnalGas::BeginOfEventAction(const G4Event *anEvent) {
   //
   // Actions to perform in the analysis at the begining of the event
@@ -335,79 +364,6 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
   Double_t aEnergyInGas2 =0;// (EnerGas2 / MeV); // in [MeV]
   Double_t aTLInGas1 =0;// (TLGas1 / mm); // in [mm]
   Double_t aTLInGas2 =0;// (TLGas2 / mm); // in [mm]
-
-  Double_t pLPX;
-  Double_t pLPY;
-  Double_t pLPZ;
-
-  if(storeTrackHistosFlag=="on"){  // added flag dypang 080301
-    if (hStepSumLengthOnGas1)
-      hStepSumLengthOnGas1->Fill(aTLInGas1);
-    if (hStepSumLengthOnGas2)
-      hStepSumLengthOnGas2->Fill(aTLInGas2);
-    if (hTotELossOnGas1)
-      hTotELossOnGas1->Fill(aEnergyInGas1);
-    if (hTotELossOnGas2)
-      hTotELossOnGas2->Fill(aEnergyInGas2);
-  }
-  //David Perez Loureiro-------------------------------//
-//   if(storeEventsFlag=="on"){  // added flag dypang 080301
-//     theData->SetEnergyOnGasPrim1(aEnergyInGas1);
-//     theData->SetEnergyOnGasPrim2(aEnergyInGas2);
-//     theData->SetStepSumLengthOnGasPrim1(aTLInGas1);
-// //     G4cout << "SetStepSumLengthOnGasPrim1=" << aTLInGas1 << ", dypang, 080820" << G4endl;
-//     theData->SetStepSumLengthOnGasPrim2(aTLInGas2);
-//     theData->SetEventID(anEvent->GetEventID());
-//     theData->SetRunID(GetTheRunID());
-
-//   }
-  // determine where is the last point of proton
-
-
-//SOLUCIONAR ESTO!! QUITAR!
-      /*
-      G4double protonLastPositionCode=0.0;  // inside the gas
-      G4double small=1.0e-1; // 1.0 mm
-      G4double eSmall=1.0e-2*keV;
-
-      if( (sqrt((250.+PLPx)*(250.+PLPx))<=small)  &&
-	  ((sqrt(PLPy*PLPy)-150.)<=small)         &&
-	  ((PLPz-500.)<=small && (energyPrim2-aEnergyInGas2)>=eSmall) ){
-	protonLastPositionCode=1.0;}    // front plane
-      else if( ((sqrt(PLPx*PLPx)-250.)<=small)  &&
-	       (sqrt((PLPy-150.)*(PLPy-150.))<=small && (energyPrim2-aEnergyInGas2)>eSmall)  &&
-	       ((PLPz-500.)<=small) ){
-	protonLastPositionCode=2.0;}   // upper plane
-      else if( (sqrt((PLPx-250.)*(PLPx-250.))<=small && (energyPrim2-aEnergyInGas2)>eSmall) &&
-	       ((sqrt(PLPy*PLPy)-150.)<=small)  &&
-	       ((PLPz-500.)<=small) ){
-	protonLastPositionCode=3.0;}   // back plane
-      else if( ((sqrt(PLPx*PLPx)-250.)<=small) &&
-	       (sqrt((PLPy+150.)*(PLPy+150.))<=small && (energyPrim2-aEnergyInGas2)>eSmall)  &&
-	       ((PLPz-500.)<=small) ){
-	protonLastPositionCode=4.0;}  // bottom plane
-      else if( ((sqrt(PLPx*PLPx)-250.)<=small)  &&
-	       ((sqrt(PLPy*PLPy)-150.)<=small)  &&
-	       (sqrt(PLPz*PLPz)<=small && (energyPrim2-aEnergyInGas2)>eSmall) ){
-	protonLastPositionCode=5.0;}  // left plane
-      else if( ((sqrt(PLPx*PLPx)-250.)<=small)  &&
-	       ((sqrt(PLPy*PLPy)-150.)<=small)  &&
-	       ((sqrt((PLPz-500.)*(PLPz-500.)))<=small && (energyPrim2-aEnergyInGas2)>eSmall) ){
-	protonLastPositionCode=6.0;}  // right plane
-      else {
-	protonLastPositionCode=0.0;
-      }
-
-      theData->SetProtonLastPositionCode(protonLastPositionCode);
-      theData->SetProtonLastPositionx(PLPx);
-      theData->SetProtonLastPositiony(PLPy);
-      theData->SetProtonLastPositionz(PLPz);
-      */
-
-    //gActarSimROOTAnalysis->GetBeamInfo()->print();
-
-//     eventTree->Fill();
-//  }
 
   if(storeSimpleTracksFlag=="on"){  // added flag dypang 080301
 
@@ -435,9 +391,9 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
 
     simpleTrackCA->Clear();
 
-    //  G4cout << "Information on the collection..." << G4endl
-    // << "Number of GasGeantHits in the collection: " <<  NbHits
-    // << G4endl;
+     //  G4cout << "Information on the collection..." << G4endl
+     // << "Number of GasGeantHits in the collection: " <<  NbHits
+     // << G4endl;
 
     //  for (G4int i=0;i<NbHits;i++) {
     //if((*hitsCollection)[i]->GetStepLength()>1)
@@ -456,7 +412,7 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
       //G4cout << (*hitsCollection)[i]->GetDetName() << G4endl;
       for(G4int j=0;j<2;j++) { //that is, for 2 primaries
 	if((*hitsCollection)[i]->GetTrackID()==(j+1) &&
-	   (*hitsCollection)[i]->GetParentID()==0){ //this step comes from a primary
+	(*hitsCollection)[i]->GetParentID()==0){ //this step comes from a primary
 	  //New algorithm to reduce the number of GEANT4 steps to a few strides...
 	  if(simpleTrack[j]->GetNumberSteps() == 0) {
 	    //the first step in the stride!
@@ -471,6 +427,8 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
             simpleTrack[j]->SetParticleMass((*hitsCollection)[i]->GetParticleMass());
             simpleTrack[j]->SetParticleID((*hitsCollection)[i]->GetParticleID());
 	    simpleTrack[j]->SetStrideLength((*hitsCollection)[i]->GetStepLength());
+	    //G4cout << "Step lenth: " << (*hitsCollection)[i]->GetStepLength() << G4endl;
+	    simpleTrack[j]->SetParticleEnergy((*hitsCollection)[i]->GetStepEnergy());
 	    simpleTrack[j]->SetTimePre((*hitsCollection)[i]->GetPreToF());
 	    simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
 	    simpleTrack[j]->SetNumberSteps(1);
@@ -526,11 +484,6 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
 	else {
 	  aEnergyInGas2 += (*hitsCollection)[i]->GetEdep();
 	  aTLInGas2 +=(*hitsCollection)[i]->GetStepLength();	
-	//ProtonLastPositions
-	  pLPX=(*hitsCollection)[i]->GetPostPos().x();
-	  pLPY=(*hitsCollection)[i]->GetPostPos().y();
-	  pLPZ=(*hitsCollection)[i]->GetPostPos().z();
-	
 	}
 	//END-----------------------------------------// 
 	
@@ -568,15 +521,22 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
     theData->SetEnergyOnGasPrim1(aEnergyInGas1);
     theData->SetEnergyOnGasPrim2(aEnergyInGas2);
     theData->SetStepSumLengthOnGasPrim1(aTLInGas1);
-    theData->SetProtonLastPositionx(pLPX);
-    theData->SetProtonLastPositiony(pLPY);
-    theData->SetProtonLastPositionz(pLPZ);
-
-//     G4cout << "SetStepSumLengthOnGasPrim1=" << aTLInGas1 << ", dypang, 080820" << G4endl;
+    //G4cout << "SetStepSumLengthOnGasPrim1=" << aTLInGas1 << ", dypang, 080820" << G4endl;
     theData->SetStepSumLengthOnGasPrim2(aTLInGas2);
     theData->SetEventID(anEvent->GetEventID());
     theData->SetRunID(GetTheRunID());
 
+  }
+
+if(storeTrackHistosFlag=="on"){  // added flag dypang 080301
+    if (hStepSumLengthOnGas1)
+      hStepSumLengthOnGas1->Fill(aTLInGas1);
+    if (hStepSumLengthOnGas2)
+      hStepSumLengthOnGas2->Fill(aTLInGas2);
+    if (hTotELossOnGas1)
+      hTotELossOnGas1->Fill(aEnergyInGas1);
+    if (hTotELossOnGas2)
+      hTotELossOnGas2->Fill(aEnergyInGas2);
   }
 
   //eventTree->Fill();
@@ -616,8 +576,22 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
   G4Track* myTrack = aStep->GetTrack();
   G4ThreeVector prePoint = aStep->GetPreStepPoint()->GetPosition();
   G4ThreeVector postPoint = aStep->GetPostStepPoint()->GetPosition();
+  
+  G4double z1 = prePoint.z(); 
+  G4double z2 = postPoint.z();
+  G4double z  = z1 + G4UniformRand()*(z2-z1);// + 0.5*(fDetector->GetAbsorSizeX());
+
+  G4double edep = aStep->GetTotalEnergyDeposit();
+  if (edep <= 0.) return;
+
 
   if(storeTrackHistosFlag == "on") {
+
+
+    if(hEdepInGas && z2<300){
+      hEdepInGas->Fill(z,edep);
+    }
+
     if(htrack){
       htrack->Fill(postPoint.x(),
 		   postPoint.y(),

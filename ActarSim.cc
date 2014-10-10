@@ -14,7 +14,7 @@
 // 
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
- 
+
 #include <time.h>
 
 #include "G4RunManager.hh"
@@ -110,7 +110,7 @@ int main(int argc,char** argv)
 
   // get the pointer to the UI manager and set verbosities
   G4UImanager* UI = G4UImanager::GetUIpointer();
-  
+
   if (session) {
     // G4UIterminal is a (dumb) terminal.      
     //UI->ApplyCommand("/control/execute vis2.mac");    
@@ -126,7 +126,7 @@ int main(int argc,char** argv)
     G4String fileName = argv[1];
     UI->ApplyCommand(command+fileName);
   }
-  
+
   // job termination 
   delete analysis;
 #ifdef G4VIS_USE

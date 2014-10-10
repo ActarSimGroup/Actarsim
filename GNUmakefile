@@ -48,7 +48,7 @@ outclean:
 #Inspired in Isidro Gonzalez GNUmakefile in his G4UIROOT interface!!
 
 # Root Headers
-ROOTHDRS := ActarSimData.hh ActarSimTrack.hh ActarSimSimpleTrack.hh ActarSimSciHit.hh ActarSimSilHit.hh ActarSimParisHit.hh ActarSimPrimaryInfo.hh ActarSimBeamInfo.hh
+ROOTHDRS := ActarSimData.hh ActarSimTrack.hh ActarSimSimpleTrack.hh ActarSimSciHit.hh ActarSimSilHit.hh ActarSimPrimaryInfo.hh ActarSimBeamInfo.hh
 ROOTHDRSWITHPATH := $(patsubst %.hh,include/%.hh,$(ROOTHDRS))
 
 # Make library depend on the root dictionary object file also

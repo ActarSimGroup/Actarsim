@@ -23,12 +23,10 @@
 #include "ActarSimGasDetectorConstruction.hh"
 #include "ActarSimSilDetectorConstruction.hh"
 #include "ActarSimSciDetectorConstruction.hh"
-#include "ActarSimParisDetectorConstruction.hh"
 
 #include "ActarSimGasSD.hh"
 #include "ActarSimSilSD.hh"
 #include "ActarSimSciSD.hh"
-#include "ParisTrackerSD.hh"
 
 #include "ActarSimROOTAnalysis.hh"
 
@@ -47,11 +45,11 @@
 
 
 ActarSimDetectorConstruction::ActarSimDetectorConstruction()
-  :   gasSD(0), silSD(0), sciSD(0),parisSD(0),
+  :   gasSD(0), silSD(0), sciSD(0),
       solidWorld(0), worldLog(0), worldPhys(0),
       mediumMaterial(0), defaultMaterial(0), emField(0),
       gasGeoIncludedFlag("off"), silGeoIncludedFlag("off"), sciGeoIncludedFlag("off"),
-      parisGeoIncludedFlag("off"),gasDet(0), silDet(0), sciDet(0),parisDet(0){
+      gasDet(0), silDet(0), sciDet(0){
   //
   // Constructor
   //
@@ -73,12 +71,6 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   sciSD = new ActarSimSciSD( sciSDname );
   SDman->AddNewDetector( sciSD );
 
-  //PARIS
-  G4String PARISname = "ParisSD";
-  parisSD = new ParisTrackerSD( PARISname );
-  SDman->AddNewDetector( parisSD );
-
-
   //define materials and set medium material
   DefineMaterials();
   //TODO -> Check if materials support now (G4.9 and later)independent pressure parameter or redefinition...
@@ -92,7 +84,6 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   gasDet = new ActarSimGasDetectorConstruction(this);
   silDet = new ActarSimSilDetectorConstruction(this);
   sciDet = new ActarSimSciDetectorConstruction(this);
-  parisDet = new ActarSimParisDetectorConstruction(this);
 
   // create commands for interactive definition of the detector
   detectorMessenger = new ActarSimDetectorMessenger(this);
@@ -139,7 +130,6 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   if( plateIncludedFlag == "on"){
   G4double plateSizeX = 15*cm;
   G4double plateSizeY = 15*cm;
-  //G4double plateSizeZ = 0.5*mm;
   G4double plateSizeZ = 0.5*mm;
   G4double z,a,density;
 
@@ -150,9 +140,9 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
   AlplateLog=new G4LogicalVolume(Alplate,Al,"Al_plate");
 
-  G4double platePosX = 0*cm;
-  G4double platePosY = 0*cm;
-  G4double platePosZ = 18.5*cm;
+  // G4double platePosX = 0*cm;
+  // G4double platePosY = 0*cm;
+  // G4double platePosZ = 18.5*cm;
 
   //AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
   //				AlplateLog,"Al_plate",worldLog,false,0); 
@@ -175,15 +165,15 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   SlitLog=new G4LogicalVolume(Slit,mediumMaterial,"Slit_log");
   //SlitLog->SetVisAttributes(SlitVisAtt);
 
-  G4double slitPosX = -7.5*cm;
-  G4double slitPosY = 0*cm;
-  G4double slitPosZ = 0*cm;
+  // G4double slitPosX = -7.5*cm;
+  // G4double slitPosY = 0*cm;
+  // G4double slitPosZ = 0*cm;
 
   //SlitPhys=new G4PVPlacement(0,G4ThreeVector(slitPosX,slitPosY, slitPosZ),SlitLog,"Slit",
   //			       AlplateLog,false,0);
 
-  G4RotationMatrix *rot=0;
-  rot=new G4RotationMatrix(0,0,pi/2);
+  //G4RotationMatrix *rot=0;
+  //rot=new G4RotationMatrix(0,0,pi/2);
 
   //Assembly of slits
   SlitMask=new G4AssemblyVolume();
@@ -275,12 +265,6 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   //--------------------------
   if(sciGeoIncludedFlag=="on")
     sciDet->Construct(worldLog);
-  
-  //--------------------------
-  // Paris volume
-  //--------------------------
-  if(parisGeoIncludedFlag=="on")
-    parisDet->Construct(worldLog);
 
   // Histogramming
   if (gActarSimROOTAnalysis)
@@ -295,7 +279,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   }
 
   //visibility
-  worldLog->SetVisAttributes (G4VisAttributes::Invisible);
+  //worldLog->SetVisAttributes (G4VisAttributes::Invisible);
 
   return worldPhys;
 }

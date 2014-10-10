@@ -117,7 +117,7 @@ void G4LowEnergyQEDBuilder::ConstructProcess()
 
   // Add standard EM Processes for gamma
   G4ParticleDefinition* particle = G4Gamma::Gamma();
-  G4ProcessManager* pmanager = particle->GetProcessManager();
+  //G4ProcessManager* pmanager = particle->GetProcessManager();
 
   //Photoelectric
   G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
@@ -160,7 +160,7 @@ void G4LowEnergyQEDBuilder::ConstructProcess()
   
   // Add standard EM Processes for e+
   particle = G4Positron::Positron();
-  pmanager = particle->GetProcessManager();
+  //pmanager = particle->GetProcessManager();
 
    //Multiple scattering
   G4eMultipleScattering* msc2 = new G4eMultipleScattering();

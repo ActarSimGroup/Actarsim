@@ -44,7 +44,7 @@ private:
   
 public:
   ActarSimTrack();
-  ~ActarSimTrack();
+  virtual ~ActarSimTrack();
 
   Double_t GetXCoord(){return xCoord;}
   Double_t GetYCoord(){return yCoord;}

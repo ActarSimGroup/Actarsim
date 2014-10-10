@@ -1,6 +1,5 @@
 //D. Perez 280911
 //101111 Added silicon hits
-//180713 Added PARIS hits
 #define NUM_CLUSTERS 16
 #define NUM_CRYSTALS 9 
 
@@ -350,7 +349,7 @@ void Analysis_range(Char_t *gasfile_name,Char_t *name="root_files/simFile.root",
  
     //Scint
 
-
+    /*
     //PARIS
     Int_t ClusterID;
     Int_t DetectorID;
@@ -368,7 +367,7 @@ void Analysis_range(Char_t *gasfile_name,Char_t *name="root_files/simFile.root",
     branchParisHits->SetAddress(&parisHitsCA);
     branchParisHits->SetAutoDelete(kTRUE);
     ActarSimParisHit *parisHit=new ActarSimParisHit;
-
+    */
     
     //BeamInfo Branch
     ActarSimBeamInfo *beamInfo = 0; // beamInfo MUST be initialized to point to a NULL or valid object
@@ -481,7 +480,6 @@ void Analysis_range(Char_t *gasfile_name,Char_t *name="root_files/simFile.root",
       padSignalCA->Clear();
       simpleTrackCA->Clear();
       silHitsCA->Clear();
-      parisHitsCA->Clear();
       nb+=T->GetEvent(jentry);
       nb+=simTree->GetEvent(jentry);
 
@@ -534,27 +532,6 @@ void Analysis_range(Char_t *gasfile_name,Char_t *name="root_files/simFile.root",
 	cout<<"Horizontal Angle "<<theta_real*deg<<endl;
 	cout<<"Vertical Angle "<<phi_real*deg<<endl;
 	cout<<"Scatter Angle "<< scattered_real*deg<<" "<<theta_scat*deg<<endl;
-      }
-      //Getting PARIS info
-      Int_t nbparishits=parisHitsCA->GetEntries();
-      //cout<<"Event "<<jentry<<"-># Hits in Paris "<<nbparishits<<endl;
-      if(nbparishits>0){
-	for(Int_t h=0;h<nbparishits;h++){
-	  parisHit=(ActarSimParisHit*)parisHitsCA->At(h);
-	  ClusterID=parisHit->GetMotherID();
-	  DetectorID=parisHit->GetDetectorID();
-	  DetectorName=parisHit->GetDetectorName();
-	  EnergyHit=parisHit->GetEnergy();
-	  //4.61% at 662 keV R=a/sqrt(E)+b, a=0.0379131 b=-0.000497199  
-	  Double_t resolution=(0.0379131*sqrt(EnergyHit)-0.000497199)/2.35;
-	  EnergyHit=gRandom->Gaus(EnergyHit,resolution);
-	  totalEnergy+=EnergyHit;
-	  if(DetectorName=="LaBr")
-	    EnergyCrystal_LaBr[ClusterID][DetectorID]+=EnergyHit;
-	  else
-	    EnergyCrystal_NaI[ClusterID][DetectorID]+=EnergyHit;
-      
-	}  
       }
 
     //Getting the Silicon Hits

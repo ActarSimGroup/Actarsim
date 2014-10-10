@@ -102,6 +102,29 @@ ActarSimPrimaryGeneratorAction::~ActarSimPrimaryGeneratorAction() {
 
 void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
+  //this function is called at the begining of event
+  //
+  /*
+  //G4double z0 = -0.5*(fDetector->GetWorldSizeX());
+  G4double z0 = 0.*cm;
+  G4double y0 = 0.*cm, x0 = 0.*cm;
+    
+  //randomize the beam, if requested.
+  //
+   if (fRndmBeam > 0.) 
+    {
+      if (fRndmBeam > fDetector->GetAbsorSizeYZ())
+        fRndmBeam = fDetector->GetAbsorSizeYZ(); 
+      G4double rbeam = 0.5*fRndmBeam;
+      y0 = (2*G4UniformRand()-1.)*rbeam;
+      x0 = (2*G4UniformRand()-1.)*rbeam;
+    }
+  particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));  
+  particleGun->GeneratePrimaryVertex(anEvent);
+ */ 
+  //fEbeamCumul += particleGun->GetParticleEnergy(); 
+
+    
   //
   // Generate most of the primary physics. See the comments on each possible case
   //
@@ -299,30 +322,30 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   // Beam not included...
   else if(realisticBeamFlag == "on") {
 
-/*
-    //OLD STYLE USING GAUSSIAN PROFILE. NOW AN "EMITTANCE" AND "SIZE AT ENTRANCE" APPROACH IS USED!
-    //Some beam parameters, still hardcoded
-    //TODO -> move this parameters to the ActarSimPrimaryGeneratorMessenger
-    G4double FWHM  = 1.*cm;
-    G4double sigma = FWHM/2.35;
 
-    //gaussian profile for the beam (usually limited by an arbitrary beamWindow)
-    G4double beamWindow = 100*mm;
-    G4double R= fabs(CLHEP::RandGauss::shoot(0.*cm,sigma));
-    while(R > beamWindow )
-      R= fabs(CLHEP::RandGauss::shoot(0.*cm,sigma));
-    G4double tarPhi = G4UniformRand() * twopi;
+    // //OLD STYLE USING GAUSSIAN PROFILE. NOW AN "EMITTANCE" AND "SIZE AT ENTRANCE" APPROACH IS USED!
+    // //Some beam parameters, still hardcoded
+    // //TODO -> move this parameters to the ActarSimPrimaryGeneratorMessenger
+    // G4double FWHM  = 1.*cm;
+    // G4double sigma = FWHM/2.35;
 
-    G4double z0 = G4UniformRand()*(2.* lengthParameter);
-    G4double x0 = R*cos(tarPhi);
-    G4double y0 = R*sin(tarPhi);
+    // //gaussian profile for the beam (usually limited by an arbitrary beamWindow)
+    // G4double beamWindow = 100*mm;
+    // G4double R= fabs(CLHEP::RandGauss::shoot(0.*cm,sigma));
+    // while(R > beamWindow )
+    //   R= fabs(CLHEP::RandGauss::shoot(0.*cm,sigma));
+    // G4double tarPhi = G4UniformRand() * twopi;
 
-    //calculating the beam energy-loss in the gas
-    //TODO -> the right method is to obtain aFactorToBeCalculated from the energy loss in each gas used...
-    //TODO -> read the type of gas in the target from the DetectorGeometry.
-    //energyLostInTargetGas = GetLabEnergy() - aFactorToBeCalculated * z0;
-    //SetLabEnergy(GetLabEnergy()-energyLostInTargetGas);
-*/
+    // G4double z0 = G4UniformRand()*(2.* lengthParameter);
+    // G4double x0 = R*cos(tarPhi);
+    // G4double y0 = R*sin(tarPhi);
+
+    // //calculating the beam energy-loss in the gas
+    // //TODO -> the right method is to obtain aFactorToBeCalculated from the energy loss in each gas used...
+    // //TODO -> read the type of gas in the target from the DetectorGeometry.
+    // //energyLostInTargetGas = GetLabEnergy() - aFactorToBeCalculated * z0;
+    // //SetLabEnergy(GetLabEnergy()-energyLostInTargetGas);
+
 
     //Not anymore a gaussian, but a flat distribution in a given radius around Z axis.
     G4double radiusAtEntrance   = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
@@ -958,7 +981,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     else {
       KINE->SetThetaCMAngle(GetThetaCMAngle()/deg);  // units: degree
     }
-
+ 
     if(verboseLevel>1){
       G4cout << " KINE: Setting masses to :" << GetIncidentIon()->GetAtomicMass()
 	     << " " << GetTargetIon()->GetAtomicMass()
@@ -1087,9 +1110,10 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     particleGun->SetParticleEnergy(energy2);                     // use the exist code for this part.
 
     particleGun->GeneratePrimaryVertex(anEvent);
-
+ 
     G4double ExEnergyScattered= GetExEnergyOfScattered();
     if(ExEnergyScattered>0){   //Photon is emmited isotropically from vertex
+      G4cout << "TOTO" << G4endl;
       G4double cosTheta_gamma;
       G4double phi_gamma = twopi*G4UniformRand();
       G4double sinTheta_gamma;
@@ -1144,7 +1168,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //DPLoureiro adding random distribution for polar and azimuthal angles
     G4double cosTheta;
     G4double sinTheta;
-    G4double Theta;
+    //G4double Theta;
     G4double y_coord;
     y_coord = -1 + 2.0*G4UniformRand();
     y_coord=10*y_coord/185.;
@@ -1206,7 +1230,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
     
    else{  ;
-     particleGun->SetParticleEnergy(5.5*MeV);
+     //particleGun->SetParticleEnergy(5.5*MeV);
+     particleGun->SetParticleEnergy(GetLabEnergy());
         //incidentIon =  (G4Ions*) particleTable->GetIon(50, 134, 0.);  // 134Sn
      //incidentIon =  (G4Ions*) particleTable->GetIon(30, 80, 0.);  // 80Zn
      //incidentIon =  (G4Ions*) particleTable->GetIon(38, 90, 0.);  // 90Sr

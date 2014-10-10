@@ -27,7 +27,7 @@
 #   ion low-energy: ion-LowE, ion-LowE-ziegler1977, ion-LowE-ziegler1985,
 #   ion-LowE-ziegler2000, ion-standard
 #
-/ActarSim/phys/addPhysics standard
+#/ActarSim/phys/addPhysics standard
 #/ActarSim/phys/addPhysics decay
 #/ActarSim/phys/addPhysics elastic
 #/ActarSim/phys/addPhysics binary
@@ -38,8 +38,12 @@
 #/ActarSim/phys/addPhysics ion-LowE-ziegler1977
 #/ActarSim/phys/addPhysics ion-LowE-ziegler1985
 #/ActarSim/phys/addPhysics ion-LowE-ziegler2000
-/ActarSim/phys/addPhysics ion-standard
+#/ActarSim/phys/addPhysics ion-standard
 #/ActarSim/phys/addPhysics penelope
+#/ActarSim/phys/addPhysics emstandard_opt0
+#/ActarSim/phys/addPhysics emstandard_opt3
+/ActarSim/phys/addPhysics emstandard_opt4
+/ActarSim/phys/addPhysics ionGasModels
 #
 # Cuts for the particles  (incomplete list, see README)
 #
@@ -71,7 +75,7 @@
 /ActarSim/det/gas/setDetectorGeometry box
 /ActarSim/det/gas/luciteBoxIncluded on
 /ActarSim/det/gas/setXLengthGasBox 150. mm
-/ActarSim/det/gas/setYLengthGasBox 100. mm
+/ActarSim/det/gas/setYLengthGasBox 150. mm
 /ActarSim/det/gas/setZLengthGasBox 150. mm
 #
 # if tube
@@ -94,7 +98,7 @@
 #               D2_500, D2_STP, D2_1695, D2_1800, D2_1950
 #               He_1900, He_2010
 #
-/ActarSim/det/gas/setGasMat D2_400
+/ActarSim/det/gas/setGasMat D2_STP
 #
 # SILICON DETECTOR
 #
@@ -126,23 +130,13 @@
 /ActarSim/det/sci/print
 #
 
-#PARIS  DETECTOR ARRAY
-#
-/ActarSim/det/parisGeoIncludedFlag on
-# see above explanation in the equivalent command for the Silicons
-/ActarSim/det/paris/sideCoverage 30
-/ActarSim/det/paris/xBoxHalfLength 200. mm
-/ActarSim/det/paris/yBoxHalfLength 200. mm
-/ActarSim/det/paris/zBoxHalfLength 200. mm
-/ActarSim/det/paris/print
-
 #Control of the output on the ROOT file
 #all the tracks are stored (note: huge space comsumption)
 #Note: it should come before the update!!!
-#/ActarSim/analControl/storeTracks on
-#/ActarSim/analControl/storeTrackHistos on
+/ActarSim/analControl/storeTracks on
+/ActarSim/analControl/storeTrackHistos on
 /ActarSim/analControl/storeEvents on
-#/ActarSim/analControl/storeHistograms on
+/ActarSim/analControl/storeHistograms on
 /ActarSim/analControl/storeSimpleTracks on
 #/ActarSim/analControl/setMinStrideLength 0.1
 #/ActarSim/phys/stepMax 1000000.
@@ -216,7 +210,7 @@
 /ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.007825
 /ActarSim/gun/Kine/labEnergy 660 MeV
 /ActarSim/gun/Kine/randomThetaCM on
-/ActarSim/gun/Kine/randomThetaRange 0.0 50.0
+#/ActarSim/gun/Kine/randomThetaRange 0.0 50.0
 /ActarSim/gun/Kine/randomPhiAngle on
 #/ActarSim/gun/Kine/userThetaCM 100.0 deg
 #/ActarSim/gun/Kine/userPhiAngle 0. deg
@@ -264,4 +258,4 @@
 #
 # RUN: number of events
 #
-/run/beamOn 20000
+/run/beamOn 5000

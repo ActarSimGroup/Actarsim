@@ -27,6 +27,9 @@ class G4VPhysicsConstructor;
 class ActarSimPhysicsList: public G4VModularPhysicsList {
 
 private:
+
+  void AddIonGasModels();
+
   G4double cutForGamma;
   G4double cutForElectron;
   G4double cutForPositron;

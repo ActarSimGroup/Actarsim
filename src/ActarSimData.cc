@@ -30,7 +30,6 @@ ActarSimData::ActarSimData(){
   energyOnGasPrim2 = 0;
   stepSumLengthOnGasPrim1 = 0;
   stepSumLengthOnGasPrim2 = 0;
-  protonLastPositionCode=0.; // dypang 080302
   eventID = 0;
   runID = 0;
 }

@@ -20,9 +20,6 @@
 #include "ActarSimROOTAnalGas.hh"
 #include "ActarSimROOTAnalSci.hh"
 #include "ActarSimROOTAnalSil.hh"
-#include "ActarSimROOTAnalParis.hh"
-
-//#include "ParisTree.hh"
 
 #include "ActarSimDetectorConstruction.hh"
 #include "ActarSimAnalysisMessenger.hh"
@@ -103,12 +100,10 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   gasAnal = 0;
   silAnal = 0;
   sciAnal = 0;
-  parisAnal = 0;
 
   gasAnalIncludedFlag = 0;
   silAnalIncludedFlag = 0;
   sciAnalIncludedFlag = 0;
-  parisAnalIncludedFlag = 1;
 
   pBeamInfo = new ActarSimBeamInfo();
 
@@ -175,10 +170,6 @@ void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
 
   if(sciAnalIncludedFlag && !sciAnal)
     sciAnal = new ActarSimROOTAnalSci();
-
-  if(parisAnalIncludedFlag && !parisAnal)
-    parisAnal = new ActarSimROOTAnalParis();
-
 
   //OTHER DETECTORS ANALYSIS SHOULD BE INCLUDED HERE
 
@@ -311,7 +302,6 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
   if(gasAnal) gasAnal->GeneratePrimaries(anEvent);
   if(silAnal) silAnal->GeneratePrimaries(anEvent);
   if(sciAnal) sciAnal->GeneratePrimaries(anEvent);
-  if(parisAnal) parisAnal->GeneratePrimaries(anEvent);
 
   OnceAWhileDoIt();
 }
@@ -385,7 +375,6 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
   if(gasAnal) gasAnal->GeneratePrimaries(anEvent);
   if(silAnal) silAnal->GeneratePrimaries(anEvent);
   if(sciAnal) sciAnal->GeneratePrimaries(anEvent);
-  if(parisAnal) parisAnal->GeneratePrimaries(anEvent);
 
   OnceAWhileDoIt();
 }
@@ -497,7 +486,6 @@ void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
   if(gasAnal) gasAnal->BeginOfRunAction(aRun);
   if(silAnal) silAnal->BeginOfRunAction(aRun);
   if(sciAnal) sciAnal->BeginOfRunAction(aRun);
-  if(parisAnal) parisAnal->BeginOfRunAction(aRun);
 
   simFile->cd();
 
@@ -508,6 +496,8 @@ void ActarSimROOTAnalysis::EndOfRunAction(const G4Run *aRun) {
   //
   // Actions to perform in the analysis at the end of the run
   //
+
+  if(gasAnal) gasAnal->EndOfRunAction(aRun);
 
   if (aRun) {;} /* keep the compiler "quiet" */
   if (gSystem) gSystem->ProcessEvents();
@@ -536,7 +526,6 @@ void ActarSimROOTAnalysis::BeginOfEventAction(const G4Event *anEvent){
   if(gasAnal) gasAnal->BeginOfEventAction(anEvent);
   if(silAnal) silAnal->BeginOfEventAction(anEvent);
   if(sciAnal) sciAnal->BeginOfEventAction(anEvent);
-  if(parisAnal) parisAnal->BeginOfEventAction(anEvent);
 
   OnceAWhileDoIt();
 }
@@ -596,19 +585,18 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
 
   //calling the actions defined for each detector
   //DPL jun2012 only silicon hits stored in ROOT file
-  G4int hitsCollectionID =G4SDManager::GetSDMpointer()->GetCollectionID("SilCollection");
-  G4HCofThisEvent* HCofEvent = anEvent->GetHCofThisEvent();
-  ActarSimSilGeantHitsCollection* hitsCollection =
-    (ActarSimSilGeantHitsCollection*) HCofEvent->GetHC(hitsCollectionID);
+  // G4int hitsCollectionID =G4SDManager::GetSDMpointer()->GetCollectionID("SilCollection");
+  // G4HCofThisEvent* HCofEvent = anEvent->GetHCofThisEvent();
+  // ActarSimSilGeantHitsCollection* hitsCollection =
+  //   (ActarSimSilGeantHitsCollection*) HCofEvent->GetHC(hitsCollectionID);
   //Number of ActarSimSilGeantHit (or steps) in the hitsCollection
-  G4int NbHits = hitsCollection->entries(); 
+  //G4int NbHits = hitsCollection->entries(); 
   //G4cout<<"Hits in the silicon "<< NbHits <<G4endl;
   //if(NbHits){ 
   //G4cout<<"ActarSimROOTAnalysis----> EndOfEventAction() "<<gasAnal<<G4endl;
   if(gasAnal) gasAnal->EndOfEventAction(anEvent);
   if(silAnal) silAnal->EndOfEventAction(anEvent);
   if(sciAnal) sciAnal->EndOfEventAction(anEvent);
-  if(parisAnal) parisAnal->EndOfEventAction(anEvent);
   
   eventTree->Fill();
   //}
@@ -768,7 +756,6 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
   if(gasAnal) gasAnal->UserSteppingAction(aStep);
   if(silAnal) silAnal->UserSteppingAction(aStep);
   if(sciAnal) sciAnal->UserSteppingAction(aStep);
-  if(parisAnal) parisAnal->UserSteppingAction(aStep);
 
   // Processing the beam, in case of beamInteractionFlag on
   // If a beam ion is being tracked with status 1 (ion beam being tracked) and if the present

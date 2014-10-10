@@ -99,7 +99,6 @@ set(ActarSim_HEADERS ${PROJECT_SOURCE_DIR}/include/ActarSimData.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSimpleTrack.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSciHit.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSilHit.hh
-		     ${PROJECT_SOURCE_DIR}/include/ActarSimParisHit.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimPrimaryInfo.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimBeamInfo.hh
 		     )
@@ -145,6 +144,7 @@ set(ACTARSIM_SCRIPTS
 132Sndp_nodraw.mac
 gui.mac
 vis2.mac
+13C_batch.mac
 digitizationMacro.C
 digit.h
 dig_reaction.C

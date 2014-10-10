@@ -19,42 +19,35 @@
 #include "ActarSimPhysicsListMessenger.hh"
 
 #include "ActarSimParticlesBuilder.hh"
+#include "ActarSimStepLimiterBuilder.hh"
+#include "ActarSimDecaysBuilder.hh"
+
 #include "G4EmQEDBuilder.hh"
 #include "G4EmMuonBuilder.hh"
 #include "G4EmHadronBuilder.hh"
 #include "G4LowEnergyQEDBuilder.hh"
 #include "G4PenelopeQEDBuilder.hh"
-//#include "G4EmQEDBuilder52.hh"
-//#include "G4EmMuonBuilder52.hh"
-//#include "G4EmHadronBuilder52.hh"
-//#include "G4EmQEDBuilder71.hh"
-//#include "G4EmMuonBuilder71.hh"
-//#include "G4EmHadronBuilder71.hh"
-#include "ActarSimStepLimiterBuilder.hh"
-#include "ActarSimDecaysBuilder.hh"
+
 #include "EmHadronElasticBuilder.hh"
 #include "EmBinaryCascadeBuilder.hh"
 #include "EmIonBinaryCascadeBuilder.hh"
 #include "EmGammaNucleusBuilder.hh"
-
+ 
 //New PhysicsLists Em
 #include "PhysListEmStandard.hh"
 #include "PhysListEmStandardWVI.hh"
 #include "PhysListEmStandardSS.hh"
 #include "PhysListEmStandardGS.hh"
 
+#include "G4EmStandardPhysics.hh"
 #include "G4EmStandardPhysics_option1.hh"
 #include "G4EmStandardPhysics_option2.hh"
 #include "G4EmStandardPhysics_option3.hh"
+#include "G4EmStandardPhysics_option4.hh"
+
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
 
-
-// #include "HadrontherapyIonLowE.hh"
-// #include "HadrontherapyIonLowEZiegler1977.hh"
-// #include "HadrontherapyIonLowEZiegler1985.hh"
-// #include "HadrontherapyIonLowEZiegler2000.hh"
-// 
 #include "HadrontherapyIonStandard.hh"
 
 #include "G4UnitsTable.hh"
@@ -64,6 +57,23 @@
 #include "G4Gamma.hh"
 #include "G4Electron.hh"
 #include "G4Positron.hh"
+
+//Piotr 10/09/2014
+
+#include "G4EmConfigurator.hh"
+
+#include "G4IonFluctuations.hh"
+#include "G4IonParametrisedLossModel.hh"
+#include "G4UniversalFluctuation.hh"
+
+#include "G4BraggIonGasModel.hh"
+#include "G4BetheBlochIonGasModel.hh"
+
+#include "G4IonPhysics.hh"
+
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 
 ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   //
@@ -79,7 +89,8 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   gnucIsRegisted = false;  
 
   verbose = 0;
-  G4LossTableManager::Instance()->SetVerbose(0);
+  //G4LossTableManager::Instance()->SetVerbose(0);
+  G4LossTableManager::Instance();
   defaultCutValue = 1.*mm;
   cutForGamma     = defaultCutValue;
   cutForElectron  = defaultCutValue;
@@ -87,8 +98,9 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   
   pMessenger = new ActarSimPhysicsListMessenger(this);
   
-
-  emPhysicsList = new PhysListEmStandard("local");
+  // EM physics
+  //emPhysicsList = new PhysListEmStandard("local");
+  emPhysicsList = new G4EmStandardPhysics(1);
 
   // Add Physics builders
   RegisterPhysics(new ActarSimParticlesBuilder());
@@ -124,6 +136,14 @@ void ActarSimPhysicsList::ConstructProcess() {
   // Construct Processes
   //
 
+  // transportation
+  //
+  AddTransportation();
+  
+  // electromagnetic physics list
+  //
+  emPhysicsList->ConstructProcess();
+/*
   if(verbose > 0)
     G4cout << "Construct Processes" << G4endl;
 
@@ -143,7 +163,7 @@ void ActarSimPhysicsList::ConstructProcess() {
   emOptions.SetLambdaBinning(90);
   //emOptions.SetBuildPreciseRange(false);
   //  emOptions.SetApplyCuts(true);
-  //emOptions.SetVerbose(0);
+  //emOptions.SetVerbose(0);*/
 }
 
 void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
@@ -163,22 +183,6 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
     emBuilderIsRegisted = true;
     G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
 
-    /*  } else if (name == "g4v52" && !emBuilderIsRegisted) {
-    RegisterPhysics(new G4EmQEDBuilder52());
-    RegisterPhysics(steplimiter);
-    RegisterPhysics(new G4EmMuonBuilder52());
-    RegisterPhysics(new G4EmHadronBuilder52());
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-
-  } else if (name == "g4v71" && !emBuilderIsRegisted) {
-    RegisterPhysics(new G4EmQEDBuilder71());
-    RegisterPhysics(steplimiter);
-    RegisterPhysics(new G4EmMuonBuilder71());
-    RegisterPhysics(new G4EmHadronBuilder71());
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-    */
   } else if (name == "lowenergy" && !emBuilderIsRegisted) {
     RegisterPhysics(new G4LowEnergyQEDBuilder());
     RegisterPhysics(steplimiter);
@@ -198,6 +202,16 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
 
   }
 
+  else if ((name == "emstandard_opt0") && !emBuilderIsRegisted) {
+    
+    //fEmName = name;
+    delete emPhysicsList;
+    emPhysicsList = new G4EmStandardPhysics(1);
+    //RegisterPhysics(steplimiter);
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl; 
+  }
+
   else if (name == "emstandard_opt1") {
 
     // emName = name;
@@ -209,7 +223,7 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
   } 
   else if (name == "emstandard_opt2") {
 
-    // emName = name;
+    // emName = name; 
     delete emPhysicsList;
     emPhysicsList = new G4EmStandardPhysics_option2();
     emBuilderIsRegisted = true;
@@ -221,6 +235,15 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
     //emName = name;
     delete emPhysicsList;
     emPhysicsList = new G4EmStandardPhysics_option3();
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+   
+  }
+  else if (name == "emstandard_opt4") {
+
+    //emName = name;
+    delete emPhysicsList;
+    emPhysicsList = new G4EmStandardPhysics_option4();
     emBuilderIsRegisted = true;
     G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
    
@@ -311,7 +334,13 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
     gnucIsRegisted = true;
     G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
     
-  } else {
+  } else if (name == "ionGasModels") {
+    //AddPhysicsList("emstandard_opt0");
+      AddIonGasModels();   
+      G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
+  }
+
+  else {
     G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" 
            << " fail - module is already regitered or is unknown " << G4endl;
   }
@@ -372,3 +401,26 @@ void ActarSimPhysicsList::SetCutForPositron(G4double cut) {
   SetParticleCuts(cutForPositron, G4Positron::Positron());
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+void ActarSimPhysicsList::AddIonGasModels()
+{
+  G4EmConfigurator* em_config = G4LossTableManager::Instance()->EmConfigurator();
+  theParticleIterator->reset();
+  while ((*theParticleIterator)())
+  {
+    G4ParticleDefinition* particle = theParticleIterator->value();
+    G4String partname = particle->GetParticleName();
+    if(partname == "alpha" || partname == "He3" || partname == "GenericIon") {
+      G4BraggIonGasModel* mod1 = new G4BraggIonGasModel();
+      G4BetheBlochIonGasModel* mod2 = new G4BetheBlochIonGasModel();
+      G4double eth = 2.*MeV*particle->GetPDGMass()/proton_mass_c2;
+      em_config->SetExtraEmModel(partname,"ionIoni",mod1,"",0.0,eth,
+                                 new G4IonFluctuations());
+      em_config->SetExtraEmModel(partname,"ionIoni",mod2,"",eth,100*TeV,
+                                 new G4UniversalFluctuation());
+
+    }
+  }
+}

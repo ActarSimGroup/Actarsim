@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez Pol    hapol@fpddux.usc.es
 //*-- Date: 04/2006
-//*-- Last Update: 04/04/06 by Hector Alvarez
+//*-- Last Update: 30/09/14 by Piotr Konczykowski
 // --------------------------------------------------------------
 // Description:
 //   SD for the gas volume in the detector
@@ -65,7 +65,8 @@ G4bool ActarSimGasSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
   // Invoked by G4SteppingManager for each step
   //
 
-  G4double edep = aStep->GetTotalEnergyDeposit()/MeV;
+  //G4double edep = aStep->GetTotalEnergyDeposit()/MeV;
+  G4double edep = -aStep->GetDeltaEnergy()/MeV;
 
   if(edep==0.) return false;
 
@@ -84,6 +85,7 @@ G4bool ActarSimGasSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
   newHit->SetPreToF(aStep->GetPreStepPoint()->GetGlobalTime()/ns);
   newHit->SetPostToF(aStep->GetPostStepPoint()->GetGlobalTime()/ns);
   newHit->SetStepLength(aStep->GetStepLength()/mm);
+  newHit->SetStepEnergy(aStep->GetTrack()->GetKineticEnergy()/MeV);
 
   newHit->SetDetName(aStep->GetTrack()->GetVolume()->GetName());
   newHit->SetDetID(aStep->GetTrack()->GetVolume()->GetCopyNo());

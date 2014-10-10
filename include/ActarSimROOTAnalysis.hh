@@ -47,7 +47,6 @@ class ActarSimAnalysisMessenger;
 class ActarSimROOTAnalGas;
 class ActarSimROOTAnalSil;
 class ActarSimROOTAnalSci;
-class ActarSimROOTAnalParis;
 
 class ActarSimDetectorConstruction;
 class ActarSimPrimaryGeneratorAction;
@@ -76,7 +75,6 @@ private:
   ActarSimROOTAnalGas* gasAnal;     // detector specific
   ActarSimROOTAnalSci* sciAnal;
   ActarSimROOTAnalSil* silAnal;
-  ActarSimROOTAnalParis* parisAnal;
 
   ActarSimBeamInfo* pBeamInfo;
 
@@ -122,7 +120,6 @@ private:
   G4int gasAnalIncludedFlag; //flag to turn on(1)/off(0) the calorim. analysis
   G4int silAnalIncludedFlag; //flag to turn on(1)/off(0) the tracker analysis
   G4int sciAnalIncludedFlag; //flag to turn on(1)/off(0) the DCH analysis
-  G4int parisAnalIncludedFlag; //flag to turn on(1)/off(0) the DCH analysis
 
 public:
 
@@ -151,11 +148,9 @@ public:
   void SetGasAnalOn(){gasAnalIncludedFlag=1;}
   void SetSilAnalOn(){silAnalIncludedFlag=1;}
   void SetSciAnalOn(){sciAnalIncludedFlag=1;}
-  void SetParisAnalOn(){parisAnalIncludedFlag=1;}
   void SetGasAnalOff(){gasAnalIncludedFlag=0;}
   void SetSilAnalOff(){silAnalIncludedFlag=0;}
   void SetSciAnalOff(){sciAnalIncludedFlag=0;}
-  void SetParisAnalOff(){parisAnalIncludedFlag=0;}
 
   //Messenger actions
   void SetStoreTracksFlag(G4String val) {storeTracksFlag = val;};
@@ -168,7 +163,6 @@ public:
   G4int GetGasAnalStatus(){return gasAnalIncludedFlag;}
   G4int GetSilAnalStatus(){return silAnalIncludedFlag;}
   G4int GetSciAnalStatus(){return sciAnalIncludedFlag;}
-  G4int GetParisAnalStatus(){return sciAnalIncludedFlag;}
 
   void InitAnalysisForExistingDetectors();
 

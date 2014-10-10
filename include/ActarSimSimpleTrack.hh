@@ -37,6 +37,7 @@ private:
   Double_t particleMass;
   Int_t particleID;
   Double_t strideLength;  //stride length (sum over all steps length)
+  Double_t particleEnergy;  //particle energy before the step and thus before the stride
   Double_t timePre;       //time of preStepPoint for the first step in the stride
   Double_t timePost;      //time of postStepPoint for the last step in the stride
   Int_t numberSteps;      //number of steps in the stride
@@ -69,6 +70,7 @@ public:
   Double_t GetParticleMass(){return particleMass;}
   Int_t GetParticleID(){return particleID;}
   Double_t GetStrideLength(){return strideLength;}
+  Double_t GetParticleEnergy(){return particleEnergy;}
   Double_t GetTimePre(){return timePre;}
   Double_t GetTimePost(){return timePost;}
   Int_t GetNumberSteps(){return numberSteps;}
@@ -89,6 +91,7 @@ public:
   void SetParticleMass(Double_t pm){particleMass=pm;}
   void SetParticleID(Int_t pi){particleID=pi;}
   void SetStrideLength(Double_t len){strideLength = len;}
+  void SetParticleEnergy(Double_t penergy){particleEnergy = penergy;}
   void SetTimePre(Double_t te){timePre = te;}
   void SetTimePost(Double_t te){timePost = te;}
   void SetNumberSteps(Int_t num){numberSteps = num;}

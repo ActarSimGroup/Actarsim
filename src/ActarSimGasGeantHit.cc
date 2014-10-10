@@ -55,6 +55,7 @@ ActarSimGasGeantHit::ActarSimGasGeantHit(const ActarSimGasGeantHit& right) : G4V
   preToF = right.preToF;
   postToF = right.postToF;
   stepLength = right.stepLength;
+  stepEnergy = right.stepEnergy;
 }
 
 
@@ -75,6 +76,7 @@ const ActarSimGasGeantHit& ActarSimGasGeantHit::operator=(const ActarSimGasGeant
   preToF = right.preToF;
   postToF = right.postToF;
   stepLength = right.stepLength;
+  stepEnergy = right.stepEnergy;
 
   return *this;
 }
@@ -118,6 +120,7 @@ void ActarSimGasGeantHit::Print(){
 	 << ", detID: " << detID
 	 << ", detName: " << detName << G4endl;
   G4cout << "edep: " << edep  / MeV << " MeV"
+	 << ", stepEnergy: " << stepEnergy
 	 << ", prePos: " << prePos
 	 << ", postPos: " << postPos
 	 << ", stepLength: " << stepLength  / mm << " mm"

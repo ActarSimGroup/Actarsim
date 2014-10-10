@@ -73,7 +73,9 @@ private:
   TH2D *htrackInPads;
   TH2D *htrack1InPads;
   TH2D *htrack2InPads;
-  
+ 
+  TH1D *hEdepInGas;// Energy deposit in Gas over the distance
+ 
   ///// The accumulated energy loss and track length of each step, dypang 080225
   TProfile *hbeamEnergyAtRange;
   ///// end of dypang part 080225
@@ -157,7 +159,7 @@ public:
 
   // G4UserRunAction
   void BeginOfRunAction(const G4Run*);
-  //void EndOfRunAction(const G4Run*);
+  void EndOfRunAction(const G4Run*);
 
   // G4UserEventAction
   void BeginOfEventAction(const G4Event*);

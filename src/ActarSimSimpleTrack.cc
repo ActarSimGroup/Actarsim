@@ -64,6 +64,7 @@ void ActarSimSimpleTrack::Reset(void){
   particleMass=0.;
   particleID=0;
   strideLength = 0.;
+  particleEnergy = 0.;
   timePre = 0.;
   timePost = 0.;
   numberSteps = 0;
@@ -91,6 +92,7 @@ ActarSimSimpleTrack & ActarSimSimpleTrack::operator=(const ActarSimSimpleTrack &
   particleMass = right.particleMass;
   particleID = right.particleID;
   strideLength = right.strideLength;
+  particleEnergy = right.particleEnergy;
   timePre = right.timePre;
   timePost = right.timePost;
   numberSteps = right.numberSteps;

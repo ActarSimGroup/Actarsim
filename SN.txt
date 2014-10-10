@@ -1,0 +1,506 @@
+piotr-hp-envy-17-notebook-pc
+    description: Notebook
+    product: HP ENVY 17 Notebook PC (G6Q15EA#ABE)
+    vendor: Hewlett-Packard
+    version: 097E110000405E00000620100
+    serial: 5CG4090B8T
+    width: 32 bits
+    capabilities: smbios-2.7 dmi-2.7 smp-1.4 smp
+    configuration: administrator_password=disabled boot=normal chassis=notebook cpus=1 family=103C_5335KV G=N L=CON B=HP S=ENV frontpanel_password=disabled keyboard_password=disabled power-on_password=disabled sku=G6Q15EA#ABE uuid=09E428B1-526E-9EC7-F52F-7A5E7143035A
+  *-core
+       description: Motherboard
+       product: 1966
+       vendor: Hewlett-Packard
+       physical id: 0
+       version: KBC Version 93.49
+       serial: PDWPK00WD6DKQR
+       slot: Type2 - Board Chassis Location
+     *-firmware
+          description: BIOS
+          vendor: Insyde
+          physical id: 0
+          version: F.43
+          date: 12/23/2013
+          size: 128KiB
+          capacity: 5056KiB
+          capabilities: pci upgrade shadowing cdboot bootselect edd int13floppynec int13floppytoshiba int13floppy360 int13floppy1200 int13floppy720 int13floppy2880 int9keyboard int10video acpi usb biosbootspecification uefi
+     *-cpu
+          description: CPU
+          product: Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz
+          vendor: Intel Corp.
+          physical id: 4
+          bus info: cpu@0
+          version: 6.12.3
+          serial: 0003-06C3-0000-0000-0000-0000
+          slot: U3E1
+          size: 800MHz
+          capacity: 800MHz
+          width: 64 bits
+          clock: 100MHz
+          capabilities: x86-64 boot fpu fpu_exception wp vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx pdpe1gb rdtscp constant_tsc arch_perfmon pebs bts xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4_1 sse4_2 movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cpufreq
+          configuration: cores=4 enabledcores=4 id=3 threads=8
+        *-cache:0
+             description: L1 cache
+             physical id: 6
+             slot: L1 Cache
+             size: 32KiB
+             capacity: 32KiB
+             capabilities: synchronous internal write-back instruction
+        *-cache:1
+             description: L2 cache
+             physical id: 7
+             slot: L2 Cache
+             size: 256KiB
+             capacity: 256KiB
+             capabilities: synchronous internal write-back unified
+        *-cache:2
+             description: L3 cache
+             physical id: 8
+             slot: L3 Cache
+             size: 6MiB
+             capacity: 6MiB
+             capabilities: synchronous internal write-back unified
+        *-logicalcpu:0
+             description: Logical CPU
+             physical id: 3.1
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:1
+             description: Logical CPU
+             physical id: 3.2
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:2
+             description: Logical CPU
+             physical id: 3.3
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:3
+             description: Logical CPU
+             physical id: 3.4
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:4
+             description: Logical CPU
+             physical id: 3.5
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:5
+             description: Logical CPU
+             physical id: 3.6
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:6
+             description: Logical CPU
+             physical id: 3.7
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:7
+             description: Logical CPU
+             physical id: 3.8
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:8
+             description: Logical CPU
+             physical id: 3.9
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:9
+             description: Logical CPU
+             physical id: 3.a
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:10
+             description: Logical CPU
+             physical id: 3.b
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:11
+             description: Logical CPU
+             physical id: 3.c
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:12
+             description: Logical CPU
+             physical id: 3.d
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:13
+             description: Logical CPU
+             physical id: 3.e
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:14
+             description: Logical CPU
+             physical id: 3.f
+             width: 64 bits
+             capabilities: logical
+        *-logicalcpu:15
+             description: Logical CPU
+             physical id: 3.10
+             width: 64 bits
+             capabilities: logical
+     *-cache
+          description: L1 cache
+          physical id: 5
+          slot: L1 Cache
+          size: 32KiB
+          capacity: 32KiB
+          capabilities: synchronous internal write-back data
+     *-memory
+          description: System Memory
+          physical id: 25
+          slot: System board or motherboard
+          size: 16GiB
+        *-bank:0
+             description: SODIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+             product: M471B1G73DB0-YK0
+             vendor: Samsung
+             physical id: 0
+             serial: 378A411C
+             slot: Bottom-Slot 1(top)
+             size: 8GiB
+             width: 64 bits
+             clock: 1600MHz (0.6ns)
+        *-bank:1
+             description: SODIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+             product: M471B1G73DB0-YK0
+             vendor: Samsung
+             physical id: 1
+             serial: 378A40F7
+             slot: Bottom-Slot 2(under)
+             size: 8GiB
+             width: 64 bits
+             clock: 1600MHz (0.6ns)
+     *-pci
+          description: Host bridge
+          product: Xeon E3-1200 v3/4th Gen Core Processor DRAM Controller
+          vendor: Intel Corporation
+          physical id: 100
+          bus info: pci@0000:00:00.0
+          version: 06
+          width: 32 bits
+          clock: 33MHz
+        *-pci:0
+             description: PCI bridge
+             product: Xeon E3-1200 v3/4th Gen Core Processor PCI Express x16 Controller
+             vendor: Intel Corporation
+             physical id: 1
+             bus info: pci@0000:00:01.0
+             version: 06
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pci pm msi pciexpress normal_decode bus_master cap_list
+             configuration: driver=pcieport
+             resources: irq:40 ioport:5000(size=4096) memory:d2000000-d2ffffff ioport:a0000000(size=536870912)
+           *-display
+                description: 3D controller
+                product: GK208M [GeForce GT 740M]
+                vendor: NVIDIA Corporation
+                physical id: 0
+                bus info: pci@0000:01:00.0
+                version: a1
+                width: 64 bits
+                clock: 33MHz
+                capabilities: pm msi pciexpress bus_master cap_list rom
+                configuration: driver=nouveau latency=0
+                resources: irq:49 memory:d2000000-d2ffffff memory:a0000000-afffffff memory:b0000000-b1ffffff ioport:5000(size=128) memory:b2000000-b207ffff
+        *-display
+             description: VGA compatible controller
+             product: 4th Gen Core Processor Integrated Graphics Controller
+             vendor: Intel Corporation
+             physical id: 2
+             bus info: pci@0000:00:02.0
+             version: 06
+             width: 64 bits
+             clock: 33MHz
+             capabilities: msi pm vga_controller bus_master cap_list rom
+             configuration: driver=i915 latency=0
+             resources: irq:46 memory:d3000000-d33fffff memory:c0000000-cfffffff ioport:6000(size=64)
+        *-multimedia:0
+             description: Audio device
+             product: Xeon E3-1200 v3/4th Gen Core Processor HD Audio Controller
+             vendor: Intel Corporation
+             physical id: 3
+             bus info: pci@0000:00:03.0
+             version: 06
+             width: 64 bits
+             clock: 33MHz
+             capabilities: pm msi pciexpress bus_master cap_list
+             configuration: driver=snd_hda_intel latency=0
+             resources: irq:41 memory:d3710000-d3713fff
+        *-usb:0
+             description: USB controller
+             product: 8 Series/C220 Series Chipset Family USB xHCI
+             vendor: Intel Corporation
+             physical id: 14
+             bus info: pci@0000:00:14.0
+             version: 05
+             width: 64 bits
+             clock: 33MHz
+             capabilities: pm msi xhci bus_master cap_list
+             configuration: driver=xhci_hcd latency=0
+             resources: irq:45 memory:d3700000-d370ffff
+        *-communication
+             description: Communication controller
+             product: 8 Series/C220 Series Chipset Family MEI Controller #1
+             vendor: Intel Corporation
+             physical id: 16
+             bus info: pci@0000:00:16.0
+             version: 04
+             width: 64 bits
+             clock: 33MHz
+             capabilities: pm msi bus_master cap_list
+             configuration: driver=mei_me latency=0
+             resources: irq:47 memory:d3718000-d371800f
+        *-usb:1
+             description: USB controller
+             product: 8 Series/C220 Series Chipset Family USB EHCI #2
+             vendor: Intel Corporation
+             physical id: 1a
+             bus info: pci@0000:00:1a.0
+             version: 05
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pm debug ehci bus_master cap_list
+             configuration: driver=ehci-pci latency=0
+             resources: irq:16 memory:d371d000-d371d3ff
+        *-multimedia:1
+             description: Audio device
+             product: 8 Series/C220 Series Chipset High Definition Audio Controller
+             vendor: Intel Corporation
+             physical id: 1b
+             bus info: pci@0000:00:1b.0
+             version: 05
+             width: 64 bits
+             clock: 33MHz
+             capabilities: pm msi pciexpress bus_master cap_list
+             configuration: driver=snd_hda_intel latency=0
+             resources: irq:48 memory:d3714000-d3717fff
+        *-pci:1
+             description: PCI bridge
+             product: 8 Series/C220 Series Chipset Family PCI Express Root Port #3
+             vendor: Intel Corporation
+             physical id: 1c
+             bus info: pci@0000:00:1c.0
+             version: d5
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pci pciexpress msi pm normal_decode bus_master cap_list
+             configuration: driver=pcieport
+             resources: irq:18 memory:d3600000-d36fffff
+           *-network DISABLED
+                description: Wireless interface
+                product: RT3290 Wireless 802.11n 1T/1R PCIe
+                vendor: Ralink corp.
+                physical id: 0
+                bus info: pci@0000:07:00.0
+                logical name: wlan0
+                version: 00
+                serial: 54:35:30:a8:47:67
+                width: 32 bits
+                clock: 33MHz
+                capabilities: pm msi pciexpress bus_master cap_list ethernet physical wireless
+                configuration: broadcast=yes driver=rt2800pci driverversion=3.13.0-35-generic firmware=0.37 latency=0 link=no multicast=yes wireless=IEEE 802.11bgn
+                resources: irq:18 memory:d3610000-d361ffff
+           *-generic UNCLAIMED
+                description: Bluetooth
+                product: RT3290 Bluetooth
+                vendor: Ralink corp.
+                physical id: 0.1
+                bus info: pci@0000:07:00.1
+                version: 00
+                width: 32 bits
+                clock: 33MHz
+                capabilities: pm msi pciexpress bus_master cap_list
+                configuration: latency=0
+                resources: memory:d3600000-d360ffff
+        *-pci:2
+             description: PCI bridge
+             product: 8 Series/C220 Series Chipset Family PCI Express Root Port #1
+             vendor: Intel Corporation
+             physical id: 1c.2
+             bus info: pci@0000:00:1c.2
+             version: d5
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pci pciexpress msi pm normal_decode bus_master cap_list
+             configuration: driver=pcieport
+             resources: irq:16
+        *-pci:3
+             description: PCI bridge
+             product: 8 Series/C220 Series Chipset Family PCI Express Root Port #4
+             vendor: Intel Corporation
+             physical id: 1c.3
+             bus info: pci@0000:00:1c.3
+             version: d5
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pci pciexpress msi pm normal_decode bus_master cap_list
+             configuration: driver=pcieport
+             resources: irq:19 ioport:4000(size=4096) memory:d1000000-d1ffffff ioport:d0000000(size=16777216)
+           *-generic
+                description: Unassigned class
+                product: RTS5227 PCI Express Card Reader
+                vendor: Realtek Semiconductor Co., Ltd.
+                physical id: 0
+                bus info: pci@0000:09:00.0
+                version: 01
+                width: 32 bits
+                clock: 33MHz
+                capabilities: pm msi pciexpress bus_master cap_list
+                configuration: driver=rtsx_pci latency=0
+                resources: irq:42 memory:d1000000-d1000fff
+        *-pci:4
+             description: PCI bridge
+             product: 8 Series/C220 Series Chipset Family PCI Express Root Port #7
+             vendor: Intel Corporation
+             physical id: 1c.6
+             bus info: pci@0000:00:1c.6
+             version: d5
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pci pciexpress msi pm normal_decode bus_master cap_list
+             configuration: driver=pcieport
+             resources: irq:18 ioport:3000(size=4096) memory:d3500000-d35fffff ioport:d3400000(size=1048576)
+           *-network
+                description: Ethernet interface
+                product: RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
+                vendor: Realtek Semiconductor Co., Ltd.
+                physical id: 0
+                bus info: pci@0000:0f:00.0
+                logical name: eth0
+                version: 0c
+                serial: a0:1d:48:fc:b1:12
+                size: 1Gbit/s
+                capacity: 1Gbit/s
+                width: 64 bits
+                clock: 33MHz
+                capabilities: pm msi pciexpress msix vpd bus_master cap_list ethernet physical tp mii 10bt 10bt-fd 100bt 100bt-fd 1000bt 1000bt-fd autonegotiation
+                configuration: autonegotiation=on broadcast=yes driver=r8169 driverversion=2.3LK-NAPI duplex=full firmware=rtl8168g-2_0.0.1 02/06/13 ip=172.16.59.103 latency=0 link=yes multicast=yes port=MII speed=1Gbit/s
+                resources: irq:44 ioport:3000(size=256) memory:d3500000-d3500fff memory:d3400000-d3403fff
+        *-usb:2
+             description: USB controller
+             product: 8 Series/C220 Series Chipset Family USB EHCI #1
+             vendor: Intel Corporation
+             physical id: 1d
+             bus info: pci@0000:00:1d.0
+             version: 05
+             width: 32 bits
+             clock: 33MHz
+             capabilities: pm debug ehci bus_master cap_list
+             configuration: driver=ehci-pci latency=0
+             resources: irq:17 memory:d371c000-d371c3ff
+        *-isa
+             description: ISA bridge
+             product: HM87 Express LPC Controller
+             vendor: Intel Corporation
+             physical id: 1f
+             bus info: pci@0000:00:1f.0
+             version: 05
+             width: 32 bits
+             clock: 33MHz
+             capabilities: isa bus_master cap_list
+             configuration: driver=lpc_ich latency=0
+             resources: irq:0
+        *-storage
+             description: SATA controller
+             product: 8 Series/C220 Series Chipset Family 6-port SATA Controller 1 [AHCI mode]
+             vendor: Intel Corporation
+             physical id: 1f.2
+             bus info: pci@0000:00:1f.2
+             version: 05
+             width: 32 bits
+             clock: 66MHz
+             capabilities: storage msi pm ahci_1.0 bus_master cap_list
+             configuration: driver=ahci latency=0
+             resources: irq:43 ioport:6088(size=8) ioport:6094(size=4) ioport:6080(size=8) ioport:6090(size=4) ioport:6060(size=32) memory:d371b000-d371b7ff
+        *-serial UNCLAIMED
+             description: SMBus
+             product: 8 Series/C220 Series Chipset Family SMBus Controller
+             vendor: Intel Corporation
+             physical id: 1f.3
+             bus info: pci@0000:00:1f.3
+             version: 05
+             width: 64 bits
+             clock: 33MHz
+             configuration: latency=0
+             resources: memory:d3719000-d37190ff ioport:6040(size=32)
+     *-scsi:0
+          physical id: 1
+          logical name: scsi0
+          capabilities: emulated
+        *-disk
+             description: ATA Disk
+             product: TOSHIBA MQ01ABD1
+             vendor: Toshiba
+             physical id: 0.0.0
+             bus info: scsi@0:0.0.0
+             logical name: /dev/sda
+             version: AX00
+             serial: 14MGS5R7S
+             size: 931GiB (1TB)
+             capabilities: partitioned partitioned:dos
+             configuration: ansiversion=5 sectorsize=4096 signature=000ef7f2
+           *-volume:0
+                description: Linux filesystem partition
+                vendor: Linux
+                physical id: 1
+                bus info: scsi@0:0.0.0,1
+                logical name: /dev/sda1
+                logical name: /boot
+                version: 1.0
+                serial: 9d8092cd-5726-4008-aa33-4f85e9ff07a3
+                size: 243MiB
+                capacity: 243MiB
+                capabilities: primary bootable extended_attributes ext2 initialized
+                configuration: filesystem=ext2 lastmountpoint=/boot modified=2014-10-01 12:45:26 mount.fstype=ext2 mount.options=rw,relatime,stripe=4 mounted=2014-10-01 12:45:26 state=mounted
+           *-volume:1
+                description: Extended partition
+                physical id: 2
+                bus info: scsi@0:0.0.0,2
+                logical name: /dev/sda2
+                size: 931GiB
+                capacity: 931GiB
+                capabilities: primary extended partitioned partitioned:extended
+              *-logicalvolume
+                   description: Linux LVM Physical Volume partition
+                   physical id: 5
+                   logical name: /dev/sda5
+                   serial: it2G02-fC5X-hBK3-AyGW-dsJW-FiWz-eizfn2
+                   size: 931GiB
+                   capacity: 931GiB
+                   capabilities: multi lvm2
+     *-scsi:1
+          physical id: 2
+          logical name: scsi2
+          capabilities: emulated
+        *-cdrom
+             description: DVD-RAM writer
+             product: DVD-RAM UJ8DB
+             vendor: hp
+             physical id: 0.0.0
+             bus info: scsi@2:0.0.0
+             logical name: /dev/cdrom
+             logical name: /dev/sr0
+             version: H.02
+             capabilities: removable audio cd-r cd-rw dvd dvd-r dvd-ram
+             configuration: ansiversion=5 status=nodisc
+  *-battery
+       description: Lithium Ion Battery
+       product: PI06062
+       vendor: 13-54
+       physical id: 1
+       version: 01/01/2013
+       serial: SERIAL
+       slot: Primary
+       capacity: 61993mWh
+       configuration: voltage=11,1V
+  *-power UNCLAIMED
+       description: OEM_Define1
+       product: OEM_Define5
+       vendor: OEM_Define2
+       physical id: 2
+       version: OEM_Define6
+       serial: OEM_Define3
+       capacity: 75mWh

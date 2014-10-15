@@ -1257,17 +1257,17 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     X0=radius*X0;
     Y0=radius*Y0;
     //G4cout<<X0<<" "<<Y0<<endl;
-    particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,0.));
-    //particleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
+    //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,0.));
+    particleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
     if(cosTheta>0)
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(y_coord,sinTheta*sin(phi),cosTheta));
       particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sinTheta*sin(phi),cosTheta));
     //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),y_coord,cosTheta));
     else
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-y_coord,sinTheta*sin(phi),-cosTheta));
-      particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),sinTheta*sin(phi),-cosTheta));
+      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),sinTheta*sin(phi),-cosTheta));
     //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),y_coord,-cosTheta));
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+    particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
     particleGun->GeneratePrimaryVertex(anEvent);
   
   }

@@ -299,7 +299,7 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
     else {
       hEdepInGas = new TH1D("hEdepInGas",
 			"Edep along Gas chamber ",
-			1000, 0, 300);
+			300, 0, 300);
       hEdepInGas->SetXTitle("Z [mm]");
     }
 

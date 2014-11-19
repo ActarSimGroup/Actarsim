@@ -117,6 +117,9 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   G4double defectHalfLength = 0.5*mm;
   G4double separationFromBox = 25*mm;
 
+  //Position of the GasBox inside the Chamber
+  G4double zGasBoxPosition=detConstruction->GetZGasBoxPosition();
+
   // Printing the final settings...
   G4cout << "##################################################################"
 	 << G4endl
@@ -187,6 +190,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
 //   G4int	checker = sideCoverage;
   if(sideCoverage & 0x0001){ // bit1 (lsb) beam output wall
     //iteration on Scintillator elements
+    /*
     for(G4int rowX=0;rowX<numberOfRowsX;rowX++){  //maybe is rowX=1 the first??
       for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
         iterationNumber++;
@@ -195,6 +199,17 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
 	 				    -yBoxSciHalfLength + ((rowY+1)*2-1)*(sciBulk_x+defectHalfLength),
 					    2*zBoxSciHalfLength + separationFromBox + sciBulk_z),
 			                    sciLog, "sciPhys", worldLog, false, iterationNumber);
+      }
+    }
+    */
+    for(G4int rowX=0;rowX<4;rowX++){  //maybe is rowX=1 the first??
+      for(G4int rowY=0;rowY<4;rowY++){
+        iterationNumber++;
+        sciPhys =
+          new G4PVPlacement(0,G4ThreeVector( (rowX-1.5)*2*(sciBulk_x+defectHalfLength),
+					     (rowY-1.5)*2*(sciBulk_x+defectHalfLength),
+					     2*zBoxSciHalfLength + separationFromBox + sciBulk_z - zGasBoxPosition),
+			    sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
   }
@@ -208,7 +223,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
           sciPhys =
             new G4PVPlacement(rotBottom,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
 	 				         -(yBoxSciHalfLength + separationFromBox + sciBulk_z),
-					         ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength)),
+					         ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
 					         sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
@@ -220,7 +235,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
           sciPhys =
             new G4PVPlacement(rotTop,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
 	 				         yBoxSciHalfLength + separationFromBox + sciBulk_z,
-					         ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength)),
+					         ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
 					         sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
@@ -228,6 +243,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
 
   //PLANES ZY
   if((sideCoverage >> 3) & 0x0001){ // bit4 left (from beam point of view) wall
+    /*
     for(G4int rowZ=0;rowZ<numberOfRowsZ;rowZ++){
       for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
         iterationNumber++;
@@ -238,9 +254,22 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
                                                sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
+    */
+    for(G4int rowZ=0;rowZ<6;rowZ++){
+      for(G4int rowY=0;rowY<4;rowY++){
+        iterationNumber++;
+        sciPhys =
+          new G4PVPlacement(rotLeft,G4ThreeVector(xBoxSciHalfLength + separationFromBox + sciBulk_z,
+						  (rowY-1.5)*2*(sciBulk_x+defectHalfLength),
+						  zBoxSciHalfLength+(rowZ-2.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
+                                               sciLog, "sciPhys", worldLog, false, iterationNumber);
+      }
+    }
+
   }
 
   if((sideCoverage >> 4) & 0x0001){ // bit5 right (from beam point of view) wall
+    /*
     for(G4int rowZ=0;rowZ<numberOfRowsZ;rowZ++){
       for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
         iterationNumber++;
@@ -251,6 +280,21 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
                                                sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
+    */
+
+    for(G4int rowZ=0;rowZ<2;rowZ++){
+      for(G4int rowY=0;rowY<2;rowY++){
+	iterationNumber++;
+	sciPhys =
+	  new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSciHalfLength + separationFromBox + sciBulk_z),
+						   (rowY-0.5)*2*(sciBulk_y+defectHalfLength),
+						   zBoxSciHalfLength+(rowZ-0.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition), 
+						   sciLog, "sciPhys", worldLog, false, iterationNumber);
+
+      }
+    }
+
+
   }
 
   if((sideCoverage >> 5) & 0x0001){ // bit6 (msb) beam entrance wall
@@ -260,7 +304,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
         sciPhys =
           new G4PVPlacement(rotBack,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
 	 				          -yBoxSciHalfLength + ((rowY+1)*2-1)*(sciBulk_x+defectHalfLength),
-					          -separationFromBox - sciBulk_z),
+					          -separationFromBox - sciBulk_z - zGasBoxPosition),
 			                          sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }

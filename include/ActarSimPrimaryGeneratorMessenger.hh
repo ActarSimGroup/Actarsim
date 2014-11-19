@@ -58,6 +58,7 @@ private:
   G4UIcmdWithADoubleAndUnit*   energyCmd;
   G4UIcmdWith3Vector*          directionCmd;
   G4UIcmdWith3VectorAndUnit*   positionCmd;
+  // G4UIcmdWithADoubleAndUnit*   EntranceZPositionCmd;
   G4UIcmdWithADoubleAndUnit*   timeCmd;
   G4UIcmdWithAString*          randomVertexZPositionCmd;
   G4UIcommand*                 randomVertexZPositionRangeCmd;

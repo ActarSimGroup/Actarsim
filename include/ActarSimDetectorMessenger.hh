@@ -38,11 +38,11 @@ private:
   G4UIdirectory*             detDir;
   //G4UIcmdWith3VectorAndUnit* worldSizeCmd;
 
+  G4UIcmdWithAString* MaikoGeoIncludedFlagCmd;
   G4UIcmdWithAString* gasGeoIncludedFlagCmd;
+  // G4UIcmdWithADoubleAndUnit* zGasBoxPositionCmd;
   G4UIcmdWithAString* silGeoIncludedFlagCmd;
   G4UIcmdWithAString* sciGeoIncludedFlagCmd;
-  G4UIcmdWithAString* plateIncludedFlagCmd;
-  G4UIcmdWithAString* plateOrientationCmd;
  
   G4UIcmdWithAString*        mediumMaterCmd;   
 
@@ -50,9 +50,6 @@ private:
   G4UIcmdWith3VectorAndUnit* magFieldCmd;
   G4UIcmdWithoutParameter*   updateCmd;
   G4UIcmdWithoutParameter*   printCmd;
-  //D. Perez-Loureiro 16Feb12
-  G4UIcmdWith3VectorAndUnit* slitPositionCmd;
-  G4UIcmdWith3VectorAndUnit* platePositionCmd;
   
 public:
   ActarSimDetectorMessenger(ActarSimDetectorConstruction* );

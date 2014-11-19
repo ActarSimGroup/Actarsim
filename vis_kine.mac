@@ -1,7 +1,7 @@
 ################################################################
 #*-- AUTHOR : Hector Alvarez-Pol
 #*-- Date: 05/2005
-#*-- Last Update: 30/09/14
+#*-- Last Update: 15/05/08
 #*-- Copyright: GENP (Univ. Santiago de Compostela)
 # --------------------------------------------------------------
 # Comments:
@@ -14,7 +14,7 @@
 # Macro file for testing online jobs
 ################################################################
 # verbosity levels and saveHistory
-/control/verbose 0
+/control/verbose 1
 /control/saveHistory
 /run/verbose 0
 /event/verbose 0
@@ -27,7 +27,7 @@
 #   ion low-energy: ion-LowE, ion-LowE-ziegler1977, ion-LowE-ziegler1985,
 #   ion-LowE-ziegler2000, ion-standard
 #
-/ActarSim/phys/addPhysics standard
+#/ActarSim/phys/addPhysics standard
 #/ActarSim/phys/addPhysics decay
 #/ActarSim/phys/addPhysics elastic
 #/ActarSim/phys/addPhysics binary
@@ -45,12 +45,16 @@
 #/ActarSim/phys/addPhysics emstandard_opt4
 /ActarSim/phys/addPhysics ionGasModels
 #
+#/process/eLoss/minKinEnergy 100 MeV
+#/cuts/setLowEdge 8 keV
+#
+#
 # Cuts for the particles  (incomplete list, see README)
 #
 #  /ActarSim/phys/setGCut 0.1
 #  /ActarSim/phys/setECut 0.1
 #  /ActarSim/phys/setPCut 0.1
-#  /ActarSim/phys/setCuts 0.1 mm
+#  /ActarSim/phys/setCuts 1 mm
 /ActarSim/phys/verbose 0
 #
 # Initialization is moved here from the main allowing PhysicsList
@@ -62,43 +66,33 @@
 # GENERAL COMMANDS
 #
 # Control of the materials
-/ActarSim/det/setMediumMat Galactic
+#/ActarSim/det/setMediumMat D2_STP
+#/ActarSim/det/setMediumMat Galactic
 #/ActarSim/det/setMediumMat Water
 #Electric and Magnetic fields
-#/ActarSim/det/setEleField 0 0 0
+#/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
+#
+#
+# gas material: isoC4H10STP, D2_STP, H2_STP
+#
+/ActarSim/det/gas/setGasMat D2_STP
+#
+/ActarSim/det/MaikoGeoIncludedFlag off
 #
 # GAS DETECTOR
 #
 /ActarSim/det/gasGeoIncludedFlag on
 # if box
 /ActarSim/det/gas/setDetectorGeometry box
-/ActarSim/det/gas/luciteBoxIncluded on
-/ActarSim/det/gas/setXLengthGasBox 150. mm
-/ActarSim/det/gas/setYLengthGasBox 150. mm
-/ActarSim/det/gas/setZLengthGasBox 150. mm
+/ActarSim/det/gas/luciteBoxIncluded off
 #
-# if tube
-#  /ActarSim/det/gas/setDetectorGeometry tube
-#  /ActarSim/det/gas/setRadiusGasTub 1.0 cm
-#  /ActarSim/det/gas/setLengthGasTub 1.0 cm
+/ActarSim/det/gas/setXLengthGasBox 37. mm
+/ActarSim/det/gas/setYLengthGasBox 80.9 mm
+/ActarSim/det/gas/setZLengthGasBox 69. mm
 #
 # Beam shield? tube or off
 /ActarSim/det/gas/setBeamShield off
-#  /ActarSim/det/gas/setBeamShield on
-#  /ActarSim/det/gas/setBeamShieldMat Ion
-#  /ActarSim/det/gas/setInnerRadiusBeamShieldTub 1.0 mm
-#  /ActarSim/det/gas/setRadiusBeamShieldTub 1.001 mm
-#  /ActarSim/det/gas/setLengthBeamShieldTub 1.0 m
-#
-# gas material: isoC4H10STP,  isoC4H10_150, isoC4H10_220,
-#               isoC4H10_300, isoC4H10_500, isoC4H10_710,
-#               isoC4H10_1300,isoC4H10_1880
-#               D2_40, D2_60, D2_80, D2_100, to D2_400 with steps of 20 mbar
-#               D2_STP, D2_1695, D2_1800, D2_1950
-#               He_1900, He_2010
-#
-/ActarSim/det/gas/setGasMat D2_STP
 #
 # SILICON DETECTOR
 #
@@ -113,27 +107,33 @@
 # bit5 right (from beam point of view) wall   16
 # bit6 (msb) beam entrance wall               32
 # examples: 63 full coverage; 3 only output and bottom walls ...
-/ActarSim/det/sil/sideCoverage 1
-/ActarSim/det/sil/xBoxHalfLength 150. mm
-/ActarSim/det/sil/yBoxHalfLength 150. mm
-/ActarSim/det/sil/zBoxHalfLength 150. mm
+/ActarSim/det/sil/sideCoverage 25
+/ActarSim/det/sil/xBoxHalfLength 95. mm
+/ActarSim/det/sil/yBoxHalfLength 105. mm
+/ActarSim/det/sil/zBoxHalfLength 120. mm
+#
 /ActarSim/det/sil/print
 #
 # SCINTILLATOR DETECTOR
 #
-/ActarSim/det/sciGeoIncludedFlag on
+/ActarSim/det/sciGeoIncludedFlag off
 # see above explanation in the equivalent command for the Silicons
-/ActarSim/det/sci/sideCoverage 1
-/ActarSim/det/sci/xBoxHalfLength 150. mm
-/ActarSim/det/sci/yBoxHalfLength 150. mm
-/ActarSim/det/sci/zBoxHalfLength 150. mm
+/ActarSim/det/sci/sideCoverage 25
+#/ActarSim/det/sci/xBoxHalfLength 150. mm
+#/ActarSim/det/sci/yBoxHalfLength 150. mm
+#/ActarSim/det/sci/zBoxHalfLength 150. mm
+#
+/ActarSim/det/sci/xBoxHalfLength 77. mm
+/ActarSim/det/sci/yBoxHalfLength 105. mm
+/ActarSim/det/sci/zBoxHalfLength 115. mm
+#
 /ActarSim/det/sci/print
 #
 #Control of the output on the ROOT file
 #all the tracks are stored (note: huge space comsumption)
 #Note: it should come before the update!!!
 /ActarSim/analControl/storeTracks off
-#/ActarSim/analControl/storeTrackHistos off
+/ActarSim/analControl/storeTrackHistos off
 /ActarSim/analControl/storeEvents off
 /ActarSim/analControl/storeHistograms off
 /ActarSim/analControl/storeSimpleTracks off
@@ -143,13 +143,13 @@
 # Update is mandatory after any material,field or detector change
 #
 /ActarSim/det/update
-/ActarSim/det/print
+#/ActarSim/det/print
 #
 # Control of the primary events
 #For all cases the possibility to have realistic beam distribution
 /ActarSim/gun/beamInteraction on
 /ActarSim/gun/realisticBeam off
-#/ActarSim/gun/beamRadiusAtEntrance 2.5 mm
+#/ActarSim/gun/beamRadiusAtEntrance 1.5 mm
 #/ActarSim/gun/emittance 200.0
 #
 # Realistic Event-Generator on
@@ -162,19 +162,33 @@
 # A) Track a particle or set of particles defined from the Particles list
 #
 #/ActarSim/gun/List
-#/ActarSim/gun/particle alpha
+#/ActarSim/gun/particle proton
 #if you want to use an ion, write "ion" in the previous command
 #and set the Z, A and charge state in the next...
+
+#/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
+#/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
+#/ActarSim/gun/ion 6 12 6 0.0 12.
+#/ActarSim/gun/ion 12 24 12 0.0 23.985041699
+#/ActarSim/gun/ion 26 56 26 0.0 55.934937475
+
+#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/ion 3 11 3
-#/ActarSim/gun/energy 5. MeV
+
+#/ActarSim/gun/Kine/labEnergy 4 MeV
+#/ActarSim/gun/Kine/labEnergy 80 MeV
+#/ActarSim/gun/Kine/labEnergy 96 MeV
+#/ActarSim/gun/Kine/labEnergy 224 MeV
+#/ActarSim/gun/Kine/labEnergy 280 MeV
+#/ActarSim/gun/energy 11. MeV
+#/ActarSim/gun/position 0 0 -56 mm
 #/ActarSim/gun/direction 0 0 1
 #/ActarSim/gun/time 0
 #/ActarSim/gun/polarization 0
 #/ActarSim/gun/number 1
 /ActarSim/gun/randomVertexZPosition off
-#/ActarSim/gun/randomVertexZRange 0 70 mm
-/ActarSim/gun/vertexZPosition 150 mm
-#
+#/ActarSim/gun/randomVertexZRange 50 200 mm
+/ActarSim/gun/vertexZPosition 69 mm
 #
 # B) Track a predefined reaction from a file:
 #
@@ -192,49 +206,43 @@
 #C) Track a reacion calculated from CINE (program from W. Mittig)
 #
 /ActarSim/gun/reactionFromCine off
-#/ActarSim/gun/Cine/incidentIon 3 8 3 0.0
-#/ActarSim/gun/Cine/targetIon 2 4 2 0.0
-#/ActarSim/gun/Cine/scatteredIon 3 8 3 1.0
-#/ActarSim/gun/Cine/recoilIon 2 4 2 0.0
-#/ActarSim/gun/Cine/reactionQ 1. MeV
-#/ActarSim/gun/Cine/labEnergy 70 MeV
-#/ActarSim/gun/Cine/randomTheta on
-#/ActarSim/gun/Cine/thetaLabAngle 0.1
-#
+#/ActarSim/gun/Cine/incidentIon 28 78 28 0.0
+#/ActarSim/gun/Cine/targetIon 1 2 1 0.0
+#/ActarSim/gun/Cine/scatteredIon 28 79 28 0.
+#/ActarSim/gun/Cine/recoilIon 1 1 1 0.0 
+#/ActarSim/gun/Cine/reactionQ -1.5 MeV
+#/ActarSim/gun/Cine/labEnergy 624 MeV
+#/ActarSim/gun/Cine/randomTheta off
+#/ActarSim/gun/Cine/thetaLabAngle 0.5
+
 #D) Track a reacion calculated from KINE
 #
 /ActarSim/gun/reactionFromKine on
-
-#/ActarSim/gun/Kine/incidentIon 3 11 3 0.0 11.0437978
-#/ActarSim/gun/Kine/incidentIon 10 26 10 0.0 26.000461
+#
+#/ActarSim/gun/Kine/incidentIon 1 2 1 0.0 2.0141
+#/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.001506179125
+#/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.00260325
 /ActarSim/gun/Kine/incidentIon 6 13 6 0.0 13.00335483778
-#/ActarSim/gun/Kine/incidentIon 28 78 28 0.0 77.96318
 #/ActarSim/gun/Kine/incidentIon 50 132 50 0.0 131.9178
 
-/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.007825
+/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
 #/ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
 
-
-#/ActarSim/gun/Kine/scatteredIon 3 9 3 0.0 9.026790
-#/ActarSim/gun/Kine/scatteredIon 3 10 3 0.0 10.035481
-#/ActarSim/gun/Kine/scatteredIon 3 11 3 0.0 11.0437978
-/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778
-#/ActarSim/gun/Kine/scatteredIon 10 24 10 0.0 23.99361
-#/ActarSim/gun/Kine/scatteredIon 28 76 28 0.0 75.95330
-#/ActarSim/gun/Kine/scatteredIon 28 79 28 0.0 78.97107
+#/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
+#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
+#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
+/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
-#/ActarSim/gun/Kine/recoilIon 1 3 1 0.0 3.0160493
-#/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.014101
-/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.007825
+/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
 
-/ActarSim/gun/Kine/labEnergy 650. MeV
+/ActarSim/gun/Kine/labEnergy 650 MeV
 /ActarSim/gun/Kine/randomThetaCM on
-#/ActarSim/gun/Kine/randomThetaRange 0.0 180.0
-/ActarSim/gun/Kine/randomPhiAngle on
-#/ActarSim/gun/Kine/userThetaCM 12.5 deg
-#/ActarSim/gun/Kine/userPhiAngle 180.0 deg
-#/ActarSim/gun/Kine/vertexPosition 0. 0. 45 cm
+/ActarSim/gun/Kine/randomThetaRange 0.0 180.0
+/ActarSim/gun/Kine/randomPhiAngle off
+#/ActarSim/gun/Kine/userThetaCM 100.0 deg
+#/ActarSim/gun/Kine/userPhiAngle 0. deg
+#/ActarSim/gun/Kine/vertexPosition 0. 0. 15 cm
 #
 # VISUALIZATION
 #

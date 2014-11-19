@@ -42,7 +42,7 @@ ActarSimGasDetectorConstruction(ActarSimDetectorConstruction* det)
   //
 
   SetBeamShieldMaterial("Iron");
-  SetGasMaterial("D2_STP");
+  //SetGasMaterial("D2_STP");
 
   //Default value for the volume is a Box
   SetDetectorGeometry("box");
@@ -62,7 +62,7 @@ ActarSimGasDetectorConstruction(ActarSimDetectorConstruction* det)
   lengthBeamShieldTub = 0.95 * m;
 
   // create commands for interactive definition of the calorimeter
-  gasMessenger = new ActarSimGasDetectorMessenger(this);
+  gasMessenger = new ActarSimGasDetectorMessenger(det,this);
 }
 
 
@@ -74,7 +74,8 @@ ActarSimGasDetectorConstruction::~ActarSimGasDetectorConstruction(){
 }
 
 
-G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
+//G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
+G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* chamberLog) {
   //
   // Wrap for the construction functions within the TOF
   //
@@ -82,12 +83,14 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* w
   //Introduce here other constructors for materials around the TOF (windows, frames...)
   //which can be controlled by the calMessenger
   //ConstructTOFWorld(worldLog);
-  return ConstructGas(worldLog);
+  //return ConstructGas(worldLog);
+  return ConstructGas(chamberLog);
 }
 
 
 
-G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume* worldLog) {
+//G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume* worldLog) {
+G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume* chamberLog) {
   //
   //  Constructs the Gas volume detector elements
   //
@@ -98,6 +101,73 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   // the messenger commands
   //
   //////////////////////////////////////////////////////////////////////
+  /*
+  G4double chamberVolumeCenterPosX = 0.*m;
+  G4double chamberVolumeCenterPosY = 0.*m;
+  G4double chamberVolumeCenterPosZ = 0.*m;
+
+  G4double chamberSizeX = 0.20*m;
+  G4double chamberSizeY = 0.15*m;
+  G4double chamberSizeZ = 0.25*m;
+
+  chamberVolumeCenterPosZ = chamberSizeZ;
+
+  G4VPhysicalVolume* chamberPhys;
+    
+  G4Box* solidChamber = new G4Box("Chamber",                      //its name
+				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
+    
+  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+						    gasMaterial,
+						    "Chamber");            //its name
+    
+  chamberPhys = new G4PVPlacement(0,                     //no rotation
+                                  G4ThreeVector(chamberVolumeCenterPosX,
+						chamberVolumeCenterPosY,
+						chamberVolumeCenterPosZ-zGasBoxPosition),   
+                                  chamberLog,            //its logical volume
+                                  "Chamber",               //its name
+                                  worldLog,                     //its mother  volume
+                                  false,                 //no boolean operation
+                                  0);    
+
+    G4double innerRadius = 0.*cm;
+    G4double outerRadius = 10.*cm;
+    G4double hz = 0.037*mm;
+    G4double startAngle = 0.*deg;
+    G4double spanningAngle = 360.*deg;
+
+    G4VPhysicalVolume* mylarWin;
+    
+    G4Tubs* mwindow
+      = new G4Tubs("mwindow",
+		   innerRadius,
+		   outerRadius,
+		   hz,
+		   startAngle,
+		   spanningAngle);
+ 
+    G4LogicalVolume* mwindowLog = new G4LogicalVolume(mwindow,          //its solid
+                                                      windowMaterial,      //its material
+                                                      "mwindow");            //its name
+    
+    
+    mylarWin = new G4PVPlacement(0,                     //no rotation
+                                    G4ThreeVector(0,0,2*chamberVolumeCenterPosZ-zGasBoxPosition),
+				 //250.037*mm),       //at (0,0,0)
+                                    mwindowLog,            //its logical volume
+                                    "mwindow",               //its name
+                                    worldLog,                     //its mother  volume
+                                    false,                 //no boolean operation
+                                    0);                    //copy number
+    
+    G4VisAttributes* mylarVisAtt = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+	mylarVisAtt->SetVisibility(true);
+	mwindowLog->SetVisAttributes(mylarVisAtt);
+  */  
+
+  //Chamber heigth 
+  G4double chamberSizeY=detConstruction->GetChamberYLength();
 
   G4double gasVolumeCenterPosX = 0.*m;
   G4double gasVolumeCenterPosY = 0.*m;
@@ -127,6 +197,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 	   << G4endl;
 
     //centered in (0,0,zGasBox) to have origin in the detector entrance
+    gasVolumeCenterPosY = -chamberSizeY+yGasBox+12.74*mm; //gas chamber 12.74mm above the chamber ground 
     gasVolumeCenterPosZ = zGasBox;
 
     G4Box* gasBox;
@@ -138,87 +209,12 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 				 "gasLog");
 
    
-  //Adding Lucite GasBox
- 
-    if(luciteBoxIncluded=="on"){
-  //--------------------------
-  // Gas Box
-  //-------------------------- 
-  //Added Lucite for gasbox
-  G4double a;  // atomic mass
-  G4double z;  // atomic number
-  G4double density;  //density
-  G4int ncomponents;
-  G4Element* H  = new G4Element("Hydrogen" ,"H" , z= 1., a=   1.00794*g/mole);
-  G4Element* C  = new G4Element("Carbon"   ,"C",  z=6.,  a=   12.0107*g/mole);
-  G4Element* O  = new G4Element("Oxygen"   ,"O" , z= 8., a=   15.9994*g/mole);
-
-  G4Material* Lct =
-  new G4Material("Lucite", density= 1.185*g/cm3, ncomponents=3);
-  Lct->AddElement(C, 59.97*perCent);
-  Lct->AddElement(H, 8.07*perCent);
-  Lct->AddElement(O, 31.96*perCent);
-
-  G4double boxSizeX=xGasBox+10*mm;
-  G4double boxSizeY=yGasBox+10*mm;
-  G4double boxSizeZ=zGasBox+10*mm;
-
-  G4double boxPositionX=gasVolumeCenterPosX;
-  G4double boxPositionY=gasVolumeCenterPosY;
-  G4double boxPositionZ=gasVolumeCenterPosZ;
-  
-  // G4double boxPositionX=0;
-  // G4double boxPositionY=0;
-  // G4double boxPositionZ=0;
-
-  gasVolumeCenterPosX=0;
-  gasVolumeCenterPosY=0;
-  gasVolumeCenterPosZ=0;
-  
-  //--------------------------
-  // Beam Window in Gas Box
-  //-------------------------- 
-  G4double window_outer_radius = 3*mm;
-  G4double window_inner_radius = 0*mm;
-  G4double window_length = 5*mm;
-  G4double startAngle = 0.*deg;
-  G4double spanningAngle = 360.*deg;
-
- G4Tubs *window = new G4Tubs("Window",window_inner_radius,window_outer_radius,window_length,
-			     startAngle,spanningAngle);
- G4VisAttributes* windowVisAtt= new G4VisAttributes(G4Colour(1.0,0.,0.));
- windowVisAtt->SetVisibility(true);
-    
-    G4LogicalVolume* window_log = new G4LogicalVolume(window,gasMaterial,"window_log",0,0,0);
-    
-    //window_log->SetVisAttributes(windowVisAtt);
-    
-     G4double windowPosZ=-boxSizeZ+5*mm;
-     G4double windowPosY=0*cm;
-     G4double windowPosX=0*mm;
-  
-    G4RotationMatrix *rot=0;
-
-
-  G4Box *LuciteBox=new G4Box("LuciteBox", boxSizeX, boxSizeY, boxSizeZ);
-
-  G4LogicalVolume *LuciteBox_log=new G4LogicalVolume(LuciteBox,Lct,"LuciteBoxLog");
-
-  G4VPhysicalVolume *LuciteBox_phys=new G4PVPlacement(0,G4ThreeVector( boxPositionX, boxPositionY, boxPositionZ),LuciteBox_log,"GasBox",worldLog,false,0);
-
-  G4VPhysicalVolume* window_phys=new G4PVPlacement(rot,G4ThreeVector(windowPosX,windowPosY,windowPosZ),window_log,"window",LuciteBox_log,false,0);
-    
- gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
+    gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
 						gasVolumeCenterPosY,
-						gasVolumeCenterPosZ),
-				gasLog,"gasPhys",LuciteBox_log,false,0);
-
-    }
-    else
- gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
-						gasVolumeCenterPosY,
-						gasVolumeCenterPosZ),
-				gasLog,"gasPhys",worldLog,false,0);
+						//gasVolumeCenterPosZ-chamberVolumeCenterPosZ+zGasBoxPosition),
+						//gasVolumeCenterPosZ),
+						0),
+				gasLog,"gasPhys",chamberLog,false,0);
 
   }
   else if(detectorGeometry == "tube"){
@@ -252,7 +248,8 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
     gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
 						gasVolumeCenterPosY,
 						gasVolumeCenterPosZ),
-				gasLog,"gasPhys",worldLog,false,0);
+				//gasLog,"gasPhys",worldLog,false,0);
+				gasLog,"gasPhys",chamberLog,false,0);
   }
   else {
     G4cout << G4endl
@@ -309,7 +306,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   //------------------------------------------------------------------
   // Visualization attributes
   //------------------------------------------------------------------
-  worldLog->SetVisAttributes (G4VisAttributes::Invisible);
+  //worldLog->SetVisAttributes (G4VisAttributes::Invisible);
   G4VisAttributes* gasVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
   G4VisAttributes* beamShieldVisAtt = new G4VisAttributes(G4Colour(1.0,0.0,1.0));
   gasVisAtt->SetVisibility(true);
@@ -368,9 +365,12 @@ void ActarSimGasDetectorConstruction::UpdateGeometry() {
   // Updates Gas detector
   //
 
-  Construct(detConstruction->GetWorldLogicalVolume());
+  // Construct(detConstruction->GetWorldLogicalVolume());
+  // G4RunManager::GetRunManager()->
+  //   DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());
+  Construct(detConstruction->GetChamberLogicalVolume());
   G4RunManager::GetRunManager()->
-    DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());
+    DefineWorldVolume(detConstruction->GetChamberPhysicalVolume());
 }
 
 

@@ -71,20 +71,20 @@ ActarSimSilDetectorConstruction::~ActarSimSilDetectorConstruction(){
 }
 
 
-G4VPhysicalVolume* ActarSimSilDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
+G4VPhysicalVolume* ActarSimSilDetectorConstruction::Construct(G4LogicalVolume* chamberLog) {
   //
   // Wrap for the construction functions within the Silicon
   //
 
   //Introduce here other constructors for materials around the TOF (windows, frames...)
   //which can be controlled by the calMessenger
-  //ConstructTOFWorld(worldLog);
-  return ConstructSil(worldLog);
+  //ConstructTOFWorld(chamberLog);
+  return ConstructSil(chamberLog);
 }
 
 
 
-G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume* worldLog) {
+G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume* chamberLog) {
   //
   //  Constructs the Silicon detector elements
   //
@@ -109,12 +109,20 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
 
   //MUST-like silicon detectors (half-sides)
   //I left some "air" in between silicons. Half-length are defectHalfLength shorter.
-  G4double silBulk_x = 49.5*mm;
-  G4double silBulk_y = 49.5*mm;
-  G4double silBulk_z = 0.15*mm;
+  // G4double silBulk_x = 49.5*mm;
+  // G4double silBulk_y = 49.5*mm;
+  // G4double silBulk_z = 0.15*mm;
+
+  G4double silBulk_x = 24.5*mm;
+  G4double silBulk_y = 24.5*mm;
+  G4double silBulk_z = 0.35*mm;
+
+  G4double silDSSDBulk_x = 31.5*mm;
+  G4double silDSSDBulk_y = 31.5*mm;
+  G4double silDSSDBulk_z = 0.35*mm;
 
   G4double defectHalfLength = 0.5*mm;
-  G4double separationFromBox = 5*mm;
+  G4double separationFromBox = 3*mm;
 
   // Printing the final settings...
   G4cout << "##################################################################"
@@ -144,6 +152,16 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
   silLog =
     new G4LogicalVolume(silBox, silBulkMaterial, "silLog");
 
+  //DSSD detector
+  G4LogicalVolume* silDSSDLog(0);
+  G4VPhysicalVolume* silDSSDPhys(0);
+
+  G4Box* silDSSDBox =
+    new G4Box("silDSSDBox", silDSSDBulk_x, silDSSDBulk_y, silDSSDBulk_z);
+
+  silDSSDLog =
+    new G4LogicalVolume(silDSSDBox, silBulkMaterial, "silDSSDLog");
+
   //As a function of the lateral coverage
   // 6 bits to indicate which sci wall is present (1) or absent (0)
   // order is:
@@ -166,6 +184,7 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
   //G4cout << numberOfRowsX << " " <<  numberOfRowsY << " " << numberOfRowsZ << G4endl;
 
   G4int iterationNumber = 0;
+  //G4int iterationDSSDNumber = 0;
 
   //By a reason I do not know the correct rotation using Euler angles does not match with standards...
   // I would call rotLeft to rotTop, and so on...
@@ -208,16 +227,47 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
 
   if(sideCoverage & 0x0001){ // bit1 (lsb) beam output wall
     //iteration on Silicon elements
+    /*
     for(G4int rowX=0;rowX<numberOfRowsX;rowX++){  //maybe is rowX=1 the first??
       for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
-        iterationNumber++;
+	iterationNumber++;
         silPhys =
-          new G4PVPlacement(0,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_x+defectHalfLength),
+	  new G4PVPlacement(0,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_x+defectHalfLength),
 					    -yBoxSilHalfLength + ((rowY+1)*2-1)*(silBulk_x+defectHalfLength),
 					    2*zBoxSilHalfLength + separationFromBox + silBulk_z),
-			                    silLog, "silPhys", worldLog, false, iterationNumber);
+			    silLog, "silPhys", chamberLog, false, iterationNumber);
       }
     }
+    */
+    
+    for(G4int rowX=0;rowX<2;rowX++){  //maybe is rowX=1 the first??
+      for(G4int rowY=0;rowY<2;rowY++){
+	/*
+        iterationDSSDNumber++;
+        silDSSDPhys =
+          new G4PVPlacement(0,G4ThreeVector( (rowX-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					     (rowY-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					     //2*zBoxSilHalfLength + separationFromBox + silBulk_z),
+					     zBoxSilHalfLength - separationFromBox - silDSSDBulk_z),
+			    silDSSDLog, "silDSSDPhys", chamberLog, false, iterationDSSDNumber);
+	*/
+        iterationNumber++;
+        silPhys =
+          new G4PVPlacement(0,G4ThreeVector( (rowX-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					     (rowY-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					     zBoxSilHalfLength - separationFromBox - silDSSDBulk_z),
+			    silDSSDLog, "silPhys", chamberLog, false, iterationNumber);
+      }
+    }
+    
+    /*
+    iterationNumber++;
+    silPhys =
+      new G4PVPlacement(0,G4ThreeVector(0,
+				        0,
+					2*zBoxSilHalfLength + separationFromBox + silBulk_z),
+			silLog, "silPhys", chamberLog, false, iterationNumber);
+    */
   }
 
   //PLANES ZX
@@ -230,7 +280,7 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
             new G4PVPlacement(rotBottom,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_x+defectHalfLength),
 	 				         -(yBoxSilHalfLength + separationFromBox + silBulk_z),
 					         ((rowZ+1)*2-1)*(silBulk_x+defectHalfLength)),
-					         silLog, "silPhys", worldLog, false, iterationNumber);
+					         silLog, "silPhys", chamberLog, false, iterationNumber);
       }
     }
   }
@@ -242,34 +292,42 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
             new G4PVPlacement(rotTop,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_x+defectHalfLength),
 	 				         yBoxSilHalfLength + separationFromBox + silBulk_z,
 					         ((rowZ+1)*2-1)*(silBulk_x+defectHalfLength)),
-					         silLog, "silPhys", worldLog, false, iterationNumber);
+					         silLog, "silPhys", chamberLog, false, iterationNumber);
       }
     }
   }
 
   //PLANES ZY
   if((sideCoverage >> 3) & 0x0001){ // bit4 left (from beam point of view) wall
-    for(G4int rowZ=0;rowZ<numberOfRowsZ;rowZ++){
-      for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
+
+    for(G4int rowZ=0;rowZ<3;rowZ++){
+      for(G4int rowY=0;rowY<2;rowY++){
         iterationNumber++;
         silPhys =
-          new G4PVPlacement(rotLeft,G4ThreeVector(xBoxSilHalfLength + separationFromBox + silBulk_z,
-	 				       -yBoxSilHalfLength + ((rowY+1)*2-1)*(silBulk_x+defectHalfLength),
-					       ((rowZ+1)*2-1)*(silBulk_x+defectHalfLength)),
-                                               silLog, "silPhys", worldLog, false, iterationNumber);
+          new G4PVPlacement(rotLeft,G4ThreeVector(xBoxSilHalfLength - separationFromBox - silBulk_z,
+						  (rowY-0.5)*2*(silBulk_x+defectHalfLength),
+						  (rowZ-1)*2*(silBulk_x+defectHalfLength)),
+			    silLog, "silPhys", chamberLog, false, iterationNumber);
       }
     }
   }
 
   if((sideCoverage >> 4) & 0x0001){ // bit5 right (from beam point of view) wall
-    for(G4int rowZ=0;rowZ<numberOfRowsZ;rowZ++){
-      for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
+    /*
+    iterationNumber++;
+    silPhys = new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSilHalfLength - separationFromBox - silBulk_z),
+						       0,
+						       0),
+				silLog, "silPhys", chamberLog, false, iterationNumber);
+    */
+    for(G4int rowZ=0;rowZ<3;rowZ++){
+      for(G4int rowY=0;rowY<2;rowY++){
         iterationNumber++;
         silPhys =
-          new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSilHalfLength + separationFromBox + silBulk_z),
-	 				       -yBoxSilHalfLength + ((rowY+1)*2-1)*(silBulk_x+defectHalfLength),
-					       ((rowZ+1)*2-1)*(silBulk_x+defectHalfLength)),
-                                               silLog, "silPhys", worldLog, false, iterationNumber);
+          new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSilHalfLength - separationFromBox - silBulk_z),
+						  (rowY-0.5)*2*(silBulk_x+defectHalfLength),
+						  (rowZ-1)*2*(silBulk_x+defectHalfLength)),
+			    silLog, "silPhys", chamberLog, false, iterationNumber);
       }
     }
   }
@@ -282,7 +340,7 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
           new G4PVPlacement(rotBack,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_x+defectHalfLength),
 	 				          -yBoxSilHalfLength + ((rowY+1)*2-1)*(silBulk_x+defectHalfLength),
 					          -separationFromBox - silBulk_z),
-			                          silLog, "silPhys", worldLog, false, iterationNumber);
+			                          silLog, "silPhys", chamberLog, false, iterationNumber);
       }
     }
   }
@@ -291,6 +349,7 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
   // Sensitive detectors
   //------------------------------------------------
   silLog->SetSensitiveDetector( detConstruction->GetSilSD() );
+  silDSSDLog->SetSensitiveDetector( detConstruction->GetSilSD() );
 
   //------------------------------------------------------------------
   // Visualization attributes
@@ -298,8 +357,12 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
   G4VisAttributes* silVisAtt1 = new G4VisAttributes(G4Colour(0,1,0));
   silVisAtt1->SetVisibility(true);
   silLog->SetVisAttributes(silVisAtt1);
+  G4VisAttributes* silDSSDVisAtt1 = new G4VisAttributes(G4Colour(0,0.75,0));
+  silDSSDVisAtt1->SetVisibility(true);
+  silDSSDLog->SetVisAttributes(silDSSDVisAtt1);
 
   return silPhys;
+  return silDSSDPhys;
 }
 
 void ActarSimSilDetectorConstruction::SetSilBulkMaterial (G4String mat) {

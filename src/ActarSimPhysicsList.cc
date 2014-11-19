@@ -135,7 +135,7 @@ void ActarSimPhysicsList::ConstructProcess() {
   //
   // Construct Processes
   //
-
+  /*
   // transportation
   //
   AddTransportation();
@@ -143,7 +143,8 @@ void ActarSimPhysicsList::ConstructProcess() {
   // electromagnetic physics list
   //
   emPhysicsList->ConstructProcess();
-/*
+  */
+
   if(verbose > 0)
     G4cout << "Construct Processes" << G4endl;
 
@@ -162,8 +163,9 @@ void ActarSimPhysicsList::ConstructProcess() {
   emOptions.SetDEDXBinning(90);
   emOptions.SetLambdaBinning(90);
   //emOptions.SetBuildPreciseRange(false);
-  //  emOptions.SetApplyCuts(true);
-  //emOptions.SetVerbose(0);*/
+  //emOptions.SetApplyCuts(true);
+  //emOptions.SetVerbose(0);
+
 }
 
 void ActarSimPhysicsList::AddPhysicsList(const G4String& name){

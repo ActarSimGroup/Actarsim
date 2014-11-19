@@ -97,8 +97,11 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 set(ActarSim_HEADERS ${PROJECT_SOURCE_DIR}/include/ActarSimData.hh 
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimTrack.hh 
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSimpleTrack.hh
-		     ${PROJECT_SOURCE_DIR}/include/ActarSimSciHit.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSilHit.hh
+		     ${PROJECT_SOURCE_DIR}/include/ActarSimSilRingHit.hh
+		     ${PROJECT_SOURCE_DIR}/include/ActarSimSciHit.hh
+		     ${PROJECT_SOURCE_DIR}/include/ActarSimSciRingHit.hh
+		     ${PROJECT_SOURCE_DIR}/include/ActarSimPlaHit.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimPrimaryInfo.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimBeamInfo.hh
 		     )
@@ -140,11 +143,12 @@ add_dependencies(actarsim actar)
 # relies on these scripts being in the current working directory.
 #
 set(ACTARSIM_SCRIPTS
-132Sndp.mac
-132Sndp_nodraw.mac
 gui.mac
-vis2.mac
-13C_batch.mac
+vis_actar.mac 
+vis_maiko.mac 
+vis_kine.mac 
+kine_batch.mac
+12C_batch.mac
 digitizationMacro.C
 digit.h
 dig_reaction.C

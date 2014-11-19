@@ -5,7 +5,7 @@
 // --------------------------------------------------------------
 // Description:
 //   SD for the Silicons
-//
+//SimSilRing
 // --------------------------------------------------------------
 // Comments:
 //
@@ -13,7 +13,7 @@
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
-#include "ActarSimSilSD.hh"
+#include "ActarSimSilRingSD.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
@@ -27,30 +27,30 @@
 #include "G4TouchableHistory.hh"
 #include "G4VTouchable.hh"
 
-ActarSimSilSD::ActarSimSilSD(G4String name)
+ActarSimSilRingSD::ActarSimSilRingSD(G4String name)
   :G4VSensitiveDetector(name){
   //
   // Constructor,
   // just naming the Hit collection
   //
   G4String HCname;
-  collectionName.insert(HCname="SilCollection");
+  collectionName.insert(HCname="SilRingCollection");
 }
 
 
-ActarSimSilSD::~ActarSimSilSD(){
+ActarSimSilRingSD::~ActarSimSilRingSD(){
   //
   // Destructor, nothing to do
   //
 }
 
 
-void ActarSimSilSD::Initialize(G4HCofThisEvent* HCE){
+void ActarSimSilRingSD::Initialize(G4HCofThisEvent* HCE){
   //
-  // Initializing the ActarSimSilGeantHitsCollection object
+  // Initializing the ActarSimSilRingGeantHitsCollection object
   // Invoked automatically at the beggining of each event
   //
-  hitsCollection = new ActarSimSilGeantHitsCollection
+  hitsCollection = new ActarSimSilRingGeantHitsCollection
     (SensitiveDetectorName,collectionName[0]);
   static G4int HCID = -1;
   if(HCID<0)
@@ -60,17 +60,16 @@ void ActarSimSilSD::Initialize(G4HCofThisEvent* HCE){
 }
 
 
-G4bool ActarSimSilSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
+G4bool ActarSimSilRingSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
   //
-  // Filling the ActarSimSilGeantHit information with the step info
+  // Filling the ActarSimSilRingGeantHit information with the step info
   // Invoked by G4SteppingManager for each step
   //
-  //G4double edep = aStep->GetTotalEnergyDeposit();
-  G4double edep = -aStep->GetDeltaEnergy()/MeV;
+  G4double edep = aStep->GetTotalEnergyDeposit();
 
   if(edep==0.) return false;
 
-  ActarSimSilGeantHit* newHit = new ActarSimSilGeantHit();
+  ActarSimSilRingGeantHit* newHit = new ActarSimSilRingGeantHit();
 
   newHit->SetEdep(edep/MeV);
   newHit->SetEBeforeSil(aStep->GetPreStepPoint()->GetKineticEnergy()/MeV);
@@ -115,9 +114,9 @@ G4bool ActarSimSilSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
 }
 
 
-void ActarSimSilSD::EndOfEvent(G4HCofThisEvent*){
+void ActarSimSilRingSD::EndOfEvent(G4HCofThisEvent*){
   //
-  // Just prints and draws the event hits (class ActarSimSilGeantHit)
+  // Just prints and draws the event hits (class ActarSimSilRingGeantHit)
   // The recollection of the hits energy deposition in the plastic
   // is done in the ActarSimROOTAnalysis::EndOfEventAction()
   //

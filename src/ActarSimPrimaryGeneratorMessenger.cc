@@ -529,6 +529,11 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   //positionCmd->SetUnitCategory("Length");
   //positionCmd->SetUnitCandidates("microm mm cm m km");
 
+  // EntranceZPositionCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/EntranceZPosition",this);
+  // EntranceZPositionCmd->SetGuidance("Set starting Z position of the particle.");
+  // EntranceZPositionCmd->SetParameterName("entranceZ",true,true);
+  // EntranceZPositionCmd->SetDefaultUnit("cm");
+
   timeCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/time",this);
   timeCmd->SetGuidance("Set initial time of the particle.");
   timeCmd->SetParameterName("t0",true,true);

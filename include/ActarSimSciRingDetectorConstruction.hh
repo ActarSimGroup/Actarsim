@@ -14,8 +14,8 @@
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
-#ifndef ActarSimSciDetectorConstruction_h
-#define ActarSimSciDetectorConstruction_h 1
+#ifndef ActarSimSciRingDetectorConstruction_h
+#define ActarSimSciRingDetectorConstruction_h 1
 
 #include "globals.hh"
 #include "G4ThreeVector.hh"
@@ -23,19 +23,16 @@
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 class G4Material;
-class ActarSimSciDetectorMessenger;
+//class ActarSimSciDetectorMessenger;
 class ActarSimDetectorConstruction;
 
-class ActarSimSciDetectorConstruction {  
+class ActarSimSciRingDetectorConstruction {  
 private:
   
-  //Position of the GasBox
-  G4double zGasBoxPosition;
-
   // Materials
   G4Material* sciBulkMaterial;
  
-  ActarSimSciDetectorMessenger* sciMessenger;   //pointer to the Messenger
+  // ActarSimSciDetectorMessenger* sciMessenger;   //pointer to the Messenger
   ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
   
   G4VPhysicalVolume* ConstructSci(G4LogicalVolume*);
@@ -56,8 +53,8 @@ private:
 
 public:
   
-  ActarSimSciDetectorConstruction(ActarSimDetectorConstruction*);
-  ~ActarSimSciDetectorConstruction();
+  ActarSimSciRingDetectorConstruction(ActarSimDetectorConstruction*);
+  ~ActarSimSciRingDetectorConstruction();
   
   G4VPhysicalVolume* Construct(G4LogicalVolume*);
 

@@ -17,6 +17,7 @@
 
 #include "G4RunManager.hh"
 
+#include "ActarSimDetectorConstruction.hh"
 #include "ActarSimGasDetectorConstruction.hh"
 #include "ActarSimPrimaryGeneratorAction.hh"
 
@@ -29,8 +30,8 @@
 
 
 ActarSimGasDetectorMessenger::
-ActarSimGasDetectorMessenger(ActarSimGasDetectorConstruction* ActarSimGasDet)
-  :ActarSimGasDetector(ActarSimGasDet) { 
+ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimGasDetectorConstruction* ActarSimGasDet)
+  :ActarSimDetector(ActarSimDet), ActarSimGasDetector(ActarSimGasDet){ 
   //
   // Constructor with fully functionality
   //
@@ -40,7 +41,7 @@ ActarSimGasDetectorMessenger(ActarSimGasDetectorConstruction* ActarSimGasDet)
  
  
   gasMaterCmd = new G4UIcmdWithAString("/ActarSim/det/gas/setGasMat",this);
-  gasMaterCmd->SetGuidance("Select Material of the Gas.");
+  gasMaterCmd->SetGuidance("Select Material of the Gas (for the Gas box and the Chamber).");
   gasMaterCmd->SetParameterName("gasMat",false);
   gasMaterCmd->SetDefaultValue("isoC4H10");
   gasMaterCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
@@ -165,6 +166,7 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == gasMaterCmd)
   {
     ActarSimGasDetector->SetGasMaterial(newValue);
+    ActarSimDetector->SetChamberMaterial(newValue);
   }
 
   if(command == beamShieldMaterCmd)
@@ -200,6 +202,8 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == zGasBoxCmd)
   {
     ActarSimGasDetector->SetZGasBox(zGasBoxCmd->GetNewDoubleValue(newValue));
+    ActarSimDetector->SetZGasBoxPosition(zGasBoxCmd->GetNewDoubleValue(newValue));
+
   }
 
   if(command == radiusGasTubCmd)

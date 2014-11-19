@@ -142,10 +142,13 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   G4double  LabParticleAngle_rec = 85.0 * deg;
   if(LabParticleAngle_rec){;}
 
+  ActarSimDetectorConstruction* detector = (ActarSimDetectorConstruction*)
+    (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+
   //reading this parameter from the geometry
   if(!gasDetector) {
-    ActarSimDetectorConstruction* detector = (ActarSimDetectorConstruction*)
-      (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+    // ActarSimDetectorConstruction* detector = (ActarSimDetectorConstruction*)
+    //   (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
     gasDetector = (ActarSimGasDetectorConstruction*)(detector->GetGasDetector());
     if(gasDetector->GetDetectorGeometry()=="tube")
       lengthParameter = gasDetector->GetLengthGasTub();
@@ -279,7 +282,9 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         //Entrance coordinates (x0,y0,0) with angles (thetaAtEntrance, phiAtEntrance)
         G4double x0 = radiusAtEntrance*cos(phi2AtEntrance);
         G4double y0 = radiusAtEntrance*sin(phi2AtEntrance);
-        G4double z0 = 0.0;
+        //G4double z0 = 0.0;
+        //G4double z0= -(detector->GetChamberZLength()-detector->GetZGasBoxPosition());
+        G4double z0= -29*mm;
 
         if(verboseLevel>0){
           G4cout << G4endl
@@ -292,7 +297,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
           G4cout << " *************************************************** "<< G4endl;
         }
 
-        particleGun->SetParticlePosition(G4ThreeVector(x0,y0,0));
+        particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
         particleGun->SetParticleMomentumDirection(directionAtEntrance);
         pBeamInfo->SetPositionEntrance(x0,y0,z0);
         pBeamInfo->SetAnglesEntrance(thetaAtEntrance,phiAtEntrance);
@@ -356,7 +361,10 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     G4double y0 = radiusAtEntrance*sin(phi2AtEntrance);
     // The z0 variable is here used to decide the z position of the vertex. The beam is tracked
     // till z0 is reached ...
-    G4double z0=0.;
+    //G4double z0=0.;
+    //G4double z0= -(detector->GetChamberZLength()-detector->GetZGasBoxPosition());
+    G4double z0= -29*mm;
+
     if(randomVertexZPositionFlag=="on"){
       z0 = randomVertexZPositionMin+ G4UniformRand()*(randomVertexZPositionMax-randomVertexZPositionMin);
     }
@@ -1239,17 +1247,21 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
      //incidentIonCharge =  38;
      //particleGun->SetParticleDefinition(incidentIon);
    }
-    
+
     //these are the cosines for an isotropic direction
     //particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
     //Selecting only positive Z
     //Circle of 2.5 mm radius
-    //Float_t radius=5*mm;
+    Float_t radius=beamRadiusAtEntrance;
+    //Float_t radius=32*mm;
     //Float_t radius=1*cm;
     //Float_t radius=2.5*mm;
-    Float_t radius=1*mm;
+    //Float_t radius=1*mm;
     Float_t X0=0;
     Float_t Y0=0;
+    //Float_t Z0= -(detector->GetChamberZLength()-detector->GetZGasBoxPosition());
+    //G4double Z0= -29*mm;
+
     do{
       X0=-1.0 + 2.0*G4UniformRand();
       Y0=-1.0 + 2.0*G4UniformRand();
@@ -1257,6 +1269,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     X0=radius*X0;
     Y0=radius*Y0;
     //G4cout<<X0<<" "<<Y0<<endl;
+    //particleGun->SetParticlePosition(G4ThreeVector(0.,0.,Z0));
+    //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,0.));
     particleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
     if(cosTheta>0)

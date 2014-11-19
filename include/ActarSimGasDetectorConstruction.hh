@@ -28,7 +28,7 @@ class ActarSimDetectorConstruction;
 
 class ActarSimGasDetectorConstruction {  
 private:
-  
+
   // Materials
   G4Material* gasMaterial;
   G4Material* beamShieldMaterial;

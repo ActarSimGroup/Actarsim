@@ -20,6 +20,9 @@
 #include "ActarSimROOTAnalGas.hh"
 #include "ActarSimROOTAnalSci.hh"
 #include "ActarSimROOTAnalSil.hh"
+#include "ActarSimROOTAnalSilRing.hh"
+#include "ActarSimROOTAnalSciRing.hh"
+#include "ActarSimROOTAnalPla.hh"
 
 #include "ActarSimDetectorConstruction.hh"
 #include "ActarSimAnalysisMessenger.hh"
@@ -99,11 +102,17 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   //null initialization to check that is null before their instantiation
   gasAnal = 0;
   silAnal = 0;
+  silRingAnal = 0;
   sciAnal = 0;
+  sciRingAnal = 0;
+  plaAnal = 0;	  
 
   gasAnalIncludedFlag = 0;
   silAnalIncludedFlag = 0;
+  silRingAnalIncludedFlag = 0;	
   sciAnalIncludedFlag = 0;
+  sciRingAnalIncludedFlag = 0;
+  plaAnalIncludedFlag = 0;
 
   pBeamInfo = new ActarSimBeamInfo();
 
@@ -167,9 +176,20 @@ void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
 
   if(silAnalIncludedFlag && !silAnal)
     silAnal = new ActarSimROOTAnalSil();
+	
+	if(silRingAnalIncludedFlag && !silRingAnal)
+		silRingAnal = new ActarSimROOTAnalSilRing();
 
   if(sciAnalIncludedFlag && !sciAnal)
     sciAnal = new ActarSimROOTAnalSci();
+    
+    if(sciRingAnalIncludedFlag && !sciRingAnal)
+        sciRingAnal = new ActarSimROOTAnalSciRing();
+  
+	
+  if(plaAnalIncludedFlag && !plaAnal)
+    plaAnal = new ActarSimROOTAnalPla();
+ 
 
   //OTHER DETECTORS ANALYSIS SHOULD BE INCLUDED HERE
 
@@ -301,7 +321,10 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
 
   if(gasAnal) gasAnal->GeneratePrimaries(anEvent);
   if(silAnal) silAnal->GeneratePrimaries(anEvent);
+  if(silRingAnal) silRingAnal->GeneratePrimaries(anEvent); 
   if(sciAnal) sciAnal->GeneratePrimaries(anEvent);
+  if(sciRingAnal) sciRingAnal->GeneratePrimaries(anEvent);
+  if(plaAnal) plaAnal->GeneratePrimaries(anEvent);
 
   OnceAWhileDoIt();
 }
@@ -374,7 +397,10 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
 
   if(gasAnal) gasAnal->GeneratePrimaries(anEvent);
   if(silAnal) silAnal->GeneratePrimaries(anEvent);
+  if(silRingAnal) silRingAnal->GeneratePrimaries(anEvent); 
   if(sciAnal) sciAnal->GeneratePrimaries(anEvent);
+  if(sciRingAnal) sciRingAnal->GeneratePrimaries(anEvent);
+  if(plaAnal) plaAnal->GeneratePrimaries(anEvent);
 
   OnceAWhileDoIt();
 }
@@ -485,7 +511,10 @@ void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
   //calling the actions defined for each detector
   if(gasAnal) gasAnal->BeginOfRunAction(aRun);
   if(silAnal) silAnal->BeginOfRunAction(aRun);
+  if(silRingAnal) silRingAnal->BeginOfRunAction(aRun);	
   if(sciAnal) sciAnal->BeginOfRunAction(aRun);
+  if(sciRingAnal) sciRingAnal->BeginOfRunAction(aRun);
+  if(plaAnal) plaAnal->BeginOfRunAction(aRun);	
 
   simFile->cd();
 
@@ -525,7 +554,10 @@ void ActarSimROOTAnalysis::BeginOfEventAction(const G4Event *anEvent){
   //calling the actions defined for each detector
   if(gasAnal) gasAnal->BeginOfEventAction(anEvent);
   if(silAnal) silAnal->BeginOfEventAction(anEvent);
+  if(silRingAnal) silRingAnal->BeginOfEventAction(anEvent);	
   if(sciAnal) sciAnal->BeginOfEventAction(anEvent);
+  if(sciAnal) sciAnal->BeginOfEventAction(anEvent);
+  if(plaAnal) plaAnal->BeginOfEventAction(anEvent);
 
   OnceAWhileDoIt();
 }
@@ -596,8 +628,11 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
   //G4cout<<"ActarSimROOTAnalysis----> EndOfEventAction() "<<gasAnal<<G4endl;
   if(gasAnal) gasAnal->EndOfEventAction(anEvent);
   if(silAnal) silAnal->EndOfEventAction(anEvent);
+  if(silRingAnal) silRingAnal->EndOfEventAction(anEvent);
   if(sciAnal) sciAnal->EndOfEventAction(anEvent);
-  
+  if(sciRingAnal) sciRingAnal->EndOfEventAction(anEvent);
+  if(plaAnal) plaAnal->EndOfEventAction(anEvent);
+
   eventTree->Fill();
   //}
   OnceAWhileDoIt();
@@ -755,7 +790,10 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
   //calling the actions defined for each detector
   if(gasAnal) gasAnal->UserSteppingAction(aStep);
   if(silAnal) silAnal->UserSteppingAction(aStep);
+  if(silRingAnal) silRingAnal->UserSteppingAction(aStep);
   if(sciAnal) sciAnal->UserSteppingAction(aStep);
+  if(sciRingAnal) sciRingAnal->UserSteppingAction(aStep);
+  if(plaAnal) plaAnal->UserSteppingAction(aStep);	
 
   // Processing the beam, in case of beamInteractionFlag on
   // If a beam ion is being tracked with status 1 (ion beam being tracked) and if the present

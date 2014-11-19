@@ -46,7 +46,10 @@ class ActarSimAnalysisMessenger;
 
 class ActarSimROOTAnalGas;
 class ActarSimROOTAnalSil;
+class ActarSimROOTAnalSilRing;
 class ActarSimROOTAnalSci;
+class ActarSimROOTAnalSciRing;
+class ActarSimROOTAnalPla;
 
 class ActarSimDetectorConstruction;
 class ActarSimPrimaryGeneratorAction;
@@ -73,8 +76,11 @@ private:
   TTree* tracksTree; //Tree
 
   ActarSimROOTAnalGas* gasAnal;     // detector specific
-  ActarSimROOTAnalSci* sciAnal;
   ActarSimROOTAnalSil* silAnal;
+  ActarSimROOTAnalSilRing* silRingAnal;
+  ActarSimROOTAnalSci* sciAnal;
+  ActarSimROOTAnalSciRing* sciRingAnal;
+  ActarSimROOTAnalPla* plaAnal;
 
   ActarSimBeamInfo* pBeamInfo;
 
@@ -119,7 +125,10 @@ private:
 
   G4int gasAnalIncludedFlag; //flag to turn on(1)/off(0) the calorim. analysis
   G4int silAnalIncludedFlag; //flag to turn on(1)/off(0) the tracker analysis
+  G4int silRingAnalIncludedFlag;
   G4int sciAnalIncludedFlag; //flag to turn on(1)/off(0) the DCH analysis
+  G4int sciRingAnalIncludedFlag;
+  G4int plaAnalIncludedFlag;
 
 public:
 
@@ -147,10 +156,15 @@ public:
 
   void SetGasAnalOn(){gasAnalIncludedFlag=1;}
   void SetSilAnalOn(){silAnalIncludedFlag=1;}
+  void SetSilRingAnalOn(){silRingAnalIncludedFlag=1;}
   void SetSciAnalOn(){sciAnalIncludedFlag=1;}
+  void SetSciRingAnalOn(){sciRingAnalIncludedFlag=1;}
+  void SetPlaAnalOn(){plaAnalIncludedFlag=1;}	
   void SetGasAnalOff(){gasAnalIncludedFlag=0;}
   void SetSilAnalOff(){silAnalIncludedFlag=0;}
   void SetSciAnalOff(){sciAnalIncludedFlag=0;}
+  void SetSciRingAnalOff(){sciRingAnalIncludedFlag=0;}
+  void SetPlaAnalOff(){plaAnalIncludedFlag=0;}
 
   //Messenger actions
   void SetStoreTracksFlag(G4String val) {storeTracksFlag = val;};
@@ -162,7 +176,10 @@ public:
 
   G4int GetGasAnalStatus(){return gasAnalIncludedFlag;}
   G4int GetSilAnalStatus(){return silAnalIncludedFlag;}
+  G4int GetSilRingAnalStatus(){return silRingAnalIncludedFlag;}	
   G4int GetSciAnalStatus(){return sciAnalIncludedFlag;}
+  G4int GetSciRingAnalStatus(){return sciRingAnalIncludedFlag;}
+  G4int GetPlaAnalStatus(){return plaAnalIncludedFlag;}
 
   void InitAnalysisForExistingDetectors();
 
@@ -182,7 +199,7 @@ public:
   //void GeneratePrimaries(const G4Event*);
   void GeneratePrimaries(const G4Event*,G4double,G4double,G4double,G4double);
   void GeneratePrimaries(const G4Event *anEvent, ActarSimBeamInfo *beamInfo);
- void GenerateBeam(const G4Event*);
+  void GenerateBeam(const G4Event*);
 
   // G4UserRunAction
   void BeginOfRunAction(const G4Run*);

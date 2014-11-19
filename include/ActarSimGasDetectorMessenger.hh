@@ -19,6 +19,7 @@
 #include "globals.hh"
 #include "G4UImessenger.hh"
 
+class ActarSimDetectorConstruction;
 class ActarSimGasDetectorConstruction;
 class ActarSimPrimaryGeneratorAction;
 
@@ -36,8 +37,9 @@ class G4UIcmdWithoutParameter;
 class ActarSimGasDetectorMessenger: public G4UImessenger {
 
 private:
+  ActarSimDetectorConstruction* ActarSimDetector;
   ActarSimGasDetectorConstruction* ActarSimGasDetector;
-    
+     
   G4UIdirectory*             detDir;
 
   G4UIcmdWithAString*        gasMaterCmd;
@@ -58,7 +60,7 @@ private:
   G4UIcmdWithADoubleAndUnit* lengthBeamShieldTubCmd;
 
 public:
-  ActarSimGasDetectorMessenger(ActarSimGasDetectorConstruction* );
+  ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ,ActarSimGasDetectorConstruction* );
   ~ActarSimGasDetectorMessenger();
   
   void SetNewValue(G4UIcommand*, G4String);

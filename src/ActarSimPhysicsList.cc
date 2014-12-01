@@ -18,45 +18,47 @@
 #include "ActarSimPhysicsList.hh"
 #include "ActarSimPhysicsListMessenger.hh"
 
-#include "ActarSimParticlesBuilder.hh"
-#include "ActarSimStepLimiterBuilder.hh"
-#include "ActarSimDecaysBuilder.hh"
-
-#include "G4EmQEDBuilder.hh"
-#include "G4EmMuonBuilder.hh"
-#include "G4EmHadronBuilder.hh"
-#include "G4LowEnergyQEDBuilder.hh"
-#include "G4PenelopeQEDBuilder.hh"
-
-#include "EmHadronElasticBuilder.hh"
-#include "EmBinaryCascadeBuilder.hh"
-#include "EmIonBinaryCascadeBuilder.hh"
-#include "EmGammaNucleusBuilder.hh"
- 
-//New PhysicsLists Em
-#include "PhysListEmStandard.hh"
-#include "PhysListEmStandardWVI.hh"
-#include "PhysListEmStandardSS.hh"
-#include "PhysListEmStandardGS.hh"
-
 #include "G4EmStandardPhysics.hh"
 #include "G4EmStandardPhysics_option1.hh"
 #include "G4EmStandardPhysics_option2.hh"
 #include "G4EmStandardPhysics_option3.hh"
 #include "G4EmStandardPhysics_option4.hh"
-
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
+//#include "G4DecayPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
+#include "G4HadronInelasticQBBC.hh"
+#include "G4IonBinaryCascadePhysics.hh"
+#include "G4EmExtraPhysics.hh"
+#include "G4StoppingPhysics.hh"
 
+#include "PhysListEmStandard.hh"
+#include "PhysListEmStandardWVI.hh"
+#include "PhysListEmStandardSS.hh"
+#include "PhysListEmStandardGS.hh"
 #include "HadrontherapyIonStandard.hh"
+
+#include "ActarSimParticlesBuilder.hh"
+#include "ActarSimStepLimiterBuilder.hh"
+#include "ActarSimDecaysBuilder.hh"
+
+//#include "G4EmQEDBuilder.hh"
+//#include "G4EmMuonBuilder.hh"
+//#include "G4EmHadronBuilder.hh"
+//#include "G4LowEnergyQEDBuilder.hh"
+//#include "G4PenelopeQEDBuilder.hh"
+
+//#include "EmHadronElasticBuilder.hh"
+//#include "EmBinaryCascadeBuilder.hh"
+//#include "EmIonBinaryCascadeBuilder.hh"
+//#include "EmGammaNucleusBuilder.hh"
 
 #include "G4UnitsTable.hh"
 #include "G4LossTableManager.hh"
 #include "G4EmProcessOptions.hh"
 
-#include "G4Gamma.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 //Piotr 10/09/2014
 
@@ -71,8 +73,8 @@
 
 #include "G4IonPhysics.hh"
 
-#include "G4PhysicalConstants.hh"
-#include "G4SystemOfUnits.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
@@ -87,10 +89,11 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   bicIsRegisted = false;
   ionIsRegisted = false;
   gnucIsRegisted = false;  
-
+  gasIsRegisted = false;  
+  stopIsRegisted = false;
   verbose = 0;
-  //G4LossTableManager::Instance()->SetVerbose(0);
-  G4LossTableManager::Instance();
+  G4LossTableManager::Instance()->SetVerbose(verbose);
+  //G4LossTableManager::Instance();
   defaultCutValue = 1.*mm;
   cutForGamma     = defaultCutValue;
   cutForElectron  = defaultCutValue;
@@ -100,7 +103,7 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   
   // EM physics
   //emPhysicsList = new PhysListEmStandard("local");
-  emPhysicsList = new G4EmStandardPhysics(1);
+  //emPhysicsList = new G4EmStandardPhysics(1);
 
   // Add Physics builders
   RegisterPhysics(new ActarSimParticlesBuilder());
@@ -108,6 +111,9 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+ 
 ActarSimPhysicsList::~ActarSimPhysicsList() {
   //
   // Destructor. Nothing to do
@@ -118,6 +124,168 @@ ActarSimPhysicsList::~ActarSimPhysicsList() {
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
+  //
+  // Registering the physics processes
+  //
+  if(verbose > 0) {
+    G4cout << "Add Physics <" << name 
+           << "> emBuilderIsRegisted= " << emBuilderIsRegisted
+           << G4endl;
+  }
+  if ((name == "emstandard") && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmStandardPhysics(1));
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "local" && !emBuilderIsRegisted) {
+    emPhysicsList = new PhysListEmStandard(name);
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;  
+
+  } else if (name == "emstandard_opt1" && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmStandardPhysics_option1());
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "emstandard_opt2" && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmStandardPhysics_option2());
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "emstandard_opt3" && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmStandardPhysics_option3());
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "emstandard_opt4" && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmStandardPhysics_option4());
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "emlivermore" && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmLivermorePhysics());
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "empenelope" && !emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmPenelopePhysics());
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "standardSS" && !emBuilderIsRegisted) {
+    emPhysicsList = new PhysListEmStandardSS(name);
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "standardWVI" && !emBuilderIsRegisted) {
+    emPhysicsList = new PhysListEmStandardWVI(name);
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "standardGS" && !emBuilderIsRegisted) {
+    emPhysicsList = new PhysListEmStandardGS(name);
+    emBuilderIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+    
+  }
+ 
+  // Register Low Energy  processes for protons and ions
+  // Stopping power parameterisation: ICRU49 (default model)
+  // Register Standard processes for protons and ions
+
+    else if (name == "ion-standard") {
+      if (ionIsRegisted) 
+	G4cout << "ActarSimPhysicsList::AddPhysicsList: " << name  
+	       << " cannot be registered ---- ion List already existing" 
+	       << G4endl;
+      else {
+	RegisterPhysics( new HadrontherapyIonStandard(name) );
+	ionIsRegisted = true;
+	G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
+      }
+
+  } else if (name == "ionGasModels" && !gasIsRegisted && emBuilderIsRegisted) {
+      //AddPhysicsList("emstandard");
+    AddIonGasModels();   
+    gasIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
+
+  } else if (name == "elastic" && !helIsRegisted && emBuilderIsRegisted) {
+    RegisterPhysics(new G4HadronElasticPhysics());
+    helIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "binary" && !bicIsRegisted && emBuilderIsRegisted) {
+    RegisterPhysics(new G4HadronInelasticQBBC());
+    bicIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "binary_ion" && !ionIsRegisted && emBuilderIsRegisted) {
+    RegisterPhysics(new G4IonBinaryCascadePhysics());
+    ionIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "gamma_nuc" && !gnucIsRegisted && emBuilderIsRegisted) {
+    RegisterPhysics(new G4EmExtraPhysics());
+    gnucIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "stopping" && !stopIsRegisted && emBuilderIsRegisted) {
+    RegisterPhysics(new G4StoppingPhysics());
+    stopIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
+
+  } else if (name == "decay" && !decayIsRegisted) {
+    RegisterPhysics(new ActarSimDecaysBuilder());
+    decayIsRegisted = true;
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
+
+  } else if(!emBuilderIsRegisted) {
+    G4cout << "PhysicsList::AddPhysicsList <" << name << ">" 
+           << " fail - EM physics should be registered first " << G4endl;
+  } else {
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" 
+           << " fail - module is already regitered or is unknown " << G4endl;
+  }
+
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+// Bosons
+#include "G4Gamma.hh"
+
+// leptons
+#include "G4Electron.hh"
+#include "G4Positron.hh"
+
+#include "G4MuonPlus.hh"
+#include "G4MuonMinus.hh"
+
+// Mesons
+#include "G4PionPlus.hh"
+#include "G4PionMinus.hh"
+
+#include "G4KaonPlus.hh"
+#include "G4KaonMinus.hh"
+
+// Baryons
+#include "G4Proton.hh"
+#include "G4AntiProton.hh"
+#include "G4Neutron.hh"
+#include "G4AntiNeutron.hh"
+
+// Nuclei
+#include "G4Deuteron.hh"
+#include "G4Triton.hh"
+#include "G4Alpha.hh"
+#include "G4GenericIon.hh"
+
 void ActarSimPhysicsList::ConstructParticle() {
   //
   // Construct Particles
@@ -125,10 +293,38 @@ void ActarSimPhysicsList::ConstructParticle() {
 
   if(verbose > 0)
     G4cout << "Construct Particles" << G4endl;
-
+  /*
+  // gamma
+  G4Gamma::GammaDefinition();
+  
+  // leptons
+  G4Electron::ElectronDefinition();
+  G4Positron::PositronDefinition();
+  G4MuonPlus::MuonPlusDefinition();
+  G4MuonMinus::MuonMinusDefinition();
+  
+  // mesons
+  G4PionPlus::PionPlusDefinition();
+  G4PionMinus::PionMinusDefinition();
+  G4KaonPlus::KaonPlusDefinition();
+  G4KaonMinus::KaonMinusDefinition();
+  
+  // baryons
+  G4Proton::ProtonDefinition();
+  G4AntiProton::AntiProtonDefinition();
+  G4Neutron::NeutronDefinition();
+  G4AntiNeutron::AntiNeutronDefinition();
+  
+  // ions
+  G4Deuteron::DeuteronDefinition();
+  G4Triton::TritonDefinition();
+  G4Alpha::AlphaDefinition();
+  G4GenericIon::GenericIonDefinition();
+  */
   G4VModularPhysicsList::ConstructParticle();
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 void ActarSimPhysicsList::ConstructProcess() {
@@ -148,10 +344,8 @@ void ActarSimPhysicsList::ConstructProcess() {
   if(verbose > 0)
     G4cout << "Construct Processes" << G4endl;
 
-  if(!emBuilderIsRegisted) 
-    AddPhysicsList("standard");
-  if(!emPhysicsList)
-    G4VModularPhysicsList::ConstructProcess();
+  if(!emBuilderIsRegisted) { AddPhysicsList("standard"); }
+  if(!emPhysicsList) { G4VModularPhysicsList::ConstructProcess(); }
   else{
    AddTransportation();
    emPhysicsList->ConstructProcess();
@@ -168,188 +362,7 @@ void ActarSimPhysicsList::ConstructProcess() {
 
 }
 
-void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
-  //
-  // Registering the physics processes
-  //
-  if(verbose > 0) {
-    G4cout << "Add Physics <" << name 
-           << "> emBuilderIsRegisted= " << emBuilderIsRegisted
-           << G4endl;
-  }
-  if ((name == "standard") && !emBuilderIsRegisted) {
-    RegisterPhysics(new G4EmQEDBuilder());
-    RegisterPhysics(steplimiter);
-    RegisterPhysics(new G4EmMuonBuilder());
-    RegisterPhysics(new G4EmHadronBuilder());
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-
-  } else if (name == "lowenergy" && !emBuilderIsRegisted) {
-    RegisterPhysics(new G4LowEnergyQEDBuilder());
-    RegisterPhysics(steplimiter);
-    RegisterPhysics(new G4EmMuonBuilder());
-    RegisterPhysics(new G4EmHadronBuilder());
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-    
-  } 
-
-  //DPL
-  else if (name == "local") {
-
-    delete emPhysicsList;
-    emPhysicsList = new PhysListEmStandard(name);
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-
-  }
-
-  else if ((name == "emstandard_opt0") && !emBuilderIsRegisted) {
-    
-    //fEmName = name;
-    delete emPhysicsList;
-    emPhysicsList = new G4EmStandardPhysics(1);
-    //RegisterPhysics(steplimiter);
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl; 
-  }
-
-  else if (name == "emstandard_opt1") {
-
-    // emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new G4EmStandardPhysics_option1();
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-   
-  } 
-  else if (name == "emstandard_opt2") {
-
-    // emName = name; 
-    delete emPhysicsList;
-    emPhysicsList = new G4EmStandardPhysics_option2();
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-    
-  }
-  else if (name == "emstandard_opt3") {
-
-    //emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new G4EmStandardPhysics_option3();
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-   
-  }
-  else if (name == "emstandard_opt4") {
-
-    //emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new G4EmStandardPhysics_option4();
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-   
-  }
-  else if (name == "standardSS") {
-
-    // emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new PhysListEmStandardSS(name);
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-
-  }
-  else if (name == "standardWVI") {
-
-    //emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new PhysListEmStandardWVI(name);
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-
-  }
-  else if (name == "standardGS") {
-    //emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new PhysListEmStandardGS(name);
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-    
-  }
-  else if (name == "empenelope"){
-    //emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new G4EmPenelopePhysics();
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-    
-  }
-  else if (name == "emlivermore"){
-    //emName = name;
-    delete emPhysicsList;
-    emPhysicsList = new G4EmLivermorePhysics();
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
-  }  
-  // Register Low Energy  processes for protons and ions
-  // Stopping power parameterisation: ICRU49 (default model)
-  // Register Standard processes for protons and ions
-  else if (name == "ion-standard") {
-    if (ionIsRegisted) 
-      G4cout << "ActarSimPhysicsList::AddPhysicsList: " << name  
-	     << " cannot be registered ---- ion List already existing" 
-	     << G4endl;
-    else {
-      G4cout << "ActarSimPhysicsList::AddPhysicsList: " << name 
-	     << " is registered" << G4endl;
-      RegisterPhysics( new HadrontherapyIonStandard(name) );
-      ionIsRegisted = true;
-    }
-  }
-  else if (name == "penelope" && !emBuilderIsRegisted) {
-    RegisterPhysics(new G4PenelopeQEDBuilder());
-    RegisterPhysics(steplimiter);
-    RegisterPhysics(new G4EmMuonBuilder());
-    RegisterPhysics(new G4EmHadronBuilder());
-    emBuilderIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-
-  } else if (name == "decay" && !decayIsRegisted) {
-    RegisterPhysics(new ActarSimDecaysBuilder());
-    decayIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-
-  } else if (name == "elastic" && !helIsRegisted) {
-    RegisterPhysics(new EmHadronElasticBuilder());
-    helIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-    
-  } else if (name == "binary" && !bicIsRegisted) {
-    RegisterPhysics(new EmBinaryCascadeBuilder());
-    bicIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-    
-  } else if (name == "binary_ion" && !ionIsRegisted) {
-    RegisterPhysics(new EmIonBinaryCascadeBuilder());
-    ionIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-
-  } else if (name == "gamma_nuc" && !gnucIsRegisted) {
-    RegisterPhysics(new EmGammaNucleusBuilder());
-    gnucIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-    
-  } else if (name == "ionGasModels") {
-    //AddPhysicsList("emstandard_opt0");
-      AddIonGasModels();   
-      G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-  }
-
-  else {
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" 
-           << " fail - module is already regitered or is unknown " << G4endl;
-  }
-}
-
-
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 void ActarSimPhysicsList::SetCuts(){
@@ -365,6 +378,8 @@ void ActarSimPhysicsList::SetCuts(){
   if (verbose>0) DumpCutValuesTable();
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 void ActarSimPhysicsList::SetVerbose(G4int val){
   //
@@ -373,6 +388,8 @@ void ActarSimPhysicsList::SetVerbose(G4int val){
 
   verbose = val;
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 void ActarSimPhysicsList::SetCutForGamma(G4double cut){
@@ -384,6 +401,8 @@ void ActarSimPhysicsList::SetCutForGamma(G4double cut){
   SetParticleCuts(cutForGamma, G4Gamma::Gamma());
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 void ActarSimPhysicsList::SetCutForElectron(G4double cut){
   //
@@ -393,6 +412,8 @@ void ActarSimPhysicsList::SetCutForElectron(G4double cut){
   cutForElectron = cut;
   SetParticleCuts(cutForElectron, G4Electron::Electron());
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 void ActarSimPhysicsList::SetCutForPositron(G4double cut) {

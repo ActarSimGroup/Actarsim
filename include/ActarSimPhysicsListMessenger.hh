@@ -40,6 +40,7 @@ private:
   G4UIcmdWithADoubleAndUnit* allCutCmd;    
   G4UIcmdWithAnInteger*      verbCmd;
   G4UIcmdWithAString*        pListCmd;
+  G4UIcmdWithAString*        RmPListCmd;
    
 public:
   

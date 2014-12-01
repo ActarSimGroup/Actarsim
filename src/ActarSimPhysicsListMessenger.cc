@@ -66,6 +66,10 @@ ActarSimPhysicsListMessenger::ActarSimPhysicsListMessenger(ActarSimPhysicsList* 
   pListCmd->SetParameterName("PList",false);
   pListCmd->AvailableForStates(G4State_PreInit);  
 
+  RmPListCmd = new G4UIcmdWithAString("/ActarSim/phys/RemovePhysics",this);  
+  RmPListCmd->SetGuidance("Remove all modula physics list.");
+  RmPListCmd->AvailableForStates(G4State_Idle);  
+
   verbCmd = new G4UIcmdWithAnInteger("/ActarSim/phys/verbose",this);  
   verbCmd->SetGuidance("Set verbose level for processes");
   verbCmd->SetParameterName("pVerb",false);
@@ -82,6 +86,7 @@ ActarSimPhysicsListMessenger::~ActarSimPhysicsListMessenger(){
   delete protoCutCmd;
   delete allCutCmd;
   delete pListCmd;
+  delete RmPListCmd;
   delete verbCmd;
   delete physDir;  
 }
@@ -114,4 +119,7 @@ void ActarSimPhysicsListMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == pListCmd )
    { pPhysicsList->AddPhysicsList(newValue);}
+
+  if( command == RmPListCmd )
+   { pPhysicsList->~ActarSimPhysicsList();}
 }

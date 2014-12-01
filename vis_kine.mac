@@ -239,7 +239,7 @@
 /ActarSim/gun/Kine/labEnergy 650 MeV
 /ActarSim/gun/Kine/randomThetaCM on
 /ActarSim/gun/Kine/randomThetaRange 0.0 180.0
-/ActarSim/gun/Kine/randomPhiAngle off
+/ActarSim/gun/Kine/randomPhiAngle on
 #/ActarSim/gun/Kine/userThetaCM 100.0 deg
 #/ActarSim/gun/Kine/userPhiAngle 0. deg
 #/ActarSim/gun/Kine/vertexPosition 0. 0. 15 cm

@@ -41,6 +41,8 @@ private:
   G4bool   bicIsRegisted;
   G4bool   ionIsRegisted;
   G4bool   gnucIsRegisted;
+  G4bool   gasIsRegisted;
+  G4bool   stopIsRegisted;
   
   ActarSimPhysicsListMessenger* pMessenger;
   ActarSimStepLimiterBuilder* steplimiter;

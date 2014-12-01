@@ -5,6 +5,9 @@
 #
 # File :
 /gui/addMenu g4file G4File
+/gui/addButton g4file vis_actar "/control/execute vis_actar.mac"
+/gui/addButton g4file vis_maiko "/control/execute vis_maiko.mac"
+/gui/addButton g4file vis_kine "/control/execute vis_kine.mac"
 /gui/addButton g4file Continue continue
 /gui/addButton g4file Exit "exit"
 #
@@ -16,17 +19,35 @@
 #/gui/addButton actarsim "ion"    "/ActarSim/gun/particle ion"
 #/gui/addButton actarsim "C-12"   "/ActarSim/gun/ion 6 12"
 
+# Library menu :
+/gui/addMenu lib Lib
+#/gui/addButton lib "Remove libraries" "/ActarSim/phys/RemovePhysics"
+/gui/addButton lib "emstandard" "/ActarSim/phys/addPhysics emstandard"
+/gui/addButton lib "emstandard_opt3" "/ActarSim/phys/addPhysics emstandard_opt3"
+/gui/addButton lib "emlivermore" "/ActarSim/phys/addPhysics emlivermore"
+/gui/addButton lib "ionGasModels" "/ActarSim/phys/addPhysics ionGasModels"
+
 # Run menu :
 /gui/addMenu run Run
+/gui/addButton run "Update" "/ActarSim/det/update"
 /gui/addButton run "Initialize" "/run/initialize"
 /gui/addButton run "beamOn 1" "/run/beamOn 1"
 /gui/addButton run "beamOn 2" "/run/beamOn 2"
-/gui/addButton run vis_actar "/control/execute vis_actar.mac"
-/gui/addButton run vis_maiko "/control/execute vis_maiko.mac"
-/gui/addButton run vis_kine "/control/execute vis_kine.mac"
+/gui/addButton run "Electron cut 1 mm" "/ActarSim/phys/setECut 1 mm"
+/gui/addButton run "Electron cut 10 km" "/ActarSim/phys/setECut 10 km"
 
 # Gun menu :
-#/gui/addMenu gun Gun
+/gui/addMenu gun Gun
+/gui/addButton gun "beam" /ActarSim/gun/ion
+#/gui/addButton gun "proton" /ActarSim/gun/ion 1 1 1 0.0 1.00782503207
+#/gui/addButton gun "alpha" /ActarSim/gun/ion 2 4 2 0.0 4.00260325415
+#/gui/addButton gun "Carbon12" /ActarSim/gun/ion 6 12 6 0.0 12.
+#/gui/addButton gun "Mg24" /ActarSim/gun/ion 12 24 12 0.0 23.985041699
+#/gui/addButton gun "Fe56" /ActarSim/gun/ion 26 56 26 0.0 55.934937475
+/gui/addButton gun "Energy" /ActarSim/gun/Kine/labEnergy 
+#/gui/addButton gun "5 MeV" /ActarSim/gun/Kine/labEnergy 5 MeV
+#/gui/addButton gun "50 MeV" /ActarSim/gun/Kine/labEnergy 50 MeV
+#/gui/addButton gun "100 MeV" /ActarSim/gun/Kine/labEnergy 100 MeV
 #/gui/addButton gun "RandomTheta ON"  "/ActarSim/gun/randomTheta on"
 #/gui/addButton gun "RandomTheta OFF"  "/ActarSim/gun/randomTheta off"
 #/gui/addButton gun "50 MeV"  "/gun/energy 50 MeV"
@@ -38,10 +59,11 @@
 #/gui/addButton gun "proton"  "/gun/particle proton"
 #
 # Detector menu
-#/gui/addMenu det Detector 
+/gui/addMenu det Detector 
 #/gui/addButton det "He_1900"  "/ActarSim/det/gas/setGasMat He_1900"
-#/gui/addButton det "Deuterium (STP)"  "/ActarSim/det/gas/setGasMat D2_STP"
-
+/gui/addButton det "di-Hydrogen (STP)"  "/ActarSim/det/gas/setGasMat H2_STP"
+/gui/addButton det "Deuterium (STP)"  "/ActarSim/det/gas/setGasMat D2_STP"
+/gui/addButton det "isobutane (STP)"  "/ActarSim/det/gas/setGasMat isoC4H10STP"
 #
 # Vis menu :
 #/gui/addMenu vis Vis

@@ -65,8 +65,8 @@ G4bool ActarSimGasSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
   // Invoked by G4SteppingManager for each step
   //
 
-  //G4double edep = aStep->GetTotalEnergyDeposit()/MeV;
-  G4double edep = -aStep->GetDeltaEnergy()/MeV;
+  G4double edep = aStep->GetTotalEnergyDeposit()/MeV;
+  //G4double edep = -aStep->GetDeltaEnergy()/MeV;
 
   if(edep==0.) return false;
 

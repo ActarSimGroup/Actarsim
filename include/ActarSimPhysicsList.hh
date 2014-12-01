@@ -35,7 +35,6 @@ private:
   G4double cutForPositron;
   G4int    verbose;
   G4bool   emBuilderIsRegisted;
-  G4bool   decayIsRegisted;
   G4bool   stepLimiterIsRegisted;
   G4bool   helIsRegisted;
   G4bool   bicIsRegisted;

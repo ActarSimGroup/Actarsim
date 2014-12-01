@@ -25,7 +25,7 @@
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
-//#include "G4DecayPhysics.hh"
+#include "G4DecayPhysics.hh"
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronInelasticQBBC.hh"
 #include "G4IonBinaryCascadePhysics.hh"
@@ -38,20 +38,8 @@
 #include "PhysListEmStandardGS.hh"
 #include "HadrontherapyIonStandard.hh"
 
-#include "ActarSimParticlesBuilder.hh"
+//#include "ActarSimParticlesBuilder.hh"
 #include "ActarSimStepLimiterBuilder.hh"
-#include "ActarSimDecaysBuilder.hh"
-
-//#include "G4EmQEDBuilder.hh"
-//#include "G4EmMuonBuilder.hh"
-//#include "G4EmHadronBuilder.hh"
-//#include "G4LowEnergyQEDBuilder.hh"
-//#include "G4PenelopeQEDBuilder.hh"
-
-//#include "EmHadronElasticBuilder.hh"
-//#include "EmBinaryCascadeBuilder.hh"
-//#include "EmIonBinaryCascadeBuilder.hh"
-//#include "EmGammaNucleusBuilder.hh"
 
 #include "G4UnitsTable.hh"
 #include "G4LossTableManager.hh"
@@ -83,7 +71,6 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   //
   
   emBuilderIsRegisted = false;
-  decayIsRegisted = false;
   stepLimiterIsRegisted = false;
   helIsRegisted = false;
   bicIsRegisted = false;
@@ -106,7 +93,8 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   //emPhysicsList = new G4EmStandardPhysics(1);
 
   // Add Physics builders
-  RegisterPhysics(new ActarSimParticlesBuilder());
+  RegisterPhysics(new G4DecayPhysics());
+  //RegisterPhysics(new ActarSimParticlesBuilder());
   steplimiter = new ActarSimStepLimiterBuilder();
 }
 
@@ -239,11 +227,6 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
     stopIsRegisted = true;
     G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;    
 
-  } else if (name == "decay" && !decayIsRegisted) {
-    RegisterPhysics(new ActarSimDecaysBuilder());
-    decayIsRegisted = true;
-    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-
   } else if(!emBuilderIsRegisted) {
     G4cout << "PhysicsList::AddPhysicsList <" << name << ">" 
            << " fail - EM physics should be registered first " << G4endl;
@@ -258,33 +241,26 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Bosons
+#include "G4ChargedGeantino.hh"
+#include "G4Geantino.hh"
 #include "G4Gamma.hh"
+#include "G4OpticalPhoton.hh"
 
 // leptons
 #include "G4Electron.hh"
 #include "G4Positron.hh"
+#include "G4NeutrinoE.hh"
+#include "G4AntiNeutrinoE.hh"
 
 #include "G4MuonPlus.hh"
 #include "G4MuonMinus.hh"
+#include "G4NeutrinoMu.hh"
+#include "G4AntiNeutrinoMu.hh"
 
-// Mesons
-#include "G4PionPlus.hh"
-#include "G4PionMinus.hh"
-
-#include "G4KaonPlus.hh"
-#include "G4KaonMinus.hh"
-
-// Baryons
-#include "G4Proton.hh"
-#include "G4AntiProton.hh"
-#include "G4Neutron.hh"
-#include "G4AntiNeutron.hh"
-
-// Nuclei
-#include "G4Deuteron.hh"
-#include "G4Triton.hh"
-#include "G4Alpha.hh"
-#include "G4GenericIon.hh"
+// Hadrons
+#include "G4MesonConstructor.hh"
+#include "G4BaryonConstructor.hh"
+#include "G4IonConstructor.hh"
 
 void ActarSimPhysicsList::ConstructParticle() {
   //
@@ -293,35 +269,41 @@ void ActarSimPhysicsList::ConstructParticle() {
 
   if(verbose > 0)
     G4cout << "Construct Particles" << G4endl;
-  /*
-  // gamma
+
+// pseudo-particles
+  G4Geantino::GeantinoDefinition();
+  G4ChargedGeantino::ChargedGeantinoDefinition();
+  
+// gamma
   G4Gamma::GammaDefinition();
   
-  // leptons
+// optical photon
+  G4OpticalPhoton::OpticalPhotonDefinition();
+
+// leptons
   G4Electron::ElectronDefinition();
   G4Positron::PositronDefinition();
   G4MuonPlus::MuonPlusDefinition();
   G4MuonMinus::MuonMinusDefinition();
-  
-  // mesons
-  G4PionPlus::PionPlusDefinition();
-  G4PionMinus::PionMinusDefinition();
-  G4KaonPlus::KaonPlusDefinition();
-  G4KaonMinus::KaonMinusDefinition();
-  
-  // baryons
-  G4Proton::ProtonDefinition();
-  G4AntiProton::AntiProtonDefinition();
-  G4Neutron::NeutronDefinition();
-  G4AntiNeutron::AntiNeutronDefinition();
-  
-  // ions
-  G4Deuteron::DeuteronDefinition();
-  G4Triton::TritonDefinition();
-  G4Alpha::AlphaDefinition();
-  G4GenericIon::GenericIonDefinition();
-  */
-  G4VModularPhysicsList::ConstructParticle();
+
+  G4NeutrinoE::NeutrinoEDefinition();
+  G4AntiNeutrinoE::AntiNeutrinoEDefinition();
+  G4NeutrinoMu::NeutrinoMuDefinition();
+  G4AntiNeutrinoMu::AntiNeutrinoMuDefinition();  
+
+// mesons
+  G4MesonConstructor mConstructor;
+  mConstructor.ConstructParticle();
+
+// barions
+  G4BaryonConstructor bConstructor;
+  bConstructor.ConstructParticle();
+
+// ions
+  G4IonConstructor iConstructor;
+  iConstructor.ConstructParticle();
+
+  //G4VModularPhysicsList::ConstructParticle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -331,15 +313,6 @@ void ActarSimPhysicsList::ConstructProcess() {
   //
   // Construct Processes
   //
-  /*
-  // transportation
-  //
-  AddTransportation();
-  
-  // electromagnetic physics list
-  //
-  emPhysicsList->ConstructProcess();
-  */
 
   if(verbose > 0)
     G4cout << "Construct Processes" << G4endl;

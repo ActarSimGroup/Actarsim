@@ -194,7 +194,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         G4cout << G4endl
                << " *************************************************** " << G4endl
                << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
-               << " * No incident ion selected: using 8He as incident beam" << G4endl
+               << " * No incident ion selected: using 8He as incident beam" << G4endl;
         G4cout << " *************************************************** "<< G4endl;
       }
       pBeamInfo->SetStatus(1);
@@ -282,7 +282,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   }//end of  if(beamInteractionFlag == "on")
 
   // CASE A2:   Beam not included...
-  else if(realisticBeamFlag == "on") 
+  else if(realisticBeamFlag == "on") {
     //Not anymore a gaussian, but a flat distribution in a given radius around Z axis.
     G4double radiusAtEntrance   = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
     G4double phi2AtEntrance = G4UniformRand() * twopi; //angle for defining the entrance point

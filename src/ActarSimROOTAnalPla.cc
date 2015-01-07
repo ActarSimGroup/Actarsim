@@ -432,15 +432,15 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
   //             by other ActarSimSciGeantHit and some data members are updated
 
   if(mode == 0) { //creation
-    if( gHit->GetDetName() == "plaPhys" )   cHit->SetType(1);
+    if( gHit->GetDetName() == "plaPhys" )   ; //cHit->SetType(1);
     else G4cout << "ERROR in R3BROOTAnalCal::AddCalCrystalHit()." << G4endl
                 << "Unknown Detector Name: "<< gHit->GetDetName() << G4endl << G4endl;
 	  
 	  cHit->SetDetectorID(gHit->GetDetID());
 	  
-	  cHit->SetDetCenterCoordinateX(gHit->GetDetCenterCoordinate().x()/mm); // center of the present silicon, dypang 090130
-	  cHit->SetDetCenterCoordinateY(gHit->GetDetCenterCoordinate().y()/mm); // center of the present silicon, dypang 090130
-	  cHit->SetDetCenterCoordinateZ(gHit->GetDetCenterCoordinate().z()/mm); // center of the present silicon, dypang 090130
+	  //cHit->SetDetCenterCoordinateX(gHit->GetDetCenterCoordinate().x()/mm); // center of the present silicon, dypang 090130
+	  //cHit->SetDetCenterCoordinateY(gHit->GetDetCenterCoordinate().y()/mm); // center of the present silicon, dypang 090130
+	  //cHit->SetDetCenterCoordinateZ(gHit->GetDetCenterCoordinate().z()/mm); // center of the present silicon, dypang 090130
 	  
 	  cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
 	  cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);

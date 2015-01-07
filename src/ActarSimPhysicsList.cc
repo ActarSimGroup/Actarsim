@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 04/04/06 by Hector Alvarez Pol
+//*-- Last Update: 16/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   Physics List 
@@ -185,17 +185,17 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
   // Stopping power parameterisation: ICRU49 (default model)
   // Register Standard processes for protons and ions
 
-    else if (name == "ion-standard") {
-      if (ionIsRegisted) 
-	G4cout << "ActarSimPhysicsList::AddPhysicsList: " << name  
+  else if (name == "ion-standard") {
+    if (ionIsRegisted) 
+      G4cout << "ActarSimPhysicsList::AddPhysicsList: " << name  
 	       << " cannot be registered ---- ion List already existing" 
 	       << G4endl;
-      else {
-	RegisterPhysics( new HadrontherapyIonStandard(name) );
-	ionIsRegisted = true;
-	G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
-      }
-
+    else {
+      RegisterPhysics( new HadrontherapyIonStandard(name) );
+      ionIsRegisted = true;
+      G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
+    }
+    
   } else if (name == "ionGasModels" && !gasIsRegisted && emBuilderIsRegisted) {
       //AddPhysicsList("emstandard");
     AddIonGasModels();   

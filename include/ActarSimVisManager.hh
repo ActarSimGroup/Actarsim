@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 28/10/05
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   Visualization manager. Common to all G4 programs.   

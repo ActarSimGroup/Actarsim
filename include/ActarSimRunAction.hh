@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 28/10/05
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   Controls the actions to perform before and after a run.
@@ -19,8 +19,6 @@
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 class G4Run;
 
 class ActarSimRunAction : public G4UserRunAction
@@ -35,7 +33,6 @@ class ActarSimRunAction : public G4UserRunAction
 
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2005
-//*-- Last Update:  16/05/08
+//*-- Last Update:  1/12/14
 // --------------------------------------------------------------
 // Description:
 //   Detector construction and complementary definitions
@@ -84,12 +84,11 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   sciSD = new ActarSimSciSD( sciSDname );
   SDman->AddNewDetector( sciSD );
           
-    //  sciRing volume
-    G4String sciRingSDname = "sciRingSD";
-    sciRingSD = new ActarSimSciRingSD( sciRingSDname );
-    SDman->AddNewDetector( sciRingSD );
+  //  sciRing volume
+  G4String sciRingSDname = "sciRingSD";
+  sciRingSD = new ActarSimSciRingSD( sciRingSDname );
+  SDman->AddNewDetector( sciRingSD );
        
-          
   // pla volume
   G4String plaSDname = "plaSD";
   plaSD = new ActarSimPlaSD( plaSDname );
@@ -97,7 +96,6 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
 
   //define materials and set medium material
   DefineMaterials();
-  //TODO -> Check if materials support now (G4.9 and later)independent pressure parameter or redefinition...
   SetMediumMaterial("Air");
   SetDefaultMaterial("Galactic");
   //SetChamberMaterial("Air");
@@ -247,8 +245,8 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
                                     0);                    //copy number
     
     G4VisAttributes* mylarVisAtt = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
-	mylarVisAtt->SetVisibility(true);
-	mwindowLog->SetVisAttributes(mylarVisAtt);
+  	mylarVisAtt->SetVisibility(true);
+  	mwindowLog->SetVisAttributes(mylarVisAtt);
   }   
   else {
    
@@ -279,8 +277,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
     G4VPhysicalVolume* window_phys=new G4PVPlacement(rot,G4ThreeVector(windowPosX,windowPosY,windowPosZ),window_log,"window",chamberLog,false,0);  
 
-    //An aluminium plate to see the Pads activ aera
-
+    //An aluminium plate to see the Pads activ area
     G4double plateSizeX = 32*mm;
     G4double plateSizeY = 6.37*mm;
     G4double plateSizeZ = 64*mm;
@@ -380,7 +377,11 @@ void ActarSimDetectorConstruction::PrintDetectorParameters() {
     if (gasGeoIncludedFlag=="on") gasDet->PrintDetectorParameters();
     if (silGeoIncludedFlag=="on") silDet->PrintDetectorParameters();
     if (sciGeoIncludedFlag=="on") sciDet->PrintDetectorParameters();
-
+    if (MaikoGeoIncludedFlag=="on") {
+      silRingDet->PrintDetectorParameters();
+      sciRingDet->PrintDetectorParameters();
+      plaDet->PrintDetectorParameters();
+    }
 }
 
 
@@ -396,7 +397,7 @@ void ActarSimDetectorConstruction::SetMediumMaterial(G4String mat) {
 
 void ActarSimDetectorConstruction::SetDefaultMaterial(G4String mat) {
   //
-  // Sets the material the medium is made of
+  // Sets the default material
   //
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) defaultMaterial = pttoMaterial;
@@ -427,7 +428,6 @@ void ActarSimDetectorConstruction::UpdateGeometry() {
   //
   // Updates any change on the geometry of the detectors
   //
-
   G4RunManager::GetRunManager()->DefineWorldVolume(ConstructActar());
 }
 

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol (hapol@fpddux.usc.es)
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 03/04/06
+//*-- Last Update: 23/12/14
 // --------------------------------------------------------------
 // Description:
 //   Controls the actions to perform during the steps. Note
@@ -58,26 +58,6 @@ void ActarSimSteppingAction::UserSteppingAction(const G4Step* aStep) {
   if (track->GetDefinition()->GetPDGCharge() != 0. && track->GetParentID()==0)
     stepl = aStep->GetStepLength();
   else stepl = 0;
-
-
-  //TODO->Remove this and move to the right place in ROOTAnalGas...
-  /*
-  if ((edep!=0. && volume == detector->GetGasPhys())) {
-
-    //recording only the primary path length
-    if ( (track->GetTrackID()==1 && track->GetParentID()==0) ||
-         track->GetParentID()==1 )
-      eventaction->AddGas1(edep,stepl);
-    else if( (track->GetTrackID()==2 && track->GetParentID()==0) ||
-             track->GetParentID()==2 )
-      eventaction->AddGas2(edep,stepl);
-    else ;   // eventaction->AddMedium(edep,stepl);
-
-    if(track->GetTrackID()==2 && track->GetParentID()==0){
-      eventaction->SetLastPrim2Position(aStep->GetPostStepPoint()->GetPosition());  // dypang 080302
-    }
-  }
-  */
 
   // Histogramming
   if (gActarSimROOTAnalysis)

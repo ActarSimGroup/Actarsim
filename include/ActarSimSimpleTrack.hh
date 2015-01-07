@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2006
-//*-- Last Update: 13/06/06
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   A track simplified structure to reduce the space consumption

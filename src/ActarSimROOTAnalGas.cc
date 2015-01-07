@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 05/2005
-//*-- Last Update: 06/05/08 by Hector Alvarez Pol
+//*-- Last Update: 23/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   The gas detector part of the ROOT Analysis
@@ -54,10 +54,10 @@ static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 ActarSimROOTAnalGas::ActarSimROOTAnalGas():
   storeTracksFlag("off"), storeTrackHistosFlag("off"),
   storeEventsFlag("off"), storeSimpleTracksFlag("on") {
-//
-// Default constructor... Simply inits
-//
-init();
+  //
+  // Default constructor... Simply inits
+  //
+  init();
 }
 
 ActarSimROOTAnalGas::ActarSimROOTAnalGas(G4String sTFlag, G4String sTHFlag,
@@ -74,17 +74,16 @@ void ActarSimROOTAnalGas::init(){
   //
   // Makes most of the work of the constructor...
   //
-
   G4cout << "##################################################################" << G4endl
-	 << "###########    ActarSimROOTAnalGas::init()    ####################" << G4endl;
+	       << "###########    ActarSimROOTAnalGas::init()    ####################" << G4endl;
   G4cout << "########  Flags: storeTracksFlag=" << storeTracksFlag
-	 << ", storeTrackHistosFlag=" << storeTrackHistosFlag << "  ######" << G4endl
-	 << "######## storeEventsFlag=" << storeEventsFlag
-	 << ", storeSimpleTracksFlag=" << storeSimpleTracksFlag << "  ######" << G4endl;
+	       << ", storeTrackHistosFlag=" << storeTrackHistosFlag << "  ######" << G4endl
+	       << "######## storeEventsFlag=" << storeEventsFlag
+	       << ", storeSimpleTracksFlag=" << storeSimpleTracksFlag << "  ######" << G4endl;
   G4cout << "################################################################## " << G4endl;
 
   //The simulation file
-  simFile = ((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetSimFile();
+  simFile = ((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetSimFile();
   simFile->cd();
 
   //histograms of example
@@ -99,25 +98,13 @@ void ActarSimROOTAnalGas::init(){
 
   hEdepInGas = (TH1D *)0;
 
-
-/////  The accumulated energy loss and track length of each step, dypang 080225
+  /////  The accumulated energy loss and track length of each step, dypang 080225
   hbeamEnergyAtRange=(TProfile *)0;
-///// end of dypang part 080225
-
-  //primary particle physics (REMOVE OR MOVE TO BEAM HISTOS?????)
-  //hPrimTheta = (TH1D *)0;
-  //hPrimPhi = (TH1D *)0;
-  //hPrimEnergy = (TH1D *)0;
-  //hPrimEnergyVsTheta = (TH2D *)0;
+  ///// end of dypang part 080225
 
   //energy loss on the Gas
   hTotELossOnGas1 = (TH1D *)0;      //Energy Loss
   hTotELossOnGas2 = (TH1D *)0;      //Energy Loss
-
-  //histograms for the Cine Kinematic Results
-  //hScatteredIonKinematic = (TH2F *)0;
-  //hRecoilIonKinematic = (TH2F *)0;
-
 
   //The tree
   eventTree =
@@ -147,10 +134,6 @@ void ActarSimROOTAnalGas::init(){
 
   //minStrideLength = 0.1 * mm; //default value for the minimum stride length
   minStrideLength = 1.0 * mm; //default value for the minimum stride length
-  //minStrideLength = 0.5 * mm; //default value for the minimum stride length
-  //minStrideLength = 0.1 * mm; //default value for the minimum stride length
-  //minStrideLength = 10 * mm; //default value for the minimum stride length
-  //minStrideLength = 0. * mm; //default value for the minimum stride length
 }
 
 
@@ -298,7 +281,7 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
     if(hEdepInGas) hEdepInGas->Reset();
     else {
       hEdepInGas = new TH1D("hEdepInGas",
-			"Edep along Gas chamber ",
+			"Edep along Gas chamber (normalized!)",
 			300, 0, 300);
       hEdepInGas->SetXTitle("Z [mm]");
     }
@@ -357,21 +340,15 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
   //
   // Actions to perform in the analysis at the end of the event
   //
-
-  //ARREGGLAR ESTO!!! PASAR A LEER ESTO DE LOS STRIDES SIN TENER QUE HACERLO DE STEPPING ACTION>>> O HACERLO EN STEPPINGACTION AQUI, EN ROOTAnalGas...
-
   Double_t aEnergyInGas1 =0;// (EnerGas1 / MeV); // in [MeV]
   Double_t aEnergyInGas2 =0;// (EnerGas2 / MeV); // in [MeV]
   Double_t aTLInGas1 =0;// (TLGas1 / mm); // in [mm]
   Double_t aTLInGas2 =0;// (TLGas2 / mm); // in [mm]
 
   if(storeSimpleTracksFlag=="on"){  // added flag dypang 080301
-
     //moving here the recollection of the steps info into strides
     //which was previously made in the UserSteppingAction() function
     //Now we will use the GeantHits to recover the steps from the gas
-
-    //G4cout << " @@@@@@@@@@ IN EndOfEventAction() simple Tracks!" << G4endl;
 
     //Hit Container ID for ActarSimGasGeantHit
     G4int hitsCollectionID =
@@ -411,110 +388,97 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
     for (G4int i=0;i<NbHits;i++) {
       //G4cout << (*hitsCollection)[i]->GetDetName() << G4endl;
       for(G4int j=0;j<2;j++) { //that is, for 2 primaries
-	if((*hitsCollection)[i]->GetTrackID()==(j+1) &&
-	(*hitsCollection)[i]->GetParentID()==0){ //this step comes from a primary
-	  //New algorithm to reduce the number of GEANT4 steps to a few strides...
-	  if(simpleTrack[j]->GetNumberSteps() == 0) {
-	    //the first step in the stride!
-	    simpleTrack[j]->SetXPre((*hitsCollection)[i]->GetPrePos().x());
-	    simpleTrack[j]->SetYPre((*hitsCollection)[i]->GetPrePos().y());
-	    simpleTrack[j]->SetZPre((*hitsCollection)[i]->GetPrePos().z());
-	    simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x());
-	    simpleTrack[j]->SetYPost((*hitsCollection)[i]->GetPostPos().y());
-	    simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
-	    simpleTrack[j]->SetEnergyStride  ((*hitsCollection)[i]->GetEdep());
+        if((*hitsCollection)[i]->GetTrackID()==(j+1) &&
+	         (*hitsCollection)[i]->GetParentID()==0){ //this step comes from a primary
+           //New algorithm to reduce the number of GEANT4 steps to a few strides...
+          if(simpleTrack[j]->GetNumberSteps() == 0) {
+            //the first step in the stride!
+            simpleTrack[j]->SetXPre((*hitsCollection)[i]->GetPrePos().x());
+            simpleTrack[j]->SetYPre((*hitsCollection)[i]->GetPrePos().y());
+	          simpleTrack[j]->SetZPre((*hitsCollection)[i]->GetPrePos().z());
+            simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x());
+            simpleTrack[j]->SetYPost((*hitsCollection)[i]->GetPostPos().y());
+            simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
+            simpleTrack[j]->SetEnergyStride  ((*hitsCollection)[i]->GetEdep());
             simpleTrack[j]->SetParticleCharge((*hitsCollection)[i]->GetParticleCharge());
             simpleTrack[j]->SetParticleMass((*hitsCollection)[i]->GetParticleMass());
             simpleTrack[j]->SetParticleID((*hitsCollection)[i]->GetParticleID());
-	    simpleTrack[j]->SetStrideLength((*hitsCollection)[i]->GetStepLength());
-	    //G4cout << "Step lenth: " << (*hitsCollection)[i]->GetStepLength() << G4endl;
-	    simpleTrack[j]->SetParticleEnergy((*hitsCollection)[i]->GetStepEnergy());
-	    simpleTrack[j]->SetTimePre((*hitsCollection)[i]->GetPreToF());
-	    simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
-	    simpleTrack[j]->SetNumberSteps(1);
-	    simpleTrack[j]->SetTrackID((*hitsCollection)[i]->GetTrackID());
-	    simpleTrack[j]->SetParentTrackID((*hitsCollection)[i]->GetParentID());
-	    simpleTrack[j]->SetEventID(GetTheEventID());
-	    simpleTrack[j]->SetRunID(GetTheRunID());
-	    simpleTrack[j]->SetStrideOrdinal(strideOrdinal[j]);
+            simpleTrack[j]->SetStrideLength((*hitsCollection)[i]->GetStepLength());
+	          //G4cout << "Step lenth: " << (*hitsCollection)[i]->GetStepLength() << G4endl;
+	          simpleTrack[j]->SetParticleEnergy((*hitsCollection)[i]->GetStepEnergy());
+            simpleTrack[j]->SetTimePre((*hitsCollection)[i]->GetPreToF());
+            simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
+            simpleTrack[j]->SetNumberSteps(1);
+            simpleTrack[j]->SetTrackID((*hitsCollection)[i]->GetTrackID());
+            simpleTrack[j]->SetParentTrackID((*hitsCollection)[i]->GetParentID());
+            simpleTrack[j]->SetEventID(GetTheEventID());
+            simpleTrack[j]->SetRunID(GetTheRunID());
+            simpleTrack[j]->SetStrideOrdinal(strideOrdinal[j]);
 
 	    //G4cout << "First step in stride (type" << j << ")" << G4endl
 	    //<< "preTime " << (*hitsCollection)[i]->GetPreToF()
 	    //<< " postTime" << (*hitsCollection)[i]->GetPostToF()
 	    //<< "initPos: " <<  (*hitsCollection)[i]->GetPrePos()
 	    //<< "  finalPos: " <<  (*hitsCollection)[i]->GetPostPos()<< G4endl;
+          }
+          else {
+            simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x()); 
+            simpleTrack[j]->SetYPost((*hitsCollection)[i]->GetPostPos().y());
+            simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
+            simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
+            simpleTrack[j]->SetEnergyStride(simpleTrack[j]->GetEnergyStride() +
+					                                 (*hitsCollection)[i]->GetEdep());
+	          simpleTrack[j]->SetStrideLength(simpleTrack[j]->GetStrideLength() +
+					                                 (*hitsCollection)[i]->GetStepLength());
+	          simpleTrack[j]->SetNumberSteps(simpleTrack[j]->GetNumberSteps()+1);
 
-	  }
-	  else {
-	    simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x());
-	    simpleTrack[j]->SetYPost((*hitsCollection)[i]->GetPostPos().y());
-	    simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
-	    simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
-	    simpleTrack[j]->SetEnergyStride(simpleTrack[j]->GetEnergyStride() +
-					    (*hitsCollection)[i]->GetEdep());
-	    simpleTrack[j]->SetStrideLength(simpleTrack[j]->GetStrideLength() +
-					    (*hitsCollection)[i]->GetStepLength());
-	    simpleTrack[j]->SetNumberSteps(simpleTrack[j]->GetNumberSteps()+1);
-
-	    //G4cout << "next step of type "  << j << G4endl
-	    // << " postTime" << (*hitsCollection)[i]->GetPostToF()
-	    // << "length up to now: " << simpleTrack[j]->GetStrideLength()<< G4endl;
-
-	  }
- 
-	  if(simpleTrack[j]->GetStrideLength() > minStrideLength || (*hitsCollection)[i]->GetParticleCharge()<=2 ){
-	    //the sum of steps is larger that the given parameter... the stride goes to the Tree
-
-	    //G4cout << "...larger than minStrideLength and stored (type "
-	    // << j << ")  "  <<  NbStrides << "  "<<  strideOrdinal[j] << "  "
-	    //<< simpleTrack[j]->GetTimePre()<< "  "<<simpleTrack[j]->GetTimePost()<< G4endl;
-	    //G4cout<<"ActarSimROOTAnalGas------->EndOfEventAction() "<<simpleTrack[j]<<G4endl;
-	    new((*simpleTrackCA)[NbStrides])ActarSimSimpleTrack(*simpleTrack[j]);
-	    //G4cout<<"ActarSimROOTAnalGas------->EndOfEventAction()"<<simpleTrackCA<<G4endl;
-	    NbStrides++;
-	    strideOrdinal[j]++;
-	    simpleTrack[j]->Reset();
-	  }
-
-	//David Perez Loureiro 28-10-2011-----------------------------------------// 
-	if(j==0){
-	  aEnergyInGas1 += (*hitsCollection)[i]->GetEdep();
-	  aTLInGas1 +=(*hitsCollection)[i]->GetStepLength();	
-	}
-	else {
-	  aEnergyInGas2 += (*hitsCollection)[i]->GetEdep();
-	  aTLInGas2 +=(*hitsCollection)[i]->GetStepLength();	
-	}
-	//END-----------------------------------------// 
-	
-	}
-
-
+	          //G4cout << "next step of type "  << j << G4endl
+            // << " postTime" << (*hitsCollection)[i]->GetPostToF()
+            // << "length up to now: " << simpleTrack[j]->GetStrideLength()<< G4endl;
+          }
+          if(simpleTrack[j]->GetStrideLength() > minStrideLength || (*hitsCollection)[i]->GetParticleCharge()<=2 ){
+            //the sum of steps is larger that the given parameter... the stride goes to the Tree
+            //G4cout << "...larger than minStrideLength and stored (type "
+            // << j << ")  "  <<  NbStrides << "  "<<  strideOrdinal[j] << "  "
+            //<< simpleTrack[j]->GetTimePre()<< "  "<<simpleTrack[j]->GetTimePost()<< G4endl;
+            //G4cout<<"ActarSimROOTAnalGas------->EndOfEventAction() "<<simpleTrack[j]<<G4endl;
+            new((*simpleTrackCA)[NbStrides])ActarSimSimpleTrack(*simpleTrack[j]);
+            //G4cout<<"ActarSimROOTAnalGas------->EndOfEventAction()"<<simpleTrackCA<<G4endl;
+            NbStrides++;
+            strideOrdinal[j]++;
+            simpleTrack[j]->Reset();
+          }
+          //David Perez Loureiro 28-10-2011-----------------------------------------// 
+          if(j==0){
+            aEnergyInGas1 += (*hitsCollection)[i]->GetEdep();
+            aTLInGas1 +=(*hitsCollection)[i]->GetStepLength();	
+          }
+          else {
+            aEnergyInGas2 += (*hitsCollection)[i]->GetEdep();
+            aTLInGas2 +=(*hitsCollection)[i]->GetStepLength();	
+          }
+        }
       }//end of loop in primaries
-    
     }//end of loop on hits
 
  
     for(G4int j=0;j<2;j++) {
       if(simpleTrack[j]->GetNumberSteps() > 0){
-	if(simpleTrack[j]->GetStrideLength() > minStrideLength)
-	  G4cout << "ERROR in ActarSimRootAnalysis::EndOfEventAction: "
-		 << "Something does not match !? Consult an expert :-)" << G4endl;
-	//even if the sum of steps is not larger that the given parameter...
-	//the stride goes to the Tree (last steps of the track...)
-	//G4cout<<"End of loop  (type "<< j  << ")  "   <<  NbStrides << "  "
-	//<<  strideOrdinal[j] << "  "<< simpleTrack[j]->GetTimePre()
-	//<< "  "<<simpleTrack[j]->GetTimePost()<< G4endl;
-	//<<" with length " << simpleTrack[j]->GetStrideLength() << G4endl;
-	new((*simpleTrackCA)[NbStrides])ActarSimSimpleTrack(*simpleTrack[j]);
-	NbStrides++;
-	strideOrdinal[j]++;
-	simpleTrack[j]->Reset();
-
+      	if(simpleTrack[j]->GetStrideLength() > minStrideLength)
+          G4cout << "ERROR in ActarSimRootAnalysis::EndOfEventAction: "
+		             << "Something does not match !? Consult an expert :-)" << G4endl;
+	      //even if the sum of steps is not larger that the given parameter...
+	      //the stride goes to the Tree (last steps of the track...)
+	      //G4cout<<"End of loop  (type "<< j  << ")  "   <<  NbStrides << "  "
+	      //<<  strideOrdinal[j] << "  "<< simpleTrack[j]->GetTimePre()
+	      //<< "  "<<simpleTrack[j]->GetTimePost()<< G4endl;
+	      //<<" with length " << simpleTrack[j]->GetStrideLength() << G4endl;
+	      new((*simpleTrackCA)[NbStrides])ActarSimSimpleTrack(*simpleTrack[j]);
+        NbStrides++;
+        strideOrdinal[j]++;
+        simpleTrack[j]->Reset();
       }
     }
-
-//     eventTree->Fill();
   }
   //David Perez Loureiro ----------------------------//
   if(storeEventsFlag=="on"){  // added flag dypang 080301
@@ -525,22 +489,13 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
     theData->SetStepSumLengthOnGasPrim2(aTLInGas2);
     theData->SetEventID(anEvent->GetEventID());
     theData->SetRunID(GetTheRunID());
-
   }
-
-if(storeTrackHistosFlag=="on"){  // added flag dypang 080301
-    if (hStepSumLengthOnGas1)
-      hStepSumLengthOnGas1->Fill(aTLInGas1);
-    if (hStepSumLengthOnGas2)
-      hStepSumLengthOnGas2->Fill(aTLInGas2);
-    if (hTotELossOnGas1)
-      hTotELossOnGas1->Fill(aEnergyInGas1);
-    if (hTotELossOnGas2)
-      hTotELossOnGas2->Fill(aEnergyInGas2);
+  if(storeTrackHistosFlag=="on"){  // added flag dypang 080301
+    if (hStepSumLengthOnGas1) hStepSumLengthOnGas1->Fill(aTLInGas1);
+    if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->Fill(aTLInGas2);
+    if (hTotELossOnGas1) hTotELossOnGas1->Fill(aEnergyInGas1);
+    if (hTotELossOnGas2) hTotELossOnGas2->Fill(aEnergyInGas2);
   }
-
-  //eventTree->Fill();
-
   /*
   //checking the number of electrons created on the ion path...
   G4TrajectoryContainer* myTraCon = anEvent->GetTrajectoryContainer();
@@ -562,17 +517,13 @@ if(storeTrackHistosFlag=="on"){  // added flag dypang 080301
     //	 << "  : " <<  traje->Get()
     //	 << "  : " <<  traje->Get()
   }
-
 */
-
-
 }
 
 void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
   //
   // Actions to perform in the ACTAR gas detector analysis after each step
   //
-
   G4Track* myTrack = aStep->GetTrack();
   G4ThreeVector prePoint = aStep->GetPreStepPoint()->GetPosition();
   G4ThreeVector postPoint = aStep->GetPostStepPoint()->GetPosition();
@@ -584,55 +535,26 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
   G4double edep = aStep->GetTotalEnergyDeposit();
   if (edep <= 0.) return;
 
-
   if(storeTrackHistosFlag == "on") {
-
-
-    if(hEdepInGas && z2<300){
-      hEdepInGas->Fill(z,edep);
-    }
-
-    if(htrack){
-      htrack->Fill(postPoint.x(),
-		   postPoint.y(),
-		   postPoint.z());
-    }
-
-    if(htrackFromBeam){
-      htrackFromBeam->Fill(postPoint.x(),
-			   postPoint.y(),
-			   aStep->GetTotalEnergyDeposit());
-
-    }
-
-    if(htrackInPads){
-      htrackInPads->Fill(postPoint.x(),
-			 postPoint.z(),
-			 aStep->GetTotalEnergyDeposit());
-    }
-
-    if(myTrack->GetTrackID()==1 && myTrack->GetParentID()==0) {
-      //Here I have the first primary particle
-      if(htrack1InPads)
-	htrack1InPads->Fill(postPoint.x(),
-			    postPoint.z(),
-			    aStep->GetTotalEnergyDeposit());
-    }
-    if(myTrack->GetTrackID()==2 && myTrack->GetParentID()==0) {
-      //Here I have the second primary particle
-      if(htrack2InPads)
-	htrack2InPads->Fill(postPoint.x(),
-			    postPoint.z(),
-			    aStep->GetTotalEnergyDeposit());
-    }
-
-    ///// The accumulated energy loss and track length of each step, dypang 080225
-    //if(hbeamEnergyAtRange)
-    // hbeamEnergyAtRange->Fill(aEvent->GetTrackL1Gas(),aEvent->GetEnergy1Gas());
-    ///// endof dypang part 080225
-
+    if(hEdepInGas && z2<300) hEdepInGas->Fill(z,edep);
+    if(htrack) htrack->Fill(postPoint.x(),
+		                        postPoint.y(),
+	                          postPoint.z());
+    if(htrackFromBeam) htrackFromBeam->Fill(postPoint.x(),
+			                                      postPoint.y(),
+			                                      aStep->GetTotalEnergyDeposit());
+    if(htrackInPads) htrackInPads->Fill(postPoint.x(),
+			                                  postPoint.z(),
+			                                  aStep->GetTotalEnergyDeposit());
+    if(myTrack->GetTrackID()==1 && myTrack->GetParentID()==0) 
+      if(htrack1InPads) htrack1InPads->Fill(postPoint.x(),
+			                                      postPoint.z(),
+			                                      aStep->GetTotalEnergyDeposit());
+    if(myTrack->GetTrackID()==2 && myTrack->GetParentID()==0) 
+      if(htrack2InPads) htrack2InPads->Fill(postPoint.x(),
+			                                      postPoint.z(),
+			                                      aStep->GetTotalEnergyDeposit());
   }
-
 
   if(storeTracksFlag == "on") {
     theTracks->SetXCoord(postPoint.x());
@@ -648,6 +570,4 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
     theTracks->SetRunID(GetTheRunID());
     tracksTree->Fill();
   }
-
-
 }

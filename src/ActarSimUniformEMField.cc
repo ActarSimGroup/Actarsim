@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol (hapol@fpddux.usc.es)
+//*-- AUTHOR : Hector Alvarez-Pol 
 //*-- Date: 05/2005
-//*-- Last Update: 03/04/06
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //  Uniform electric and magnetic fields definition
@@ -71,7 +71,6 @@ ActarSimUniformEMField::ActarSimUniformEMField(const  ActarSimUniformEMField &p)
   GetGlobalFieldManager()->SetDetectorField(this);
   theChordFinder = new G4ChordFinder((G4MagneticField*)this, 1.0e-2 * mm, stepper);
   GetGlobalFieldManager()->SetChordFinder(theChordFinder);
-
 }
 
 

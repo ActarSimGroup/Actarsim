@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 04/2008
-//*-- Last Update:
+//*-- Last Update: 22/12/2014
 // --------------------------------------------------------------
 // Description:
 //   The information from the primaries generated in the reaction

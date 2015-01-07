@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 05/05/08
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   Actions to be performed before or after each event
@@ -10,6 +10,7 @@
 // Comments:
 //
 //   - 30/11/04 Created based on example/novice/N03 structure
+//   - 1/12/14 Cleaning old data structure
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
@@ -67,12 +68,6 @@ void ActarSimEventAction::BeginOfEventAction(const G4Event* evt){
 	     << G4endl;
     }
   }
-  //TODO->Remove completely as soon as implemented in ROOTAnalGas
-  // initialisation per event
-  //energy1Gas = 0.;
-  //energy2Gas = 0.;
-  //trackL1Gas = 0.;
-  //trackL2Gas = 0.;
 
  // Histogramming and other ROOT related actions
   if (gActarSimROOTAnalysis) gActarSimROOTAnalysis->BeginOfEventAction(evt);
@@ -98,16 +93,7 @@ void ActarSimEventAction::EndOfEventAction(const G4Event* evt) {
   // Histogramming
   if(gActarSimROOTAnalysis)
     gActarSimROOTAnalysis->EndOfEventAction(evt);
-/*
-    gActarSimROOTAnalysis->EndOfEventAction(evt,
-					       energy1Gas,
-					       energy2Gas,
-					       trackL1Gas,
-					       trackL2Gas,
-					       lastPrim2Position.getX(),
-					       lastPrim2Position.getY(),
-					       lastPrim2Position.getZ());
-*/
+
 
   // extract the trajectories and draw them
 

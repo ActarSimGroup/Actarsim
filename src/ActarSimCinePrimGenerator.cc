@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR:  (Original FORTRAN code) Wolfgang Mittig
-//*-- AUTHOR (translation to C++): Hector Alvarez-Pol  hapol@fpddux.usc.es
+//*-- AUTHOR: (Original FORTRAN code) Wolfgang Mittig
+//*-- AUTHOR (translation to C++): Hector Alvarez-Pol
 //*-- Date: 11/2005
-//*-- Last Update: 02/11/05
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   PROGRAM CINE CINEMATIQUE RELATIVISTIQUE
@@ -19,7 +19,6 @@
 
 #include "globals.hh"
 #include "Randomize.hh"
-
 
 using namespace std;
 

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol  hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 28/10/05
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the event actions
@@ -32,7 +32,7 @@ class ActarSimEventActionMessenger: public G4UImessenger
     void SetNewValue(G4UIcommand*, G4String);
     
   private:
-    ActarSimEventAction*     eventAction;
+    ActarSimEventAction*  eventAction;
     G4UIdirectory*        eventDir;   
     G4UIcmdWithAString*   DrawCmd;
     G4UIcmdWithAnInteger* PrintCmd;

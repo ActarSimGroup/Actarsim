@@ -1,11 +1,10 @@
 /////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update: 
+//*-- Last Update: 16/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
-//   SD for the Scintillators
+//   SD for the plastic scintillators
 //
 // --------------------------------------------------------------
 // Comments:

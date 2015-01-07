@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 17/05/08 by Hector Alvarez
+//*-- Last Update: 07/01/15 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   Silicon detector description
@@ -202,9 +202,9 @@ void ActarSimSilRingDetectorConstruction::PrintDetectorParameters() {
   //
 
   G4cout << "##################################################################"
-	 << G4endl
-	 << "####  ActarSimSilRingDetectorConstruction::PrintDetectorParameters() ####"
-	 << G4endl;
+	 	 << G4endl
+	 	 << "####  ActarSimSilRingDetectorConstruction::PrintDetectorParameters() ####"
+	 	 << G4endl;
   G4cout << "##################################################################"
-	 << G4endl;
+	 	 << G4endl;
 }

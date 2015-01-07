@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2006
-//*-- Last Update: 13/06/06
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   A track simplified structure to reduce the space consumption
@@ -81,26 +81,26 @@ ActarSimSimpleTrack & ActarSimSimpleTrack::operator=(const ActarSimSimpleTrack &
   //
 
   if (this != &right){
-  xPre = right.xPre;
-  yPre = right.yPre;
-  zPre = right.zPre;
-  xPost = right.xPost;
-  yPost = right.yPost;
-  zPost = right.zPost;
-  energyStride = right.energyStride;
-  particleCharge = right.particleCharge;
-  particleMass = right.particleMass;
-  particleID = right.particleID;
-  strideLength = right.strideLength;
-  particleEnergy = right.particleEnergy;
-  timePre = right.timePre;
-  timePost = right.timePost;
-  numberSteps = right.numberSteps;
-  strideOrdinal = right.strideOrdinal;
-  parentTrackID = right.parentTrackID;
-  trackID = right.trackID;
-  eventID = right.eventID;
-  runID = right.runID;
+    xPre = right.xPre;
+    yPre = right.yPre;
+    zPre = right.zPre;
+    xPost = right.xPost;
+    yPost = right.yPost;
+    zPost = right.zPost;
+    energyStride = right.energyStride;
+    particleCharge = right.particleCharge;
+    particleMass = right.particleMass;
+    particleID = right.particleID;
+    strideLength = right.strideLength;
+    particleEnergy = right.particleEnergy;
+    timePre = right.timePre;
+    timePost = right.timePost;
+    numberSteps = right.numberSteps;
+    strideOrdinal = right.strideOrdinal;
+    parentTrackID = right.parentTrackID;
+    trackID = right.trackID;
+    eventID = right.eventID;
+    runID = right.runID;
   }
   return *this;
 }

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 17/05/08 by Hector Alvarez
+//*-- Last Update: 15/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   Gas volume detector description
@@ -71,8 +71,6 @@ public:
   void SetBeamShieldGeometry(G4String);
   void SetLuciteBox(G4String);
 
-  G4Material* GetGasMaterial() {return gasMaterial;}
-
   void SetXGasBox(G4double val){xGasBox = val;} 
   void SetYGasBox(G4double val){yGasBox = val;} 
   void SetZGasBox(G4double val){zGasBox = val;} 
@@ -81,6 +79,8 @@ public:
   void SetInnerRadiusBeamShieldTub(G4double val){innerRadiusBeamShieldTub = val;} 
   void SetOuterRadiusBeamShieldTub(G4double val){outerRadiusBeamShieldTub = val;} 
   void SetLengthBeamShieldTub(G4double val){lengthBeamShieldTub = val;} 
+
+  G4Material* GetGasMaterial() {return gasMaterial;}
 
   G4String GetDetectorGeometry(){return detectorGeometry;}
   G4String GetBeamShieldGeometry(){return beamShieldGeometry;}
@@ -93,7 +93,6 @@ public:
   G4double GetInnerRadiusBeamShieldTub(void){return innerRadiusBeamShieldTub;} 
   G4double GetOuterRadiusBeamShieldTub(void){return outerRadiusBeamShieldTub;} 
   G4double GetLengthBeamShieldTub(void){return lengthBeamShieldTub;} 
-
 
   void UpdateGeometry();
   void PrintDetectorParameters();

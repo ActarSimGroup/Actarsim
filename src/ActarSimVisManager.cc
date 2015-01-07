@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol (H. Alvarez-Pol)
 //*-- Date: 11/2004
-//*-- Last Update: 03/04/06
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   Visualization manager. Common to all G4 programs.   
@@ -123,7 +123,7 @@ void ActarSimVisManager::RegisterGraphicsSystems () {
     G4cout << "##################################################################"
            << G4endl
            << "#######   ActarSimVisManager::RegisterGraphicsSystems ()   #######"
-	   << G4endl
+	         << G4endl
            << "You have successfully chosen to use the following graphics systems."
            << G4endl;
     PrintAvailableGraphicsSystems ();

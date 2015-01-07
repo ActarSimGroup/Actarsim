@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 17/05/08 by Hector Alvarez
+//*-- Last Update: 07/01/15 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   Scintillator detector description
@@ -90,7 +90,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   //  Constructs the scintillator detector elements
   //
   //talk with Patricia, Pang and Herve, May 08
-  //1) Introduce Silicon and CsI(Tl) detectors alla around. Use MUST style:
+  //1) Introduce Silicon and CsI(Tl) detectors all around. Use MUST style:
   //        Si: 300 microns thick, 100x100mm2, with 128 strides per side
   //(horizontal on one
   //        side and vertical in the opposite).
@@ -284,9 +284,9 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
 
     for(G4int rowZ=0;rowZ<2;rowZ++){
       for(G4int rowY=0;rowY<2;rowY++){
-	iterationNumber++;
-	sciPhys =
-	  new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSciHalfLength + separationFromBox + sciBulk_z),
+	      iterationNumber++;
+        sciPhys =
+          new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSciHalfLength + separationFromBox + sciBulk_z),
 						   (rowY-0.5)*2*(sciBulk_y+defectHalfLength),
 						   zBoxSciHalfLength+(rowZ-0.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition), 
 						   sciLog, "sciPhys", worldLog, false, iterationNumber);

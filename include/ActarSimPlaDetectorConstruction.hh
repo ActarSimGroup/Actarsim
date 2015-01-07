@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 17/05/08 by Hector Alvarez
+//*-- Last Update: 16/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
-//   Scintillator detector description
+//   Plastic (scintillator) detector description
 //
 // --------------------------------------------------------------
 // Comments:

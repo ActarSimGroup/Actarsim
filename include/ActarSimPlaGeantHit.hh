@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update:
+//*-- Last Update: 16/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
-//   A Geant Hit in the Scintillator volume. It represents
-//   the information of each step with energy deposited.
+//   A Geant Hit in the plastic (scintillator) volume. It 
+//  represents the information of each step with energy deposited.
 //
 // --------------------------------------------------------------
 // Comments:
@@ -27,26 +27,26 @@ class ActarSimPlaGeantHit : public G4VHit
 {
   private:
 
-  G4double      edep;    //energy deposited in the step
-	G4double      eBeforePla; // energy before entering silicon
-	G4double      eAfterPla;  // energy when exiting silicon
+  G4double      edep;       //energy deposited in the step
+	G4double      eBeforePla; // energy before entering plastic
+	G4double      eAfterPla;  // energy when exiting plastic
 
-  G4ThreeVector pos;     //(postStep) position of the step
+  G4ThreeVector pos;        //(postStep) position of the step
   G4ThreeVector prePos;     //(preStep) position of the step
-  G4ThreeVector localPos;  //local (for the given detName and detID)
-                           //coordinates of interaction (postStep)
+  G4ThreeVector localPos;   //local (for the given detName and detID)
+                            //coordinates of interaction (postStep)
   G4ThreeVector localPrePos;  //local (for the given detName and detID)
-                           //coordinates of interaction (postStep)
+                            //coordinates of interaction (postStep)
 
-  G4String      detName; //name of the volume where the interaction takes place
+  G4String      detName;    //name of the volume where the interaction takes place
   G4String      postDetName;  //name of the volume at the previous step
-  G4String      preDetName;    //name of the volume at the following step
-  G4int         detID;   //ID (copy) of the detector where the interaction takes place
-  G4ThreeVector detCenterCoordinate; // center of the present silicon, dypang 090130
+  G4String      preDetName; //name of the volume at the following step
+  G4int         detID;      //ID (copy) of the detector where the interaction takes place
+  G4ThreeVector detCenterCoordinate; // center of the present plastic, dypang 090130
 	
-  G4double      toF;     //ToF of the interaction (postStep)
+  G4double      toF;        //ToF of the interaction (postStep)
 
-  G4int         trackID; //trackID
+  G4int         trackID;    //trackID
   G4int         parentID;
 
   G4int         particleID;
@@ -82,7 +82,7 @@ public:
   void SetPreDetName(G4String Name){ preDetName = Name; }
   void SetPostDetName(G4String Name){ postDetName = Name; }
   void SetDetID(G4int id){ detID = id; }
-  void SetDetCenterCoordinate(G4ThreeVector center){detCenterCoordinate=center; } // center of the present silicon, dypang 090130
+  void SetDetCenterCoordinate(G4ThreeVector center){detCenterCoordinate=center; } // center of the present plastic, dypang 090130
 
   void SetToF(G4double Time){ toF = Time; }
 
@@ -106,7 +106,7 @@ public:
   G4String      GetPreDetName(){ return preDetName; }
   G4String      GetPostDetName(){ return postDetName; }
   G4int         GetDetID(){ return detID; }
-  G4ThreeVector GetDetCenterCoordinate(){return detCenterCoordinate; } // center of the present silicon, dypang 090130
+  G4ThreeVector GetDetCenterCoordinate(){return detCenterCoordinate; } // center of the present plastic, dypang 090130
 
   G4double      GetToF(){ return toF; }
 

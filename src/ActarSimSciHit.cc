@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update:
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   A Scintillator hit

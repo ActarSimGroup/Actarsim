@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 01/2006
-//*-- Last Update: 07/05/07 by Hector Alvarez
+//*-- Last Update: 1/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   The information from the beam parameters used for the reaction
@@ -49,8 +49,6 @@ void ActarSimBeamInfo::print(void){
   //
   // Prints info
   //
-
-  /*
   G4cout << "-------------------------------------------" << G4endl;
   G4cout << "------- ActarSimBeamInfo::print() ---------" << G4endl;
   G4cout << "-------------------------------------------" << G4endl;
@@ -59,7 +57,7 @@ void ActarSimBeamInfo::print(void){
   G4cout << " Parameters (emmitance) at the chamber entrance:  "  << G4endl;
   G4cout << " xEntrance: " << xEntrance / mm << " mm"
          << " yEntrance: " << yEntrance / mm << " mm"
-	 << " zEntrance: " << zEntrance / mm << " mm"<< G4endl;
+	       << " zEntrance: " << zEntrance / mm << " mm"<< G4endl;
   G4cout << " thetaEntrance: " << thetaEntrance / rad << " rad"
 	 << " phiEntrance: " << phiEntrance / rad << " rad"<< G4endl;
   G4cout << " Position at the reaction vertex:  "  << G4endl;
@@ -71,7 +69,6 @@ void ActarSimBeamInfo::print(void){
   G4cout << " Time at the reaction vertex:  " << timeVertex/ns << " ns" << G4endl;
   G4cout << " Status : " << status << G4endl;
   G4cout << "-------------------------------------------" << G4endl;
-  */
 }
 
 

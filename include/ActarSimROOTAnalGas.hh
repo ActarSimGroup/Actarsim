@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol 
 //*-- Date: 04/2008
-//*-- Last Update: 06/05/08 by Hector Alvarez Pol
+//*-- Last Update: 23/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   The ACTAR gas detector part of the ROOT Analysis   
@@ -32,7 +32,7 @@ class G4Step;
 
 class TH1D;
 class TH2D;
-class TH23D;
+class TH3D;
 class TTree;
 class TBranch;
 class TFile;
@@ -42,7 +42,6 @@ class TProfile; // for hbeamEnergyAtRange, to get the energy loss as a function 
 class ActarSimData;
 class ActarSimTrack;
 class ActarSimSimpleTrack;
-
 
 class ActarSimROOTAnalGas{
 private:

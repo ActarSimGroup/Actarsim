@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol    hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2006
 //*-- Last Update: 30/09/14 by Piotr Konczykowski
 // --------------------------------------------------------------

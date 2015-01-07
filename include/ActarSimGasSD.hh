@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol    hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2006
-//*-- Last Update: 13/06/06 by Hector Alvarez
+//*-- Last Update: 16/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   SD for the gas volume in the detector

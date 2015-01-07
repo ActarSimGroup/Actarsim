@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 04/04/06
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the detector construction

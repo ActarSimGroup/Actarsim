@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 05/2005
-//*-- Last Update: 25/10/06 by Hector Alvarez Pol
+//*-- Last Update: 07/01/15 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   The ACTAR Silicon detectorpart of the ROOT Analysis

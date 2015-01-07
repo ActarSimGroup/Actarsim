@@ -1,13 +1,14 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 29/11/05
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the detector construction
 //
 // --------------------------------------------------------------
 // Comments:
+//   Messenger commands are described in their guidance (src/.cc)
 //   - 03/12/04 Created based on example/novice/N03 structure
 //
 // --------------------------------------------------------------

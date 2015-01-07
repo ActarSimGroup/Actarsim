@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update:
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //   A Geant Hit in the Silicon volume. It represents
@@ -22,7 +22,6 @@
 #include "G4VisAttributes.hh"
 
 G4Allocator<ActarSimSilGeantHit> ActarSimSilGeantHitAllocator;
-
 
 ActarSimSilGeantHit::ActarSimSilGeantHit() {
   //
@@ -121,24 +120,24 @@ void ActarSimSilGeantHit::Print(){
   // Prints full information about the calGeantHit
   //
   G4cout << "##################################################################"
-	 << G4endl
-	 << "###############     ActarSimSilGeantHit::Print()    ###################" << G4endl
-	 << "trackID: " << trackID
-	 << ", parentID: " << parentID
-	 << ", particleID: " << particleID
-	 << ", particleCharge: " << particleCharge << G4endl;
+	       << G4endl
+	       << "###############     ActarSimSilGeantHit::Print()    ###################" << G4endl
+	       << "trackID: " << trackID
+	       << ", parentID: " << parentID
+	       << ", particleID: " << particleID
+	       << ", particleCharge: " << particleCharge << G4endl;
   G4cout << "detID: " << detID
-	 << ", detName: " << detName
-	 << ", postDetName: " << postDetName
-	 << ", preDetName: " << preDetName
-	 << G4endl;
+	       << ", detName: " << detName
+	       << ", postDetName: " << postDetName
+	       << ", preDetName: " << preDetName
+	       << G4endl;
   G4cout << "edep: " << edep  / MeV << " MeV"
-	 << ", pos: " << pos << " mm" << G4endl
-	 << ", prePos: " << prePos << " mm" << G4endl;
+	       << ", pos: " << pos << " mm" << G4endl
+	       << ", prePos: " << prePos << " mm" << G4endl;
   G4cout << "toF: " << toF  / ns << " ns" << ", localPos: " << localPos << " mm"
-	 << ", localPrePos: " << localPrePos << " mm" << G4endl;
+	       << ", localPrePos: " << localPrePos << " mm" << G4endl;
   G4cout << "##################################################################"
-	 << G4endl;
+	       << G4endl;
 
 }
 

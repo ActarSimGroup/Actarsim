@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 05/05/08
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   Detector construction and complementary definitions

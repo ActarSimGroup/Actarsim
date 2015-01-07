@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR (translation to C++): Hector Alvarez-Pol  hapol@fpddux.usc.es
+//*-- AUTHOR (translation to C++): Hector Alvarez-Pol
 //*-- AUTHOR:  Wolfgang Mittig
 //*-- Date: 11/2005
-//*-- Last Update: 02/11/05
+//*-- Last Update: 1/12/14
 // --------------------------------------------------------------
 // Description:
 //   PROGRAM CINE CINEMATIQUE RELATIVISTIQUE

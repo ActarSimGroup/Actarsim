@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol  hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 17/06/08
-//*-- Modified by H. Alvarez Pol hapolyo@usc.es
+//*-- Last Update: 16/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   Actions to perform to generate a primary vertex
@@ -68,7 +67,7 @@ private:
   //beam emittance
   G4double emittance;
   G4double beamRadiusAtEntrance;
-
+  
   //
   G4double theta1;
   G4double theta2;
@@ -77,21 +76,21 @@ private:
   //
 
   G4double lengthParameter;       //parameter coming from the geometry selection
-  G4double  randomThetaMin;      // min random theta angle in CINE
-  G4double  randomThetaMax;      // max  for a random theta angle in CINE
+  G4double  randomThetaMin;       // min random theta angle in CINE
+  G4double  randomThetaMax;       // max  for a random theta angle in CINE
 
-  G4double  randomPhiMin;      // min random theta angle in CINE
-  G4double  randomPhiMax;      // max  for a random theta angle in CINE
+  G4double  randomPhiMin;         // min random theta angle in CINE
+  G4double  randomPhiMax;         // max  for a random theta angle in CINE
 
-  G4String  beamInteractionFlag;    // flag for beam interaction mode
+  G4String  beamInteractionFlag;  // flag for beam interaction mode
   G4String  realisticBeamFlag;    // flag for realistic beam interaction
   G4String  reactionFromEvGenFlag; // flag for a reaction taken from the tabulated Ev Generator
   G4String  reactionFromCrossSectionFlag; // flag for a reaction taken from the Ev Generator+CINE
   G4String  reactionFromFileFlag; // flag for a reaction taken from a file
   G4String  reactionFromCineFlag; // flag for a reaction calculated using Cine
   G4String  randomThetaFlag;      // flag for a random theta angle in CINE
-  G4String  randomPhiFlag;      // flag for a random theta angle in CINE
-  G4String  alphaSourceFlag;      // flag for a random theta angle in CINE
+  G4String  randomPhiFlag;        // flag for a random phi angle in CINE
+  G4String  alphaSourceFlag;      //
   G4String  reactionFile;         // file definition for a reaction
 
 // data member for Kine, dypang 080228
@@ -284,7 +283,6 @@ public:
   G4double GetIncidentEnergy(){return incidentEnergy;}
   G4double GetThetaLabAngle(){return thetaLabAngle;}
   G4double GetVertexZPosition(){return vertexZPosition;} // vertex Z position, dypang 080704
-
 
 };
 

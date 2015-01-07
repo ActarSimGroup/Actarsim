@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2006
-//*-- Last Update: 04/04/06 by Hector Alvarez Pol
+//*-- Last Update: 16/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   A Geant Hit in the calorimeter volume. It represents the

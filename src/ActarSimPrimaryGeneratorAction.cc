@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol  (hapol@fpddux.usc.es)
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 05/05/08
-//*-- Modified by
+//*-- Last Update: 16/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   Actions to perform to generate a primary vertex
@@ -11,7 +10,7 @@
 // Comments:
 //   - 27/01/05 Cleaning and improving calculations
 //   - 25/11/04 Created based on example/novice/N01 structure
-//
+//   - 16/12/14 Cleaning and ordering for the new ActarSim
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
@@ -101,41 +100,16 @@ ActarSimPrimaryGeneratorAction::~ActarSimPrimaryGeneratorAction() {
 }
 
 void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
-
-  //this function is called at the begining of event
   //
-  /*
-  //G4double z0 = -0.5*(fDetector->GetWorldSizeX());
-  G4double z0 = 0.*cm;
-  G4double y0 = 0.*cm, x0 = 0.*cm;
-    
-  //randomize the beam, if requested.
-  //
-   if (fRndmBeam > 0.) 
-    {
-      if (fRndmBeam > fDetector->GetAbsorSizeYZ())
-        fRndmBeam = fDetector->GetAbsorSizeYZ(); 
-      G4double rbeam = 0.5*fRndmBeam;
-      y0 = (2*G4UniformRand()-1.)*rbeam;
-      x0 = (2*G4UniformRand()-1.)*rbeam;
-    }
-  particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));  
-  particleGun->GeneratePrimaryVertex(anEvent);
- */ 
-  //fEbeamCumul += particleGun->GetParticleEnergy(); 
-
-    
-  //
+  // Function called at the begining of event
   // Generate most of the primary physics. See the comments on each possible case
   //
-
   //REMOVE IF NOT NEEDED!!!!!!
   const G4int verboseLevel = G4RunManager::GetRunManager()->GetVerboseLevel();
   //G4cout << G4endl << " ______ VerboseLevel  _______" <<verboseLevel<< G4endl;
 
   G4ThreeVector zero;
-  G4ThreeVector theVertexPosition(0.,0.,0.0);
-//   G4double energyLostInTargetGas = 0; //zero, to be calculated if realisticBeamFlag is on
+//G4double energyLostInTargetGas = 0; //zero, to be calculated if realisticBeamFlag is on
 
   //Initial values for reactionFromEvGen
   G4double  LabParticleAngle = 85.0 * deg;
@@ -162,30 +136,24 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     G4cout << "##################################################################" << G4endl;
   }
 
-  // CASE A:   beamInteractionFlag = on
-  // Beam interaction in the gas
+  // CASE A1: Beam interaction in the gas
   if(beamInteractionFlag == "on"){
-
-    // The beam interaction in the gas is here introduced.
-    // The beam is described by the (G4Ions*) incidentIon
-    // and interacts with the gas in the even events (beggining at zero)
-    // while in the odd events the reaction proceeds as selected by modifiers
-    // (CINE, KINE, from file, one output particle, ...) using the parameters
-    // (vertex position, remaining beam ion energy, ...) obtained in this step.
-    //
-
+    // The beam is described by the (G4Ions*) incidentIon (or incident particles)
+    // and it is tracked in the gas in the even events (beggining at zero, 0,2,4, ...)
+    // while in the odd events (1,3,5, ...) the reaction products are tracked, 
+    // (CINE, KINE, from file, one output particle, ...) using some parameters
+    // (vertex position, remaining beam ion energy, ...) obtained in the beam tracking.
     ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
+
     if(gActarSimROOTAnalysis){
       pBeamInfo = gActarSimROOTAnalysis->GetBeamInfo();
-      //yeah, it is a little bit late to pass here the beamInteractionFlag to the ROOTAnalysis
-      //but, anyway, is never used before the tracking of the particles
       gActarSimROOTAnalysis->SetBeamInteractionFlag("on");
     }
 
-    if(pBeamInfo->GetStatus() > 1){
-      // beam has been launch in the previous event... so move to the vertex products tracking!!
-      // reset the BeamInfo status to 0, for the next beam tracking
-      if(verboseLevel>0){
+    if(pBeamInfo->GetStatus() > 1){ 
+      // Beam reached vertex: Tracking vertex products!!
+      // Resetting the BeamInfo status to 0, for the next beam tracking
+      if(verboseLevel>0){ 
         G4cout << G4endl
               << " *************************************************** " << G4endl
               << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
@@ -196,31 +164,22 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       vertexPosition.setX(pBeamInfo->GetXVertex());
       vertexPosition.setY(pBeamInfo->GetYVertex());
       vertexPosition.setZ(pBeamInfo->GetZVertex());
-
       SetLabEnergy(pBeamInfo->GetEnergyVertex());
-
       pBeamInfo->SetStatus(0);
     }
     else if(pBeamInfo->GetStatus() == 1){
-      // the beam has finish in the previous event the tracking without reaching
-      // the requested vertex position! This is a faulty case that we do not know how
-      // to solve. Simply abort present event and try again...
-      //if(verboseLevel>0){
-        G4cout << G4endl
-               << " *************************************************** " << G4endl
-               << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
-               << " * beamInteractionFlag=on, beam.Status=1 ... " << G4endl
-               << " * Moving to status 0 and ABORTING! SHOULD NOT HAPPEN!!!!!" << G4endl;
-        G4cout << " *************************************************** "<< G4endl;
-      //}
+      // the beam finished the tracking in the previous event without reaching
+      // the requested vertex position! This is a faulty case! Aborting present event and continue.
+      G4cout << G4endl
+             << " *************************************************** " << G4endl
+             << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
+             << " * ERROR STATUS! beamInteractionFlag=on, beam.Status=1 ... " << G4endl
+             << " * Moving to status 0 and ABORTING! " << G4endl;
+      G4cout << " *************************************************** "<< G4endl;
       pBeamInfo->SetStatus(0);
       anEvent->SetEventAborted();
     }
-    else{
-      //copy the R3BBeamInfo from R3B to ActarSim and complete the information to be used here
-      //Initial values for CINE. It is not allowed to create this initial values
-      //in the constructor...
-      //incident ion definition, in case that is not explicitly made previously
+    else{ //Initial values for CINE or KINE or incident ion definition.
       if(verboseLevel>0){
         G4cout << G4endl
               << " *************************************************** " << G4endl
@@ -229,28 +188,27 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
               << " * Moving to status 1 and tracking the beam!" << G4endl;
         G4cout << " *************************************************** "<< G4endl;
       }
-      if(!incidentIon) {
-
-	
-        incidentIon =  (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S1)
+      if(!incidentIon) {	
+        incidentIon = (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S1)
         incidentIonCharge =  2;
-
+        G4cout << G4endl
+               << " *************************************************** " << G4endl
+               << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
+               << " * No incident ion selected: using 8He as incident beam" << G4endl
+        G4cout << " *************************************************** "<< G4endl;
       }
       pBeamInfo->SetStatus(1);
 
-      // TODO In first approx. the beam is intended to be along Z for the calculation of the
-      // vertex cinematics. It the beam has another 4momenta, the output particles 4momenta
-      // should be transformed acondingly. Probably this is not necessary as the beam
-      // is practicaly parallel to Z over all path, till has very low energy.
+      // TODO: Kinematics calculated assuming beam following perfect Z direction. 
+      // It the beam has another 4-momentum, the reaction plane and kinematics
+      // should be transformed accordingly. Fine tuning, anyway (check if needed)
       particleGun->SetParticleDefinition(incidentIon);
       particleGun->SetParticleCharge(incidentIonCharge);
 
-      //TODO This is the right place for introducing some dependence on the probability of
-      // reaction with the energy of the ion using the reaction cross section as a funcion of energy
-      // Meanwhile the probability of interaction is simply constant over the path on the gas.
+      // TODO: The probability of interaction is simply constant over the path on the gas.
+      // This is the right place for introducing some dependence with the ion energy using the reaction cross section
 
-      // The z0 variable is here used to decide the z position of the vertex. The beam is tracked
-      // till z0 is reached ...
+      // z0 decides the z position of the vertex. The beam is tracked till z0 is reached ...
       G4double z0 = 0;
 
       if(randomVertexZPositionFlag=="off"){
@@ -271,7 +229,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         // A step function is used for the position and angular distributions
         G4double radiusAtEntrance   = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
         G4double thetaWidth =  emittance/(4*beamRadiusAtEntrance); //polar angle width between zero and maximum
-	G4double thetaAtEntrance = thetaWidth * G4UniformRand() * mrad;
+        G4double thetaAtEntrance = thetaWidth * G4UniformRand() * mrad;
         G4double phiAtEntrance = G4UniformRand() * twopi; //angle phi of momentum
         G4double phi2AtEntrance = G4UniformRand() * twopi; //angle for defining the entrance point
 
@@ -323,35 +281,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
   }//end of  if(beamInteractionFlag == "on")
 
-  // CASE B:   beamInteractionFlag = off
-  // Beam not included...
-  else if(realisticBeamFlag == "on") {
-
-
-    // //OLD STYLE USING GAUSSIAN PROFILE. NOW AN "EMITTANCE" AND "SIZE AT ENTRANCE" APPROACH IS USED!
-    // //Some beam parameters, still hardcoded
-    // //TODO -> move this parameters to the ActarSimPrimaryGeneratorMessenger
-    // G4double FWHM  = 1.*cm;
-    // G4double sigma = FWHM/2.35;
-
-    // //gaussian profile for the beam (usually limited by an arbitrary beamWindow)
-    // G4double beamWindow = 100*mm;
-    // G4double R= fabs(CLHEP::RandGauss::shoot(0.*cm,sigma));
-    // while(R > beamWindow )
-    //   R= fabs(CLHEP::RandGauss::shoot(0.*cm,sigma));
-    // G4double tarPhi = G4UniformRand() * twopi;
-
-    // G4double z0 = G4UniformRand()*(2.* lengthParameter);
-    // G4double x0 = R*cos(tarPhi);
-    // G4double y0 = R*sin(tarPhi);
-
-    // //calculating the beam energy-loss in the gas
-    // //TODO -> the right method is to obtain aFactorToBeCalculated from the energy loss in each gas used...
-    // //TODO -> read the type of gas in the target from the DetectorGeometry.
-    // //energyLostInTargetGas = GetLabEnergy() - aFactorToBeCalculated * z0;
-    // //SetLabEnergy(GetLabEnergy()-energyLostInTargetGas);
-
-
+  // CASE A2:   Beam not included...
+  else if(realisticBeamFlag == "on") 
     //Not anymore a gaussian, but a flat distribution in a given radius around Z axis.
     G4double radiusAtEntrance   = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
     G4double phi2AtEntrance = G4UniformRand() * twopi; //angle for defining the entrance point
@@ -383,20 +314,14 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
 
     //setting the vertexPos vector to the previous calculated values
-    theVertexPosition.setX(x0);
-    theVertexPosition.setY(y0);
-    theVertexPosition.setZ(z0);
-    vertexPosition.setX(theVertexPosition.getX());
-    vertexPosition.setY(theVertexPosition.getY());
-    vertexPosition.setZ(theVertexPosition.getZ());
+    vertexPosition.setX(x0);
+    vertexPosition.setY(y0);
+    vertexPosition.setZ(z0);
   }
-
   // After the beam, now different options for the reaction products!
 
-  // CASE 1  reactionFromEvGenFlag = on
-  // Reaction from Event-Generator
+  // CASE B Reaction from Event-Generator
   if(reactionFromEvGenFlag == "on") {
-
     if(verboseLevel>0){
       G4cout << G4endl
             << " *************************************************** " << G4endl
@@ -421,61 +346,51 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     if( momentum_z && momentum_z_rec){;}
     //TRANSFER
     // Polar angle:
-    double theta=0;
+    G4double theta=0;
     // Random number between 0 and 1
-    G4double randnum = 0.;
-
+    G4double randnum = G4UniformRand();
     G4double energy_scatt=0;
     G4double slop1=0.,slop2=0.,offset1=0.,offset2=0.;
-
     G4double theta_recoil=0;
     G4double energy_recoil=0;
     G4double slop_rec=0.,offset_rec=0.;
 
-    randnum = G4UniformRand();
-
     //The last angle could be different from 181,
     //extract the nbins from ActarSimEventGenerator (todo)
-
     for(G4int i=0;i<181;i++) {
       if(randnum>=pReadEvGen->Icross_section[i] &&
-	   randnum<pReadEvGen->Icross_section[i+1]) {
-	slop1=(pReadEvGen->LabAngle_scatt[i+1]-
-	       pReadEvGen->LabAngle_scatt[i])/(pReadEvGen->Icross_section[i+1]-
-					       pReadEvGen->Icross_section[i]);
-	offset1= pReadEvGen->LabAngle_scatt[i]-slop1*pReadEvGen->Icross_section[i];
-	theta=randnum*slop1+offset1;
+	       randnum<pReadEvGen->Icross_section[i+1]) {
+        slop1=(pReadEvGen->LabAngle_scatt[i+1]-
+	             pReadEvGen->LabAngle_scatt[i])/(pReadEvGen->Icross_section[i+1]-
+					     pReadEvGen->Icross_section[i]);
+        offset1= pReadEvGen->LabAngle_scatt[i]-slop1*pReadEvGen->Icross_section[i];
+        theta=randnum*slop1+offset1;
 
-	for(G4int j=0; j<181; j++) {
-	  if(theta>=pReadEvGen->LabAngle_scatt[j] &&
-	     theta<pReadEvGen->LabAngle_scatt[j+1]) {
-	    slop2=(pReadEvGen->LabEnergy_scatt[int(pReadEvGen->LabAngle_scatt[j+1])]-
-		   pReadEvGen->LabEnergy_scatt[int(pReadEvGen->LabAngle_scatt[j])])/
-	      (pReadEvGen->LabAngle_scatt[j+1]-pReadEvGen->LabAngle_scatt[j]);
+        for(G4int j=0; j<181; j++) {
+          if(theta>=pReadEvGen->LabAngle_scatt[j] &&
+	           theta<pReadEvGen->LabAngle_scatt[j+1]) {
+            slop2=(pReadEvGen->LabEnergy_scatt[int(pReadEvGen->LabAngle_scatt[j+1])]-
+		              pReadEvGen->LabEnergy_scatt[int(pReadEvGen->LabAngle_scatt[j])])/
+	                (pReadEvGen->LabAngle_scatt[j+1]-pReadEvGen->LabAngle_scatt[j]);
 
-	    offset2= pReadEvGen->LabEnergy_scatt[int(pReadEvGen->LabAngle_scatt[j])]-
-	      slop2*pReadEvGen->LabAngle_scatt[j];
-	    energy_scatt=theta*slop2+offset2;
-
-	    //Angle of the Recoil
-	    theta_recoil=pReadEvGen->LabAngle_recoil[j];
-
-	    //The same for the recoil
-	    slop_rec=(pReadEvGen->LabEnergy_recoil[int(pReadEvGen->LabAngle_recoil[j+1])]-
-		      pReadEvGen->LabEnergy_recoil[int(pReadEvGen->LabAngle_recoil[j])])/
-	      (pReadEvGen->LabAngle_recoil[j+1]-pReadEvGen->LabAngle_recoil[j]);
-
-	    offset_rec= pReadEvGen->LabEnergy_recoil[int(pReadEvGen->LabAngle_scatt[j])]-
-	      slop_rec*pReadEvGen->LabAngle_recoil[j];
-
-	    energy_recoil=theta_recoil*slop_rec+offset_rec;
-	  }
-	}
-	theta=theta*deg;   // Polar angle in radian
-	theta_recoil=theta_recoil*deg;   // Polar angle in radian
+            offset2= pReadEvGen->LabEnergy_scatt[int(pReadEvGen->LabAngle_scatt[j])]-
+	                   slop2*pReadEvGen->LabAngle_scatt[j];
+            energy_scatt=theta*slop2+offset2;
+            //Angle of the Recoil
+            theta_recoil=pReadEvGen->LabAngle_recoil[j];
+            //The same for the recoil
+            slop_rec=(pReadEvGen->LabEnergy_recoil[int(pReadEvGen->LabAngle_recoil[j+1])]-
+		                 pReadEvGen->LabEnergy_recoil[int(pReadEvGen->LabAngle_recoil[j])])/
+	                   (pReadEvGen->LabAngle_recoil[j+1]-pReadEvGen->LabAngle_recoil[j]);
+            offset_rec=pReadEvGen->LabEnergy_recoil[int(pReadEvGen->LabAngle_scatt[j])]-
+	                     slop_rec*pReadEvGen->LabAngle_recoil[j];
+      	    energy_recoil=theta_recoil*slop_rec+offset_rec;
+          }
+        }
+        theta=theta*deg;   // Polar angle in radian
+        theta_recoil=theta_recoil*deg;   // Polar angle in radian
       }
     }
-
     // Azimuthal angle:
     phi = G4UniformRand()*twopi;
 
@@ -492,16 +407,13 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     particle_energy_rec = energy_recoil;
     LabParticleAngle_rec = theta_recoil;
-
     //Send 2 vertex
     //Define ions from the macro (talk to Hector->use the ones from CINE)
   }
 
 
-  // CASE 2    reactionFromFileFlag = on
-  // Reaction products taken from a file (format given by CINE output)
+  // CASE C Reaction products taken from a file (format given by CINE output)
   if(reactionFromFileFlag == "on"){
-
     // FILE format: first row should contain 6 integers with the info:
     //    scattered ion Z;  scattered ion A;  scattered ion charge state;
     //    recoiled ion Z;  recoil ion A;  recoil ion charge state;
@@ -517,9 +429,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
             << " * An external file with products information is used."  << G4endl;
       G4cout << " *************************************************** "<< G4endl;
     }
-
     ifstream inputFile(reactionFile);
-
     if(reactionFile) {
       G4double cine[91*4+1];
       G4int  ion1Z, ion1A, ion1Charge;
@@ -529,20 +439,18 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       inputFile >> ion2Z;    inputFile >> ion2A;    inputFile >> ion2Charge;
 
       if(verboseLevel>1){
-	G4cout << ion1Z << " " << ion1A << " " << ion1Charge << " "
-	       << ion2Z << " " << ion2A << " " << ion2Charge << G4endl;
+        G4cout << ion1Z << " " << ion1A << " " << ion1Charge << " "
+	             << ion2Z << " " << ion2A << " " << ion2Charge << G4endl;
       }
-
       G4int i=0;
       do{
-	inputFile >>  cine[i];
-	//G4cout << cine[i] << " ";
-	i++;
+        inputFile >>  cine[i];
+        //G4cout << cine[i] << " ";
+        i++;
       }while(!inputFile.eof());
+      
       G4int rowsInputFile = (G4int) i/4;
-
       //    cout << "rows" << rowsInputFile << G4endl;
-
       //Taken a random cinematic from the previous table
       G4int randomRow = (G4int)(G4UniformRand()*rowsInputFile);
       G4double theta1 = pi*cine[randomRow*4]/180;
@@ -551,23 +459,20 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       G4double energy2 = cine[randomRow*4+3];
       G4double phi = twopi *G4UniformRand();   //flat in phi
       G4ThreeVector direction1 = G4ThreeVector(sin(theta1)*cos(phi),
-					       sin(theta1)*sin(phi),
-					       cos(theta1));
+					                                     sin(theta1)*sin(phi),
+					                                     cos(theta1));
       G4ThreeVector direction2 = G4ThreeVector(sin(theta2)*cos(phi+pi),
-					       sin(theta2)*sin(phi+pi),
-					       cos(theta2));
-
-
+					                                     sin(theta2)*sin(phi+pi),
+					                                     cos(theta2));
       if(ion1Z==1 && ion1A==1 && ion1Charge==1){
-	G4ParticleDefinition* pd = particleTable->FindParticle("proton");
-	if(pd != 0)
-	  particleGun->SetParticleDefinition(pd);
+        G4ParticleDefinition* pd = particleTable->FindParticle("proton");
+        if(pd != 0) particleGun->SetParticleDefinition(pd);
       }
       else{
-	G4Ions* ion1;
-	ion1 = (G4Ions*) particleTable->GetIon(ion1Z, ion1A, 0.0);
-	particleGun->SetParticleDefinition(ion1);
-	particleGun->SetParticleCharge(ion1Charge);
+        G4Ions* ion1;
+        ion1 = (G4Ions*) particleTable->GetIon(ion1Z, ion1A, 0.0);
+        particleGun->SetParticleDefinition(ion1);
+        particleGun->SetParticleCharge(ion1Charge);
       }
       particleGun->SetParticlePosition(vertexPosition);
 
@@ -589,15 +494,14 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       particleGun->GeneratePrimaryVertex(anEvent);
 
       if(ion2Z==1 && ion2A==1 && ion2Charge==1){
-	G4ParticleDefinition* pd = particleTable->FindParticle("proton");
-	if(pd != 0)
-	  particleGun->SetParticleDefinition(pd);
+        G4ParticleDefinition* pd = particleTable->FindParticle("proton");
+        if(pd != 0) particleGun->SetParticleDefinition(pd);
       }
       else{
-	G4Ions* ion2;
-	ion2 = (G4Ions*) particleTable->GetIon(ion2Z, ion2Z, 0.0);
-	particleGun->SetParticleDefinition(ion2);
-	particleGun->SetParticleCharge(ion2Charge);
+        G4Ions* ion2;
+        ion2 = (G4Ions*) particleTable->GetIon(ion2Z, ion2Z, 0.0);
+        particleGun->SetParticleDefinition(ion2);
+        particleGun->SetParticleCharge(ion2Charge);
       }
       particleGun->SetParticlePosition(vertexPosition);
 
@@ -621,12 +525,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     else G4cout << "File " << reactionFile << " not found." << G4endl;
   }
 
-  //CASE 3   reactionFromCineFlag = on
-  // Reaction products kinematics calculated using Cine
+  //CASE D  Reaction products kinematics calculated using Cine
   else if(reactionFromCineFlag == "on"){
-
-  G4cout << G4endl << "Cine flag is on" << ", dypang, 080729" << G4endl;
-
     // The CINE program (W. Mittig) has been translated to C++ ...
     if(verboseLevel>0){
       G4cout << G4endl
@@ -642,23 +542,20 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       G4double theta=0;
       G4double randnum = 0.;
       G4double slop1=0.,offset1=0.;
-
       //Generate Random number between 0-1
       randnum = G4UniformRand();
-      //G4cout<<"Random number=="<<randnum<<endl;
-
       //Substitute 181 by the number of bins from ActarSimEventGenerator
       //Retriving the value in the table that correspond to the random number
       for(G4int i=0;i<181;i++) {
-	if(randnum>=pReadEvGen->Icross_section[i]
-	   && randnum<pReadEvGen->Icross_section[i+1]) {
-	  //Interpolation
-	  slop1=(pReadEvGen->theta_xsec[i+1]-
-		 pReadEvGen->theta_xsec[i])/(pReadEvGen->Icross_section[i+1]-
-					     pReadEvGen->Icross_section[i]);
-	  offset1= pReadEvGen->theta_xsec[i]-slop1*pReadEvGen->Icross_section[i];
-	  theta=randnum*slop1+offset1;
-	}
+        if(randnum>=pReadEvGen->Icross_section[i]
+	         && randnum<pReadEvGen->Icross_section[i+1]) {
+           //Interpolation
+          slop1=(pReadEvGen->theta_xsec[i+1]-
+		            pReadEvGen->theta_xsec[i])/(pReadEvGen->Icross_section[i+1]-
+					      pReadEvGen->Icross_section[i]);
+          offset1= pReadEvGen->theta_xsec[i]-slop1*pReadEvGen->Icross_section[i];
+          theta=randnum*slop1+offset1;
+        }
       }
       // Theta Angle for the scattered particle in degrees
       //theta=theta*pi/180.0;
@@ -667,8 +564,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       //Calling CINE for the kinematical features of the recoil nuclei
     }
 
-    //Initial values for CINE. It is not allowed to create this initial values
-    //in the constructor...
+    //Initial values for CINE. It is not allowed to create this initial values in the constructor...
     if(!incidentIon) {
       incidentIon =  (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S1)
       incidentIonCharge =  2;
@@ -697,8 +593,6 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     CINE->SetLabEnergy(GetLabEnergy());
     CINE->SetTargetExcitationEnergy(GetTargetIon()->GetExcitationEnergy()/MeV);
     CINE->SetProjectileExcitationEnergy(GetIncidentIon()->GetExcitationEnergy()/MeV);
-    //Note: realize of the units in the return values of CINE
-
     // Random generator for scattered angle triggered by a messenger Cmd
     if(randomThetaFlag == "on") {
       if(verboseLevel>0){
@@ -707,48 +601,39 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
               << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
               << " * reactionFromCineFlag = on, randomThetaFlag = on     " << G4endl
               << " * Using CINE with random angle theta "  << G4endl
-	      << " * with limits in theta between ["
+	            << " * with limits in theta between ["
               << randomThetaMin/rad << "," << randomThetaMax/rad << "] rads ( ["
               << randomThetaMin/deg << "," << randomThetaMax/deg << "] degrees)" << G4endl;
       }
 
       //flat prob in theta from randomThetaMin to randomThetaMin
-      SetThetaLabAngle((randomThetaMin +
-			((randomThetaMax-randomThetaMin) * G4UniformRand())) * rad);
+      SetThetaLabAngle((randomThetaMin + 
+                       ((randomThetaMax-randomThetaMin) * G4UniformRand())) * rad);
       CINE->SetThetaLabAngle(GetThetaLabAngle()/deg);
 
       if(verboseLevel>0) {
         G4cout << G4endl
-              << " * Selected angle: "<< GetThetaLabAngle()/rad << " rad ( "
-              << GetThetaLabAngle()/deg  << " deg )"<< G4endl;
+               << " * Selected angle: "<< GetThetaLabAngle()/rad << " rad ( "
+               << GetThetaLabAngle()/deg  << " deg )"<< G4endl;
         G4cout << " *************************************************** "<< G4endl;
       }
     } //end of if(randomThetaFlag == "on")
 
-    //In the special case of reaction from Event Generator, an excepction (???)
-    //TODO Improve and document this option or remove it!
-    if(reactionFromEvGenFlag == "on") {
-      CINE->SetThetaLabAngle(LabParticleAngle);
-      G4cout<< " Checking values passed to CINE" << G4endl;
-      G4cout<< " ThetaLabAngle given to CINE=" << LabParticleAngle << G4endl;
-      G4cout<< " ThetaLabAngle obtained from CINE=" << CINE->GetThetaLabAngle() << G4endl;
-    }
-
     if(verboseLevel>0){
       G4cout << G4endl
-            << " *************************************************** " << G4endl
-              << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
+             << " *************************************************** " << G4endl
+             << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
              << " * CINE: Setting masses to the following values: " << G4endl
-	     << " * incident ion mass: " << GetIncidentIon()->GetAtomicMass() << G4endl
-	     << " * target ion mass: " << GetTargetIon()->GetAtomicMass() << G4endl
-	     << " * scattered ion mass: " << GetScatteredIon()->GetAtomicMass() << G4endl
-	     << " * recoil ion mass: " << GetRecoilIon()->GetAtomicMass() << G4endl;
+	           << " * incident ion mass: " << GetIncidentIon()->GetAtomicMass() << G4endl
+	           << " * target ion mass: " << GetTargetIon()->GetAtomicMass() << G4endl
+	           << " * scattered ion mass: " << GetScatteredIon()->GetAtomicMass() << G4endl
+	           << " * recoil ion mass: " << GetRecoilIon()->GetAtomicMass() << G4endl;
       G4cout << " * Setting reaction Q to:" << GetReactionQ() << G4endl;
       G4cout << " * Setting labEnergy to:" << GetLabEnergy() << G4endl;
       G4cout << " * Setting targetExcitationEnergy to:"
-	     << GetTargetIon()->GetExcitationEnergy() << G4endl;
+	           << GetTargetIon()->GetExcitationEnergy() << G4endl;
       G4cout << " * Setting projectileExcitationEnergy to:"
-	     << GetIncidentIon()->GetExcitationEnergy() << G4endl;
+	           << GetIncidentIon()->GetExcitationEnergy() << G4endl;
       G4cout << " * Setting labAngle to:" << GetThetaLabAngle() << " deg" << G4endl;
       G4cout << " *************************************************** "<< G4endl;
     }
@@ -756,10 +641,10 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     if(verboseLevel>2){
       //Parameters are introduced in CINE... Just a checker
       G4cout << " CINE: Checking parameters..." << CINE->GetS1()
-	     << " " << CINE->GetS2() << " " << CINE->GetS3()
-	     << " " << CINE->GetS4() << " " << CINE->GetQM()
-	     << " " << CINE->GetEI() << " " << CINE->GetEN()
-	     << " " << CINE->GetENI() << " " << CINE->GetThetaLabAngle() << endl;
+	           << " " << CINE->GetS2() << " " << CINE->GetS3()
+	           << " " << CINE->GetS4() << " " << CINE->GetQM()
+	           << " " << CINE->GetEI() << " " << CINE->GetEN()
+	           << " " << CINE->GetENI() << " " << CINE->GetThetaLabAngle() << endl;
     }
     if(verboseLevel>1){
       //Parameters are introduced in CINE... Just a checker
@@ -788,51 +673,45 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
 
     G4int stillNoSol=0;
-    //these variables now are defined in ActarSimPrimaryGeneratorAction.hh
-    //variables for the kinematics results
-    //G4double theta1, theta2, energy1, energy2;
-
     if(CINE->GetANGAV(1)<0 && randomThetaFlag == "on") {
       while( CINE->GetANGAV(1)<0 && stillNoSol<50) { //50 tries to get a result!
         G4cout << " *************************************************** "<< G4endl;
-	G4cout << " * There is no CINE solution" << G4endl;
-	G4cout << " * Trying again with CINE and other scattered angle..." << G4endl;
-	stillNoSol++;
-	SetThetaLabAngle(pi * G4UniformRand() * rad);
-	CINE->SetThetaLabAngle(GetThetaLabAngle()/deg);
-	if(verboseLevel>1) G4cout << " *** random Theta = "
-				  << GetThetaLabAngle()/rad << " rad = "
-				  << GetThetaLabAngle()/deg  << " deg "<< G4endl;
-	//Calling again the relativistic kinematic calculation
-	CINE->RelativisticKinematics();
+        G4cout << " * There is no CINE solution" << G4endl;
+        G4cout << " * Trying again with CINE and other scattered angle..." << G4endl;
+        stillNoSol++;
+        SetThetaLabAngle(pi * G4UniformRand() * rad);
+        CINE->SetThetaLabAngle(GetThetaLabAngle()/deg);
+        if(verboseLevel>1) G4cout << " *** random Theta = "
+				                          << GetThetaLabAngle()/rad << " rad = "
+				                          << GetThetaLabAngle()/deg  << " deg "<< G4endl;
+	      //Calling again the relativistic kinematic calculation
+	      CINE->RelativisticKinematics();
       }
       if(stillNoSol>49)
-	G4cout << G4endl <<" ####################################################### "<< G4endl
-	       << " ERROR in ActarSimPrimaryGeneratorAction::GeneratePrimaries()" << G4endl
-	       <<  " There is no CINE solution for any angle" << G4endl
-	       << " A dummy solution is used: DO NOT RELY ON THE RESULTS!" << G4endl
-	       <<" ####################################################### "<< G4endl;
+        G4cout << G4endl 
+               << " ####################################################### "<< G4endl
+	             << " ERROR in ActarSimPrimaryGeneratorAction::GeneratePrimaries()" << G4endl
+	             << " There is no CINE solution for any angle" << G4endl
+	             << " A dummy solution is used: DO NOT RELY ON THE RESULTS!" << G4endl
+	             << " ####################################################### "<< G4endl;
 
-    }
-
+    } 
     if(CINE->GetANGAV(1)<0 && randomThetaFlag == "off") {
-      G4cout << G4endl <<" ####################################################### "<< G4endl
-	     << " ERROR in ActarSimPrimaryGeneratorAction::GeneratePrimaries()" << G4endl
-	     << " There is no CINE solution for this angle" << G4endl
-	     << " A dummy solution is used: DO NOT RELY ON THE RESULTS!" << G4endl
-	     <<" ####################################################### "<< G4endl;
-
-      //theta2 = pi*CINE->GetANGAV(4)*180;
+      G4cout << G4endl 
+             <<" ####################################################### "<< G4endl
+	           << " ERROR in ActarSimPrimaryGeneratorAction::GeneratePrimaries()" << G4endl
+	           << " There is no CINE solution for this angle" << G4endl
+	           << " A dummy solution is used: DO NOT RELY ON THE RESULTS!" << G4endl
+	           <<" ####################################################### "<< G4endl;
       theta2 = (CINE->GetANGAV(4))*deg;
       energy1 = CINE->GetANGAV(1);
       energy2 = CINE->GetANGAV(5);
     }
     else if( CINE->GetANGAR(1)<0 && stillNoSol<50) {
       if(verboseLevel>0){
-	G4cout << " One solution:" << G4endl;
-	CINE->printResults(0);
+        G4cout << " One solution:" << G4endl;
+	      CINE->printResults(0);
       }
-      //theta2 = pi*CINE->GetANGAV(4)*180;
       theta2 = (CINE->GetANGAV(4))*deg;
       energy1 = CINE->GetANGAV(1);
       energy2 = CINE->GetANGAV(5);
@@ -840,54 +719,42 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     else {
       //In this case one should select only one of the two possible cases!
       if(verboseLevel>0){
-	G4cout << " Two solutions" << G4endl;
-	G4cout << " First solution:" << G4endl;
-	CINE->printResults(0);
-	G4cout << " Second solution:" << G4endl;
-	CINE->printResults(1);
+        G4cout << " Two solutions" << G4endl;
+        G4cout << " First solution:" << G4endl;
+        CINE->printResults(0);
+        G4cout << " Second solution:" << G4endl;
+        CINE->printResults(1);
       }
       if((G4int)(2*G4UniformRand()) == 0){
-	//theta2 = pi*CINE->GetANGAV(4)/180;
-	theta2 = (CINE->GetANGAV(4))*deg;
-	energy1 = CINE->GetANGAV(1);
-	energy2 = CINE->GetANGAV(5);
+        //theta2 = pi*CINE->GetANGAV(4)/180;
+        theta2 = (CINE->GetANGAV(4))*deg;
+        energy1 = CINE->GetANGAV(1);
+        energy2 = CINE->GetANGAV(5);
       }
       else{
-	//theta2 = pi*CINE->GetANGAV(4)/180;
-	theta2 = (CINE->GetANGAV(4))*deg;
-	energy1 = CINE->GetANGAR(1);
-	energy2 = CINE->GetANGAR(5);
+        //theta2 = pi*CINE->GetANGAV(4)/180;
+        theta2 = (CINE->GetANGAV(4))*deg;
+        energy1 = CINE->GetANGAR(1);
+        energy2 = CINE->GetANGAR(5);
       }
     }
-    if(verboseLevel>0)
-      G4cout << " *************************************************** "<< G4endl;
-
     if(verboseLevel>0){
+      G4cout << " *************************************************** "<< G4endl;
       G4cout << " At least one solution found... generating primaries." << G4endl;
       G4cout << " " << G4endl;
     }
     theta1 = CINE->GetThetaLabAngle()*deg;      //Note the units coming from CINE !
     G4double phi = twopi * G4UniformRand();         //flat probability in phi
     G4ThreeVector direction1 = G4ThreeVector(sin(theta1)*cos(phi),
-					     sin(theta1)*sin(phi),
-					     cos(theta1));
+					                                   sin(theta1)*sin(phi),
+					                                   cos(theta1));
     G4ThreeVector direction2 = G4ThreeVector(sin(theta2)*cos(phi+pi),
-					     sin(theta2)*sin(phi+pi),
-					     cos(theta2));
-
-    //TODO -> Check if protons are correctly included!
-    //WHAT IF PROTONS?
-    //if(==1 && ion2A==1 && ion2Charge==1) {
-    //  G4ParticleDefinition* pd = particleTable->FindParticle("proton");
-    //  if(pd != 0)
-    //    particleGun->SetParticleDefinition(pd);
-    //}
-    //    else{
+					                                   sin(theta2)*sin(phi+pi),
+					                                   cos(theta2));
 
     particleGun->SetParticleDefinition(scatteredIon);
     particleGun->SetParticleCharge(scatteredIonCharge);
     particleGun->SetParticlePosition(vertexPosition);
-
     //time, including the beam tracking before the vertex formation
     if(beamInteractionFlag == "on") {
       ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
@@ -927,16 +794,14 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     particleGun->GeneratePrimaryVertex(anEvent);
   }
 
-  //CASE 4   reactionFromKineFlag = on
-  // Reaction products kinematics calculated using Kine
+  //CASE E Reaction products kinematics calculated using Kine
   else if(reactionFromKineFlag == "on"){
-
     if(verboseLevel>0){
       G4cout << G4endl
-            << " *************************************************** " << G4endl
-            << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
-            << " * reactionFromKineFlag = on                           " << G4endl
-            << " * Using KINE for the kinematics of reaction products."  << G4endl;
+             << " *************************************************** " << G4endl
+             << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
+             << " * reactionFromKineFlag = on                           " << G4endl
+             << " * Using KINE for the kinematics of reaction products."  << G4endl;
       G4cout << " *************************************************** "<< G4endl;
     }
 
@@ -976,32 +841,29 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     // Random generator for scattered angle triggered by a messenger Cmd
     if(randomThetaFlag == "on") {
-
-      SetThetaCMAngle((randomThetaMin +                                   // randomThetaMin, randomThetaMax, use exist ones
-			((randomThetaMax-randomThetaMin) * G4UniformRand())) * rad);
+      SetThetaCMAngle((randomThetaMin +              // randomThetaMin, randomThetaMax, use exist ones
+			                ((randomThetaMax-randomThetaMin) * G4UniformRand())) * rad);
       KINE->SetThetaCMAngle(GetThetaCMAngle()/deg);  // units: degree, deg=pi/180.
-
       if(verboseLevel>1)
         G4cout << " *** random CM Theta = " << GetThetaCMAngle() << ", it is "
-                                << GetThetaCMAngle()/rad << " rad = "
-                                << GetThetaCMAngle()/deg << " deg "<< G4endl;
+               << GetThetaCMAngle()/rad << " rad = "
+               << GetThetaCMAngle()/deg << " deg "<< G4endl;
     }
     else {
       KINE->SetThetaCMAngle(GetThetaCMAngle()/deg);  // units: degree
     }
- 
     if(verboseLevel>1){
       G4cout << " KINE: Setting masses to :" << GetIncidentIon()->GetAtomicMass()
-	     << " " << GetTargetIon()->GetAtomicMass()
-	     << " " << GetScatteredIon()->GetAtomicMass()
-	     << " " << GetRecoilIon()->GetAtomicMass()<< " "<< endl;
+	           << " " << GetTargetIon()->GetAtomicMass()
+	           << " " << GetScatteredIon()->GetAtomicMass()
+	           << " " << GetRecoilIon()->GetAtomicMass()<< " "<< endl;
       G4cout << " KINE: Setting labEnergy to:" << KINE->GetLabEnergy() << G4endl;
       G4cout << " KINE: Setting targetExcitationEnergy to:"
-	     << GetTargetIon()->GetExcitationEnergy() << G4endl;
+	           << GetTargetIon()->GetExcitationEnergy() << G4endl;
       G4cout << " KINE: Setting projectileExcitationEnergy to:"
-	     << GetIncidentIon()->GetExcitationEnergy() << G4endl;
-	  G4cout << " Kine: Setting excitation energy of Scattered particle to:"
-	         << GetScatteredIon()->GetExcitationEnergy() << G4endl;
+	           << GetIncidentIon()->GetExcitationEnergy() << G4endl;
+      G4cout << " Kine: Setting excitation energy of Scattered particle to:"
+	           << GetScatteredIon()->GetExcitationEnergy() << G4endl;
       G4cout << " KINE: Setting CM Angle to:" << KINE->GetThetaCMAngle() << " deg" << G4endl;
     }
 
@@ -1024,24 +886,21 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     energy2    = KINE->GetANGAr(1);    // unit: MeV
 
     if(verboseLevel>0){
-
-        G4cout << "Kine: Scattered energy:" << KINE->GetANGAs(1) << " MeV" << G4endl;
-        G4cout << "Kine: Recoriled energy:" << KINE->GetANGAr(1) << " MeV" << G4endl;
-        G4cout << "Kine: Scattered angle:"  << KINE->GetANGAs(0)/deg << " deg" << G4endl;
-        G4cout << "Kine: recoiled  angle:"  << KINE->GetANGAr(0)/deg << " deg" << G4endl;
-        G4cout << "Kine: passed Scattered energy:" << energy1 << " MeV" << G4endl;
-        G4cout << "Kine: passed Recoil energy:"    << energy2 << " MeV" << G4endl;
-        G4cout << "Kine: passed Scattered angle:"  << theta1/deg  << " deg" << G4endl;
-        G4cout << "Kine: passed Recoil angle:"     << theta2/deg  << " deg" << G4endl;
-        G4cout << "deg=" << deg << ", MeV=" << MeV << G4endl;
+      G4cout << "Kine: Scattered energy:" << KINE->GetANGAs(1) << " MeV" << G4endl;
+      G4cout << "Kine: Recoriled energy:" << KINE->GetANGAr(1) << " MeV" << G4endl;
+      G4cout << "Kine: Scattered angle:"  << KINE->GetANGAs(0)/deg << " deg" << G4endl;
+      G4cout << "Kine: recoiled  angle:"  << KINE->GetANGAr(0)/deg << " deg" << G4endl;
+      G4cout << "Kine: passed Scattered energy:" << energy1 << " MeV" << G4endl;
+      G4cout << "Kine: passed Recoil energy:"    << energy2 << " MeV" << G4endl;
+      G4cout << "Kine: passed Scattered angle:"  << theta1/deg  << " deg" << G4endl;
+      G4cout << "Kine: passed Recoil angle:"     << theta2/deg  << " deg" << G4endl;
+      G4cout << "deg=" << deg << ", MeV=" << MeV << G4endl;
     }
-
     G4double phiBeam1=0., phiBeam2=0.;
-
     phiBeam1 = twopi * G4UniformRand();         //flat probability in phi
     phiBeam2 = phiBeam1 + pi;
 
-// Euler transformation here for (theta1, phi1) and (theta2, phi2)
+    // Euler transformation here for (theta1, phi1) and (theta2, phi2)
     G4double thetaLab1, phiLab1, thetaLab2, phiLab2;
 
     ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
@@ -1072,9 +931,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     if(randomPhiAngleFlag=="off") phiLab2 = GetUserPhiAngle();
 
     G4ThreeVector direction2 = G4ThreeVector(sin(thetaLab2)*cos(phiLab2),
-					     sin(thetaLab2)*sin(phiLab2),
-					     cos(thetaLab2));
-
+					                                   sin(thetaLab2)*sin(phiLab2),
+					                                   cos(thetaLab2));
     delete EulerTransformer;
 
     particleGun->SetParticleDefinition(scatteredIon);
@@ -1121,7 +979,6 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
  
     G4double ExEnergyScattered= GetExEnergyOfScattered();
     if(ExEnergyScattered>0){   //Photon is emmited isotropically from vertex
-      G4cout << "TOTO" << G4endl;
       G4double cosTheta_gamma;
       G4double phi_gamma = twopi*G4UniformRand();
       G4double sinTheta_gamma;
@@ -1130,123 +987,108 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
       G4String particleName;
       particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="gamma"));
-      particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta_gamma*cos(phi_gamma),sinTheta_gamma*sin(phi_gamma),cosTheta_gamma));
-      if(ExEnergyScattered<1.500&&ExEnergyScattered>.86)
-	particleGun->SetParticleEnergy(ExEnergyScattered-0.854);
+      particleGun->SetParticleMomentumDirection(G4ThreeVector(sinTheta_gamma*cos(phi_gamma),
+                                                              sinTheta_gamma*sin(phi_gamma),
+                                                              cosTheta_gamma));
+      if(ExEnergyScattered<1.500 && ExEnergyScattered>.86)
+        particleGun->SetParticleEnergy(ExEnergyScattered-0.854);
       else
-	particleGun->SetParticleEnergy(ExEnergyScattered);
+        particleGun->SetParticleEnergy(ExEnergyScattered);
       particleGun->SetParticlePosition(vertexPosition);
       particleGun->SetParticleTime(0.0);
       particleGun->GeneratePrimaryVertex(anEvent);
       if(ExEnergyScattered<1.5&&ExEnergyScattered>.86){
-	 particleGun->SetParticleEnergy(0.854);
-	 phi_gamma = twopi*G4UniformRand();
-	 cosTheta_gamma = -1.0 + 2.0*G4UniformRand();
-	 sinTheta_gamma = sqrt(1 - cosTheta_gamma*cosTheta_gamma);
-     particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta_gamma*cos(phi_gamma),sinTheta_gamma*sin(phi_gamma),cosTheta_gamma));
-	 particleGun->SetParticlePosition(vertexPosition);
-	 particleGun->SetParticleTime(0.0);
-	 particleGun->GeneratePrimaryVertex(anEvent);
+        particleGun->SetParticleEnergy(0.854);
+        phi_gamma = twopi*G4UniformRand();
+        cosTheta_gamma = -1.0 + 2.0*G4UniformRand();
+        sinTheta_gamma = sqrt(1 - cosTheta_gamma*cosTheta_gamma);
+        particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta_gamma*cos(phi_gamma),
+                                                                  sinTheta_gamma*sin(phi_gamma),
+                                                                  cosTheta_gamma));
+	      particleGun->SetParticlePosition(vertexPosition);
+	      particleGun->SetParticleTime(0.0);
+	      particleGun->GeneratePrimaryVertex(anEvent);
       }
-     
     }//end if(ExEnergyScattered>0) 
-  
-
   }
 
-  // CASE 5
-  // Particle selected manually (using the messenger commands)
+  // CASE F  Particle selected manually (using the messenger commands)
   else{
     if(verboseLevel>0){
       G4cout << G4endl
-	     << " *************************************************** " << G4endl
-	     << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
-	     << " * No particular event generator or kinematics code... " << G4endl
-	     << " * A single particle is thrown using messenger commands."  << G4endl;
+	           << " *************************************************** " << G4endl
+	           << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
+	           << " * No particular event generator or kinematics code... " << G4endl
+	           << " * A single particle is thrown using messenger commands."  << G4endl;
       G4cout << " *************************************************** "<< G4endl;
     }
     
     if(realisticBeamFlag == "on")
-      //particleGun->SetParticlePosition(vertexPosition);
+      particleGun->SetParticlePosition(vertexPosition);
+    else
       particleGun->SetParticlePosition(G4ThreeVector());
-    //G4ThreeVector particlePosition;
-    //particlePosition=particleGun->GetParticlePosition();
-    
     
     //DPLoureiro adding random distribution for polar and azimuthal angles
-    G4double cosTheta;
-    G4double sinTheta;
-    //G4double Theta;
+    G4double cosTheta, sinTheta;
     G4double y_coord;
     y_coord = -1 + 2.0*G4UniformRand();
     y_coord=10*y_coord/185.;
    
     if(randomThetaFlag == "on") {
-      
       G4ParticleDefinition* pd = particleTable->FindParticle("alpha");
       //G4ParticleDefinition* pd = particleTable->FindParticle("proton");
       if(pd != 0)
-	particleGun->SetParticleDefinition(pd);
+        particleGun->SetParticleDefinition(pd);
      
       //G4cout<<cos(randomThetaMin*rad)<<" "<<cos(randomThetaMax*rad)<<G4endl;
-      
       G4double CosRandomThetaMin=cos(randomThetaMin);     
       G4double CosRandomThetaMax=cos(randomThetaMax);     
       
       if(CosRandomThetaMin==1. && CosRandomThetaMax==0. ) {
-	cosTheta = -1.0 + 2.0*G4UniformRand();
-       sinTheta = sqrt(1 - cosTheta*cosTheta);
-       //G4cout<<"UNIFORM"<<G4endl;     
+        cosTheta = -1.0 + 2.0*G4UniformRand();
+        sinTheta = sqrt(1 - cosTheta*cosTheta);
+        //G4cout<<"UNIFORM"<<G4endl;     
       }
       else{
-	//Theta = (randomThetaMin + (randomThetaMax-randomThetaMin) * G4UniformRand()) * rad;
-	cosTheta = cos(randomThetaMin*rad)+(cos(randomThetaMax*rad)- cos(randomThetaMin*rad))*G4UniformRand();
-	//cosTheta = cos(Theta);
-	sinTheta = sqrt(1 - cosTheta*cosTheta);
-       //G4cout<<"NON UNIFORM"<<G4endl;     
-     }
+        //Theta = (randomThetaMin + (randomThetaMax-randomThetaMin) * G4UniformRand()) * rad;
+        cosTheta = cos(randomThetaMin*rad)+(cos(randomThetaMax*rad)- cos(randomThetaMin*rad))*G4UniformRand();
+        //cosTheta = cos(Theta);
+        sinTheta = sqrt(1 - cosTheta*cosTheta);
+        //G4cout<<"NON UNIFORM"<<G4endl;    
+      }
     }
     else{ 
       sinTheta=0;
       cosTheta=1;
     }
-    G4double phi;
-
-    //G4cout<< "THETA"<<" "<<Theta<<G4endl;     
-    
+    G4double phi;    
     if(randomPhiFlag == "on"){
       G4double CosRandomPhiMin=cos(randomPhiMin);     
       G4double CosRandomPhiMax=cos(randomPhiMax);     
       if(CosRandomPhiMin==1. && CosRandomPhiMax==1.) 
-	phi=2*pi*G4UniformRand();
-      else 
-	phi=randomPhiMin + ((randomPhiMax-randomPhiMin) * G4UniformRand()) * rad;
+        phi=2*pi*G4UniformRand();
+      else
+        phi=randomPhiMin + ((randomPhiMax-randomPhiMin) * G4UniformRand()) * rad;
     }
-  
-   //else phi=pi/2;
-   else phi=0;
-    
-   //G4cout<< randomPhiMin<<" "<<randomPhiMax<<" "<<phi<<G4endl;     
-   //G4cout<< randomThetaMin<<" "<<randomThetaMax<<" "<<Theta<<G4endl;     
+    //else phi=pi/2;
+    else phi=0;
     
     if(alphaSourceFlag == "on"){
       G4int i=rand() % 3;
       G4double alpha_energy[3]={5.16,5.49,5.81};
       //G4cout<<alpha_energy[i]<<G4endl;
       particleGun->SetParticleEnergy(alpha_energy[i]*MeV);
-      
     }
-    
-   else{  ;
-     //particleGun->SetParticleEnergy(5.5*MeV);
-     particleGun->SetParticleEnergy(GetLabEnergy());
-        //incidentIon =  (G4Ions*) particleTable->GetIon(50, 134, 0.);  // 134Sn
-     //incidentIon =  (G4Ions*) particleTable->GetIon(30, 80, 0.);  // 80Zn
-     //incidentIon =  (G4Ions*) particleTable->GetIon(38, 90, 0.);  // 90Sr
-     //incidentIonCharge =  50;
-     //incidentIonCharge =  38;
-     //particleGun->SetParticleDefinition(incidentIon);
-   }
+    else{
+      //particleGun->SetParticleEnergy(5.5*MeV);
+      particleGun->SetParticleEnergy(GetLabEnergy());
+      //incidentIon =  (G4Ions*) particleTable->GetIon(50, 134, 0.);  // 134Sn
+      //incidentIon =  (G4Ions*) particleTable->GetIon(30, 80, 0.);  // 80Zn
+      //incidentIon =  (G4Ions*) particleTable->GetIon(38, 90, 0.);  // 90Sr
+      //incidentIonCharge =  50;
+      //incidentIonCharge =  38;
+      //particleGun->SetParticleDefinition(incidentIon);
+    }
 
     //these are the cosines for an isotropic direction
     //particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
@@ -1254,9 +1096,6 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //Circle of 2.5 mm radius
     Float_t radius=beamRadiusAtEntrance;
     //Float_t radius=32*mm;
-    //Float_t radius=1*cm;
-    //Float_t radius=2.5*mm;
-    //Float_t radius=1*mm;
     Float_t X0=0;
     Float_t Y0=0;
     //Float_t Z0= -(detector->GetChamberZLength()-detector->GetZGasBoxPosition());
@@ -1276,14 +1115,14 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     if(cosTheta>0)
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(y_coord,sinTheta*sin(phi),cosTheta));
       particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sinTheta*sin(phi),cosTheta));
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),y_coord,cosTheta));
+      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),y_coord,cosTheta));
     else
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-y_coord,sinTheta*sin(phi),-cosTheta));
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),sinTheta*sin(phi),-cosTheta));
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),y_coord,-cosTheta));
-    particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),y_coord,-cosTheta));
+      particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+    
     particleGun->GeneratePrimaryVertex(anEvent);
-  
   }
  
     // G4ParticleDefinition *pdef=particleGun->GetParticleDefinition();   

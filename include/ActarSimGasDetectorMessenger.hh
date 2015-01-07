@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update: 05/05/08
+//*-- Last Update: 15/12/14
 // --------------------------------------------------------------
 // Description:
 //   Messenger of the GAS ACTAR detector

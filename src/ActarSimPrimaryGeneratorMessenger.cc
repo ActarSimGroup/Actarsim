@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol  hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 03/04/06
-//*-- modified by: B. Fernandez-Dominguez bfd@ns.ph.liv.ac.uk
+//*-- Last Update: 16/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the primary event generator.

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez    hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 17/05/08 by Hector Alvarez
+//*-- Last Update: 07/01/15 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   Silicon detector description
@@ -126,22 +126,21 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
 
   // Printing the final settings...
   G4cout << "##################################################################"
-	 << G4endl
-	 << "###########  ActarSimSilDetectorConstruction::ConstructSil() #########"
-	 << G4endl
-	 << " Note that only a thin (1 micron) Al window is defined in front "
-	 << G4endl
-	 << " of the silicons. No other box around the silicon volume is described."
-	 << G4endl
-	 << " x dimension (half-side) of silicon: " << silBulk_x/mm << " mm"
-	 << G4endl
-	 << " y dimension (half-side) of silicon: " << silBulk_y/mm << " mm"
-	 << G4endl
-	 << " z dimension (half-side) of silicon: " << silBulk_z/mm << " mm"
-	 << G4endl;
+	       << G4endl
+	       << "###########  ActarSimSilDetectorConstruction::ConstructSil() #########"
+	       << G4endl
+	       << " Note that only a thin (1 micron) Al window is defined in front "
+	       << G4endl
+	       << " of the silicons. No other box around the silicon volume is described."
+	       << G4endl
+	       << " x dimension (half-side) of silicon: " << silBulk_x/mm << " mm"
+	       << G4endl
+	       << " y dimension (half-side) of silicon: " << silBulk_y/mm << " mm"
+	       << G4endl
+	       << " z dimension (half-side) of silicon: " << silBulk_z/mm << " mm"
+	       << G4endl;
   G4cout << "##################################################################"
-	 << G4endl;
-
+	       << G4endl;
 
   G4LogicalVolume* silLog(0);
   G4VPhysicalVolume* silPhys(0);
@@ -392,9 +391,9 @@ void ActarSimSilDetectorConstruction::PrintDetectorParameters() {
   //
 
   G4cout << "##################################################################"
-	 << G4endl
-	 << "####  ActarSimSilDetectorConstruction::PrintDetectorParameters() ####"
-	 << G4endl;
+	       << G4endl
+	       << "####  ActarSimSilDetectorConstruction::PrintDetectorParameters() ####"
+	       << G4endl;
   G4cout << "##################################################################"
-	 << G4endl;
+	       << G4endl;
 }

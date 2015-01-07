@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 05/2008
-//*-- Last Update: 17/05/08 by Hector Alvarez Pol
+//*-- Last Update: 23/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
-//   The ACTAR Scintillator detectorpart of the ROOT Analysis
+//   The Plastic Scintillator detector part of the ROOT Analysis
 //
 // --------------------------------------------------------------
 // Comments:

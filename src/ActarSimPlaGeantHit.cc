@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapolyo@usc.es
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update:
+//*-- Last Update: 16/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
-//   A Geant Hit in the Scintillator volume. It represents
-//   the information of each step with energy deposited.
+//   A Geant Hit in the plastic (scintillator) volume. It 
+//  represents the information of each step with energy deposited.
 //
 // --------------------------------------------------------------
 // Comments:
@@ -41,23 +41,7 @@ ActarSimPlaGeantHit::~ActarSimPlaGeantHit() {
 ActarSimPlaGeantHit::ActarSimPlaGeantHit(const ActarSimPlaGeantHit& right) : G4VHit() {
   //
   // Copy constructor
-  //CsI-like
- /* edep = right.edep;
-  pos = right.pos;
-  prePos = right.prePos;
-  localPos = right.localPos;
-  localPrePos = right.localPrePos;
-  detName = right.detName;
-  postDetName = right.postDetName;
-  preDetName = right.preDetName;
-  detID = right.detID;
-  toF = right.toF;
-  trackID = right.trackID;
-  parentID = right.parentID;
-  particleID = right.particleID;
-  particleCharge = right.particleCharge;
-  particleMass = right.particleMass;*/
-	
+	//
 	edep = right.edep;
 	eBeforePla = right.eBeforePla;
 	eAfterPla = right.eAfterPla;
@@ -82,26 +66,8 @@ ActarSimPlaGeantHit::ActarSimPlaGeantHit(const ActarSimPlaGeantHit& right) : G4V
 
 const ActarSimPlaGeantHit& ActarSimPlaGeantHit::operator=(const ActarSimPlaGeantHit& right){
   //
-  // Operator =
-  //CsI-like
- /* edep = right.edep;
-  pos = right.pos;
-  prePos = right.prePos;
-  localPos = right.localPos;
-  localPrePos = right.localPrePos;
-  detName = right.detName;
-  postDetName = right.postDetName;
-  preDetName = right.preDetName;
-  detID = right.detID;
-  toF = right.toF;
-  trackID = right.trackID;
-  parentID = right.parentID;
-  particleID = right.particleID;
-  particleCharge = right.particleCharge;
-  particleMass = right.particleMass;
-
-  return *this;*/
-	
+  // operator=
+  //
 	edep = right.edep;
 	eBeforePla = right.eBeforePla;
 	eAfterPla = right.eAfterPla;

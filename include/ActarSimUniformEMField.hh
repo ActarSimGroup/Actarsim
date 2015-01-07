@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol  hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2005
-//*-- Last Update: 29/11/05
+//*-- Last Update: 07/01/15
 // --------------------------------------------------------------
 // Description:
 //  Uniform electric and magnetic fields definition

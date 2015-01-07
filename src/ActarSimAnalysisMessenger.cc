@@ -91,7 +91,7 @@ ActarSimAnalysisMessenger::~ActarSimAnalysisMessenger() {
   //
   delete storeTracksCmd;
   delete storeTrackHistosCmd;
-  //delete setMinStrideLengthCmd;
+  delete setMinStrideLengthCmd;
   delete storeEventsCmd;       // new dypang 080301
   delete storeSimpleTracksCmd; // new dypang 080301
   delete storeHistosCmd;       // new dypang 080301
@@ -120,8 +120,8 @@ void ActarSimAnalysisMessenger::SetNewValue(G4UIcommand* command,
     {analExample->SetStoreHistogramsFlag(newValue);}
 
   //DPL 28Nov2012
-   if(command == setMinStrideLengthCmd)
-     {analExample->SetMinStrideLength(setMinStrideLengthCmd->GetNewDoubleValue(newValue));}  
+  if(command == setMinStrideLengthCmd)
+    {analExample->SetMinStrideLength(setMinStrideLengthCmd->GetNewDoubleValue(newValue));}  
 
 }
 

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol     hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 06/2008
-//*-- Last Update: 12/06/08 by Hector Alvarez
+//*-- Last Update: 1/12/14 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   The information from the beam parameters used for the reaction
@@ -25,19 +25,6 @@ class ActarSimBeamInfo : public TObject {
 
 private:
 
-// Probably it is better to have as data members only the 4momenta at the entrance
-// and at the vertex position, and have functions for entering 4momenta at these
-// two points or the position and angle, with the proper additional functions to
-// convert between the equivalent information. Remember! Store only one option and
-// create the functions to covert between the equivalent information datasets.
-// TODO Missing the information about the ion (beam) angle in the vertex, after all
-// the angular straggling. This angle should affect to the reaction plane, and therefore
-// should create a transformation on the products momenta, probably of no practical importance
-// TODO Information about the ion?? Charge, effective charge, G4Ion object?
-// NOT, probably only useful for mixed beam... If the beam is only made of one
-// ion, why should I store once per event the beam type? Only things that change from event
-// to event should here included...
-
   Double_t energyEntrance;     // Energy at the entrance
   Double_t energyVertex;       // Energy at the vertex
 
@@ -56,12 +43,12 @@ private:
 
   Double_t timeVertex;        // time at vertex
 
-  Int_t status;	              //! (Does not move to file!)
-                              // Informs of ion beam status. Used for the dynamical vertex generation
-			      // in ActarSimPrimaryGeneratorAction.
-			      // Values: 0 ion ready for being tracked. Default value after object creation
-			      //         1 ion under tracking
-			      //         2 ion reached Z0, the position
+  Int_t status;	//! (Does not move to file!)
+                // Informs of ion beam status. Used for the dynamical vertex generation
+			          // in ActarSimPrimaryGeneratorAction.
+			          // Values: 0 ion ready for being tracked. Default value after object creation
+			          //         1 ion under tracking
+			          //         2 ion reached Z0, the vertex position
 
 public:
 

@@ -1,14 +1,14 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol  hapol@fpddux.usc.es
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 01/12/05
+//*-- Last Update: 01/12/14
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the analysis interaction
 //
 // --------------------------------------------------------------
 // Comments:
-// 
+//   Messenger commands are described in their guidance (src/.cc)
 //
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ public:
   void SetNewValue(G4UIcommand*, G4String);
   
 private:
-  ActarSimROOTAnalysis*  analExample;
+  ActarSimROOTAnalysis* analExample;
   G4UIdirectory*        analDir;   
   G4UIcmdWithAString*   storeTracksCmd;
   G4UIcmdWithAString*   storeTrackHistosCmd;

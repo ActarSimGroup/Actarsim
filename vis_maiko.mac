@@ -27,7 +27,7 @@
 #   ion low-energy: ion-LowE, ion-LowE-ziegler1977, ion-LowE-ziegler1985,
 #   ion-LowE-ziegler2000, ion-standard
 #
-/ActarSim/phys/addPhysics standard
+#/ActarSim/phys/addPhysics standard
 #/ActarSim/phys/addPhysics decay
 #/ActarSim/phys/addPhysics elastic
 #/ActarSim/phys/addPhysics binary
@@ -43,10 +43,7 @@
 #/ActarSim/phys/addPhysics emstandard_opt0
 /ActarSim/phys/addPhysics emstandard_opt3
 #/ActarSim/phys/addPhysics emstandard_opt4
-/ActarSim/phys/addPhysics ionGasModels
-#
-#/process/eLoss/minKinEnergy 100 MeV
-#/cuts/setLowEdge 8 keV
+#/ActarSim/phys/addPhysics ionGasModels
 #
 #
 # Cuts for the particles  (incomplete list, see README)
@@ -54,7 +51,7 @@
 #  /ActarSim/phys/setGCut 0.1
 #  /ActarSim/phys/setECut 0.1
 #  /ActarSim/phys/setPCut 0.1
-  /ActarSim/phys/setCuts 1 mm
+#  /ActarSim/phys/setCuts 1 mm
 /ActarSim/phys/verbose 0
 #
 # Initialization is moved here from the main allowing PhysicsList
@@ -66,6 +63,7 @@
 # GENERAL COMMANDS
 #
 # Control of the materials
+#/ActarSim/det/setMediumMat Air
 /ActarSim/det/setMediumMat D2_STP
 #/ActarSim/det/setMediumMat Galactic
 #/ActarSim/det/setMediumMat Water
@@ -73,36 +71,23 @@
 #/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
 #
-
+# gas material: isoC4H10STP, D2_STP, H2_STP
+#
+/ActarSim/det/gas/setGasMat D2_STP
+#
 /ActarSim/det/MaikoGeoIncludedFlag on
-
+#
 # GAS DETECTOR
 #
 /ActarSim/det/gasGeoIncludedFlag on
-#/ActarSim/det/setZGasBoxPosition 68. mm
 # if box
 /ActarSim/det/gas/setDetectorGeometry box
-/ActarSim/det/gas/luciteBoxIncluded off
-#/ActarSim/det/gas/setXLengthGasBox 150. mm
-#/ActarSim/det/gas/setYLengthGasBox 150. mm
-#/ActarSim/det/gas/setZLengthGasBox 150. mm
 #
 /ActarSim/det/gas/setXLengthGasBox 50. mm
 /ActarSim/det/gas/setYLengthGasBox 70. mm
 /ActarSim/det/gas/setZLengthGasBox 50. mm
 #
-#/ActarSim/det/gas/setXLengthGasBox 32. mm
-#/ActarSim/det/gas/setYLengthGasBox 80. mm
-#/ActarSim/det/gas/setZLengthGasBox 64. mm
-#
-#/ActarSim/det/gas/setXLengthGasBox 95. mm
-#/ActarSim/det/gas/setYLengthGasBox 105. mm
-#/ActarSim/det/gas/setZLengthGasBox 120. mm
-#
-#/ActarSim/det/gas/setXLengthGasBox 77. mm
-#/ActarSim/det/gas/setYLengthGasBox 105. mm
-#/ActarSim/det/gas/setZLengthGasBox 115. mm
-#
+/ActarSim/det/gas/setYGasBoxPos 50 mm
 #
 # if tube
 #  /ActarSim/det/gas/setDetectorGeometry tube
@@ -117,9 +102,6 @@
 #  /ActarSim/det/gas/setRadiusBeamShieldTub 1.001 mm
 #  /ActarSim/det/gas/setLengthBeamShieldTub 1.0 m
 #
-# gas material:
-#
-/ActarSim/det/gas/setGasMat D2_STP
 #
 # SILICON DETECTOR
 #
@@ -135,17 +117,6 @@
 # bit6 (msb) beam entrance wall               32
 # examples: 63 full coverage; 3 only output and bottom walls ...
 /ActarSim/det/sil/sideCoverage 25
-#/ActarSim/det/sil/xBoxHalfLength 50. mm
-#/ActarSim/det/sil/yBoxHalfLength 50. mm
-#/ActarSim/det/sil/zBoxHalfLength 50. mm
-#
-#/ActarSim/det/sil/xBoxHalfLength 75. mm
-#/ActarSim/det/sil/yBoxHalfLength 75. mm
-#/ActarSim/det/sil/zBoxHalfLength 75. mm
-#
-#/ActarSim/det/sil/xBoxHalfLength 82. mm
-#/ActarSim/det/sil/yBoxHalfLength 75. mm
-#/ActarSim/det/sil/zBoxHalfLength 114.5 mm
 #
 /ActarSim/det/sil/xBoxHalfLength 77. mm
 /ActarSim/det/sil/yBoxHalfLength 105. mm
@@ -158,14 +129,11 @@
 /ActarSim/det/sciGeoIncludedFlag off
 # see above explanation in the equivalent command for the Silicons
 /ActarSim/det/sci/sideCoverage 25
-#/ActarSim/det/sci/xBoxHalfLength 150. mm
-#/ActarSim/det/sci/yBoxHalfLength 150. mm
-#/ActarSim/det/sci/zBoxHalfLength 150. mm
-
+#
 /ActarSim/det/sci/xBoxHalfLength 77. mm
 /ActarSim/det/sci/yBoxHalfLength 105. mm
 /ActarSim/det/sci/zBoxHalfLength 115. mm
-
+#
 /ActarSim/det/sci/print
 #
 #Control of the output on the ROOT file
@@ -187,9 +155,9 @@
 # Control of the primary events
 #For all cases the possibility to have realistic beam distribution
 /ActarSim/gun/beamInteraction off
-/ActarSim/gun/realisticBeam on
-/ActarSim/gun/beamRadiusAtEntrance 32. mm
-/ActarSim/gun/emittance 200.0
+/ActarSim/gun/realisticBeam off
+#/ActarSim/gun/beamRadiusAtEntrance 32. mm
+#/ActarSim/gun/emittance 200.0
 #
 # Realistic Event-Generator on
 /ActarSim/gun/reactionFromEvGen off
@@ -205,20 +173,16 @@
 #if you want to use an ion, write "ion" in the previous command
 #and set the Z, A and charge state in the next...
 
-/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
+#/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
 #/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
 #/ActarSim/gun/ion 6 12 6 0.0 12.
+/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/ActarSim/gun/ion 26 56 26 0.0 55.934937475
 
-#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
-#/ActarSim/gun/ion 3 11 3
-
 #/ActarSim/gun/Kine/labEnergy 4 MeV
-/ActarSim/gun/Kine/labEnergy 80 MeV
-#/ActarSim/gun/Kine/labEnergy 96 MeV
-#/ActarSim/gun/Kine/labEnergy 224 MeV
-#/ActarSim/gun/Kine/labEnergy 280 MeV
+#/ActarSim/gun/Kine/labEnergy 80 MeV
+/ActarSim/gun/Kine/labEnergy 650 MeV
 #/ActarSim/gun/energy 11. MeV
 #/ActarSim/gun/position 0 0 0
 #/ActarSim/gun/direction 0 0 1

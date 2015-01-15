@@ -48,11 +48,11 @@ private:
   G4UIcmdWithoutParameter*   printCmd;
 
   G4UIcmdWithAString*        detectorGeometryCmd;
-  G4UIcmdWithAString*        luciteBoxCmd;
   G4UIcmdWithAString*        setBeamShieldCmd;
   G4UIcmdWithADoubleAndUnit* xGasBoxCmd;
   G4UIcmdWithADoubleAndUnit* yGasBoxCmd;
   G4UIcmdWithADoubleAndUnit* zGasBoxCmd;
+  G4UIcmdWithADoubleAndUnit* yGasBoxPosCmd;
   G4UIcmdWithADoubleAndUnit* radiusGasTubCmd;
   G4UIcmdWithADoubleAndUnit* lengthGasTubCmd;
   G4UIcmdWithADoubleAndUnit* innerRadiusBeamShieldTubCmd;

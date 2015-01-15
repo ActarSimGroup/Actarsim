@@ -1,0 +1,79 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{amsmath,mathrsfs,amssymb} % amsmath crashes with tsfonts for the command \iint
+\usepackage{cmbright}
+\usepackage{eurosym}
+\usepackage{graphicx,subfigure}
+\usepackage[usenames]{color}
+
+\ifx\pdfoutput\undefined
+\usepackage[dvipdf,
+            pdfstartview=FitH,
+            bookmarksnumbered=true,
+            bookmarksopen=true,
+            colorlinks=true,
+            linkcolor=blue,
+            citecolor=blue,
+            filecolor=blue,
+            urlcolor=blue,
+            ]{hyperref}
+% %%\AtBeginDvi{\special{pdf:tounicode GBK-EUC-UCS2}}} % GBK -> Unicode
+\else
+\usepackage[dvipdfm,
+            pdfstartview=FitH,
+            bookmarksnumbered=true,
+            bookmarksopen=true,
+            colorlinks=true,
+            linkcolor=blue,
+            citecolor=blue,
+            filecolor=blue,
+            urlcolor=blue,
+            ]{hyperref}
+\fi
+
+\setlength{\parskip}{1.ex plus .2ex minus .5ex}
+\renewcommand{\baselinestretch}{1.2}
+\def\nuc#1#2{\relax\ifmmode{}^{#1}{\protect\text{#2}}\else${}^{#1}$#2\fi}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.65}
+\renewcommand{\floatpagefraction}{0.60}
+
+\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
+\usepackage{makeidx}
+\makeindex
+
+\title{ActarSim Manual}
+\author{H. Alvarez Pol and D.Y. Pang}
+\date{\today}
+%
+%\listoffigures
+%\listoftables
+
+\begin{document}
+\graphicspath{{figures/}}
+\maketitle
+
+\begin{abstract}
+A manual for ActarSim.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+ActarSim is a code developed for the simulation of the ACTAR experimental setup.
+
+\input{sec-01-installation}
+\input{sec-02-procedures}
+\input{sec-03-messengers}
+\input{sec-04-appendix}
+
+\printindex
+
+\begin{thebibliography}{999}
+\bibitem{Peisert-Sauli} Anna Peisert and Fabio Sauli, Drift and Diffusion of electrons in gases: a compilation, CERN 84-08, 1984
+\bibitem{Mathieson-NIM-1984} E. Mathieson and J.S. Gordon, Nucl. Instru. Meth. 227 (1984) 277.
+\bibitem{Mathieson-NIMA-1988} E. Mathieson, Nucl. Instru. Meth. \textbf{A270} (1988) 602.
+\end{thebibliography}
+
+\end{document}

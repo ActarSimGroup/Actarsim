@@ -52,14 +52,6 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   beamShieldMaterCmd->SetDefaultValue("isoC4H10");
   beamShieldMaterCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  luciteBoxCmd = new G4UIcmdWithAString("/ActarSim/det/gas/luciteBoxIncluded",this);
-  luciteBoxCmd->SetGuidance("Includes the geometry plastic box in the simulation (default off).");
-  luciteBoxCmd->SetGuidance("  Choice : on, off(default)");
-  luciteBoxCmd->SetParameterName("choice",true);
-  luciteBoxCmd->SetDefaultValue("off");
-  luciteBoxCmd->SetCandidates("on off");
-  luciteBoxCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
   detectorGeometryCmd = new G4UIcmdWithAString("/ActarSim/det/gas/setDetectorGeometry",this);
   detectorGeometryCmd->SetGuidance("Select the geometry of the detector.");
   detectorGeometryCmd->SetGuidance("Choice : box(default), tube.");
@@ -94,6 +86,13 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   zGasBoxCmd->SetRange("zGasBox>=0.");
   zGasBoxCmd->SetUnitCategory("Length");
   zGasBoxCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  yGasBoxPosCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setYGasBoxPos",this);
+  yGasBoxPosCmd->SetGuidance("Select the vertical position of Gas Box relative to the Chamber.");
+  yGasBoxPosCmd->SetParameterName("yGasBoxPos",false);
+  yGasBoxPosCmd->SetRange("yGasBoxPos>=0.");
+  yGasBoxPosCmd->SetUnitCategory("Length");
+  yGasBoxPosCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   radiusGasTubCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setRadiusGasTub",this);
   radiusGasTubCmd->SetGuidance("Select the external radius of the Gas Tube.");
@@ -148,6 +147,7 @@ ActarSimGasDetectorMessenger::~ActarSimGasDetectorMessenger() {
   delete xGasBoxCmd;
   delete yGasBoxCmd;
   delete zGasBoxCmd;
+  delete yGasBoxPosCmd;
   delete radiusGasTubCmd;
   delete lengthGasTubCmd;
   delete innerRadiusBeamShieldTubCmd;
@@ -172,11 +172,6 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == beamShieldMaterCmd)
   {
     ActarSimGasDetector->SetBeamShieldMaterial(newValue);
-  }
-
-  if(command == luciteBoxCmd)
-  {
-    ActarSimGasDetector->SetLuciteBox(newValue);
   }
 
   if(command == detectorGeometryCmd)
@@ -204,6 +199,11 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
     ActarSimGasDetector->SetZGasBox(zGasBoxCmd->GetNewDoubleValue(newValue));
     ActarSimDetector->SetZGasBoxPosition(zGasBoxCmd->GetNewDoubleValue(newValue));
 
+  }
+
+  if(command == yGasBoxPosCmd)
+  {
+    ActarSimGasDetector->SetYGasBoxPos(yGasBoxPosCmd->GetNewDoubleValue(newValue));
   }
 
   if(command == radiusGasTubCmd)

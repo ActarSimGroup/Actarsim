@@ -1,0 +1,16 @@
+ActarSim updates
+
+================================================================================
+
+Last Update: 15/01/15 by Piotr Konczykowski
+
+A more detailed report on ActaSim updates
+
+================================================================================
+
+15/01/15 by Piotr Konczykowski
+
+- All 'Lucite box' commands removed
+- In ActarSimGasDetectorConstruction : Hard coded position of GasBox inside the GasChamber removed and changed to an external command /ActarSim/det/gas/setYGasBoxPos 12.47 mm
+- ActarSim-manual added
+- Macros updated and cleaned

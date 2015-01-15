@@ -33,10 +33,12 @@ private:
   G4Material* gasMaterial;
   G4Material* beamShieldMaterial;
 
-  // GasBox Size Parameters
+  // GasBox Size Parameters and position
   G4double xGasBox;
   G4double yGasBox;
   G4double zGasBox;
+
+  G4double yGasBoxPos;
 
   // GasTub Size Parameters
   G4double radiusGasTub;
@@ -52,7 +54,6 @@ private:
   G4String beamShieldGeometry;
 
   //
-  G4String luciteBoxIncluded;
   ActarSimGasDetectorMessenger* gasMessenger;   //pointer to the Messenger
   ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
   
@@ -69,11 +70,11 @@ public:
   void SetBeamShieldMaterial(G4String);
   void SetDetectorGeometry(G4String);
   void SetBeamShieldGeometry(G4String);
-  void SetLuciteBox(G4String);
 
   void SetXGasBox(G4double val){xGasBox = val;} 
   void SetYGasBox(G4double val){yGasBox = val;} 
   void SetZGasBox(G4double val){zGasBox = val;} 
+  void SetYGasBoxPos(G4double val){yGasBoxPos = val;} 
   void SetRadiusGasTub(G4double val){radiusGasTub = val;} 
   void SetLengthGasTub(G4double val){lengthGasTub = val;} 
   void SetInnerRadiusBeamShieldTub(G4double val){innerRadiusBeamShieldTub = val;} 
@@ -88,6 +89,7 @@ public:
   G4double GetXGasBox(void){return xGasBox;} 
   G4double GetYGasBox(void){return yGasBox;} 
   G4double GetZGasBox(void){return zGasBox;} 
+  G4double GetYGasBoxPos(void){return yGasBoxPos;} 
   G4double GetRadiusGasTub(void){return radiusGasTub;} 
   G4double GetLengthGasTub(void){return lengthGasTub;} 
   G4double GetInnerRadiusBeamShieldTub(void){return innerRadiusBeamShieldTub;} 

@@ -1,0 +1,48 @@
+\section{Installation}
+
+\subsection{Requirements}
+
+The following software components are required:
+
+\textbf{GEANT4} - due to the physics definitions, only 4.8.0 and later geant4 versions could be used with this ActarSim simulation. It should be compiled following the instructions provided by the geant4 collaboration ( \url{http://geant4.web.cern.ch/geant4/} ). Check the installation\index{installation} with the included geant4 examples.
+
+\textbf{ROOT} - tested on versions 5.06 and some of the latests and the old 4.03. It is mandatory to install the libraries and include directories. Follow the typical installation as shown in \url{http://root.cern.ch}.
+
+\textbf{G4UIROOT} - not required, but very useful user interface, mainly for beginners because of their fast and painless access to the commands. Download the code from \url{http://i.home.cern.ch/i/iglez/www/alice/G4UIRoot} and follow the instructions for installation. Check the installation with the modified geant4 examples.
+
+\textbf{ActarSim} - the present code.
+
+\subsection{Installation}
+
+It is recommended to take the code from the subversion repository\index{subversion repository} using the \textit{subversion} tools. Subversion is available for most of the operative systems, allowing the access to the repository where the code is stored. The required login and password combination could be obtained from the code developers (mail to repository developer, \url{hector.alvarez@usc.es}).
+
+In case you have no access to the repository, it is possible to download an stable version of the code ActarSim\_DATE.tar.gz file on your GEANT working directory. Unpack the file with the commands:
+\begin{verbatim}
+        tar -xzf ActarSim_DATE.tar.gz
+\end{verbatim}
+A directory ActarSim will be created with the relevant files in.
+
+In any case, after getting the code, one should compile it. To do this, enter in the ActarSim directory 
+and compile it by typing:
+\begin{verbatim}
+        cd ActarSim
+        gmake
+\end{verbatim}
+
+\subsection{Run the program}
+
+Provided the code was successfully compiled, the code runs using the code name alone (for interactive session) or with a macro name (for a batch session):
+\begin{verbatim}
+        ActarSim                    // interactive session
+        ActarSim batch1.mac         // batch session
+\end{verbatim}
+
+Description of the commands which can be used in the macro is given in section \ref{sec-messengers}. It would be useful to specify the terms \textit{number of events}\index{number of events} (or \textit{number of Geant4 events}) and \textit{number of reactions}\index{number of reactions} here for the following text. ActarSim calculates information of one \textit{reaction} by issuing two geant4 \textit{events}: one for the beam and a following one for the reaction products (\textit{primaries} in the glossary of Geant4). Since the event numbers in Geant4 start from zero, the \textbf{even events correspond to beams and odd events correspond to reaction products}. Having this in mind is important to understand the analyzing macros described in the following sections. Because of this, if a user wants to simulate, say, 100 reactions, he/she has to pass a number 200 to the command \textit{/run/beamOn}:
+\begin{verbatim}
+        /run/beamOn 200
+\end{verbatim}
+Another thing is that by some reason not known right now, silicon and scintillator information defined in classes \textit{ActarSimSilHit} and \textit{ActarSimSciHit}, respectively, for the $i$th reaction are written, instead in the $(2i+1)$th event, in the ($2i$)th event ($i$ starts from zero), so if the user really care about the information of the last reaction, for exampke, the 100th reaction in the previous example, he/she has to pass the number 201 to the command \textit{/run/beamOn}:
+\begin{verbatim}
+        /run/beamOn 201
+\end{verbatim}
+Of course it does not matter much if we loss information of one reaction if we simulate 10000 reactions.

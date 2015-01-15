@@ -43,10 +43,8 @@
 #/ActarSim/phys/addPhysics emstandard_opt0
 /ActarSim/phys/addPhysics emstandard_opt3
 #/ActarSim/phys/addPhysics emstandard_opt4
-/ActarSim/phys/addPhysics ionGasModels
+#/ActarSim/phys/addPhysics ionGasModels
 #
-#/process/eLoss/minKinEnergy 100 MeV
-#/cuts/setLowEdge 8 keV
 #
 #
 # Cuts for the particles  (incomplete list, see README)
@@ -78,18 +76,17 @@
 #
 /ActarSim/det/gas/setGasMat D2_STP
 #
-/ActarSim/det/MaikoGeoIncludedFlag off
-#
 # GAS DETECTOR
 #
 /ActarSim/det/gasGeoIncludedFlag on
 # if box
 /ActarSim/det/gas/setDetectorGeometry box
-/ActarSim/det/gas/luciteBoxIncluded off
 #
 /ActarSim/det/gas/setXLengthGasBox 37. mm
 /ActarSim/det/gas/setYLengthGasBox 80.9 mm
 /ActarSim/det/gas/setZLengthGasBox 69. mm
+#
+/ActarSim/det/gas/setYGasBoxPos 12.47 mm
 #
 # Beam shield? tube or off
 /ActarSim/det/gas/setBeamShield off
@@ -118,16 +115,12 @@
 #
 /ActarSim/det/sciGeoIncludedFlag off
 # see above explanation in the equivalent command for the Silicons
-/ActarSim/det/sci/sideCoverage 25
+#/ActarSim/det/sci/sideCoverage 25
 #/ActarSim/det/sci/xBoxHalfLength 150. mm
 #/ActarSim/det/sci/yBoxHalfLength 150. mm
 #/ActarSim/det/sci/zBoxHalfLength 150. mm
 #
-/ActarSim/det/sci/xBoxHalfLength 77. mm
-/ActarSim/det/sci/yBoxHalfLength 105. mm
-/ActarSim/det/sci/zBoxHalfLength 115. mm
-#
-/ActarSim/det/sci/print
+#/ActarSim/det/sci/print
 #
 #Control of the output on the ROOT file
 #all the tracks are stored (note: huge space comsumption)
@@ -176,9 +169,6 @@
 #/ActarSim/gun/ion 3 11 3
 
 #/ActarSim/gun/Kine/labEnergy 4 MeV
-#/ActarSim/gun/Kine/labEnergy 80 MeV
-#/ActarSim/gun/Kine/labEnergy 96 MeV
-#/ActarSim/gun/Kine/labEnergy 224 MeV
 #/ActarSim/gun/Kine/labEnergy 280 MeV
 #/ActarSim/gun/energy 11. MeV
 #/ActarSim/gun/position 0 0 -56 mm

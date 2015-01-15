@@ -1,0 +1,502 @@
+\section{List of messengers in the Geant4 part of ActarSim}\label{sec-messengers}
+
+Next, a complete description of the possible messenger commands\index{messenger commands} available for selecting different options and for the modification of the behavior of the program. The different messenger commands are ordered and separated by their utility, in different directories. The directories are:
+\begin{itemize}
+\item \textbf{det:} containing the detector commands\index{detector commands}, able to modify the setup comditions. It contains two subdirectories:  det/sil controlling the Silicon Detectors setup and det/sci controlling the Scintillator Detectors setup.
+\item \textbf{phys:} containing all related with the interaction physics\index{interaction physics};
+\item \textbf{gun:} commands related with the event generation\index{event generation};
+\item \textbf{event:} event visualization\index{visualization};
+\item \textbf{analControl:} histogramming control\index{histogramming control}.
+\end{itemize}
+
+For each case, the command complete name initiates the description, following by the command explanation and some additional features, if required.
+
+\subsection{Commands controlling the detector description:}
+\index{detector commands}
+\begin{verbatim}
+/ActarSim/det/
+        Command description.  Just the directory name...
+
+/ActarSim/det/gasGeoIncludedFlag
+        Includes the geometry of the gas volume in the simulation (default "off").
+
+/ActarSim/det/silGeoIncludedFlag
+        Includes the geometry of the silicons in the simulation (default "off").
+
+/ActarSim/det/sciGeoIncludedFlag
+        Includes the geometry of the scintillator in the simulation (default "off").
+
+/ActarSim/det/setMediumMat
+        Select Material of the Medium.
+
+/ActarSim/det/setEleField
+        Define electric field.
+        Usage: /ActarSim/det/setEleField  Ex  Ey  Ez  (in MV/mm)
+
+/ActarSim/det/setMagField
+        Define magnetic field.
+        Usage: /ActarSim/det/setMagField  Bx  By  Bz  unit
+
+/ActarSim/det/update
+        Update geometry.
+        This command MUST be applied before \"beamOn\"
+        if you changed geometrical value(s) or gas density.
+
+/ActarSim/det/print
+        Prints geometry.
+\end{verbatim}
+ 
+\subsubsection{gas box detector commands}
+ \index{detector commands}
+\begin{verbatim}
+/ActarSim/det/setGasMat
+        Select Material of the Gas.
+        DefaultValue("isoC4H10")
+
+/ActarSim/det/gas/setBeamShieldMat
+        Select Material of the beam shield.
+        DefaultValue("isoC4H10")
+
+/ActarSim/det/gas/setDetectorGeometry
+        Select the geometry of the detector.
+        DefaultValue("box")
+
+/ActarSim/det/gas/setBeamShield
+        Sets a beam shield and selects the geometry.
+        DefaultValue("tube")
+
+/ActarSim/det/gas/setBeamShieldMat
+        Select Material of the beam shield.
+        DefaultValue("isoC4H10")
+
+/ActarSim/det/gas/setXLengthGasBox
+        Select the half-length X dimension of the Gas Box
+
+/ActarSim/det/gas/setYLengthGasBox
+        Select the half-length Y dimension of the Gas Box
+
+/ActarSim/det/gas/setZLengthGasBox
+        Select the half-length Z dimension of the Gas Box
+
+/ActarSim/det/gas/setRadiusGasTub
+        Select the external radius of the Gas Tube.
+
+/ActarSim/det/gas/setLengthGasTub
+        Select the half-length of the Gas Tube.
+
+/ActarSim/det/gas/setInnerRadiusBeamShieldTub
+        Select the external radius of the Gas Tube.
+
+/ActarSim/det/gas/setRadiusBeamShieldTub
+        Select the internal radius of the Gas Tube.
+
+/ActarSim/det/gas/setLengthBeamShieldTub
+        Select the half-length of the Gas Tube.
+
+/ActarSim/det/gas/print
+        Prints geometry.
+\end{verbatim}
+
+\subsubsection{silicon detector commands}
+\index{detector commands}
+\begin{verbatim}
+/ActarSim/det/sil/
+        Silicon detector control
+
+/ActarSim/det/sil/print
+        Prints geometry.
+
+/ActarSim/det/sil/sideCoverage
+        Selects the silicon coverage (default 1).
+        6 bits to indicate which sci wall is present (1) or absent (0).
+        The order is:
+        bit1 (lsb) beam output wall
+        bit2 lower (gravity based) wall
+        bit3 upper (gravity based) wall
+        bit4 left (from beam point of view) wall
+        bit5 right (from beam point of view) wall
+        bit6 (msb) beam entrance wall
+        Convert the final binary to a decimal number and set the coverage!
+
+/ActarSim/det/sil/xBoxHalfLength
+        Sets the x half length of the silicon detectors box
+        DefaultValue(0.5)
+
+/ActarSim/det/sil/yBoxHalfLength
+        Sets the y half length of the silicon detectors box
+        DefaultValue(0.5)
+
+/ActarSim/det/sil/zBoxHalfLength
+        Sets the z half length of the silicon detectors box
+        DefaultValue(0.5)
+\end{verbatim}
+
+\subsubsection{scintillator detector commands}
+\index{detector commands}
+\begin{verbatim}
+/ActarSim/det/sci/
+        Scintillator detector control
+
+/ActarSim/det/sci/print
+        Prints geometry.
+
+/ActarSim/det/sci/sideCoverage
+        Selects the scintillator coverage (default 1).
+        6 bits to indicate which sci wall is present (1) or absent (0).
+        The order is:
+        bit1 (lsb) beam output wall
+        bit2 lower (gravity based) wall
+        bit3 upper (gravity based) wall
+        bit4 left (from beam point of view) wall
+        bit5 right (from beam point of view) wall
+        bit6 (msb) beam entrance wall
+        Convert the final binary to a decimal number and set the coverage!
+
+/ActarSim/det/sci/xBoxHalfLength
+        Sets the x half length of the scintillator detectors box
+        DefaultValue(0.5)
+
+/ActarSim/det/sci/yBoxHalfLength
+        Sets the y half length of the scintillator detectors box
+        DefaultValue(0.5)
+
+/ActarSim/det/sci/zBoxHalfLength
+        Sets the z half length of the scintillator detectors box
+        DefaultValue(0.5)
+\end{verbatim}
+
+\textbf{IMPORTANT NOTE}: \textit{/ActarSim/det/update} should be called after each geometrycal modification. This command MUST be applied before \textit{/run/beamOn}.
+
+Note: the geometries of sil and sci detectors are hard-coded right now, it should be modified to cope with different setups and possibilities.
+
+\subsection{physics processes commands}
+\index{interaction physics}
+The full bank of particles  (ConstructBosons(); ConstructLeptons(); ConstructMesons(); ConstructBaryons(); G4ShortLivedConstructor and
+G4IonConstructor) are constructed. The physics processes (transportation, em and decay) are now taken from the \textit{examples/extended/medical/GammaTherapy} (basically the PhysicsList implementation for em processes). Other hadronic particles are proccesses are also taken from this example. Note that the PhysicsList can be selected between several possibilities:
+
+\begin{verbatim}
+             em: standard, lowenergy, penelope, (choose one from these three)
+         common: decay
+       hadronic: elastic, binary, binary_ion, gamma_nuc
+ ion low-energy: ion-LowE, ion-LowE-ziegler1977, ion-LowE-ziegler1985,
+                 ion-LowE-ziegler2000, ion-standard
+\end{verbatim}
+
+\begin{verbatim}
+/ActarSim/phys/
+        Physics list commands directory
+
+/ActarSim/phys/setGCut
+        Set gamma cut.
+
+/ActarSim/phys/setECut
+        Set electron cut.
+
+/ActarSim/phys/setPCut
+        Set positron cut.
+
+/ActarSim/phys/setCuts
+        Set cut for all.
+
+/ActarSim/phys/addPhysics
+        Add modula physics list.
+
+/ActarSim/phys/verbose
+        Set verbose level for processes
+\end{verbatim}
+
+Note that a \textit{/run/initialization} is now needed to initialize the application. This initialization has been removed from the \textit{ActarSim.cc} main function to permit the definition of different physics (lowenergy, penelope...) from the PhysicsList before the initialization. An example of how to initialize is shown in the macros (test1.mac, for instance).
+
+\subsection{event generation commands}
+
+The event generation\index{event generation} can be controled by user commands under the directory \textit{/ActarSim/gun} and subdirectories inside. There are several types of reactions that the program handles:
+
+\begin{verbatim}
+A) Track a particle or set of particles defined from the Particles list. 
+This mode is selected setting the commands 
+        /ActarSim/gun/reactionFromFile off (default behavior)
+        /ActarSim/gun/reactionFromCine off 
+        ...
+B) Track a predefined reaction from a file 
+C) Track a reaction calculated from CINE (program from W. Mittig)
+D) Track a reaction calculated from KINE (program from M.S. Golovkov)
+\end{verbatim}
+
+For each case, a realistic interaction (beam distribution and interaction over all gas volume, plus the energy lost of the beam in the gas before the reaction). These commands are described below:
+
+\begin{verbatim}
+/ActarSim/gun/realisticBeam
+        Simulates beam emittance according to emittance parameters.
+         Choice : on, off(default)
+
+/ActarSim/gun/beamInteraction
+        Simulates the beam energy loss in gas.
+         Choice : on, off(default)
+
+/ActarSim/gun/emittance
+        Selects the value of the emittance [in mm mrad].  
+        Default value is 1 mm mrad. 
+
+/ActarSim/gun/beamRadiusAtEntrance
+        Selects the beam radius at entrance of ACTAR.
+        Used with the emittance to calculate the position and angle
+          distributions of the beam when a realisticBeam option is set.
+\end{verbatim}
+
+\subsubsection{Track a particle or set of particles defined from the Particles list}
+
+\begin{verbatim}
+/ActarSim/gun/List
+        List available particles. Invoke G4ParticleTable.
+
+/ActarSim/gun/particle
+        Select the incident particle (proton is default)
+        (ion can be specified for shooting ions).
+
+/ActarSim/gun/ion
+        Set properties of ion to be generated.
+        [usage] /gun/ion Z A Q E
+                Z:(int) AtomicNumber
+                A:(int) AtomicMass
+                Q:(int) Charge of Ion (in unit of e)
+                E:(double) Excitation energy (in keV)
+
+/ActarSim/gun/energy
+        Sets the kinetic energy of the primary particle
+        DefaultValue(20.)
+
+/ActarSim/gun/direction
+        Set momentum direction.
+        Direction needs not to be a unit vector.
+
+/ActarSim/gun/position
+        Set starting position of the particle.
+
+/ActarSim/gun/time      
+        Set initial time of the particle.
+
+/ActarSim/gun/polarization
+        Set polarization.
+
+/ActarSim/gun/number
+        Set number of particles to be generated.
+
+/ActarSim/gun/randomVertexZPosition on
+        Set the vertex Z-value random or not
+        Choice: on (default), off
+
+/ActarSim/gun/randomVertexZRange min max unit
+        This command is effective only if randomVertexZPosition=="on"
+        min: minimum vertex Z-value, default: 0
+        max: maximum vertex Z-value, default: 300
+        unit: defaule mm
+
+/ActarSim/gun/vertexZPosition z-value unit
+        This command if effective only if randomVertexZPosition=="off"
+        z-value: user-given vertex Z-value
+        unit: default mm
+\end{verbatim}
+
+
+\subsubsection{Track a predefined reaction from a file}
+
+\begin{verbatim}
+/ActarSim/gun/reactionFromFile
+        Select a reaction from an input file
+        Choice : on, off(default)
+
+/ActarSim/gun/reactionFile
+        Select the reaction definition file
+\end{verbatim}
+
+
+\subsubsection{Track a reaction calculated from CINE (program from W. Mittig)}
+\index{CINE}
+\begin{verbatim}
+/ActarSim/gun/reactionFromCine
+        Select a reaction using Cine
+        Choice : on, off(default)
+
+Note that the following commands are under the subdirectory Cine
+
+/ActarSim/gun/Cine/randomTheta
+        Select a random Theta angle for the scattered particle.
+        Choice : on(default), off
+
+/ActarSim/gun/Cine/randomThetaVal
+        Sets the limit in the Theta angle for the scattered particle.
+        The value is randomly chosen between the limits (degrees)
+               [usage] /ActarSim/gun/Cine/incidentIon min max 
+                min: the minimum angle (default 0 degrees)
+                        max: the maximum angle (default 180 degrees)
+
+/ActarSim/gun/Cine/thetaLabAngle        
+        Sets theta lab angle for the scattered particle (degrees)
+        DefaultValue(0.5)
+
+/ActarSim/gun/Cine/incidentIon
+        Set properties of incident ion to be generated.
+        [usage] /ActarSim/gun/Cine/incidentIon Z A Q E
+                Z:(int) AtomicNumber
+                A:(int) AtomicMass
+                Q:(int) Charge of ion (in unit of e)
+                E:(double) Excitation energy (in keV)
+
+/ActarSim/gun/Cine/targetIon
+        Set properties of target ion to be generated.
+        [usage] /ActarSim/gun/Cine/targetIon Z A Q E
+                Z:(int) AtomicNumber
+                A:(int) AtomicMass
+                Q:(int) Charge of ion (in unit of e)
+                E:(double) Excitation energy (in keV)
+
+/ActarSim/gun/Cine/scatteredIon
+        Set properties of scattered ion to be generated.
+        [usage] /ActarSim/gun/Cine/scatteredIon Z A Q E
+                Z:(int) AtomicNumber
+                A:(int) AtomicMass
+                Q:(int) Charge of ion (in unit of e)
+                E:(double) Excitation energy (in keV)
+
+/ActarSim/gun/Cine/recoilIon
+        Set properties of recoil ion to be generated.
+        [usage] /ActarSim/gun/Cine/recoilIon Z A Q E
+                Z:(int) AtomicNumber
+                A:(int) AtomicMass
+                Q:(int) Charge of ion (in unit of e)
+                E:(double) Excitation energy (in keV)
+
+/ActarSim/gun/Cine/reactionQ  
+        Sets the reaction Q-value for the ground state (MeV)
+
+/ActarSim/gun/Cine/labEnergy
+        Sets the laboratory energy (MeV)
+\end{verbatim}
+
+\subsubsection{Track a reaction calculated from KINE (program from M.S. Golovkov)}
+\index{KINE}
+\begin{verbatim}
+/ActarSim/gun/reactionFromKine
+        Select a reaction using KINE
+        Choice : on(default), off
+
+Note that the following commands are under the subdirectory Kine
+
+/ActarSim/gun/Kine/randomTheta
+    Select a random Theta angle for the scattered particle.
+    Choice : on(default), off
+
+/ActarSim/gun/Kine/randomThetaVal
+    Set the range of theta angles if it is to be randomly chosen
+    [usage] /ActarSim/gun/Kine/randomThetaVal min, max
+            min: the minimum angle (default 0 degrees)
+            max: the maximum angle (default 180 degrees)
+
+/ActarSim/gun/Kine/incidentIon
+    Set the properties of the incident ion
+    [usage] /ActarSim/gun/Kine/incidentIon Z A Q Ex Mass
+            Z: atomic number (I)
+            A: mass number   (I)
+            Q: charge number (I)
+           Ex: excitation energy (D, in MeV)
+         Mass: mass (D, in u)  
+
+/ActarSim/gun/Kine/targetIon
+    Set the properties of the target ion
+    [usage] /ActarSim/gun/Kine/targetIon Z A Q Ex Mass
+            Z: atomic number (I)
+            A: mass number   (I)
+            Q: charge number (I)
+           Ex: excitation energy (D, in MeV)
+         Mass: mass (D, in u)  
+
+/ActarSim/gun/Kine/scatteredIon
+    Set the properties of the scattered ion
+    [usage] /ActarSim/gun/Kine/scatteredIon Z A Q Ex Mass
+            Z: atomic number (I)
+            A: mass number   (I)
+            Q: charge number (I)
+           Ex: excitation energy (D, in MeV)
+         Mass: mass (D, in u)  
+
+/ActarSim/gun/Kine/recoilIon
+    Set the properties of the recoiled ion
+    [usage] /ActarSim/gun/Kine/recoilIon Z A Q Ex Mass
+            Z: atomic number (I)
+            A: mass number   (I)
+            Q: charge number (I)
+           Ex: excitation energy (D, in MeV)
+         Mass: mass (D, in u)  
+
+/ActarSim/gun/Kine/labEnergy
+    Set the incident energy
+    [usage] /ActarSim/gun/Kine/labEnergy E MeV
+            E: incident energy (D)
+          MeV: the unit
+
+/ActarSim/gun/Kine/randomThetaCM
+    Randomize or not the Theta_cm value
+    Choice: on (default), off
+    Default: on
+
+/ActarSim/gun/Kine/randomThetaRange min max unit
+    This command is effective only if randomThetaCM=="on"
+    min: default value 0.
+    max: default value 180.
+    unit: default deg
+
+/ActarSim/gun/Kine/randomPhiAngle
+    Randomize or not the Phi angle, useful when testing analyzing macros
+    Choice: on (default), off
+    default: on
+
+/ActarSim/gun/Kine/userThetaCM theta_cm unit
+    This command is effective only if randomThetaCM is "off"
+    theta_cm: user given Theta_cm for KINE
+    unit: default deg
+
+/ActarSim/gun/Kine/userPhiAngle Phi unit
+    This command is effective only if randomPhiAngle is "off"
+    Phi: user given phi angle of the recoiled particle,
+         e.g., proton in the 78Ni(d,p)79Ni reaction in inverse kinematics
+    unit: default deg
+\end{verbatim}
+
+\subsection{event visualization}
+
+Inside the \textit{ActarSimEventAction} one can chose the visualization\index{visualization} of the tracks in the event, in particular the user command:
+
+\begin{verbatim}
+/ActarSim/event/drawTracks
+        Draw the tracks in the event (Choice : none, charged, neutral, all(default))
+        DefaultValue("all");
+
+/ActarSim/event/printModulo
+        Print events (modulo n, that is prints every n event)
+\end{verbatim}
+
+\subsection{histogramming control}
+
+The Tree and histograms\index{histogramming control} can be controled by user commands under the directory \textit{/ActarSim/analControl} and subdirectories inside:
+
+\begin{verbatim}
+/ActarSim/analControl/storeTracks
+        Store the tracks in the output Tree
+        Choice : on, off(default)
+
+/ActarSim/analControl/storeTrackHistos
+        Store the tracks in Histograms
+        Choice : on, off(default)
+
+/ActarSim/analControl/storeEvents
+        Store the events in the output Tree
+        DefaultValue("off")
+
+/ActarSim/analControl/storeSimpleTracks
+        Store the simple tracks in the output Tree
+        DefaultValue("off")
+
+/ActarSim/analControl/storeHistograms
+        Store the events in the output Tree
+        Choice : on, off(default)
+\end{verbatim}

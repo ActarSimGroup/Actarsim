@@ -77,6 +77,12 @@
 #
 /ActarSim/det/MaikoGeoIncludedFlag on
 #
+# GAS CHAMBER
+#
+/ActarSim/det/setXLengthGasChamber 200. mm
+/ActarSim/det/setYLengthGasChamber 150. mm
+/ActarSim/det/setZLengthGasChamber 250. mm
+#
 # GAS DETECTOR
 #
 /ActarSim/det/gasGeoIncludedFlag on

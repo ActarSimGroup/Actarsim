@@ -86,7 +86,8 @@ private:
   G4ThreeVector eField;
   G4ThreeVector mField;
 
-  //Chamber Y,Z length
+  //Chamber X,Y,Z length
+  G4double chamberSizeX;
   G4double chamberSizeY;
   G4double chamberSizeZ;
 
@@ -126,6 +127,9 @@ public:
 
   G4VPhysicalVolume* Construct();
   
+  void SetXGasChamber(G4double val){chamberSizeX = val;} 
+  void SetYGasChamber(G4double val){chamberSizeY = val;} 
+  void SetZGasChamber(G4double val){chamberSizeZ = val;} 
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
   void SetChamberMaterial(G4String);
@@ -150,8 +154,10 @@ public:
   G4LogicalVolume* GetChamberLogicalVolume(){return chamberLog;}
   G4VPhysicalVolume* GetChamberPhysicalVolume(){return chamberPhys;}
 
-  G4double GetChamberZLength(void){return chamberSizeZ;} 
+
+  G4double GetChamberXLength(void){return chamberSizeX;} 
   G4double GetChamberYLength(void){return chamberSizeY;} 
+  G4double GetChamberZLength(void){return chamberSizeZ;} 
 
   G4double GetZGasBoxPosition(void){return zGasBoxPosition;} 
 

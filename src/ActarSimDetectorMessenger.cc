@@ -45,6 +45,26 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   MaikoGeoIncludedFlagCmd->SetCandidates("on off");
   MaikoGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+  xGasChamberCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setXLengthGasChamber",this);
+  xGasChamberCmd->SetGuidance("Select the half-length X dimension of the Gas Chamber.");
+  xGasChamberCmd->SetParameterName("xGasChamber",false);
+  xGasChamberCmd->SetRange("xGasChamber>=0.");
+  xGasChamberCmd->SetUnitCategory("Length");
+  xGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  yGasChamberCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setYLengthGasChamber",this);
+  yGasChamberCmd->SetGuidance("Select the half-length Y dimension of the Gas Chamber.");
+  yGasChamberCmd->SetParameterName("yGasChamber",false);
+  yGasChamberCmd->SetRange("yGasChamber>=0.");
+  yGasChamberCmd->SetUnitCategory("Length");
+  yGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  zGasChamberCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setZLengthGasChamber",this);
+  zGasChamberCmd->SetGuidance("Select the half-length Z dimension of the Gas Chamber.");
+  zGasChamberCmd->SetParameterName("zGasChamber",false);
+  zGasChamberCmd->SetRange("zGasChamber>=0.");
+  zGasChamberCmd->SetUnitCategory("Length");
+  zGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   gasGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/gasGeoIncludedFlag",this);
   gasGeoIncludedFlagCmd->SetGuidance("Includes the geometry of the gas volume in the simulation (default off).");
@@ -121,6 +141,9 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete ActarSimDir;
   delete detDir;
   delete MaikoGeoIncludedFlagCmd;
+  delete xGasChamberCmd;
+  delete yGasChamberCmd;
+  delete zGasChamberCmd;
   delete gasGeoIncludedFlagCmd;
   // delete zGasBoxPositionCmd;
   delete silGeoIncludedFlagCmd;
@@ -141,6 +164,21 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == MaikoGeoIncludedFlagCmd )
     ActarSimDetector->SetMaikoGeoIncludedFlag(newValue);
+
+  if(command == xGasChamberCmd)
+  {
+    ActarSimDetector->SetXGasChamber(xGasChamberCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == yGasChamberCmd)
+  {
+    ActarSimDetector->SetYGasChamber(yGasChamberCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == zGasChamberCmd)
+  {
+    ActarSimDetector->SetZGasChamber(zGasChamberCmd->GetNewDoubleValue(newValue));
+  }
 
   if( command == gasGeoIncludedFlagCmd )
     ActarSimDetector->SetGasGeoIncludedFlag(newValue);

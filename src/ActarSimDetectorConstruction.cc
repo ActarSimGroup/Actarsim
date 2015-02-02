@@ -61,6 +61,12 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   // Constructor
   //
 
+
+  //default size of GasBox (1x1x1 m3)
+  chamberSizeX = 1 * m;
+  chamberSizeY = 1 * m;
+  chamberSizeZ = 1 * m;
+
   //SD are here defined to avoid problems in the Construct function
   //turning on twice the detectors
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
@@ -143,32 +149,20 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   G4double chamberVolumeCenterPosY = 0.*m;
   G4double chamberVolumeCenterPosZ = 0.*m;
 
-  G4double chamberSizeX;
-  //G4double chamberSizeY;
-  //G4double chamberSizeZ;
+  chamberSizeX=GetChamberXLength();
+  chamberSizeY=GetChamberYLength();
+  chamberSizeZ=GetChamberZLength();
 
 
   if( MaikoGeoIncludedFlag == "on"){
-
     worldSizeX = 6.*m;
     worldSizeY = 6.*m;
     worldSizeZ = 6.*m;
-
-    chamberSizeX = 0.20*m;
-    chamberSizeY = 0.15*m;
-    chamberSizeZ = 0.25*m;
-
   }
   else {
-
     worldSizeX = .5*m;
     worldSizeY = .5*m;
     worldSizeZ = .5*m;
-
-    chamberSizeX = 0.095*m;
-    chamberSizeY = 0.105*m;
-    chamberSizeZ = 0.120*m;
-
   }
 
   chamberVolumeCenterPosY = 0; //the beam enters at the middle of the chamber (10.5cm above the ground)

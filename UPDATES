@@ -14,3 +14,6 @@ A more detailed report on ActaSim updates
 - In ActarSimGasDetectorConstruction : Hard coded position of GasBox inside the GasChamber removed and changed to an external command /ActarSim/det/gas/setYGasBoxPos 12.47 mm
 - ActarSim-manual added
 - Macros updated and cleaned
+
+02/02/15 P.Konczykowski
+- Added GasChamber size command for ActarSimDetectorConstruction. So now the geometry of the chamber is defined in the mac file.

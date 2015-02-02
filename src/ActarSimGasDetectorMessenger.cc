@@ -198,7 +198,6 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   {
     ActarSimGasDetector->SetZGasBox(zGasBoxCmd->GetNewDoubleValue(newValue));
     ActarSimDetector->SetZGasBoxPosition(zGasBoxCmd->GetNewDoubleValue(newValue));
-
   }
 
   if(command == yGasBoxPosCmd)

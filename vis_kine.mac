@@ -76,6 +76,13 @@
 #
 /ActarSim/det/gas/setGasMat D2_STP
 #
+#
+# GAS CHAMBER
+#
+/ActarSim/det/setXLengthGasChamber 95. mm
+/ActarSim/det/setYLengthGasChamber 105. mm
+/ActarSim/det/setZLengthGasChamber 120. mm
+#
 # GAS DETECTOR
 #
 /ActarSim/det/gasGeoIncludedFlag on

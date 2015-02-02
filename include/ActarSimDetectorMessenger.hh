@@ -40,6 +40,9 @@ private:
   //G4UIcmdWith3VectorAndUnit* worldSizeCmd;
 
   G4UIcmdWithAString* MaikoGeoIncludedFlagCmd;
+  G4UIcmdWithADoubleAndUnit* xGasChamberCmd;
+  G4UIcmdWithADoubleAndUnit* yGasChamberCmd;
+  G4UIcmdWithADoubleAndUnit* zGasChamberCmd;
   G4UIcmdWithAString* gasGeoIncludedFlagCmd;
   // G4UIcmdWithADoubleAndUnit* zGasBoxPositionCmd;
   G4UIcmdWithAString* silGeoIncludedFlagCmd;

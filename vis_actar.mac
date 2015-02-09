@@ -71,9 +71,11 @@
 #/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
 #
-# gas material: isoC4H10STP, D2_STP, H2_STP
+# gas material: isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
 #
-/ActarSim/det/gas/setGasMat D2_STP
+/ActarSim/det/gas/setGasPressure 1.01325
+/ActarSim/det/gas/setGasTemperature 293.15
+/ActarSim/det/gas/setGasMat isoC4H10
 #
 # GAS CHAMBER
 #
@@ -170,15 +172,15 @@
 #if you want to use an ion, write "ion" in the previous command
 #and set the Z, A and charge state in the next...
 
-#/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
+/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
 #/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
-/ActarSim/gun/ion 6 12 6 0.0 12.
+#/ActarSim/gun/ion 6 12 6 0.0 12.
 #/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/ActarSim/gun/ion 26 56 26 0.0 55.934937475
 
-#/ActarSim/gun/Kine/labEnergy 21 MeV
-/ActarSim/gun/Kine/labEnergy 80 MeV
+/ActarSim/gun/Kine/labEnergy 6 MeV
+#/ActarSim/gun/Kine/labEnergy 80 MeV
 #/ActarSim/gun/Kine/labEnergy 96 MeV
 #/ActarSim/gun/Kine/labEnergy 224 MeV
 #/ActarSim/gun/Kine/labEnergy 280 MeV

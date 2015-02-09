@@ -72,9 +72,11 @@
 #/ActarSim/det/setMagField 0 0 0 T
 #
 #
-# gas material: isoC4H10STP, D2_STP, H2_STP
+# gas material: isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
 #
-/ActarSim/det/gas/setGasMat D2_STP
+/ActarSim/det/gas/setGasPressure 1.01325
+/ActarSim/det/gas/setGasTemperature 293.15
+/ActarSim/det/gas/setGasMat D2
 #
 #
 # GAS CHAMBER

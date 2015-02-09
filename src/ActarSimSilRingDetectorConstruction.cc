@@ -86,8 +86,7 @@ G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::Construct(G4LogicalVolum
 
 
 
-G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVolume* worldLog) {
-	
+G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVolume* worldLog) {	
 
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
@@ -148,13 +147,11 @@ G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVo
 															  G4ThreeVector(silPos_x,silPos_y,silPos_z),
 															  SiliconDisk_log,"SiliconDisk",worldLog,false,k);
 		
-		
-		
-	
-		
+		if(SiliconDisk_phys){;}					
 	}
 	
-	
+
+
 	Sector_log->SetVisAttributes(SectorVisAtt);
 	
 	G4VPhysicalVolume *Sector_phys=new G4PVReplica("Sectors",Sector_log,SiliconDisk_log,kPhi,16,sectorPhi);
@@ -189,7 +186,6 @@ void ActarSimSilRingDetectorConstruction::UpdateGeometry() {
   //
   // Updates Silicon detector
   //
-
   Construct(detConstruction->GetWorldLogicalVolume());
   G4RunManager::GetRunManager()->
     DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());

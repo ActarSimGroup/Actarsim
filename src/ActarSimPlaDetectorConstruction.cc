@@ -81,12 +81,11 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::Construct(G4LogicalVolume* w
 
 
 G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume* worldLog) {
- 
     
   //
 
   //Chamber Y,Z length
-  G4double chamberSizeY=detConstruction->GetChamberYLength();
+  //G4double chamberSizeY=detConstruction->GetChamberYLength();
   G4double chamberSizeZ=detConstruction->GetChamberZLength();
 
   //Gas chamber position inside the chamber
@@ -108,14 +107,14 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
 	G4double nDE=13; //number of Scint in dE
 	G4double nE1=16; //number of Scint in E1
 	G4double nE2=13;//number of Scint in E2
-	G4double nTarget=1;//number of Targets
+	//G4double nTarget=1;//number of Targets
     
 	//G4double yHodo=chamberSizeY/2-1*mm;
 	G4double yHodo=0;
 	G4double zHodo=5.0*m+chamberSizeZ-zGasBoxPosition;
 
-  G4double defectHalfLength = 0.5*mm;
-  G4double separationFromBox = 25*mm;
+	//G4double defectHalfLength = 0.5*mm;
+	//G4double separationFromBox = 25*mm;
 
   // Printing the final settings...
   /*G4cout << "##################################################################"
@@ -146,9 +145,9 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
    // new G4LogicalVolume(sciBox, sciBulkMaterial, "sciLog");
   
     
-    G4double density, pressure, temperature;
-    G4int ncomponents, natoms;
-    G4double fractionmass;
+  G4double density;//, pressure, temperature;
+  //G4int ncomponents, natoms;
+  //G4double fractionmass;
     
     G4double a;  // atomic mass
     G4double z;  // atomic number
@@ -163,6 +162,8 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
 	G4LogicalVolume* logicHodo  = new G4LogicalVolume(solidHodo,Vacuum,"logichodo",0,0,0);
 	G4VPhysicalVolume* physiHodo  = new G4PVPlacement(0,G4ThreeVector(0.,yHodo,zHodo),logicHodo,"physihodo",worldLog,false,0);
     
+	if(physiHodo){;}
+
 	G4VisAttributes* logicHodo_VisAtt = new G4VisAttributes(G4Colour(0,0,1.0));
 	//logicHodo->SetVisAttributes(G4VisAttributes::GetInvisible());
 	logicHodo->SetVisAttributes(logicHodo_VisAtt);
@@ -211,7 +212,6 @@ void ActarSimPlaDetectorConstruction::UpdateGeometry() {
   //
   // Updates Scintillator detector
   //
-
   Construct(detConstruction->GetWorldLogicalVolume());
   G4RunManager::GetRunManager()->
     DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());

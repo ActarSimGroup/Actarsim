@@ -46,6 +46,24 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   gasMaterCmd->SetDefaultValue("isoC4H10");
   gasMaterCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+  gasPresCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setGasPressure",this);
+  gasPresCmd->SetGuidance("Select the Gas Pressure (for the Gas box and the Chamber).");
+  gasPresCmd->SetParameterName("gasPressure",false);
+  gasPresCmd->SetRange("gasPressure>=0.");
+  gasPresCmd->SetUnitCategory("Pressure");
+  gasPresCmd->SetDefaultUnit("bar");
+  gasPresCmd->SetDefaultValue(1.01325);
+  gasPresCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+ 
+  gasTempCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setGasTemperature",this);
+  gasTempCmd->SetGuidance("Select the Gas Temperature (for the Gas box and the Chamber).");
+  gasTempCmd->SetParameterName("gasTemperature",false);
+  gasTempCmd->SetRange("gasTemperature>=0.");
+  gasTempCmd->SetUnitCategory("Temperature");
+  gasTempCmd->SetDefaultUnit("kelvin");
+  gasTempCmd->SetDefaultValue(293.15);
+  gasTempCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
   beamShieldMaterCmd = new G4UIcmdWithAString("/ActarSim/det/gas/setBeamShieldMat",this);
   beamShieldMaterCmd->SetGuidance("Select Material of the beam shield.");
   beamShieldMaterCmd->SetParameterName("gasMat",false);
@@ -141,6 +159,8 @@ ActarSimGasDetectorMessenger::~ActarSimGasDetectorMessenger() {
   //
   delete detDir;
   delete gasMaterCmd;
+  delete gasPresCmd;
+  delete gasTempCmd;
   delete beamShieldMaterCmd;
   delete detectorGeometryCmd;
   delete setBeamShieldCmd;
@@ -166,7 +186,19 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == gasMaterCmd)
   {
     ActarSimGasDetector->SetGasMaterial(newValue);
-    ActarSimDetector->SetChamberMaterial(newValue);
+    //ActarSimDetector->SetChamberMaterial(newValue);
+    ActarSimDetector->UpdateGeometry();
+    //ActarSimDetector->PrintDetectorParameters();
+  }
+
+  if(command == gasPresCmd)
+  {
+    ActarSimGasDetector->SetGasPressure(gasPresCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == gasTempCmd)
+  {
+    ActarSimGasDetector->SetGasTemperature(gasTempCmd->GetNewDoubleValue(newValue));
   }
 
   if(command == beamShieldMaterCmd)

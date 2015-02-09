@@ -114,6 +114,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   //Initial values for reactionFromEvGen
   G4double  LabParticleAngle = 85.0 * deg;
   G4double  LabParticleAngle_rec = 85.0 * deg;
+  if(LabParticleAngle){;}
   if(LabParticleAngle_rec){;}
 
   ActarSimDetectorConstruction* detector = (ActarSimDetectorConstruction*)

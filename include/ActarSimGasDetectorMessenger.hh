@@ -43,6 +43,9 @@ private:
   G4UIdirectory*             detDir;
 
   G4UIcmdWithAString*        gasMaterCmd;
+  G4UIcmdWithADoubleAndUnit* gasPresCmd;
+  G4UIcmdWithADoubleAndUnit* gasTempCmd;
+
   G4UIcmdWithAString*        beamShieldMaterCmd;
 
   G4UIcmdWithoutParameter*   printCmd;

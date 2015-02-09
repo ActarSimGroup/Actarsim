@@ -33,6 +33,10 @@ private:
   G4Material* gasMaterial;
   G4Material* beamShieldMaterial;
 
+  // Gas
+  G4double gasPressure;
+  G4double gasTemperature;
+
   // GasBox Size Parameters and position
   G4double xGasBox;
   G4double yGasBox;
@@ -67,6 +71,10 @@ public:
   G4VPhysicalVolume* Construct(G4LogicalVolume*);
 
   void SetGasMaterial (G4String);
+  
+  void SetGasPressure(G4double val){gasPressure = val;} 
+  void SetGasTemperature(G4double val){gasTemperature = val;} 
+
   void SetBeamShieldMaterial(G4String);
   void SetDetectorGeometry(G4String);
   void SetBeamShieldGeometry(G4String);
@@ -82,6 +90,9 @@ public:
   void SetLengthBeamShieldTub(G4double val){lengthBeamShieldTub = val;} 
 
   G4Material* GetGasMaterial() {return gasMaterial;}
+
+  G4double GetGasPressure(void){return gasPressure;} 
+  G4double GetGasTemperature(void){return gasTemperature;} 
 
   G4String GetDetectorGeometry(){return detectorGeometry;}
   G4String GetBeamShieldGeometry(){return beamShieldGeometry;}

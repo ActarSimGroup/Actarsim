@@ -89,7 +89,6 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::Construct(G4LogicalVolum
 
 G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVolume* worldLog) {
 
-
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
   G4double chamberSizeZ=detConstruction->GetChamberZLength();
@@ -143,8 +142,9 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
                                                              G4ThreeVector(CsIPos_x,CsIPos_y,CsIPos_z),
                                                              CsIring_log,"CsIringdet",worldLog,false,k);
    
+      if(CsIring_phys){;}
   }
-
+    
    
    
     G4VPhysicalVolume *CsISector_phys=new G4PVReplica("CsISector",CsISector_log,CsIring_log,kPhi,16,sectorPhi);
@@ -179,7 +179,6 @@ void ActarSimSciRingDetectorConstruction::UpdateGeometry() {
   //
   // Updates Scintillator detector
   //
-
   Construct(detConstruction->GetWorldLogicalVolume());
   G4RunManager::GetRunManager()->
     DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());

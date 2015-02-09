@@ -17,3 +17,7 @@ A more detailed report on ActaSim updates
 
 02/02/15 P.Konczykowski
 - Added GasChamber size command for ActarSimDetectorConstruction. So now the geometry of the chamber is defined in the mac file.
+
+09/02/15 P.Konczykowski
+- Modified Gas Definition: now in ActarSimGasDetectorConstruction, setGasMaterial will define the gas according to the user's Temperature & Pressure.
+- In GUI: added gas button for selecting gas Pressure & Temperature, and list of mono-gases defined thereby

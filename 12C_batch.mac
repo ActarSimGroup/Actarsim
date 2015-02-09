@@ -69,9 +69,18 @@
 #/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
 #
-# GAS material: isoC4H10STP, D2_STP, H2_STP
+# gas material: isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
 #
-/ActarSim/det/gas/setGasMat D2_STP
+/ActarSim/det/gas/setGasPressure 1.01325
+/ActarSim/det/gas/setGasTemperature 293.15
+/ActarSim/det/gas/setGasMat D2
+#
+# GAS CHAMBER
+#
+/ActarSim/det/setXLengthGasChamber 95. mm
+/ActarSim/det/setYLengthGasChamber 105. mm
+/ActarSim/det/setZLengthGasChamber 120. mm
+#
 #
 # GAS DETECTOR
 #
@@ -195,38 +204,38 @@
 #/vis/ASCIITree/verbose 10
 #/vis/drawTree
 # visualization
-/vis/scene/create
-/vis/open OGLSQt
-/vis/viewer/set/autoRefresh 0
-/vis/viewer/flush
+#/vis/scene/create
+#/vis/open OGLSQt
+#/vis/viewer/set/autoRefresh 0
+#/vis/viewer/flush
 # set camera
-/vis/viewer/reset
-/vis/viewer/set/hiddenEdge 0
+#/vis/viewer/reset
+#/vis/viewer/set/hiddenEdge 0
 #/vis/viewer/set/lightsThetaPhi 120 40
-/vis/viewer/set/viewpointThetaPhi 115. 145.
+#/vis/viewer/set/viewpointThetaPhi 115. 145.
 #/vis/viewer/set/viewpointThetaPhi 90. 90.
-/vis/viewer/zoom 1.0
+#/vis/viewer/zoom 1.0
 #/vis/viewer/set/background 1 1 1 1
-/vis/viewer/flush
+#/vis/viewer/flush
 #
 # drawing style
 #/vis/viewer/set/style surface
-/vis/viewer/set/style wireframe
-/vis/viewer/flush
+#/vis/viewer/set/style wireframe
+#/vis/viewer/flush
 #
 # drawing the tracks
 #/tracking/storeTrajectory 10
-/vis/scene/endOfEventAction accumulate 100
+#/vis/scene/endOfEventAction accumulate 100
 #/vis/scene/endOfEventAction refresh
 #/vis/viewer/set/autoRefresh 1
 #
 # create an empty scene and add the detector geometry to it
 #/vis/drawVolume
 #/vis/scene/add/axes 0 0 0 0.1 m
-/vis/scene/add/trajectories 
-/vis/scene/add/hits
+#/vis/scene/add/trajectories 
+#/vis/scene/add/hits
 #/ActarSim/event/drawTracks all
-/ActarSim/event/printModulo 10
+#/ActarSim/event/printModulo 10
 #
 /ActarSim/event/printModulo 5000
 #

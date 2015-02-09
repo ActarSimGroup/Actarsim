@@ -17,7 +17,7 @@
 #/gui/addButton actarsim "proton" "/ActarSim/gun/particle proton"
 #/gui/addButton actarsim "alpha"  "/ActarSim/gun/particle alpha"
 #/gui/addButton actarsim "ion"    "/ActarSim/gun/particle ion"
-#/gui/addButton actarsim "C-12"   "/ActarSim/gun/ion 6 12"
+#/gui/addButton actarsim "12C"   "/ActarSim/gun/ion 6 12"
 
 # Library menu :
 /gui/addMenu lib Lib
@@ -33,6 +33,7 @@
 /gui/addButton run "Initialize" "/run/initialize"
 /gui/addButton run "beamOn 1" "/run/beamOn 1"
 /gui/addButton run "beamOn 2" "/run/beamOn 2"
+/gui/addButton run "Set electron cut" "/ActarSim/phys/setECut"
 /gui/addButton run "Electron cut 1 mm" "/ActarSim/phys/setECut 1 mm"
 /gui/addButton run "Electron cut 10 km" "/ActarSim/phys/setECut 10 km"
 
@@ -60,10 +61,18 @@
 #
 # Detector menu
 /gui/addMenu det Detector 
-#/gui/addButton det "He_1900"  "/ActarSim/det/gas/setGasMat He_1900"
-/gui/addButton det "di-Hydrogen (STP)"  "/ActarSim/det/gas/setGasMat H2_STP"
-/gui/addButton det "Deuterium (STP)"  "/ActarSim/det/gas/setGasMat D2_STP"
-/gui/addButton det "isobutane (STP)"  "/ActarSim/det/gas/setGasMat isoC4H10STP"
+/gui/addButton det "Pressure (bar)"  "/ActarSim/det/gas/setGasPressure"
+/gui/addButton det "Temperature (K)"  "/ActarSim/det/gas/setGasTemperature"
+
+/gui/addButton det "isobutane"  "/ActarSim/det/gas/setGasMat isoC4H10"
+/gui/addButton det "H2"  "/ActarSim/det/gas/setGasMat H2"
+/gui/addButton det "D2"  "/ActarSim/det/gas/setGasMat D2"
+/gui/addButton det "He"  "/ActarSim/det/gas/setGasMat He"
+/gui/addButton det "He2"  "/ActarSim/det/gas/setGasMat He2"
+/gui/addButton det "Ar"  "/ActarSim/det/gas/setGasMat Ar"
+/gui/addButton det "Ar2"  "/ActarSim/det/gas/setGasMat Ar2"
+/gui/addButton det "CF4"  "/ActarSim/det/gas/setGasMat CF4"
+
 #
 # Vis menu :
 #/gui/addMenu vis Vis

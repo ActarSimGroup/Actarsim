@@ -148,7 +148,7 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
 
   //Number of R3BCalGeantHit (or steps) in the hitsCollection
   G4int NbHits = hitsCollection->entries();
-  G4int NbHitsWithSomeEnergy = NbHits;
+  //G4int NbHitsWithSomeEnergy = NbHits;
   //G4cout << " NbHits: " << NbHits << G4endl;
 	
 	G4int indepHits = 0; //number of Hits

@@ -126,13 +126,14 @@ public:
   ActarSimPlaSD* GetPlaSD(void){return plaSD;}
 
   G4VPhysicalVolume* Construct();
-  
+
   void SetXGasChamber(G4double val){chamberSizeX = val;} 
   void SetYGasChamber(G4double val){chamberSizeY = val;} 
   void SetZGasChamber(G4double val){chamberSizeZ = val;} 
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
   void SetChamberMaterial(G4String);
+  void SetUpdateChamberMaterial(G4Material*);
   void SetWindowMaterial (G4String);
 
   void SetZGasBoxPosition(G4double val){zGasBoxPosition = val;} 
@@ -153,7 +154,6 @@ public:
   //G4Material* GetWorldMaterial() {return worldMaterial;}
   G4LogicalVolume* GetChamberLogicalVolume(){return chamberLog;}
   G4VPhysicalVolume* GetChamberPhysicalVolume(){return chamberPhys;}
-
 
   G4double GetChamberXLength(void){return chamberSizeX;} 
   G4double GetChamberYLength(void){return chamberSizeY;} 

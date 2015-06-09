@@ -528,10 +528,17 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   //positionCmd->SetUnitCategory("Length");
   //positionCmd->SetUnitCandidates("microm mm cm m km");
 
-  // EntranceZPositionCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/EntranceZPosition",this);
-  // EntranceZPositionCmd->SetGuidance("Set starting Z position of the particle.");
-  // EntranceZPositionCmd->SetParameterName("entranceZ",true,true);
-  // EntranceZPositionCmd->SetDefaultUnit("cm");
+  EntranceYPositionCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/EntranceYPosition",this);
+  EntranceYPositionCmd->SetGuidance("Set starting Y position of the particle (0 is the midle of GasBox).");
+  EntranceYPositionCmd->SetParameterName("entranceY",true,true);
+  EntranceYPositionCmd->SetDefaultValue(0.);
+  EntranceYPositionCmd->SetDefaultUnit("cm");
+
+  EntranceZPositionCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/EntranceZPosition",this);
+  EntranceZPositionCmd->SetGuidance("Set starting Z position of the particle.");
+  EntranceZPositionCmd->SetParameterName("entranceZ",true,true);
+  EntranceZPositionCmd->SetDefaultValue(0.);
+  EntranceZPositionCmd->SetDefaultUnit("cm");
 
   timeCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/time",this);
   timeCmd->SetGuidance("Set initial time of the particle.");
@@ -541,7 +548,7 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   //timeCmd->SetUnitCandidates("ns ms s");
 
   randomVertexZPositionCmd = new G4UIcmdWithAString("/ActarSim/gun/randomVertexZPosition",this);
-  randomVertexZPositionCmd->SetGuidance("Randamize the reaction vertex Z position");
+  randomVertexZPositionCmd->SetGuidance("Randomize the reaction vertex Z position");
   randomVertexZPositionCmd->SetGuidance("Choice : on(default), off");
   randomVertexZPositionCmd->SetParameterName("choice",true);
   randomVertexZPositionCmd->SetDefaultValue("on");
@@ -613,6 +620,8 @@ ActarSimPrimaryGeneratorMessenger::~ActarSimPrimaryGeneratorMessenger() {
   delete energyCmd;
   delete directionCmd;
   delete positionCmd;
+  delete EntranceYPositionCmd;
+  delete EntranceZPositionCmd;
   delete timeCmd;
   delete randomVertexZPositionCmd;
   delete randomVertexZPositionRangeCmd;
@@ -866,6 +875,12 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command==timeCmd )
     actarSimActionGun->SetParticleTime(timeCmd->GetNewDoubleValue(newValues));
+
+  if( command==EntranceYPositionCmd)
+    actarSimActionGun->SetEntranceYPosition(EntranceYPositionCmd->GetNewDoubleValue(newValues));
+
+  if( command==EntranceZPositionCmd)
+    actarSimActionGun->SetEntranceZPosition(EntranceZPositionCmd->GetNewDoubleValue(newValues));
 
 // vertexZPosition dypang 080704
   if( command==vertexZPositionCmd )

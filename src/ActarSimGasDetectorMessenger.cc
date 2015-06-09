@@ -105,13 +105,6 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   zGasBoxCmd->SetUnitCategory("Length");
   zGasBoxCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  yGasBoxPosCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setYGasBoxPos",this);
-  yGasBoxPosCmd->SetGuidance("Select the vertical position of Gas Box relative to the Chamber.");
-  yGasBoxPosCmd->SetParameterName("yGasBoxPos",false);
-  yGasBoxPosCmd->SetRange("yGasBoxPos>=0.");
-  yGasBoxPosCmd->SetUnitCategory("Length");
-  yGasBoxPosCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
   radiusGasTubCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setRadiusGasTub",this);
   radiusGasTubCmd->SetGuidance("Select the external radius of the Gas Tube.");
   radiusGasTubCmd->SetParameterName("radiusGasTub",false);
@@ -167,7 +160,6 @@ ActarSimGasDetectorMessenger::~ActarSimGasDetectorMessenger() {
   delete xGasBoxCmd;
   delete yGasBoxCmd;
   delete zGasBoxCmd;
-  delete yGasBoxPosCmd;
   delete radiusGasTubCmd;
   delete lengthGasTubCmd;
   delete innerRadiusBeamShieldTubCmd;
@@ -224,17 +216,13 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == yGasBoxCmd)
   {
     ActarSimGasDetector->SetYGasBox(yGasBoxCmd->GetNewDoubleValue(newValue));
+    ActarSimDetector->SetYGasBoxPosition(yGasBoxCmd->GetNewDoubleValue(newValue));
   }
 
   if(command == zGasBoxCmd)
   {
     ActarSimGasDetector->SetZGasBox(zGasBoxCmd->GetNewDoubleValue(newValue));
     ActarSimDetector->SetZGasBoxPosition(zGasBoxCmd->GetNewDoubleValue(newValue));
-  }
-
-  if(command == yGasBoxPosCmd)
-  {
-    ActarSimGasDetector->SetYGasBoxPos(yGasBoxPosCmd->GetNewDoubleValue(newValue));
   }
 
   if(command == radiusGasTubCmd)

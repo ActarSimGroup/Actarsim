@@ -36,6 +36,8 @@ private:
   ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
 
   G4VPhysicalVolume* ConstructSil(G4LogicalVolume*);
+  G4VPhysicalVolume* DSSD_Al_LayerPhys;
+  //G4VPhysicalVolume* MAYA_Al_LayerPhys;
 
   G4int sideCoverage;   // 6 bits to indicate which sil wall is present (1) or absent (0)
 			// order is:

@@ -16,6 +16,7 @@
 
 #include "ActarSimSilDetectorConstruction.hh"
 #include "ActarSimDetectorConstruction.hh"
+#include "ActarSimGasDetectorConstruction.hh"
 #include "ActarSimSilDetectorMessenger.hh"
 #include "ActarSimROOTAnalysis.hh"
 #include "ActarSimSilSD.hh"
@@ -115,11 +116,11 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
 
   G4double silBulk_x = 24.5*mm;
   G4double silBulk_y = 24.5*mm;
-  G4double silBulk_z = 0.35*mm;
+  G4double silBulk_z = 0.3575*mm;
 
   G4double silDSSDBulk_x = 31.5*mm;
   G4double silDSSDBulk_y = 31.5*mm;
-  G4double silDSSDBulk_z = 0.35*mm;
+  G4double silDSSDBulk_z = 0.75*mm;
 
   G4double defectHalfLength = 0.5*mm;
   G4double separationFromBox = 3*mm;
@@ -133,11 +134,24 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
 	       << G4endl
 	       << " of the silicons. No other box around the silicon volume is described."
 	       << G4endl
+	       << " MAYA detector characteristics: "
+	       << G4endl
 	       << " x dimension (half-side) of silicon: " << silBulk_x/mm << " mm"
 	       << G4endl
 	       << " y dimension (half-side) of silicon: " << silBulk_y/mm << " mm"
 	       << G4endl
 	       << " z dimension (half-side) of silicon: " << silBulk_z/mm << " mm"
+	       << G4endl
+	       << " DSSD detector characteristics: "
+	       << G4endl
+	       << " x dimension (half-side) of silicon: " << silDSSDBulk_x/mm << " mm"
+	       << G4endl
+	       << " y dimension (half-side) of silicon: " << silDSSDBulk_y/mm << " mm"
+	       << G4endl
+	       << " z dimension (half-side) of silicon: " << silDSSDBulk_z/mm << " mm"
+	       << G4endl
+	       << " Detector material: "
+	       << silBulkMaterial
 	       << G4endl;
   G4cout << "##################################################################"
 	       << G4endl;
@@ -183,7 +197,6 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
   //G4cout << numberOfRowsX << " " <<  numberOfRowsY << " " << numberOfRowsZ << G4endl;
 
   G4int iterationNumber = 0;
-  //G4int iterationDSSDNumber = 0;
 
   //By a reason I do not know the correct rotation using Euler angles does not match with standards...
   // I would call rotLeft to rotTop, and so on...
@@ -224,6 +237,36 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
       // not placed until a later stage of the assembly program.
 */
 
+  // if(!gasDetector) {
+  ActarSimGasDetectorConstruction* gasDetector = (ActarSimGasDetectorConstruction*)(detConstruction->GetGasDetector());
+  //ActarSimGasDetectorConstruction gasDetector = detConstruction->GetGasDetector();
+    G4double xGasBox = gasDetector->GetXGasBox();
+    G4double zGasBox = gasDetector->GetZGasBox();
+    // }
+
+
+    //An aluminium plate to see the Pads active area
+    //G4double plateSizeX = 32*mm;
+    //G4double plateSizeY = yPadSize/2*mm;
+    //G4double layerSizeZ = 0.00015*mm;
+    G4double layerSizeZ = 0.00012*mm;//I don't have the size of strips so I assume it is 80% of the pitch
+    G4double z,a,density;
+    
+    G4Box *DSSD_Al_Layer=new G4Box("DSSD_Al_layer",silDSSDBulk_x,silDSSDBulk_y,layerSizeZ);
+    //G4Box *MAYA_Al_Layer=new G4Box("MAYA_Al_layer",silBulk_x,silBulk_y,layerSizeZ);
+     
+    G4Material* Al = 
+      new G4Material("Aluminum", z= 13., a= 26.98*g/mole, density= 2.7*g/cm3);
+
+    G4LogicalVolume* DSSD_Al_LayerLog=new G4LogicalVolume(DSSD_Al_Layer,Al,"DSSD_Al_layer");
+    //G4LogicalVolume* MAYA_Al_LayerLog=new G4LogicalVolume(MAYA_Al_Layer,Al,"MAYA_Al_layer");
+  
+    G4int DSSDAlIterationNumber = 0;
+    //G4int MAYAAlIterationNumber = 0;
+
+    // AlLayerPhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
+    // 				  AlLayerLog,"Al_layer",chamberLog,false,0); 
+
   if(sideCoverage & 0x0001){ // bit1 (lsb) beam output wall
     //iteration on Silicon elements
     /*
@@ -254,8 +297,25 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
         silPhys =
           new G4PVPlacement(0,G4ThreeVector( (rowX-0.5)*2*(silDSSDBulk_x+defectHalfLength),
 					     (rowY-0.5)*2*(silDSSDBulk_x+defectHalfLength),
-					     zBoxSilHalfLength - separationFromBox - silDSSDBulk_z),
+					     //zBoxSilHalfLength - separationFromBox - silDSSDBulk_z),
+					     zGasBox + zBoxSilHalfLength),
 			    silDSSDLog, "silPhys", chamberLog, false, iterationNumber);
+	
+	DSSDAlIterationNumber++;
+	//Al Layers
+        DSSD_Al_LayerPhys
+	  =new G4PVPlacement(0,G4ThreeVector( (rowX-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					      (rowY-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					      zGasBox + zBoxSilHalfLength - (silDSSDBulk_z+layerSizeZ)),
+				  DSSD_Al_LayerLog,"DSSD_Al_layer",chamberLog,false,DSSDAlIterationNumber);
+
+	DSSDAlIterationNumber++;
+        DSSD_Al_LayerPhys
+	  =new G4PVPlacement(0,G4ThreeVector( (rowX-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					      (rowY-0.5)*2*(silDSSDBulk_x+defectHalfLength),
+					      zGasBox + zBoxSilHalfLength + (silDSSDBulk_z+layerSizeZ)),
+				  DSSD_Al_LayerLog,"DSSD_Al_layer",chamberLog,false,DSSDAlIterationNumber);
+	
       }
     }
     
@@ -303,10 +363,20 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
       for(G4int rowY=0;rowY<2;rowY++){
         iterationNumber++;
         silPhys =
-          new G4PVPlacement(rotLeft,G4ThreeVector(xBoxSilHalfLength - separationFromBox - silBulk_z,
-						  (rowY-0.5)*2*(silBulk_x+defectHalfLength),
+          //new G4PVPlacement(rotLeft,G4ThreeVector(xBoxSilHalfLength - separationFromBox - silBulk_z,
+          new G4PVPlacement(rotLeft,G4ThreeVector(xGasBox + xBoxSilHalfLength,
+						  (rowY-0.5)*2*(silBulk_y+defectHalfLength),
 						  (rowZ-1)*2*(silBulk_x+defectHalfLength)),
 			    silLog, "silPhys", chamberLog, false, iterationNumber);
+	/*
+	MAYAAlIterationNumber++;
+	//Al Layers
+        MAYA_Al_LayerPhys
+	  =new G4PVPlacement(rotLeft,G4ThreeVector(xGasBox + xBoxSilHalfLength  - (silBulk_z+layerSizeZ),
+						  (rowY-0.5)*2*(silBulk_y+defectHalfLength),
+						  (rowZ-1)*2*(silBulk_x+defectHalfLength)),
+				  MAYA_Al_LayerLog,"MAYA_Al_layer",chamberLog,false,MAYAAlIterationNumber);
+	*/
       }
     }
   }
@@ -323,10 +393,20 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
       for(G4int rowY=0;rowY<2;rowY++){
         iterationNumber++;
         silPhys =
-          new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSilHalfLength - separationFromBox - silBulk_z),
-						  (rowY-0.5)*2*(silBulk_x+defectHalfLength),
+          //new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSilHalfLength - separationFromBox - silBulk_z),
+          new G4PVPlacement(rotRight,G4ThreeVector(-(xGasBox + xBoxSilHalfLength),
+						  (rowY-0.5)*2*(silBulk_y+defectHalfLength),
 						  (rowZ-1)*2*(silBulk_x+defectHalfLength)),
 			    silLog, "silPhys", chamberLog, false, iterationNumber);
+	/*	
+	MAYAAlIterationNumber++;
+	//Al Layers
+        MAYA_Al_LayerPhys
+	  =new G4PVPlacement(rotRight,G4ThreeVector(-(xGasBox + xBoxSilHalfLength)  + (silBulk_z+layerSizeZ),
+						  (rowY-0.5)*2*(silBulk_y+defectHalfLength),
+						  (rowZ-1)*2*(silBulk_x+defectHalfLength)),
+				  MAYA_Al_LayerLog,"MAYA_Al_layer",chamberLog,false,MAYAAlIterationNumber);
+	*/
       }
     }
   }
@@ -336,7 +416,7 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
       for(G4int rowY=0;rowY<numberOfRowsY;rowY++){
         iterationNumber++;
         silPhys =
-          new G4PVPlacement(rotBack,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_x+defectHalfLength),
+          new G4PVPlacement(rotBack,G4ThreeVector(-xBoxSilHalfLength + ((rowX+1)*2-1)*(silBulk_y+defectHalfLength),
 	 				          -yBoxSilHalfLength + ((rowY+1)*2-1)*(silBulk_x+defectHalfLength),
 					          -separationFromBox - silBulk_z),
 			                          silLog, "silPhys", chamberLog, false, iterationNumber);
@@ -359,6 +439,15 @@ G4VPhysicalVolume* ActarSimSilDetectorConstruction::ConstructSil(G4LogicalVolume
   G4VisAttributes* silDSSDVisAtt1 = new G4VisAttributes(G4Colour(0,0.75,0));
   silDSSDVisAtt1->SetVisibility(true);
   silDSSDLog->SetVisAttributes(silDSSDVisAtt1);
+  
+  G4VisAttributes* DSSD_Al_LayerVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
+  DSSD_Al_LayerVisAtt->SetVisibility(false);   
+  DSSD_Al_LayerLog->SetVisAttributes(DSSD_Al_LayerVisAtt);
+  /*
+  G4VisAttributes* MAYA_Al_LayerVisAtt= new G4VisAttributes(G4Colour(1.0,0.333,1.0));
+  MAYA_Al_LayerVisAtt->SetVisibility(false);   
+  MAYA_Al_LayerLog->SetVisAttributes(MAYA_Al_LayerVisAtt);
+  */
 
   return silPhys;
   return silDSSDPhys;

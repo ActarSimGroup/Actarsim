@@ -141,17 +141,20 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   // Geometrical definition of the world and gas volume
   //
 
+  G4double yGasBoxPosition=GetYGasBoxPosition();
   G4double zGasBoxPosition=GetZGasBoxPosition();
-
-  G4double worldSizeX,worldSizeY,worldSizeZ;
-
-  G4double chamberVolumeCenterPosX = 0.*m;
-  G4double chamberVolumeCenterPosY = 0.*m;
-  G4double chamberVolumeCenterPosZ = 0.*m;
 
   chamberSizeX=GetChamberXLength();
   chamberSizeY=GetChamberYLength();
   chamberSizeZ=GetChamberZLength();
+
+  G4double worldSizeX,worldSizeY,worldSizeZ;
+
+  G4double chamberVolumeCenterPosX = 0.*m;
+  G4double chamberVolumeCenterPosY = chamberSizeY-(yGasBoxPosition+yPadSize);//the beam enters at the middle of GasBox
+  //G4double chamberVolumeCenterPosY = chamberSizeY-yPadSize;//the beam enters at the pad level
+  G4double chamberVolumeCenterPosZ = zGasBoxPosition;//beam origin at the entrance of GasBox
+
 
 
   if( MaikoGeoIncludedFlag == "on"){
@@ -164,9 +167,6 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     worldSizeY = .5*m;
     worldSizeZ = .5*m;
   }
-
-  chamberVolumeCenterPosY = 0; //the beam enters at the middle of the chamber
-  chamberVolumeCenterPosZ = chamberSizeZ;
 
   solidWorld = new G4Box("World",                      //its name
 			 worldSizeX,worldSizeY,worldSizeZ);   //its size
@@ -195,7 +195,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   chamberPhys = new G4PVPlacement(0,                     //no rotation
                                   G4ThreeVector(chamberVolumeCenterPosX,
 						chamberVolumeCenterPosY,
-					        zGasBoxPosition),
+					        chamberVolumeCenterPosZ),
                                   chamberLog,            //its logical volume
                                   "Chamber",               //its name
                                   worldLog,                     //its mother  volume
@@ -232,7 +232,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     
     
     mylarWin = new G4PVPlacement(0,                     //no rotation
-                                    G4ThreeVector(0,0,chamberVolumeCenterPosZ+zGasBoxPosition),
+				    G4ThreeVector(0,0,chamberSizeZ+zGasBoxPosition),
                                     mwindowLog,            //its logical volume
                                     "mwindow",               //its name
                                     worldLog,                     //its mother  volume
@@ -266,7 +266,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     
     window_log->SetVisAttributes(windowVisAtt);
     
-    G4double windowPosZ=-chamberSizeZ+window_half_length+22*mm;
+    G4double windowPosZ=-chamberSizeZ+window_half_length+22*mm;//enter window is situated 22mm inside chamber
     G4double windowPosY=0*cm;
     G4double windowPosX=0*mm;
   
@@ -278,7 +278,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
     //An aluminium plate to see the Pads active area
     G4double plateSizeX = 32*mm;
-    G4double plateSizeY = 6.37*mm;
+    G4double plateSizeY = yPadSize/2*mm;
     G4double plateSizeZ = 64*mm;
     G4double z,a,density;
     

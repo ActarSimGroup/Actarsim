@@ -91,7 +91,11 @@ private:
   G4double chamberSizeY;
   G4double chamberSizeZ;
 
-  //Position of the GasBox
+  //Pad height
+  G4double yPadSize;
+
+  //GasBox dimensions
+  G4double yGasBoxPosition;
   G4double zGasBoxPosition;
 
   //Control of the geometry of the experiment
@@ -136,6 +140,9 @@ public:
   void SetUpdateChamberMaterial(G4Material*);
   void SetWindowMaterial (G4String);
 
+  void SetYPadSize(G4double val){yPadSize = val;} 
+
+  void SetYGasBoxPosition(G4double val){yGasBoxPosition = val;} 
   void SetZGasBoxPosition(G4double val){zGasBoxPosition = val;} 
 
   void UpdateGeometry();
@@ -159,6 +166,9 @@ public:
   G4double GetChamberYLength(void){return chamberSizeY;} 
   G4double GetChamberZLength(void){return chamberSizeZ;} 
 
+  G4double GetYPadSize(void){return yPadSize;} 
+
+  G4double GetYGasBoxPosition(void){return yGasBoxPosition;} 
   G4double GetZGasBoxPosition(void){return zGasBoxPosition;} 
 
   ActarSimGasDetectorConstruction* GetGasDetector() {return gasDet;}

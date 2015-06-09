@@ -68,6 +68,9 @@ private:
   G4double emittance;
   G4double beamRadiusAtEntrance;
   
+  G4double entranceY;
+  G4double entranceZ;
+
   //
   G4double theta1;
   G4double theta2;
@@ -188,6 +191,9 @@ public:
   void SetIncidentEnergy(G4double val) {
        incidentEnergy = val;
        }
+
+  void SetEntranceYPosition(G4double val){ entranceY = val;}
+  void SetEntranceZPosition(G4double val){ entranceZ = val;}
 
   void SetThetaLabAngle(G4double val) { thetaLabAngle = val;}
   void SetVertexZPosition(G4double val) { vertexZPosition = val;} // vertex Z position, dypang 080704

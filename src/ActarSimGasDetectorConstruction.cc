@@ -106,6 +106,9 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   //Chamber heigth 
   G4double chamberSizeY=detConstruction->GetChamberYLength();
 
+  //Pad Size : GasBox height from chamber floor 
+  G4double padSizeY=detConstruction->GetYPadSize();
+
   G4double gasVolumeCenterPosX = 0.*m;
   G4double gasVolumeCenterPosY = 0.*m;
   G4double gasVolumeCenterPosZ = 0.*m;
@@ -132,7 +135,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 	   << G4endl;
 
     //centered in (0,0,zGasBox) to have origin in the detector entrance
-    gasVolumeCenterPosY = -chamberSizeY+yGasBox+yGasBoxPos; //the gas box is yGasBoxPos above the chamber floor
+    gasVolumeCenterPosY = -chamberSizeY+yGasBox+padSizeY;
     gasVolumeCenterPosZ = zGasBox;
 
     G4Box* gasBox;
@@ -253,6 +256,8 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   //
   // Sets the material the gas is made of
   //
+  // STP used are P = 1atm and T = 20ºC
+  //
   //Gas Pressure & Temperature 
   G4double pressure=GetGasPressure();
   G4double temperature=GetGasTemperature();
@@ -288,8 +293,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   G4Element* Bi = new G4Element("Bismuth"  ,"Bi", z=83., a= 208.98038*g/mole);*/
 
   G4int ncomponents, natoms;
-  //G4double fractionmass, abundance;
-  G4double abundance;
+  G4double fractionmass, abundance;
 
   G4Isotope* iso_H2= new G4Isotope("iso_H2",z=1,n=2, a=2.0140*g/mole);
   G4Element* D= new G4Element("Deuterium","D" , ncomponents=1);
@@ -302,7 +306,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
 
   if(mat=="isoC4H10")
     {
-      //Isobutane (default  2.67*mg/cm3 STP)
+      //Isobutane (default  2.41464*mg/cm3 STP)
       density = (2.41464*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
       G4Material* isobutane =
 	new G4Material("isoC4H10", density, ncomponents=2, kStateGas, temperature, pressure) ;
@@ -310,7 +314,6 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
       isobutane->AddElement(H,10);
       gasMaterial = isobutane;
       detConstruction->SetUpdateChamberMaterial(isobutane);
-      //gasMaterial = G4Material::GetMaterial(mat);
     }
   else if(mat=="H2")
     {
@@ -384,6 +387,30 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
       CF4->AddElement(F, natoms=4);
       gasMaterial = CF4;
       detConstruction->SetUpdateChamberMaterial(CF4);
+    }
+  else if(mat=="HeC4H10")
+    {
+      //He (default  0.16642*mg/cm3 STP)
+      density	=(0.16642*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
+      G4Material* Helium =
+	new G4Material("He", z=2, a=4.0026*g/mole, density, kStateGas, temperature, pressure);
+
+      //Isobutane (default  2.41464*mg/cm3 STP)
+      density = (2.41464*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
+      G4Material* isobutane =
+	new G4Material("isoC4H10", density, ncomponents=2, kStateGas, temperature, pressure) ;
+      isobutane->AddElement(C,4);
+      isobutane->AddElement(H,10);
+
+      //HeC4H10, 9:1 (default  0.416778*mg/cm3 STP)
+      density	=(0.416778*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
+      G4Material* HeC4H10 =
+      	new G4Material("HeC4H10", density, ncomponents=2, kStateGas, temperature, pressure);
+      HeC4H10->AddMaterial( Helium,     fractionmass = 0.35937 ) ;
+      HeC4H10->AddMaterial( isobutane,  fractionmass = 0.64063 ) ;
+
+      gasMaterial = HeC4H10;
+      detConstruction->SetUpdateChamberMaterial(HeC4H10);
     }
   else {
     G4Material* pttoMaterial = G4Material::GetMaterial(mat);

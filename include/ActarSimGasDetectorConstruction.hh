@@ -42,8 +42,6 @@ private:
   G4double yGasBox;
   G4double zGasBox;
 
-  G4double yGasBoxPos;
-
   // GasTub Size Parameters
   G4double radiusGasTub;
   G4double lengthGasTub;
@@ -82,7 +80,6 @@ public:
   void SetXGasBox(G4double val){xGasBox = val;} 
   void SetYGasBox(G4double val){yGasBox = val;} 
   void SetZGasBox(G4double val){zGasBox = val;} 
-  void SetYGasBoxPos(G4double val){yGasBoxPos = val;} 
   void SetRadiusGasTub(G4double val){radiusGasTub = val;} 
   void SetLengthGasTub(G4double val){lengthGasTub = val;} 
   void SetInnerRadiusBeamShieldTub(G4double val){innerRadiusBeamShieldTub = val;} 
@@ -100,7 +97,6 @@ public:
   G4double GetXGasBox(void){return xGasBox;} 
   G4double GetYGasBox(void){return yGasBox;} 
   G4double GetZGasBox(void){return zGasBox;} 
-  G4double GetYGasBoxPos(void){return yGasBoxPos;} 
   G4double GetRadiusGasTub(void){return radiusGasTub;} 
   G4double GetLengthGasTub(void){return lengthGasTub;} 
   G4double GetInnerRadiusBeamShieldTub(void){return innerRadiusBeamShieldTub;} 

@@ -16,7 +16,7 @@
 # verbosity levels and saveHistory
 /control/verbose 1
 /control/saveHistory
-/run/verbose 0
+/run/verbose 1
 /event/verbose 0
 /tracking/verbose 0
 #
@@ -55,6 +55,11 @@
 #  /ActarSim/phys/setCuts 1 mm
 /ActarSim/phys/verbose 0
 #
+# Setting the Pad Plane Height 
+#
+/ActarSim/det/setYPadSize 4.54 mm
+#
+#
 # Initialization is moved here from the main allowing PhysicsList
 #
 /run/initialize
@@ -72,7 +77,7 @@
 #/ActarSim/det/setMagField 0 0 0 T
 #
 #
-# gas material: isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
+# gas material: HeC4H10, isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
 #
 /ActarSim/det/gas/setGasPressure 1.01325
 /ActarSim/det/gas/setGasTemperature 293.15
@@ -90,12 +95,9 @@
 /ActarSim/det/gasGeoIncludedFlag on
 # if box
 /ActarSim/det/gas/setDetectorGeometry box
-#
 /ActarSim/det/gas/setXLengthGasBox 37. mm
-/ActarSim/det/gas/setYLengthGasBox 80.9 mm
+/ActarSim/det/gas/setYLengthGasBox 85. mm
 /ActarSim/det/gas/setZLengthGasBox 69. mm
-#
-/ActarSim/det/gas/setYGasBoxPos 12.47 mm
 #
 # Beam shield? tube or off
 /ActarSim/det/gas/setBeamShield off
@@ -112,11 +114,16 @@
 # bit4 left (from beam point of view) wall    8
 # bit5 right (from beam point of view) wall   16
 # bit6 (msb) beam entrance wall               32
-# examples: 63 full coverage; 3 only output and bottom walls ...
+# examples: 63 full coveragey; 3 only output and bottom walls ...
 /ActarSim/det/sil/sideCoverage 25
-/ActarSim/det/sil/xBoxHalfLength 95. mm
-/ActarSim/det/sil/yBoxHalfLength 105. mm
-/ActarSim/det/sil/zBoxHalfLength 120. mm
+#
+#/ActarSim/det/sil/xBoxHalfLength 95. mm
+#/ActarSim/det/sil/yBoxHalfLength 105. mm
+#/ActarSim/det/sil/zBoxHalfLength 120. mm
+#
+/ActarSim/det/sil/xBoxHalfLength 53.8 mm
+/ActarSim/det/sil/yBoxHalfLength 0. mm
+/ActarSim/det/sil/zBoxHalfLength 46.8 mm
 #
 /ActarSim/det/sil/print
 #
@@ -147,10 +154,14 @@
 /ActarSim/det/update
 #/ActarSim/det/print
 #
+#Beam entrance position relative to GasBox
+/ActarSim/gun/EntranceYPosition 15. mm
+/ActarSim/gun/EntranceZPosition -19. mm
+#
 # Control of the primary events
 #For all cases the possibility to have realistic beam distribution
 /ActarSim/gun/beamInteraction on
-/ActarSim/gun/realisticBeam off
+/ActarSim/gun/realisticBeam on
 #/ActarSim/gun/beamRadiusAtEntrance 1.5 mm
 #/ActarSim/gun/emittance 200.0
 #
@@ -186,8 +197,9 @@
 #/ActarSim/gun/polarization 0
 #/ActarSim/gun/number 1
 /ActarSim/gun/randomVertexZPosition off
-#/ActarSim/gun/randomVertexZRange 50 200 mm
+#/ActarSim/gun/randomVertexZRange 10 128 mm
 /ActarSim/gun/vertexZPosition 69 mm
+#/ActarSim/gun/vertexZPosition 100 mm
 #
 # B) Track a predefined reaction from a file:
 #
@@ -221,21 +233,24 @@
 #/ActarSim/gun/Kine/incidentIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.001506179125
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.00260325
-/ActarSim/gun/Kine/incidentIon 6 13 6 0.0 13.00335483778
+/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
+#/ActarSim/gun/Kine/incidentIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/incidentIon 50 132 50 0.0 131.9178
 
-/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
-#/ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
+#/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
+/ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
 
 #/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
-/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
-/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
+#/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
+/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
 
-/ActarSim/gun/Kine/labEnergy 650 MeV
+/ActarSim/gun/Kine/labEnergy 80 MeV
 /ActarSim/gun/Kine/randomThetaCM on
 /ActarSim/gun/Kine/randomThetaRange 0.0 180.0
 /ActarSim/gun/Kine/randomPhiAngle on

@@ -55,6 +55,10 @@
 #  /ActarSim/phys/setCuts 1 mm
 /ActarSim/phys/verbose 0
 #
+# Setting the Pad Plane Height 
+#
+/ActarSim/det/setYPadSize 4.54 mm
+#
 # Initialization is moved here from the main allowing PhysicsList
 #
 /run/initialize
@@ -90,15 +94,9 @@
 # if box
 /ActarSim/det/gas/setDetectorGeometry box
 #
-#/ActarSim/det/gas/setXLengthGasBox 32. mm
-#/ActarSim/det/gas/setYLengthGasBox 80. mm
-#/ActarSim/det/gas/setZLengthGasBox 64. mm
-#
 /ActarSim/det/gas/setXLengthGasBox 37. mm
-/ActarSim/det/gas/setYLengthGasBox 80.9 mm
+/ActarSim/det/gas/setYLengthGasBox 85. mm
 /ActarSim/det/gas/setZLengthGasBox 69. mm
-#
-/ActarSim/det/gas/setYGasBoxPos 12.47 mm
 #
 # Beam shield? tube or off
 /ActarSim/det/gas/setBeamShield off
@@ -117,10 +115,13 @@
 # bit6 (msb) beam entrance wall               32
 # examples: 63 full coverage; 3 only output and bottom walls ...
 /ActarSim/det/sil/sideCoverage 25
+#/ActarSim/det/sil/xBoxHalfLength 95. mm
+#/ActarSim/det/sil/yBoxHalfLength 105. mm
+#/ActarSim/det/sil/zBoxHalfLength 120. mm
 #
-/ActarSim/det/sil/xBoxHalfLength 95. mm
-/ActarSim/det/sil/yBoxHalfLength 105. mm
-/ActarSim/det/sil/zBoxHalfLength 120. mm
+/ActarSim/det/sil/xBoxHalfLength 53.8 mm
+/ActarSim/det/sil/yBoxHalfLength 0. mm
+/ActarSim/det/sil/zBoxHalfLength 46.8 mm
 #
 /ActarSim/det/sil/print
 #
@@ -150,6 +151,10 @@
 #
 /ActarSim/det/update
 #/ActarSim/det/print
+#
+#Beam entrance position relative to GasBox
+/ActarSim/gun/EntranceYPosition 15. mm
+/ActarSim/gun/EntranceZPosition -19. mm
 #
 # Control of the primary events
 #For all cases the possibility to have realistic beam distribution

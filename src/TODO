@@ -1,0 +1,243 @@
+A TODO LIST
+
+================================================================================
+ - PLEASE, fill the 
+ //*-- Last Update: 17/12/14 by Hector Alvarez Pol
+everytime one makes a change!!!!
+If the change contains anything relevant, please, add it in the Comments field!!
+================================================================================
+
+
+ - (low priority) the beam straggling before the vertex point modifies the reaction plane. 
+ That is not taken into account when calculating the reaction plane. Includes correction!
+ (TODO Missing the information about the ion (beam) angle in the vertex, after all
+ the angular straggling. This angle should affect to the reaction plane, and therefore
+ should create a transformation on the products momenta, probably of no practical importance). 
+ Modifications related to ActarSimBeamInfo and ActarSimPrimaryGeneratorAction
+
+ - (low priority) Check if materials support now (G4.9 and later)independent pressure parameter or redefinition.
+ - ActarSimDetectorConstruction requires some internal documentation on the geometries that one can use.
+
+ - ADD NOW:  silRingDet->PrintDetectorParameters();
+      sciRingDet->PrintDetectorParameters();
+      plaDet->PrintDetectorParameters();
+      in the proper places!
+
+ - (CHECK) Is any duplicity defining gases with ActarSimDetectorConstruction::DefineMaterials() definitions!?
+Is correct to define all here? are the isotopes finally working correctly there?
+AFTER testing, it would be great to have the complete list of gases with different pressures on the menu!
+
+ - REMOVE ActarSimEventGenerator (except it is of any use ??!!??) 
+
+ - Any reason to remove a default gas in ActarSimGasDetectorConstruction constructor?
+
+ -  In ActarSimGasDetectorConstruction.cxx (line 200):
+ 	   gasVolumeCenterPosY = -chamberSizeY+yGasBox+12.74*mm; //gas chamber 12.74mm above the chamber ground 
+		??? hardcoded parameter... it should go to a messenger, if needed.
+		gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
+						gasVolumeCenterPosY,
+						//gasVolumeCenterPosZ-chamberVolumeCenterPosZ+zGasBoxPosition),
+						//gasVolumeCenterPosZ),
+						0), ???????????
+
+ - void ActarSimGasDetectorConstruction::SetLuciteBox(G4String type) {
+ What is this lucite box??
+
+ - review visualization properties for ActarSimGasGeantHit.cc: 
+ void ActarSimGasGeantHit::Draw(){
+  //
+  // Draws the Hit. A clear red point on the Hit position
+  //
+  G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
+  if(pVVisManager)
+  {
+    G4Circle circle(prePos);
+    circle.SetScreenSize(4);
+    circle.SetFillStyle(G4Circle::filled);
+    G4Colour colour(1.,0.,0.);
+    G4VisAttributes attribs(colour);
+    circle.SetVisAttributes(attribs);
+    pVVisManager->Draw(circle);
+  }
+}
+In any case it is commented the line
+  //for (G4int i=0;i<NbHits;i++) (*hitsCollection)[i]->Draw();
+in ActarSimGasSD.cc
+
+
+ - I do not understand fully this part (the if statement) in ActarSimGasSD.cc:
+void ActarSimGasSD::Initialize(G4HCofThisEvent* HCE){
+  //
+  // Initializing the ActarSimCalGeantHitsCollection object
+  // Invoked automatically at the beggining of each event
+  //
+  hitsCollection = new ActarSimGasGeantHitsCollection
+    (SensitiveDetectorName,collectionName[0]);
+  static G4int HCID = -1;
+  if(HCID<0)
+    HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+
+  HCE->AddHitsCollection( HCID, hitsCollection );
+}
+
+
+ - Important note for understanding ActarSimGasSD.cc (taken from http://hypernews.slac.stanford.edu/HyperNews/geant4/get/eventtrackmanage/1043/1/1.html):
+	The energy lost by a particle (to the medium and to secondaries) during a step is obtained with GetDeltaEnergy:
+	http://www-geant4.kek.jp/lxr/source/track/src/G4Step.cc#L189
+	The energy lost to the medium is obtained with GetTotalEnergyDeposit. The energy available for ionization is:
+	GetTotalEnergyDeposit() - GetNonIonizingEnergyDeposit()
+	see for example MeanNumberOfIonsAlongStep:
+	http://www-geant4.kek.jp/lxr/source//processes/electromagnetic/utils/src/G4ElectronIonPair.cc#L75
+	All this can be obtained from the G4Step object and you do not have to code anything inside StackingAction.
+
+
+ Actually the second link shows how to calculate the number of electron-ion pairs in G4... we do it after, but it could be interesting to compare the G4 results.
+ BUT: newer versions of Geant4 shows the following message related to GetDeltaEnergy and GetDeltaMomentum
+150   // These methods will be deleted 
+151   // NOTE: use  GetTotalEnergyDeposit() to obtain 
+152   //       energy loss in the material 
+153   // 
+
+I think we should move to GetTotalEnergyDeposit again! Study carefully what to do!!!
+
+
+ - ActarSimPhysicsList has to be revisited for version 10.
+	 - AddPhysicsList... probably all possible Physics should enter here in equal foot...
+	 - emOptions.SetMaxEnergy(100.*GeV);   -> I guess 1*GeV would do... anything against?
+	 -   emOptions.SetDEDXBinning(90);
+  			emOptions.SetLambdaBinning(90); and all the other em options...
+  		This values should be easy to modify by the user for different tests. I would suggest to put them on messengers and also to create tables for the recommended values (and check them) as in:
+	 http://www.opengatecollaboration.org/sites/opengatecollaboration.org/files/Physics_List_for_Radiation_Therapy_applications.pdf
+	 we can learn about that from the GATE collaboration.
+
+
+ - ActarSimPlaDetectorConstruction: it should be clarified if needed and how. If needed, more messengers are required for their installation in the proper place in a completely configurable way (to make it useful in different circunstances, for instace for cosmics runs, ...).
+ Now sizes are horribly hardcoded and there is no messenger for it!!!!!!!
+
+ -  ActarSimPlaHit:
+ 	- the structure is not acceptable. One cannot put a 	
+ 		Double_t detCenterCoordinateX; // center of the present silicon, dypang 090130
+ 	variable in all the hits from a detector. Is like writting the name of the detector in the hit! If one has 
+ 	10^12 hits, then 10^12 times the name of the detector wasting disk, memory and time resources!!!!!!
+ 	Actions: remove detCenterCoordinateX, detCenterCoordinateY, detCenterCoordinateZ
+
+ - Review the transformation to local coordinates (I have an example in r3broot) in ActarSimPlaSD.cc
+
+ - Modifications in ActarSimPrimaryGeneratorAction.cc:
+ 	- will be neccesary line 113??? 
+ 		//   G4double energyLostInTargetGas = 0; //zero, to be calculated if realisticBeamFlag is on
+ 	- ?????  //Initial values for reactionFromEvGen
+  G4double  LabParticleAngle = 85.0 * deg;
+  G4double  LabParticleAngle_rec = 85.0 * deg;
+    - There are several TODO inside the code for new interesting features!!!!!!!!!
+	- There are no default value for randomVertexZPositionMin!!! Same for randomVertexZPositionMax.
+	- Redefinition of realisticBeam: it should be reviewed to check if parameters have sense
+	and addapt them to the GANIL beams (definition of emmitance and characteristics).
+	THERE ARE A FEW VALUES HARDCODED!!!! SHOULD NOT BE (G4double z0= -29*mm;)
+	- No default value for incidentEnergy... is the same with other variables??
+	- beamRadiusAtEntrance and possibly many other variables have no default value. Is that ok??
+	- flat distribucion for realistic beam position in CASE B seems to be wrong!! Hardcoded numbers + definition quite poor. Better make a function for the realisticBeamOn case to be called in different points if needed.
+	- I have removed theVertexPosition variable, of no use (and feed directly the vertexPosition data members).
+	- Correcting CASE F!!! Many hardcoded values...
+
+	- MORE HARDCODED:
+	1032 //DPLoureiro adding random distribution for polar and azimuthal angles
+    1033 G4double cosTheta, sinTheta;
+    1034 G4double y_coord;
+    1035 y_coord = -1 + 2.0*G4UniformRand();
+    1036 y_coord=10*y_coord/185.;
+   	and the next:
+   	if(randomThetaFlag == "on") {
+      G4ParticleDefinition* pd = particleTable->FindParticle("alpha");
+      //G4ParticleDefinition* pd = particleTable->FindParticle("proton");
+      if(pd != 0)
+        particleGun->SetParticleDefinition(pd);
+
+	why an alpha in case of randomThetaFlag??????????
+
+
+ - Modifications in ActarSimROOTAnalGas:
+	- in void ActarSimROOTAnalGas::GeneratePrimaries(const G4Event *anEvent){
+		apparently the energy is not correctly calculated TODO!
+	-
+
+
+ - CHECK! ActarSimROOTAnalSci::FillingHits and ActarSimROOTAnalSci::AddCalCrystalHit
+	THE SAME IN CLASSES: ActarSimROOTAnalPla, ActarSimROOTAnalGas,  ActarSimROOTAnalSciRing, 
+	ActarSimROOTAnalSil and ActarSimROOTAnalSilRing
+
+
+ - SciRing SilRing, ... (whatever it is, I do not recognize them, even my name is in the header???) has all the
+geometry hardcoded!!!!!!!!!! Are they used? Should we maintain them? if so, change them!
+
+
+ - Is ActarSimStepLimiterBuilder needed???? Is only called in ActarSimPhysicsList and it is a copy of code
+ that should exist in the general Geant4 classes. It is not better to use general Geant4 classes??????????
+ If so, better remove this class and pass the functionality to the geant4 classes.
+ The same for G4StepLimiterPerRegion and G4StepLimiterMessenger
+
+
+ - Do we need anything in ActarSimSteppingAction::UserSteppingAction()?? All this code is repeated many times... better remove all (except   if (gActarSimROOTAnalysis)gActarSimROOTAnalysis->UserSteppingAction(aStep);)
+
+ - ActarSimVisManager.cc ... is uptodate with respect to graphic interfaces???
+
+ -  What is HodoParametrisation!??????????????
+
+ - Are: HadrontherapyIonLowEZiegler1985, HadrontherapyIonLowEZiegler2000, HadrontherapyIonLowEZiegler1977, 
+ HadrontherapyIonLowE, PhysListEmStandardWVI, PhysListEmStandardSS, PhysListEmStandardGS and PhysListEmStandard
+ required in the same directory? is not part of the standard geant4? can we removed then and link to geant4 classes??????
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTE- flow in ActarSimPrimaryGeneratorAction:
+
+  CASES (flow)!
+
+ 	if- CASE A1: BEAMINTERACTION
+ 		if status>1, launching vertex)     setting vertex position (x,y,z) and energy. status to 0. ...
+ 		if status==1 error ABORTED (anEvent->SetEventAborted()) ...
+ 		if status==0, then beam, status to 1, setting incidention and charge, finding z0 and energy at entrance.
+ 			if noincidention, then select 8He
+ 			if realistic beam position, angles and momenta at entrances from emmitance parameters
+ 			else, nominal values.      
+ 			particleGun->GeneratePrimaryVertex(anEvent);
+ 			RETURN! (only for status==0)
+ 	else if- CASE A2: NO BEAMINTERACTION
+ 		if realistic beam position, angles and momenta at entrances from emmitance parameters (no beam production, but beam position rules on vertex position). positon for vertex (x,y,z)
+ 		else 
+
+	if- CASE B REACTION FROM EVENT GENERATOR
+		BEA?? Cross sections involved. Not know if ever used. Aparently not finished, no vertex created.
+
+	if- CASE C REACTION FROM A FILE WITH CINE FORMAT      
+		2 x particleGun->GeneratePrimaryVertex(anEvent);
+		Requires a checking... is it still working??
+
+	else if- CASE D  REACTION WITH CINE!!
+		if (reactionFromCrossSectionFlag =="on"){ cross sections.... never tested!!!????? maintain but check!!
+		if(beamInteractionFlag == "on") modification of time, beam energy and vertex position from beam track
+    	2 x particleGun->GeneratePrimaryVertex(anEvent);
+
+	else if- CASE E  REACTION WITH KINE!!
+		similar to previous BUT     
+		- not clear the option of the beamInteractionFlag for the vertex definition CHECK!
+		- if(ExEnergyScattered>0){   //Photon is emmited isotropically from vertex NEW!!!! WORKS????
+
+	else- CASE F Particle selected manually (using the messenger commands)
+		- if(beamInteractionFlag == "on") modification of vertex position from beam track
+    	- if(randomThetaFlag == "on") { alpha??
+    	- if(randomPhiFlag == "on"){ ???
+    	- if(alphaSourceFlag == "on"){ alpha source???
+    	and at the end:     particleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
+    	particleGun->GeneratePrimaryVertex(anEvent);
+

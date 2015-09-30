@@ -33,6 +33,11 @@ private:
   G4Material* gasMaterial;
   G4Material* beamShieldMaterial;
 
+  // Gas Mixture
+  G4int NumberOfGasMix;
+  G4String gasMixMaterial[10];
+  G4double gasMixRatio[10];
+
   // Gas
   G4double gasPressure;
   G4double gasTemperature;
@@ -68,8 +73,17 @@ public:
   
   G4VPhysicalVolume* Construct(G4LogicalVolume*);
 
+  //void DefineGas ();
   void SetGasMaterial (G4String);
   
+  void SetGasMixture(G4int val){NumberOfGasMix = val;}
+
+  void SetGasMixMaterial(G4int GasNum, G4String GasMat, G4double GasRatio)
+  {
+    gasMixMaterial[GasNum-1]=GasMat;
+    gasMixRatio[GasNum-1]=GasRatio;
+  }
+
   void SetGasPressure(G4double val){gasPressure = val;} 
   void SetGasTemperature(G4double val){gasTemperature = val;} 
 

@@ -44,7 +44,6 @@ private:
   G4UIcmdWithADoubleAndUnit* yGasChamberCmd;
   G4UIcmdWithADoubleAndUnit* zGasChamberCmd;
   G4UIcmdWithAString* gasGeoIncludedFlagCmd;
-  G4UIcmdWithADoubleAndUnit* yPadSizeCmd;
   G4UIcmdWithAString* silGeoIncludedFlagCmd;
   G4UIcmdWithAString* sciGeoIncludedFlagCmd;
  

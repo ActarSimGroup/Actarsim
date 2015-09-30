@@ -16,7 +16,7 @@
 # verbosity levels and saveHistory
 /control/verbose 1
 /control/saveHistory
-/run/verbose 1
+/run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
 #
@@ -43,7 +43,7 @@
 #/ActarSim/phys/addPhysics emstandard_opt0
 /ActarSim/phys/addPhysics emstandard_opt3
 #/ActarSim/phys/addPhysics emstandard_opt4
-#/ActarSim/phys/addPhysics ionGasModels
+/ActarSim/phys/addPhysics ionGasModels
 #
 #
 #
@@ -54,10 +54,6 @@
 #  /ActarSim/phys/setPCut 0.1
 #  /ActarSim/phys/setCuts 1 mm
 /ActarSim/phys/verbose 0
-#
-# Setting the Pad Plane Height 
-#
-/ActarSim/det/setYPadSize 4.54 mm
 #
 #
 # Initialization is moved here from the main allowing PhysicsList
@@ -77,12 +73,18 @@
 #/ActarSim/det/setMagField 0 0 0 T
 #
 #
-# gas material: HeC4H10, isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
+# gas material: H2, D2, He, Ar, CF4, iC4H10
 #
 /ActarSim/det/gas/setGasPressure 1.01325
 /ActarSim/det/gas/setGasTemperature 293.15
-/ActarSim/det/gas/setGasMat D2
+/ActarSim/det/gas/setGasMat iC4H10
 #
+# Make a gas mixture : first select number of elements (up to 10)
+# And then set all gases with their ratio 
+#/ActarSim/det/gas/GasMixture 2
+#/ActarSim/det/gas/setGasMix 1 He 0.90
+#/ActarSim/det/gas/setGasMix 2 iC4H10 0.10
+#/ActarSim/det/gas/setGasMat GasMix
 #
 # GAS CHAMBER
 #
@@ -152,11 +154,7 @@
 # Update is mandatory after any material,field or detector change
 #
 /ActarSim/det/update
-#/ActarSim/det/print
-#
-#Beam entrance position relative to GasBox
-/ActarSim/gun/EntranceYPosition 15. mm
-/ActarSim/gun/EntranceZPosition -19. mm
+#/ActarSim/det/print 
 #
 # Control of the primary events
 #For all cases the possibility to have realistic beam distribution
@@ -164,9 +162,11 @@
 /ActarSim/gun/realisticBeam on
 #/ActarSim/gun/beamRadiusAtEntrance 1.5 mm
 #/ActarSim/gun/emittance 200.0
+/ActarSim/gun/beamDirection 0 0 1
+/ActarSim/gun/beamPosition 0 100 -19 mm 
 #
 # Realistic Event-Generator on
-/ActarSim/gun/reactionFromEvGen off
+/ActarSim/gun/reactionFromEvGen off 
 #
 # Reaction from Cine and Event-Generator
 /ActarSim/gun/reactionFromCine off
@@ -230,27 +230,27 @@
 #
 /ActarSim/gun/reactionFromKine on
 #
-#/ActarSim/gun/Kine/incidentIon 1 2 1 0.0 2.0141
+/ActarSim/gun/Kine/incidentIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.001506179125
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.00260325
-/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
+#/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
 #/ActarSim/gun/Kine/incidentIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/incidentIon 50 132 50 0.0 131.9178
 
 #/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
 /ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
 
-#/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
+/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
-/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+#/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
 #/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
 #/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
 /ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
 
-/ActarSim/gun/Kine/labEnergy 80 MeV
+/ActarSim/gun/Kine/labEnergy 150 MeV
 /ActarSim/gun/Kine/randomThetaCM on
 /ActarSim/gun/Kine/randomThetaRange 0.0 180.0
 /ActarSim/gun/Kine/randomPhiAngle on

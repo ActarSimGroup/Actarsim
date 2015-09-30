@@ -57,8 +57,6 @@ private:
   G4UIcmdWithADoubleAndUnit*   energyCmd;
   G4UIcmdWith3Vector*          directionCmd;
   G4UIcmdWith3VectorAndUnit*   positionCmd;
-  G4UIcmdWithADoubleAndUnit*   EntranceYPositionCmd;
-  G4UIcmdWithADoubleAndUnit*   EntranceZPositionCmd;
   G4UIcmdWithADoubleAndUnit*   timeCmd;
   G4UIcmdWithAString*          randomVertexZPositionCmd;
   G4UIcommand*                 randomVertexZPositionRangeCmd;
@@ -67,6 +65,8 @@ private:
   G4UIcmdWithAnInteger*        numberCmd;
 
   G4UIcmdWithADouble*          emittanceCmd;             // emittance (in mm mrad)
+  G4UIcmdWith3Vector*          beamDirectionCmd;
+  G4UIcmdWith3VectorAndUnit*   beamPositionCmd;
   G4UIcmdWithADoubleAndUnit*   beamRadiusAtEntranceCmd;  // emittance (in position at detector entrance)
 
 // for Kine, dypang 080228
@@ -93,7 +93,6 @@ private:
   G4UIcmdWithADoubleAndUnit* reactionQCmd;
   G4UIcmdWithADoubleAndUnit* labEnergyCmd;
   G4UIcmdWithADoubleAndUnit* thetaLabAngleCmd;
-
 
   G4UIcommand*                 ionCmd;
 

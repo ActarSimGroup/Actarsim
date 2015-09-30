@@ -13,7 +13,7 @@
 // --------------------------------------------------------------
 //
 /////////////////////////////////////////////////////////////////
-
+ 
 #ifndef ActarSimPrimaryGeneratorAction_h
 #define ActarSimPrimaryGeneratorAction_h 1
 
@@ -64,10 +64,15 @@ private:
   G4double randomVertexZPositionMax;
   G4double vertexZPosition; // vertex Z position, dypang 080704
 
-  //beam emittance
+  G4ThreeVector ParticlePosition;
+  G4ParticleMomentum ParticleDirection;
+
+  //beam parameters
   G4double emittance;
   G4double beamRadiusAtEntrance;
-  
+  G4ThreeVector BeamPosition;
+  G4ParticleMomentum BeamMomentumDirection;
+
   G4double entranceY;
   G4double entranceZ;
 
@@ -238,7 +243,7 @@ public:
   inline void SetParticleMomentum(G4ParticleMomentum aMomentum)
      { particleGun->SetParticleMomentum(aMomentum);}
   inline void SetParticleMomentumDirection(G4ParticleMomentum aMomentumDirection)
-     { particleGun->SetParticleMomentumDirection(aMomentumDirection); }
+     { particleGun->SetParticleMomentumDirection(aMomentumDirection); ParticleDirection=aMomentumDirection;}
   inline void SetParticleEnergy(G4double aKineticEnergy)
      { particleGun->SetParticleEnergy(aKineticEnergy); }
   inline void SetParticleCharge(G4double aCharge)
@@ -246,11 +251,16 @@ public:
   inline void SetParticlePolarization(G4ThreeVector aVal)
      { particleGun->SetParticlePolarization(aVal); }
   inline void SetParticlePosition(G4ThreeVector aPos)
-     { particleGun->SetParticlePosition(aPos); }
+     { particleGun->SetParticlePosition(aPos); ParticlePosition=aPos;}
   inline void SetParticleTime(G4double aTime)
      { particleGun->SetParticleTime(aTime); }
   inline void SetNumberOfParticles(G4int i)
      { particleGun->SetNumberOfParticles(i); }
+
+   void SetBeamMomentumDirection(G4ParticleMomentum aMomentumDirection)
+     { BeamMomentumDirection=aMomentumDirection;}
+   void SetBeamPosition(G4ThreeVector aPos)
+     { BeamPosition=aPos;}
 
   inline G4ParticleDefinition* GetParticleDefinition()
      { return particleGun->GetParticleDefinition(); }

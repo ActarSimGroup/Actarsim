@@ -60,19 +60,18 @@
 #/gui/addButton gun "proton"  "/gun/particle proton"
 #
 # Detector menu
-/gui/addMenu det Detector 
-/gui/addButton det "Pressure (bar)"  "/ActarSim/det/gas/setGasPressure"
-/gui/addButton det "Temperature (K)"  "/ActarSim/det/gas/setGasTemperature"
-
-/gui/addButton det "isobutane"  "/ActarSim/det/gas/setGasMat isoC4H10"
-/gui/addButton det "H2"  "/ActarSim/det/gas/setGasMat H2"
-/gui/addButton det "D2"  "/ActarSim/det/gas/setGasMat D2"
-/gui/addButton det "He"  "/ActarSim/det/gas/setGasMat He"
-/gui/addButton det "He2"  "/ActarSim/det/gas/setGasMat He2"
-/gui/addButton det "Ar"  "/ActarSim/det/gas/setGasMat Ar"
-/gui/addButton det "Ar2"  "/ActarSim/det/gas/setGasMat Ar2"
-/gui/addButton det "CF4"  "/ActarSim/det/gas/setGasMat CF4"
-
+/gui/addMenu gas Gas
+/gui/addButton gas "Pressure (bar)"  "/ActarSim/det/gas/setGasPressure"
+/gui/addButton gas "Temperature (K)"  "/ActarSim/det/gas/setGasTemperature"
+/gui/addButton gas "H2"  "/ActarSim/det/gas/setGasMat H2"
+/gui/addButton gas "D2"  "/ActarSim/det/gas/setGasMat D2"
+/gui/addButton gas "He"  "/ActarSim/det/gas/setGasMat He"
+/gui/addButton gas "Ar"  "/ActarSim/det/gas/setGasMat Ar"
+/gui/addButton gas "CF4"  "/ActarSim/det/gas/setGasMat CF4"
+/gui/addButton gas "iC4H10"  "/ActarSim/det/gas/setGasMat iC4H10"
+/gui/addButton gas "Number of Gases in Mixture"  "/ActarSim/det/gas/mixture/GasMixture"
+/gui/addButton gas "Set Gases in Mixture"  "/ActarSim/det/gas/mixture/setGasMix"
+/gui/addButton gas "Set Gas Mixture"  "/ActarSim/det/gas/setGasMat GasMix"
 #
 # Vis menu :
 #/gui/addMenu vis Vis

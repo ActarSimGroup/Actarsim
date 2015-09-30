@@ -140,8 +140,10 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   //
   // Geometrical definition of the world and gas volume
   //
+  //G4double yPadSize=4.54*mm;//Pad Plane Height
+  SetYPadSize(4.54*mm);//Pad Plane Height
 
-  G4double yGasBoxPosition=GetYGasBoxPosition();
+  //G4double yGasBoxPosition=GetYGasBoxPosition();
   G4double zGasBoxPosition=GetZGasBoxPosition();
 
   chamberSizeX=GetChamberXLength();
@@ -151,11 +153,9 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   G4double worldSizeX,worldSizeY,worldSizeZ;
 
   G4double chamberVolumeCenterPosX = 0.*m;
-  G4double chamberVolumeCenterPosY = chamberSizeY-(yGasBoxPosition+yPadSize);//the beam enters at the middle of GasBox
-  //G4double chamberVolumeCenterPosY = chamberSizeY-yPadSize;//the beam enters at the pad level
+  //G4double chamberVolumeCenterPosY = chamberSizeY-(yGasBoxPosition+yPadSize);//the beam enters at the middle of GasBox
+  G4double chamberVolumeCenterPosY = chamberSizeY-yPadSize;//the beam enters at the pad level
   G4double chamberVolumeCenterPosZ = zGasBoxPosition;//beam origin at the entrance of GasBox
-
-
 
   if( MaikoGeoIncludedFlag == "on"){
     worldSizeX = 6.*m;
@@ -276,17 +276,82 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
     if(window_phys){;}
 
+    G4double z,a,density,ncomponents,natoms;
+
+    G4Material* Al = 
+      new G4Material("Aluminum", z= 13., a= 26.98*g/mole, density= 2.7*g/cm3);
+
+    G4Element* Pb = new G4Element("Lead", "Pb", z=82., a=    207.20*g/mole);
+    G4Material* Lead =
+      new G4Material("Lead", density= 11.34*g/cm3, ncomponents=1);
+    Lead->AddElement(Pb, natoms=1);
+
+    //Support of the field cage
+    G4RotationMatrix* rotLeft = //ZY planes
+      new G4RotationMatrix(pi/2,pi/2,-pi/2);
+    G4RotationMatrix* rotRight = //ZY planes
+      new G4RotationMatrix(-pi/2,pi/2,pi/2);
+
+    G4double Support_x = 8.*mm;
+    G4double Support_x2 = 6.4*mm;
+    G4double Support_y = 85.*mm;
+    G4double Support_z = 1.6*mm;
+
+    G4Box* SupportBox=
+      new G4Box("SupportBox", Support_x, Support_y, Support_z);
+
+    G4Box* SupportBox2=
+      new G4Box("SupportBox2", Support_x2, Support_y, Support_z);
+
+    SupportLog=new G4LogicalVolume(SupportBox,Lead,"SupportLog");
+
+    SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,-15,64+6.575),//should take the pad x syze from a variable, will do it later
+    				SupportLog,"Support",chamberLog,false,0); 
+
+    SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,-15,64+6.575),//should take the pad x syze from a variable, will do it later
+    				SupportLog,"Support",chamberLog,false,1); 
+
+    G4VisAttributes* SupportVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+    SupportVisAtt->SetVisibility(true);   
+    SupportLog->SetVisAttributes(SupportVisAtt);
+
+    SupportLog=new G4LogicalVolume(SupportBox2,Lead,"SupportLog");
+
+    SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,-15,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    				SupportLog,"Support",chamberLog,false,2); 
+
+    SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,-15,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    				SupportLog,"Support",chamberLog,false,2); 
+
+
+    SupportVisAtt->SetVisibility(true);   
+    SupportLog->SetVisAttributes(SupportVisAtt);
+
+
+    //A Diamond detector in front of the dssd detectors to catch the beam
+    G4double Diamond_x = 12.*mm;
+    G4double Diamond_y = 12.*mm;
+    G4double Diamond_z = 0.75*mm;
+
+    G4Box* DiamondBox=
+      new G4Box("DiamondBox", Diamond_x, Diamond_y, Diamond_z);
+
+    DiamondLog=new G4LogicalVolume(DiamondBox,Lead,"DiamondLog");
+
+    DiamondPhys=new G4PVPlacement(0,G4ThreeVector(0,0,64+23),//should take the pad x syze from a variable, will do it later
+    				DiamondLog,"Diamond",chamberLog,false,0); 
+
+    G4VisAttributes* DiamondVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
+    DiamondVisAtt->SetVisibility(true);   
+    DiamondLog->SetVisAttributes(DiamondVisAtt);
+
     //An aluminium plate to see the Pads active area
     G4double plateSizeX = 32*mm;
     G4double plateSizeY = yPadSize/2*mm;
     G4double plateSizeZ = 64*mm;
-    G4double z,a,density;
     
     G4Box *Alplate=new G4Box("Al_plate",plateSizeX,plateSizeY,plateSizeZ);
-    
-    G4Material* Al = 
-      new G4Material("Aluminum", z= 13., a= 26.98*g/mole, density= 2.7*g/cm3);
-    
+
     AlplateLog=new G4LogicalVolume(Alplate,Al,"Al_plate");
     
     G4double platePosX = 0*cm;

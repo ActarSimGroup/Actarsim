@@ -66,13 +66,6 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   zGasChamberCmd->SetUnitCategory("Length");
   zGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  yPadSizeCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setYPadSize",this);
-  yPadSizeCmd->SetGuidance("Select the height of the pad plane.");
-  yPadSizeCmd->SetParameterName("yPadSize",false);
-  yPadSizeCmd->SetRange("yPadSize>=0.");
-  yPadSizeCmd->SetUnitCategory("Length");
-  yPadSizeCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
   gasGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/gasGeoIncludedFlag",this);
   gasGeoIncludedFlagCmd->SetGuidance("Includes the geometry of the gas volume in the simulation (default off).");
   gasGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
@@ -144,7 +137,6 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete xGasChamberCmd;
   delete yGasChamberCmd;
   delete zGasChamberCmd;
-  delete yPadSizeCmd;
   delete gasGeoIncludedFlagCmd;
   delete silGeoIncludedFlagCmd;
   delete sciGeoIncludedFlagCmd;
@@ -178,11 +170,6 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == zGasChamberCmd)
   {
     ActarSimDetector->SetZGasChamber(zGasChamberCmd->GetNewDoubleValue(newValue));
-  }
-
-  if(command == yPadSizeCmd)
-  {
-    ActarSimDetector->SetYPadSize(yPadSizeCmd->GetNewDoubleValue(newValue));
   }
 
   if( command == gasGeoIncludedFlagCmd )

@@ -209,17 +209,17 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       // TODO: The probability of interaction is simply constant over the path on the gas.
       // This is the right place for introducing some dependence with the ion energy using the reaction cross section
 
-      // z0 decides the z position of the vertex. The beam is tracked till z0 is reached ...
-      G4double z0 = 0;
+      // vertex_z0 decides the z position of the vertex. The beam is tracked till z0 is reached ...
+      G4double vertex_z0 = 0;
 
       if(randomVertexZPositionFlag=="off"){
-        z0 = vertexZPosition;
+        vertex_z0 = vertexZPosition;
       }
       else if(randomVertexZPositionFlag=="on"){
-        z0 = randomVertexZPositionMin + G4UniformRand()*(randomVertexZPositionMax-randomVertexZPositionMin);
+        vertex_z0 = randomVertexZPositionMin + G4UniformRand()*(randomVertexZPositionMax-randomVertexZPositionMin);
       }
 
-      pBeamInfo->SetZVertex(z0);
+      pBeamInfo->SetZVertex(vertex_z0);
       pBeamInfo->SetEnergyEntrance(GetIncidentEnergy()); // dypang, 080729
 
       if(realisticBeamFlag == "on") {
@@ -228,7 +228,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         // The polar angle at Entrance is defined by the relation between emitance and radiusAtEntrance.
         // this relation is roughtly emittance =  widthPos * widthAng = 2 * radiusMax * 2 * thetaMax
         // A step function is used for the position and angular distributions
-        G4double radiusAtEntrance   = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
+        G4double radiusAtEntrance = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
         G4double thetaWidth =  emittance/(4*beamRadiusAtEntrance); //polar angle width between zero and maximum
         G4double thetaAtEntrance = thetaWidth * G4UniformRand() * mrad;
         G4double phiAtEntrance = G4UniformRand() * twopi; //angle phi of momentum
@@ -237,13 +237,11 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         G4ThreeVector directionAtEntrance = G4ThreeVector(sin(thetaAtEntrance)*cos(phiAtEntrance),
 							  sin(thetaAtEntrance)*sin(phiAtEntrance),
 							  cos(thetaAtEntrance));
-
+	
         //Entrance coordinates (x0,y0,0) with angles (thetaAtEntrance, phiAtEntrance)
-        G4double x0 = radiusAtEntrance*cos(phi2AtEntrance);
-        G4double y0 = radiusAtEntrance*sin(phi2AtEntrance) + entranceY;
-        //G4double z0 = 0.0;
-        //G4double z0= -(detector->GetChamberZLength()-detector->GetZGasBoxPosition());
-        G4double z0 = entranceZ;
+        G4double x0 = BeamPosition.x() + radiusAtEntrance*cos(phi2AtEntrance);
+        G4double y0 = BeamPosition.y() + radiusAtEntrance*sin(phi2AtEntrance);
+        G4double z0 = BeamPosition.z();
 
         if(verboseLevel>0){
           G4cout << G4endl
@@ -257,14 +255,17 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         }
 
         particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+        //particleGun->SetParticlePosition(Pos0);
+        //particleGun->SetParticlePosition(x0,y0,z0);
         particleGun->SetParticleMomentumDirection(directionAtEntrance);
         pBeamInfo->SetPositionEntrance(x0,y0,z0);
         pBeamInfo->SetAnglesEntrance(thetaAtEntrance,phiAtEntrance);
       }
       else{ // simplest case: beam at (0,0,0) with direction along Z
-        particleGun->SetParticlePosition(G4ThreeVector(0.,entranceY,entranceZ));
-        particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-        pBeamInfo->SetPositionEntrance(0.,entranceY,entranceZ);
+	particleGun->SetParticlePosition(BeamPosition);
+        particleGun->SetParticleMomentumDirection(BeamMomentumDirection);
+        //particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+        pBeamInfo->SetPositionEntrance(BeamPosition.x(),BeamPosition.y(),BeamPosition.z());
         pBeamInfo->SetAnglesEntrance(0.,0.);
       }
 
@@ -288,20 +289,19 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     G4double radiusAtEntrance   = -beamRadiusAtEntrance + (2 * beamRadiusAtEntrance * G4UniformRand());
     G4double phi2AtEntrance = G4UniformRand() * twopi; //angle for defining the entrance point
 
-    //Vertexcoordinates (x0,y0,0) with angles (thetaAtEntrance, phiAtEntrance)
-    G4double x0 = radiusAtEntrance*cos(phi2AtEntrance);
-    G4double y0 = radiusAtEntrance*sin(phi2AtEntrance) + entranceY;
-    // The z0 variable is here used to decide the z position of the vertex. The beam is tracked
-    // till z0 is reached ...
-    //G4double z0=0.;
-    //G4double z0= -(detector->GetChamberZLength()-detector->GetZGasBoxPosition());
-    G4double z0 = entranceZ;
+    //Vertexcoordinates (vertex_x0,vertex_y0,vertex_z0) with angles (thetaAtEntrance, phiAtEntrance)
+    G4double vertex_x0 = radiusAtEntrance*cos(phi2AtEntrance);
+    G4double vertex_y0 = radiusAtEntrance*sin(phi2AtEntrance) + BeamPosition.y();
+    // The vertex_z0 variable is here used to decide the z position of the vertex. The beam is tracked
+    // till vertex_z0 is reached ...
+    //G4double vertex_z0=0.;
+    G4double vertex_z0;
 
     if(randomVertexZPositionFlag=="on"){
-      z0 = randomVertexZPositionMin+ G4UniformRand()*(randomVertexZPositionMax-randomVertexZPositionMin);
+      vertex_z0 = randomVertexZPositionMin+ G4UniformRand()*(randomVertexZPositionMax-randomVertexZPositionMin);
     }
     else{
-      z0 = G4UniformRand()*(2.* lengthParameter);
+      vertex_z0 = G4UniformRand()*(2.* lengthParameter);
     }
 
     if(verboseLevel>0){
@@ -315,9 +315,9 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
 
     //setting the vertexPos vector to the previous calculated values
-    vertexPosition.setX(x0);
-    vertexPosition.setY(y0);
-    vertexPosition.setZ(z0);
+    vertexPosition.setX(vertex_x0);
+    vertexPosition.setY(vertex_y0);
+    vertexPosition.setZ(vertex_z0);
   }
   // After the beam, now different options for the reaction products!
 
@@ -411,7 +411,6 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //Send 2 vertex
     //Define ions from the macro (talk to Hector->use the ones from CINE)
   }
-
 
   // CASE C Reaction products taken from a file (format given by CINE output)
   if(reactionFromFileFlag == "on"){
@@ -1023,19 +1022,21 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	           << " * A single particle is thrown using messenger commands."  << G4endl;
       G4cout << " *************************************************** "<< G4endl;
     }
-    
+
+    /*
     if(realisticBeamFlag == "on")
       particleGun->SetParticlePosition(vertexPosition);
     else
       particleGun->SetParticlePosition(G4ThreeVector());
-    
+    */
+
     //DPLoureiro adding random distribution for polar and azimuthal angles
     G4double cosTheta, sinTheta;
     G4double y_coord;
     y_coord = -1 + 2.0*G4UniformRand();
     y_coord=10*y_coord/185.;
    
-    if(randomThetaFlag == "on") {
+    if(randomThetaFlag == "on") { 
       G4ParticleDefinition* pd = particleTable->FindParticle("alpha");
       //G4ParticleDefinition* pd = particleTable->FindParticle("proton");
       if(pd != 0)
@@ -1059,10 +1060,15 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       }
     }
     else{ 
-      sinTheta=0;
-      cosTheta=1;
+      sinTheta=sin(GetThetaCMAngle());
+      cosTheta=cos(GetThetaCMAngle());
+      //sinTheta=0;
+      //cosTheta=1;
     }
+    if(sinTheta){;}
+
     G4double phi;    
+
     if(randomPhiFlag == "on"){
       G4double CosRandomPhiMin=cos(randomPhiMin);     
       G4double CosRandomPhiMax=cos(randomPhiMax);     
@@ -1071,8 +1077,9 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       else
         phi=randomPhiMin + ((randomPhiMax-randomPhiMin) * G4UniformRand()) * rad;
     }
-    //else phi=pi/2;
-    else phi=0;
+    else phi=GetUserPhiAngle();
+
+    if(phi){;}
     
     if(alphaSourceFlag == "on"){
       G4int i=rand() % 3;
@@ -1109,20 +1116,29 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     X0=radius*X0;
     Y0=radius*Y0;
     //G4cout<<X0<<" "<<Y0<<endl;
+
     //particleGun->SetParticlePosition(G4ThreeVector(0.,0.,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,0.));
-    particleGun->SetParticlePosition(G4ThreeVector(0.,entranceY,entranceZ));
-    if(cosTheta>0)
+    //particleGun->SetParticlePosition(G4ThreeVector(0.,entranceY,entranceZ));
+    particleGun->SetParticlePosition(BeamPosition);
+
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(y_coord,sinTheta*sin(phi),cosTheta));
-      particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sinTheta*sin(phi),cosTheta));
       //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),y_coord,cosTheta));
-    else
-      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-y_coord,sinTheta*sin(phi),-cosTheta));
-      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),sinTheta*sin(phi),-cosTheta));
-      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),y_coord,-cosTheta));
-      particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+    //if(cosTheta>0)
+      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sinTheta*sin(phi),cosTheta));
+    //else
+    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sin(GetThetaCMAngle())*cos(GetUserPhiAngle()),sin(GetThetaCMAngle())*sin(GetUserPhiAngle()),cos(GetThetaCMAngle())));
+
+    //Particle momentum can be set either by giving a G4ThreeVector or by the Theta Phi angles (need to prioritize)
+    particleGun -> SetParticleMomentumDirection(BeamMomentumDirection);
+    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );
     
+    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-y_coord,sinTheta*sin(phi),-cosTheta));
+    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),sinTheta*sin(phi),-cosTheta));
+    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),y_coord,-cosTheta));
+
     particleGun->GeneratePrimaryVertex(anEvent);
   }
  

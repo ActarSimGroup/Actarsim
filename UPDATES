@@ -21,3 +21,9 @@ A more detailed report on ActaSim updates
 09/02/15 P.Konczykowski
 - Modified Gas Definition: now in ActarSimGasDetectorConstruction, setGasMaterial will define the gas according to the user's Temperature & Pressure.
 - In GUI: added gas button for selecting gas Pressure & Temperature, and list of mono-gases defined thereby
+
+30/09/15 P.Konczykowski
+- Removed the entrance beam commands to simplify. Now one should only use the beamPosition/Direction to control the beam
+- Added the Gas Mixture feature. Now we can make any type of mixture by setting the number of elements /ActarSim/det/gas/GasMixture N,
+  setting all gases with their ratio /ActarSim/det/gas/setGasMix GasNum GasMat GasRatio and finally setting in the gas box and chamber
+  /ActarSim/det/gas/setGasMat GasMix.

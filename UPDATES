@@ -27,3 +27,4 @@ A more detailed report on ActaSim updates
 - Added the Gas Mixture feature. Now we can make any type of mixture by setting the number of elements /ActarSim/det/gas/GasMixture N,
   setting all gases with their ratio /ActarSim/det/gas/setGasMix GasNum GasMat GasRatio and finally setting in the gas box and chamber
   /ActarSim/det/gas/setGasMat GasMix.
+- Updated and rearanged the src/TODO list

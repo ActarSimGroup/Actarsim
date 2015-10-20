@@ -1120,24 +1120,13 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //particleGun->SetParticlePosition(G4ThreeVector(0.,0.,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,0.));
-    //particleGun->SetParticlePosition(G4ThreeVector(0.,entranceY,entranceZ));
     particleGun->SetParticlePosition(BeamPosition);
 
-      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(y_coord,sinTheta*sin(phi),cosTheta));
-      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),y_coord,cosTheta));
-    //if(cosTheta>0)
-      //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sinTheta*sin(phi),cosTheta));
-    //else
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sin(GetThetaCMAngle())*cos(GetUserPhiAngle()),sin(GetThetaCMAngle())*sin(GetUserPhiAngle()),cos(GetThetaCMAngle())));
-
     //Particle momentum can be set either by giving a G4ThreeVector or by the Theta Phi angles (need to prioritize)
-    particleGun -> SetParticleMomentumDirection(BeamMomentumDirection);
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );
+    if(randomThetaFlag == "on" || randomPhiFlag == "on")particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );
+    else particleGun -> SetParticleMomentumDirection(BeamMomentumDirection);
     
     //particleGun -> SetParticleMomentumDirection(G4ThreeVector(0,0,1));
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-y_coord,sinTheta*sin(phi),-cosTheta));
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),sinTheta*sin(phi),-cosTheta));
-    //particleGun -> SetParticleMomentumDirection(G4ThreeVector(-sinTheta*cos(phi),y_coord,-cosTheta));
 
     particleGun->GeneratePrimaryVertex(anEvent);
   }

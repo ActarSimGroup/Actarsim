@@ -86,7 +86,7 @@ void Reducer()
   // if(gasflag==1)gasname="isobutane";
   // if(gasflag==0)gasname="deuterium";
 
-  gROOT->ProcessLine(".L digit_piotr.h+");
+  gROOT->ProcessLine(".L digit.h+");
   //gROOT->ProcessLine(".L digit.h+");
   
   padsGeometry thePadsGeometry;

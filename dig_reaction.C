@@ -1,3 +1,28 @@
+///////////////////////////////////////////////////////////////////
+//*-- AUTHOR : Piotr Konczykowski
+//*-- Date: 01/2015
+//*-- Last Update: 15/10/15
+//*-- Copyright: GENP (Univ. Santiago de Compostela)
+//
+// --------------------------------------------------------------
+// This macro runs the digitization, reading drift parameters
+// using the information in the gases directory. 
+// --------------------------------------------------------------
+// How to run this program:
+// 1 - Run the simulation
+//      actarsim batch1.mac
+// 2 - Open a root session
+//      root -l
+// 3 - Run this macro inside root
+//      .x dig_reaction("gasfile_name");
+//
+// Macro parameters:
+//  Char_t *gasfile_name    file name with gas data
+//  Char_t *input_file="root_files/simFile.root"   input root file path
+//  Char_t *output_file="root_files/digiData.root"  output root file path
+//  Int_t nevents=0     Number of events
+//  Bool_t bTree=0      
+
 //void dig_alphas(Int_t gas,Char_t *input_file="root_files/simFile.root",Char_t *output_file="root_files/digiData.root",Int_t nevents=0)
 void dig_reaction(Char_t *gasfile_name,Char_t *input_file="root_files/simFile.root",Char_t *output_file="root_files/digiData.root",Int_t nevents=0,Bool_t bTree=0)
 {

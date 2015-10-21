@@ -1,5 +1,20 @@
-//D. Perez 280911
-//101111 Added silicon hits
+///////////////////////////////////////////////////////////////////
+//*-- AUTHOR : D. Perez
+//*-- Date: 28/09/2011
+//*-- Last Update: 15/10/15
+//*-- Copyright: GENP (Univ. Santiago de Compostela)
+//
+// --------------------------------------------------------------
+// This macro
+// --------------------------------------------------------------
+// How to run this program:
+// 1 - Run the simulation
+//      actarsim batch1.mac
+// 2 - Open a root session
+//      root -l
+// 3 - Run this macro inside root
+//
+
 #define NUM_CLUSTERS 16
 #define NUM_CRYSTALS 9 
 
@@ -26,9 +41,7 @@
 Int_t npeaks=20;
 
 void Analysis_range(Char_t *gasfile_name,Char_t *name="root_files/simFile.root",Char_t *name2="root_files/digiData.root",Char_t *name3="root_files/Anl_output.root",Int_t event=0,Bool_t draw=0){
-  //void prueba(Int_t gas=0,Char_t *name="root_files/simFile.root",Char_t *name2="root_files/digiData.root",Char_t *name3="root_files/prueba.root",Int_t event=0,Bool_t draw=0){
   gROOT->ProcessLine(".L digit.h+");
-  //gSystem->Load("digit_david8_h.so");
   gSystem->Load("libactar.sl");
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(1);

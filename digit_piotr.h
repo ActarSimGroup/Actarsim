@@ -859,29 +859,14 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 
   TRandom *random=new TRandom();
   random->SetSeed(0);
-  if(padsGeo->GetEndCapMode()==1) ;
-  else{
-    if( pro->GetTrack()->GetZPre() <= 0 ||
-	pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
-	pro->GetTrack()->GetZPost() <= 0 ||
-	pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength() ) pro->SetPosition(5); // out of range
-    else if(rhoPre  < padsGeo->GetDeltaProximityBeam() ||
-	    rhoPost < padsGeo->GetDeltaProximityBeam() ) pro->SetPosition(1); //if any point is closer to the (0,0,z) than a delta
-    else if(rhoPre  < padsGeo->GetSizeBeamShielding() &&
-	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(2); //if both points lies within the beamShielding
-    else if(rhoPre  < padsGeo->GetSizeBeamShielding() ||
-	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(3); //if one point is within the beamShielding
-    else pro->SetPosition(4); //if both points lie outside of beamShielding, still to be checked after as a function of geoType
-  }
-  
-
+ 
   //if(padsGeo->GetGeoType()==0)  //box
   if(padsGeo->GetEndCapMode()==1){
     Double_t tempY = pro->GetTrack()->GetYPre();                                 //storing old Y
-    pro->GetTrack()->SetYPre(pro->GetTrack()->GetZPre()-padsGeo->GetYLength());  //move Z to Y
+    pro->GetTrack()->SetYPre(pro->GetTrack()->GetZPre()-2*padsGeo->GetYLength());  //move Z to Y
     pro->GetTrack()->SetZPre(-tempY+padsGeo->GetZLength());                      //move Y to Z
     tempY= pro->GetTrack()->GetYPost();
-    pro->GetTrack()->SetYPost(pro->GetTrack()->GetZPost()-padsGeo->GetYLength());
+    pro->GetTrack()->SetYPost(pro->GetTrack()->GetZPost()-2*padsGeo->GetYLength());
     pro->GetTrack()->SetZPost(-tempY+padsGeo->GetZLength());
     pro->SetPosition(5);
     //repeating here the general position selection rules after the change of
@@ -898,18 +883,31 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(3);
     else pro->SetPosition(4); //still to be checked after as a function of the geoType
   }
+  else{  //box
+    if( pro->GetTrack()->GetZPre() <= 0 ||
+	pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
+	pro->GetTrack()->GetZPost() <= 0 ||
+	pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength() ) pro->SetPosition(5); // out of range
+    else if(rhoPre  < padsGeo->GetDeltaProximityBeam() ||
+	    rhoPost < padsGeo->GetDeltaProximityBeam() ) pro->SetPosition(1); //if any point is closer to the (0,0,z) than a delta
+    else if(rhoPre  < padsGeo->GetSizeBeamShielding() &&
+	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(2); //if both points lies within the beamShielding
+    else if(rhoPre  < padsGeo->GetSizeBeamShielding() ||
+	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(3); //if one point is within the beamShielding
+    else pro->SetPosition(4); //if both points lie outside of beamShielding, still to be checked after as a function of geoType
+  }
 
   if( pro->GetPosition() == 4 &&
-      pro->GetTrack()->GetYPre() <= padsGeo->GetYLength() &&
-      pro->GetTrack()->GetYPre() >= (-padsGeo->GetYLength()) &&
+      pro->GetTrack()->GetYPost() <= 2 * padsGeo->GetYLength() &&
+      pro->GetTrack()->GetYPost() >= 0 &&
       pro->GetTrack()->GetXPost() <= padsGeo->GetXLength() &&
       pro->GetTrack()->GetXPost() >= (-padsGeo->GetXLength()) ) pro->SetPosition(4);
   else  pro->SetPosition(5);
   //if the pads goes out of the gas chamber
   if( pro->GetPosition()==5 ) return 0;
 
-  driftDistPre = padsGeo->GetYLength() + pro->GetTrack()->GetYPre();
-  driftDistPost= padsGeo->GetYLength() + pro->GetTrack()->GetYPost();
+  driftDistPre = pro->GetTrack()->GetYPre();
+  driftDistPost= pro->GetTrack()->GetYPost();
   //cout<< driftDistPre<<endl;
   if(lorentzAngle==0.) {
     //
@@ -939,13 +937,13 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
     //pro->GetPre()->SetX(gRandom->Gaus(pro->GetTrack()->GetXPre(),sigma_drift));      //X is  changed
     // cout<<"XAfter "<<XAfter<<" Difference "<<XAfter-XBefore<<endl;
     //cout<<"---------------------------------------------"<<endl;
-    pro->GetPre()->SetY(-padsGeo->GetYLength());          //Y is the pad plane
+    pro->GetPre()->SetY(0);          //Y is the pad plane
     pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());      //Z is not changed
     //pro->GetPre()->SetZ(gRandom->Gaus(pro->GetTrack()->GetZPre(),sigma_drift));      //Z is  changed
     pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
     pro->GetPost()->SetX(pro->GetTrack()->GetXPost());
     //pro->GetPost()->SetX(gRandom->Gaus(pro->GetTrack()->GetXPost(),sigma_drift));    //X is not changed
-    pro->GetPost()->SetY(-padsGeo->GetYLength());         //Y is the pad plane
+    pro->GetPost()->SetY(0);         //Y is the pad plane
     pro->GetPost()->SetZ(pro->GetTrack()->GetZPost());
     //pro->GetPost()->SetZ(gRandom->Gaus(pro->GetTrack()->GetZPost(),sigma_drift));    //Z is  changed
     pro->SetTimePost(pro->GetTrack()->GetTimePost()+driftDistPost/ driftVelocity);
@@ -954,19 +952,18 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
     //if the magnetic field is set, the displacement is more complex...
     driftDistPre = driftDistPre / cos(lorentzAngle);
     Double_t newX = pro->GetTrack()->GetXPre() +
-      (pro->GetTrack()->GetYPre() + padsGeo->GetYLength()) * tan(lorentzAngle);
+      (pro->GetTrack()->GetYPre()) * tan(lorentzAngle);
     pro->GetPre()->SetX(newX);                         //X is changed by Lorentz angle
-    pro->GetPre()->SetY(-padsGeo->GetYLength());       //Y is the pad plane
+    pro->GetPre()->SetY(0);       //Y is the pad plane
     pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());   //Z is not changed
     pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
     newX= pro->GetTrack()->GetXPost() +
-      (pro->GetTrack()->GetYPost() + padsGeo->GetYLength()) * tan(lorentzAngle);
+      (pro->GetTrack()->GetYPost()) * tan(lorentzAngle);
     pro->GetPost()->SetX(newX);                        //X is changed by Lorentz angle
-    pro->GetPost()->SetY(-padsGeo->GetYLength());      //Y is the pad plane
+    pro->GetPost()->SetY(0);      //Y is the pad plane
     pro->GetPost()->SetZ(pro->GetTrack()->GetZPost()); //Z is not changed
     pro->SetTimePost(pro->GetTrack()->GetTimePost() +
-		     ((padsGeo->GetYLength()+
-		       pro->GetTrack()->GetYPost())/cos(lorentzAngle))/driftVelocity);
+		     ((pro->GetTrack()->GetYPost())/cos(lorentzAngle))/driftVelocity);
   }
   
   pro->SetSigmaLongAtPadPlane(sqrt(driftDistPre*2*longitudinalDiffusion

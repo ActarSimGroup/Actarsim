@@ -79,9 +79,9 @@
 
 # Make a gas mixture : first select number of elements (up to 10)
 # And then set all gases with their ratio 
-#/ActarSim/det/gas/GasMixture 2
-#/ActarSim/det/gas/setGasMix 1 He 0.90
-#/ActarSim/det/gas/setGasMix 2 iC4H10 0.10
+#/ActarSim/det/gas/mixture/GasMixture 2
+#/ActarSim/det/gas/mixture/setGasMix 1 He 0.90
+#/ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10
 #/ActarSim/det/gas/setGasMat GasMix
 #
 # GAS CHAMBER

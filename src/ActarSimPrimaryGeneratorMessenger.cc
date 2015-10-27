@@ -95,7 +95,7 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   beamPositionCmd = new G4UIcmdWith3VectorAndUnit("/ActarSim/gun/beamPosition",this);
   beamPositionCmd->SetGuidance("Set beam starting position.");
   beamPositionCmd->SetParameterName("X","Y","Z",true,true);
-  beamPositionCmd->SetDefaultUnit("cm");
+  beamPositionCmd->SetDefaultUnit("mm");
   //beamPositionCmd->SetUnitCategory("Length");
   //beamPositionCmd->SetUnitCandidates("microm mm cm m km");
 

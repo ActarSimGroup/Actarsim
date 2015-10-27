@@ -109,7 +109,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   //G4cout << G4endl << " ______ VerboseLevel  _______" <<verboseLevel<< G4endl;
 
   G4ThreeVector zero;
-//G4double energyLostInTargetGas = 0; //zero, to be calculated if realisticBeamFlag is on
+  //G4double energyLostInTargetGas = 0; //zero, to be calculated if realisticBeamFlag is on
 
   //Initial values for reactionFromEvGen
   G4double  LabParticleAngle = 85.0 * deg;
@@ -887,7 +887,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     if(verboseLevel>0){
       G4cout << "Kine: Scattered energy:" << KINE->GetANGAs(1) << " MeV" << G4endl;
-      G4cout << "Kine: Recoriled energy:" << KINE->GetANGAr(1) << " MeV" << G4endl;
+      G4cout << "Kine: Recoiled energy:" << KINE->GetANGAr(1) << " MeV" << G4endl;
       G4cout << "Kine: Scattered angle:"  << KINE->GetANGAs(0)/deg << " deg" << G4endl;
       G4cout << "Kine: recoiled  angle:"  << KINE->GetANGAr(0)/deg << " deg" << G4endl;
       G4cout << "Kine: passed Scattered energy:" << energy1 << " MeV" << G4endl;

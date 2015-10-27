@@ -77,14 +77,14 @@
 #
 /ActarSim/det/gas/setGasPressure 1.01325
 /ActarSim/det/gas/setGasTemperature 293.15
-/ActarSim/det/gas/setGasMat iC4H10
+#/ActarSim/det/gas/setGasMat iC4H10
 #
 # Make a gas mixture : first select number of elements (up to 10)
 # And then set all gases with their ratio 
-#/ActarSim/det/gas/GasMixture 2
-#/ActarSim/det/gas/setGasMix 1 He 0.90
-#/ActarSim/det/gas/setGasMix 2 iC4H10 0.10
-#/ActarSim/det/gas/setGasMat GasMix
+/ActarSim/det/gas/mixture/GasMixture 2
+/ActarSim/det/gas/mixture/setGasMix 1 He 0.90
+/ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10
+/ActarSim/det/gas/setGasMat GasMix
 #
 # GAS CHAMBER
 #
@@ -147,7 +147,7 @@
 /ActarSim/analControl/storeTrackHistos off
 /ActarSim/analControl/storeEvents off
 /ActarSim/analControl/storeHistograms off
-/ActarSim/analControl/storeSimpleTracks off
+/ActarSim/analControl/storeSimpleTracks on
 #/ActarSim/analControl/setMinStrideLength 0.1
 #/ActarSim/phys/stepMax 1000000.
 #
@@ -173,33 +173,6 @@
 /ActarSim/gun/reactionFromCrossSection off
 #
 # A) Track a particle or set of particles defined from the Particles list
-#
-#/ActarSim/gun/List
-#/ActarSim/gun/particle proton
-#if you want to use an ion, write "ion" in the previous command
-#and set the Z, A and charge state in the next...
-
-#/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
-#/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
-#/ActarSim/gun/ion 6 12 6 0.0 12.
-#/ActarSim/gun/ion 12 24 12 0.0 23.985041699
-#/ActarSim/gun/ion 26 56 26 0.0 55.934937475
-
-#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
-#/ActarSim/gun/ion 3 11 3
-
-#/ActarSim/gun/Kine/labEnergy 4 MeV
-#/ActarSim/gun/Kine/labEnergy 280 MeV
-#/ActarSim/gun/energy 11. MeV
-#/ActarSim/gun/position 0 0 -56 mm
-#/ActarSim/gun/direction 0 0 1
-#/ActarSim/gun/time 0
-#/ActarSim/gun/polarization 0
-#/ActarSim/gun/number 1
-/ActarSim/gun/randomVertexZPosition off
-#/ActarSim/gun/randomVertexZRange 10 128 mm
-/ActarSim/gun/vertexZPosition 69 mm
-#/ActarSim/gun/vertexZPosition 100 mm
 #
 # B) Track a predefined reaction from a file:
 #
@@ -230,27 +203,37 @@
 #
 /ActarSim/gun/reactionFromKine on
 #
-/ActarSim/gun/Kine/incidentIon 1 2 1 0.0 2.0141
+#/ActarSim/gun/Kine/incidentIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.001506179125
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.00260325
-#/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
 #/ActarSim/gun/Kine/incidentIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/incidentIon 50 132 50 0.0 131.9178
 
 #/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
 /ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
 
-/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
+#/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
-#/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
 #/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
 #/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
 /ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
 
-/ActarSim/gun/Kine/labEnergy 150 MeV
+#/ActarSim/gun/energy 11. MeV
+#/ActarSim/gun/position 0 0 -56 mm
+#/ActarSim/gun/direction 0 0 1
+#/ActarSim/gun/time 0
+#/ActarSim/gun/polarization 0
+#/ActarSim/gun/number 1
+/ActarSim/gun/randomVertexZPosition on
+/ActarSim/gun/randomVertexZRange 10 128 mm
+#/ActarSim/gun/vertexZPosition 69 mm
+
+/ActarSim/gun/Kine/labEnergy 80 MeV
 /ActarSim/gun/Kine/randomThetaCM on
 /ActarSim/gun/Kine/randomThetaRange 0.0 180.0
 /ActarSim/gun/Kine/randomPhiAngle on

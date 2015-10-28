@@ -28,22 +28,11 @@ void Reducer()
   Char_t *digname;
   Char_t *gasname;
       
-  //simname="./root_files/simFile_12Cpp12C_D2_80MeV.root";
-  //simname="./root_files/simFile_12C_pp_dp_D2_80MeV.root";
-  //simname="./root_files/simFile_12C_pp_dp_D2_80MeV_vertex10to128.root";
-  //simname="./root_files/simFile_80MeV_12C_aa_a3he_CC_pp_HeiC4h10_9to1_vertex10to128.root";
-  //simname="./root_files/simFile_80MeV_12C_aa_aHe3_CC_pp_HeiC4H10_9to1_noAlMAYA.root";
-  //simname="./root_files/simFile_80MeV_12C_aa_aHe3_HeiC4H10_9to1.root";
-  //simname="./root_files/simFile_80MeV_He4.root";
-  //simname="./root_files/simFile_80MeV_13C_He4.root";
-  //simname="./root_files/simFile_60MeV_12C_He4.root";
-  //simname="./root_files/simFile_60MeV_He4_He4.root";
-  //simname="./root_files/simFile_40MeV_He4_He4.root";
-  //simname="./root_files/simFile_30MeV_He4_He4.root";
-  //simname="./root_files/simFile_40MeV_He3_He3.root";
-  //simname="./root_files/simFile_40MeV_He3He3_He4He4.root";
-  simname="./root_files/simFile_40MeV_He3He3_He4He4_iongasmod.root";
-  //simname="./root_files/simFile_100MeV_He4_He4.root";
+  //simname="./root_files/simFile.root";
+  //simname="./root_files/simFile_test_12Caa12C.root";
+  //simname="./root_files/simFile_test.root";
+  //simname="../build-test3/root_files/simFile_40MeV_He3He3_He4He4_iongasmod.root";
+  simname="./root_files/simFile_12C_He4He4_H2He3_12C12C_H2H2_80k.root";
 
   //Event info;
   TFile *simFile=new TFile(simname);
@@ -64,27 +53,11 @@ void Reducer()
   //cout<<"digFile to use: ";
   //cin >> digname;
 
-  //digname="./dig_files/digFile_12Cpp12C_D2_80MeV.root";
-  //digname="./dig_files/digFile_12C_pp_dp_D2_80MeV.root";
-  //digname="./dig_files/digFile_12C_pp_dp_D2_80MeV_vertex10to128.root";
-  //digname="./dig_files/digFile_80MeV_12C_aa_a3he_CC_pp_HeiC4h10_9to1_vertex10to128.root";
-  //digname="./dig_files/digFile_80MeV_12C_aa_aHe3_CC_pp_HeiC4H10_9to1_noAlMAYA.root";
-  //digname="./dig_files/digFile_80MeV_12C_aa_aHe3_HeiC4H10_9to1.root";
-  //digname="./dig_files/digFile_80MeV_He4.root";
-  //digname="./dig_files/digFile_80MeV_13C_He4.root";
-  //digname="./dig_files/digFile_60MeV_12C_He4.root";
-  //digname="./dig_files/digFile_60MeV_He4_He4.root";
-  //digname="./dig_files/digFile_40MeV_He4_He4.root";
-  //digname="./dig_files/digFile_30MeV_He4_He4.root";
-  //digname="./dig_files/digFile_40MeV_He3_He3.root";
-  //digname="./dig_files/digFile_40MeV_He3He3_He4He4_noPolya.root";
-  digname="./dig_files/digFile_40MeV_He3He3_He4He4_iongasmod.root";
-  //digname="./dig_files/digFile_100MeV_He4_He4.root";
-
-  // cout<<"Gas: isobutane (1) or deuterium gas (0)? ";
-  // cin >> gasflag;
-  // if(gasflag==1)gasname="isobutane";
-  // if(gasflag==0)gasname="deuterium";
+  //digname="./dig_files/digFile.root";
+  //digname="./dig_files/digFile_test_12Caa12C.root";
+  //digname="./dig_files/digFile_test.root";
+  //digname="./dig_files/digFile_toto.root";
+  digname="./dig_files/digFile_12C_He4He4_H2He3_12C12C_H2H2_80k.root";
 
   gROOT->ProcessLine(".L digit_piotr.h+");
   //gROOT->ProcessLine(".L digit.h+");
@@ -104,22 +77,30 @@ void Reducer()
   gasfile->getline(dummy,256);
   cout<<dummy<<endl;
   *gasfile>>dummy>>dummy>>v_drift;
-  //cout<<dummy<<endl;
   *gasfile>>dummy>>dummy>>sigma_trans;
-  //cout<<dummy<<endl;
   *gasfile>>dummy>>dummy>>sigma_long;
-  //cout<<dummy<<endl;
 
   //theDriftManager.SetDriftParameters(2015.,170.,147.5,gasname);
   //theDriftManager.SetDriftParameters(2015.,170.,980.66,gasname);
+
+  //#######HeiC4H10 (9:1) Gas MagBoltz Values#########
+  //theDriftManager.SetDriftVelocity(9.084e-3);
+  //theDriftManager.SetDiffusionParameters(2.356e-5,3.105e-5);
+  //#######HeiC4H10 (9:1) Gas MagBoltz Values E=2090/17#########
+  //theDriftManager.SetDriftVelocity(6.865e-3);
+  //theDriftManager.SetDiffusionParameters(2.369e-5,2.892e-5);
+  //#######HeiC4H10 (95:5) Gas MagBoltz Values E=2520/17#########
+  //theDriftManager.SetDriftVelocity(7.521e-3);
+  //theDriftManager.SetDiffusionParameters(2.611e-5,3.796e-5);
+
 
   //Magboltz Drift paramters for Deuterium Gas
   //theDriftManager.SetDriftVelocity(4.7e-3);
   //theDriftManager.SetDiffusionParameters(1.146e-5,2.342e-5);
 
   //Magboltz Drift paramters for HeiC4H10 (9:1) Gas
-  theDriftManager.SetDriftVelocity(9.084e-3);
-  theDriftManager.SetDiffusionParameters(2.356e-5,3.105e-5);
+  theDriftManager.SetDriftVelocity(6.865e-3);
+  theDriftManager.SetDiffusionParameters(2.369e-5,2.892e-5);
 
   cout<<"Drift Parameters are:"<<endl;  
   cout<<"v_drift---------> "<<theDriftManager.GetDriftVelocity()<<"mm/ns"<<endl;  
@@ -168,27 +149,13 @@ void Reducer()
    //note that we use "new" to create the TFile and TTree objects !
    //because we want to keep these objects alive when we leave this function.
 
-   //Flags
-
-   Bool_t ReadWriteFlag=0;// 0: Read, 1: Write
-
    //Root file to fill
-   //TFile *outfile = new TFile("./output/Output_test.root","RECREATE");
+   //TFile *outfile = new TFile("./output/Output.root","RECREATE");
+   //TFile *outfile = new TFile("./output/Output_test_12Caa12C.root","RECREATE");
+   //TFile *outfile = new TFile("./output/Output_test2.root","RECREATE");
+   TFile *outfile = new TFile("./output/Output_12C_He4He4_H2He3_12C12C_H2H2_80k.root","RECREATE");
 
-   //TFile *outfile = new TFile("./output/Output_100MeV_He4_He4.root","RECREATE");
-   TFile *outfile = new TFile("./output/Output_40MeV_He3He3_He4He4_iongasmod.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_40MeV_He3He3_He4He4_noPolya.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_40MeV_He3_He3.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_30MeV_He4_He4.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_40MeV_He4_He4.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_60MeV_He4_He4.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_60MeV_12C_He4.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_80MeV_13C_He4.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_80MeV_He4.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_80MeV_12C_aa_aHe3_HeiC4H10_9to1.root.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Sim_Output_v2_39_25MHz_posy43_matrix.root","RECREATE");
-   TTree *out_tree = new TTree("out_tree","out_tree");
-   
+   TTree *out_tree = new TTree("out_tree","out_tree");  
 
    ///////////////////////////////////////////////
 
@@ -302,9 +269,9 @@ void Reducer()
     //*********************************************************************************************************//
 
    for (Long64_t jentry=0;jentry<nentries;jentry++) {
-     //for (Long64_t jentry=0;jentry<1000;jentry++) {
+   //for (Long64_t jentry=60000;jentry<nentries;jentry++) {
+     //for (Long64_t jentry=0;jentry<10;jentry++) {
      //for (Long64_t jentry=5000;jentry<nentries;jentry++) {
-     //for (Long64_t jentry=15000;jentry<nentries;jentry++) {
      if(jentry%500==0)cout<<jentry<<endl;
      //if(jentry%2==0)cout<<"¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡   NEW (2nd) EVENT : "<<jentry<<"   !!!!!!!!!!!!!!!!!!!!"<<endl;
 
@@ -352,6 +319,8 @@ void Reducer()
 	   //   += thisCharge;
 	   // padTime[padSignal->GetPadRow()-1][padSignal->GetPadColumn()-1]
 	   //   += thisCharge*thisTime;
+	   //if(jentry<4)cout<<"Row "<<padSignal->GetPadRow()-1<<" Col "<<padSignal->GetPadColumn()-1<<" Charge "<<thisCharge<<endl;
+
 	 }
        }//Loop on ActarPadSignals
 	 
@@ -370,8 +339,6 @@ void Reducer()
 	 }
 
      }
-
-
 
      if(jentry%2!=0){
  
@@ -411,6 +378,7 @@ void Reducer()
 	   SilCharge(detectorID-1)=Energy_in_silicon;  
 	   //SilID(detectorID-1)=silHit->GetDetectorID();
 	   if(silHit->GetParticleID()==2212)SilID(detectorID-1)=1;//p
+	   //if(silHit->GetParticleID()==1000010020)SilID(detectorID-1)=1;//2H
 	   else if(silHit->GetParticleID()==1000020030)SilID(detectorID-1)=2;//3He
 	   else if(silHit->GetParticleID()==1000020040)SilID(detectorID-1)=3;//4He
 	   else if(silHit->GetParticleID()==1000060120)SilID(detectorID-1)=4;//12C
@@ -423,7 +391,8 @@ void Reducer()
        }
 
        if(nbsiliconhits!=0)out_tree->Fill();
-   
+       //out_tree->Fill();
+    
      }
 
    }

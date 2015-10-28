@@ -153,8 +153,8 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   G4double worldSizeX,worldSizeY,worldSizeZ;
 
   G4double chamberVolumeCenterPosX = 0.*m;
-  //G4double chamberVolumeCenterPosY = chamberSizeY-(yGasBoxPosition+yPadSize);//the beam enters at the middle of GasBox
-  G4double chamberVolumeCenterPosY = chamberSizeY-yPadSize;//the beam enters at the pad level
+  G4double chamberVolumeCenterPosY = chamberSizeY-(yGasBoxPosition+yPadSize);//the beam enters at the middle of GasBox
+  //G4double chamberVolumeCenterPosY = chamberSizeY-yPadSize;//the beam enters at the pad level
   G4double chamberVolumeCenterPosZ = zGasBoxPosition;//beam origin at the entrance of GasBox
 
   if( MaikoGeoIncludedFlag == "on"){

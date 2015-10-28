@@ -240,7 +240,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	
         //Entrance coordinates (x0,y0,0) with angles (thetaAtEntrance, phiAtEntrance)
         G4double x0 = BeamPosition.x() + radiusAtEntrance*cos(phi2AtEntrance);
-        G4double y0 = BeamPosition.y() + radiusAtEntrance*sin(phi2AtEntrance);
+        G4double y0 = BeamPosition.y() + radiusAtEntrance*sin(phi2AtEntrance) - gasDetector->GetYGasBox();
         G4double z0 = BeamPosition.z();
 
         if(verboseLevel>0){
@@ -262,7 +262,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         pBeamInfo->SetAnglesEntrance(thetaAtEntrance,phiAtEntrance);
       }
       else{ // simplest case: beam at (0,0,0) with direction along Z
-	particleGun->SetParticlePosition(BeamPosition);
+	particleGun->SetParticlePosition(BeamPosition-G4ThreeVector(0,gasDetector->GetYGasBox(),0));
         particleGun->SetParticleMomentumDirection(BeamMomentumDirection);
         //particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
         pBeamInfo->SetPositionEntrance(BeamPosition.x(),BeamPosition.y(),BeamPosition.z());
@@ -291,7 +291,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     //Vertexcoordinates (vertex_x0,vertex_y0,vertex_z0) with angles (thetaAtEntrance, phiAtEntrance)
     G4double vertex_x0 = radiusAtEntrance*cos(phi2AtEntrance);
-    G4double vertex_y0 = radiusAtEntrance*sin(phi2AtEntrance) + BeamPosition.y();
+    G4double vertex_y0 = radiusAtEntrance*sin(phi2AtEntrance) + BeamPosition.y() - gasDetector->GetYGasBox();
     // The vertex_z0 variable is here used to decide the z position of the vertex. The beam is tracked
     // till vertex_z0 is reached ...
     //G4double vertex_z0=0.;
@@ -1120,7 +1120,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //particleGun->SetParticlePosition(G4ThreeVector(0.,0.,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,Z0));
     //particleGun->SetParticlePosition(G4ThreeVector(X0,Y0,0.));
-    particleGun->SetParticlePosition(BeamPosition);
+    particleGun->SetParticlePosition(BeamPosition-G4ThreeVector(0,gasDetector->GetYGasBox(),0));
 
     //Particle momentum can be set either by giving a G4ThreeVector or by the Theta Phi angles (need to prioritize)
     if(randomThetaFlag == "on" || randomPhiFlag == "on")particleGun -> SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );

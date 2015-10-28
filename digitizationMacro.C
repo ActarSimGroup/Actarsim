@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2006
-//*-- Last Update: 20/06/06
+//*-- Last Update: 28/10/15
 //*-- Copyright: GENP (Univ. Santiago de Compostela)
 //
 // --------------------------------------------------------------
@@ -37,13 +37,14 @@
 //      theDriftManager.SetMagneticField(Double_t mag);     NOT WORKING YET
 //      theDriftManager.SetLorentzAngle(Double_t lor);           in radians
 //
-//      theAmplificationManager.SetIsWireOn();
+//      theAmplificationManager.SetIsWireOn();    for a MAYA-like ACtive TARget
 //      theAmplificationManager.SetWireAmplificationParameters(ra,s,h);
 //
 //      ra: radius of amplification wire: 5, 10, and 20 mu
 //       s: spacing between two amplification wires: 2 or 2.3 mm
 //       h: distance between the amplification wire and induction pads: 10 mm
 //
+//      (Optionally you can set theAmplificationManager.SetOldChargeCalculation(); for old Style calculations)
 //      digitEvents(inputFile, outputFile, run#, numberOfEvents);
 //
 //  the number within brackets means:
@@ -111,11 +112,8 @@ driftManager theDriftManager;
 amplificationManager theAmplificationManager;
 
 void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
-  //
   // Digitization event loop
-  //
-
-  Bool_t bTreeChargeDistribution=kFALSE; 
+  Bool_t bTreeChargeDistribution=kFALSE;
 
   gROOT->SetStyle("Default");
   gStyle->SetOptTitle(0);
@@ -124,7 +122,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
 
   theDriftManager.ConnectToGeometry(&thePadsGeometry);
   theDriftManager.ConnectToAmplificationManager(&theAmplificationManager);
-  //theDriftManager.ConnectToActarPadSignal(&theActarPadSignal); //HAPOL: CHECK WHY IS NOT USED!!
+  //theDriftManager.ConnectToActarPadSignal(&theActarPadSignal); //FUTURE SIGNAL TREATMENT
   theDriftManager.GetStatus();
 
   //input file and tree
@@ -138,14 +136,6 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
   branchTrack->SetAutoDelete(kTRUE);
 
   ActarSimSimpleTrack* localTrack = new ActarSimSimpleTrack;
-
-  //ClonesArray to the silicon Hits or other detector Hits ...
-  //TClonesArray *silHitsCA=new TClonesArray("ActarSimSilHit",10);
-  //TBranch *branchSilHits=eventTree->GetBranch("silHits");
-  //branchSilHits->SetAddress(&silHitsCA);
-  //branchSilHits->SetAutoDelete(kTRUE);
-
-  //ActarSimSilHit* silHit=new ActarSimSilHit;
 
   //output File and Tree for the analysis result
   TFile* outFile = new TFile(outputFile,"RECREATE");
@@ -164,30 +154,21 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
 
   Int_t hits=0;
   TTree *TChargeDistribution;
-  if(numberOfEvents)    nevents = numberOfEvents;
+  if(numberOfEvents) nevents = numberOfEvents;
   else   nevents = eventTree->GetEntries();
   cout<<"nevents= "<<nevents<<endl;
   //Int_t neventsSim = nevents/2;
 
   Int_t nb = 0;
-  
+
   for(Int_t i=0;i<nevents;i++){
     if(i%100 == 0) printf("Event with strides:%d\n",i);
-  
+
   simpleTrackCA->Clear();
-  //silHitsCA->Clear();
   nb += eventTree->GetEvent(i);
-  
+
   stridesPerEvent = simpleTrackCA->GetEntries();
-  //siliconhits = silHitsCA->GetEntries();
-  //if(siliconhits>0){
-  //  ;
-    //silHit=(ActarSimSilHit*)silHitsCA->At(0);
-    //cout<<"silicon hitted "<<siliconhits<<"by an "<<silHit->GetParticleCharge()<<" Energy "<<silHit->GetEnergy()<<endl;
-  //}
-  //if(stridesPerEvent>0&& siliconhits>0) {
-  //  hits++;
-  //cout<<"# of strides-> "<<stridesPerEvent<<endl;
+
   if(stridesPerEvent>0) {
     //cout<<"The number of strides is "<<stridesPerEvent<<endl;
     //Clear the ClonesArray before filling it
@@ -203,7 +184,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
     for(Int_t h=0;h<stridesPerEvent;h++){
       cout<<"."<<flush;
       localTrack = (ActarSimSimpleTrack*)simpleTrackCA->At(h);
-            
+
       //Once we know where the track is, we should know where the stride
       //limits are after the drift and diffussion of the electrons...
       projection->SetTrack(localTrack);
@@ -211,7 +192,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
       if(theDriftManager.CalculatePositionAfterDrift(projection)){
         if(bTreeChargeDistribution)
           theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,T);
-        else  
+        else
           theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,0);
       }
     }
@@ -219,8 +200,6 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
     digiTree->Fill();
   }
   else{
-    //cout<<"=================>Event Skipped"<<endl;
-    //digiTree->Fill();
     continue;
   }
 }

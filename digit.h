@@ -101,7 +101,7 @@
 using namespace std;
 
 Int_t DIGI_DEBUG=1; //A global DEBUG variable:
-                    //0 absolutly no output
+                    //0 absolutly no output (quiet)
                     //1 minimum output when trouble, status or warnings
                     //2 tracking the functions behavior
                     //3 tracking with increased verbosity
@@ -1438,7 +1438,7 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
 
     Double_t energyStride=EnergyStep[istep];
     for(Int_t ielectron=0;ielectron<NumberOfElectrons[istep]; ielectron++){
-      electron_posX = gRandom->Gaus(strideCenterX,sigmaTrans);
+      electron_posX = gRandom->Gaus(strideCenterX,sigmaTrans); //Better if we also random starting position
       electron_posZ = gRandom->Gaus(strideCenterZ,sigmaTrans);
       padRow = padsGeo->GetPadRowFromXZValue(electron_posX,electron_posZ);
       padColumn = padsGeo->GetPadColumnFromXZValue(electron_posX,electron_posZ);
@@ -1743,13 +1743,13 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
 
   if(DIGI_DEBUG)
     cout <<  "________________________________________________________" << endl
-   << " Output of driftManager::CalculatePadsWithCharge()" << endl
-   << " securityFactor " << securityFactor
-   << ", rowsUnderTest  " << rowsUnderTest  << " (from "
-   << initRow-securityFactor << " to " << initRow-securityFactor+rowsUnderTest
-   << "), columnsUnderTest " << columnsUnderTest
-   << " (from " << initColumn-securityFactor << " to "
-   << initColumn-securityFactor+rowsUnderTest << ")" << endl;
+         << " Output of driftManager::CalculatePadsWithCharge()" << endl
+         << " securityFactor " << securityFactor
+         << ", rowsUnderTest  " << rowsUnderTest  << " (from "
+         << initRow-securityFactor << " to " << initRow-securityFactor+rowsUnderTest
+         << "), columnsUnderTest " << columnsUnderTest
+         << " (from " << initColumn-securityFactor << " to "
+         << initColumn-securityFactor+rowsUnderTest << ")" << endl;
 
   Double_t charge=0; Int_t numberOfPadsWithSignal=0;
   Int_t padUnderTest; TVector3 centerPad;

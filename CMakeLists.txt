@@ -32,7 +32,9 @@ include(FindROOT.cmake)
 # Create the directory for the ROOT files
 #
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/root_files")
-
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/root_files/sim_files")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/root_files/dig_files")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/root_files/out_files")
 
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
@@ -147,13 +149,14 @@ gui.mac
 vis_actar.mac 
 vis_maiko.mac 
 vis_kine.mac 
+vis_alpha.mac
 kine_batch.mac
 12C_batch.mac
 digitizationMacro.C
 digit.h
-dig_reaction.C
-Analysis_range.C
-p_on_D2_400mbar.root
+MTrack.h
+Reducer.C
+Analysis_reduce.C
  )
 
 foreach(_script ${ACTARSIM_SCRIPTS})

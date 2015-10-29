@@ -1,0 +1,5 @@
+HeisoC4H10 90:10 1013mbar 2090V
+------------------------
+v_drift (mm/ns)		6.865e-3
+D_trans (mm**2/ns)	2.892e-5	
+D_long (mm**2/ns)	2.369e-5

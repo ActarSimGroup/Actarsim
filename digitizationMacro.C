@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2006
-//*-- Last Update: 20/06/06
+//*-- Last Update: 29/10/15
 //*-- Copyright: GENP (Univ. Santiago de Compostela)
 //
 // --------------------------------------------------------------
@@ -167,7 +167,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
   branchTrack->SetAutoDelete(kTRUE);
 
   //ClonesArray to the silicon Hits
-  // TClonesArray *silHitsCA=new TClonesArray("ActarSimSilHit",100);
+  //TClonesArray *silHitsCA=new TClonesArray("ActarSimSilHit",100);
   //TBranch *branchSilHits=eventTree->GetBranch("silHits");
   //branchSilHits->SetAddress(&silHitsCA);
   //branchSilHits->SetAutoDelete(kTRUE);
@@ -190,19 +190,19 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
 
   Int_t nevents=0;
   Int_t stridesPerEvent=0;
-  Int_t siliconhits=0;
+  //Int_t siliconhits=0;
 
-  Int_t hits=0;
+  //Int_t hits=0;
   TTree *T;
   if(numberOfEvents)    nevents = numberOfEvents;
   else   nevents = eventTree->GetEntries();
-
+  cout<<"nevents= "<<nevents<<endl;
 //   Int_t neventsSim = nevents/2;
 
-  Int_t nb = 0;
+  //Int_t nb = 0;
   
   for(Int_t i=0;i<nevents;i++){
-    if(i%1 == 0) printf("Event with strides:%d\n",i);
+    if(i%500 == 0) printf("Event with strides:%d\n",i);
     //if(i%10 == 0) printf("Event with strides:%d\n",i);
     //Int_t percent=Float_t(i)/nevents*100;
     //if(i%10==0)
@@ -210,18 +210,16 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
   
   simpleTrackCA->Clear();
   //silHitsCA->Clear();
-  nb += eventTree->GetEvent(i);
-  
+  //nb += eventTree->GetEvent(i);
+  eventTree->GetEvent(i);
+
   stridesPerEvent = simpleTrackCA->GetEntries();
   //siliconhits = silHitsCA->GetEntries();
-  if(siliconhits>0){
-    ;
-    //silHit=(ActarSimSilHit*)silHitsCA->At(0);
-    //cout<<"silicon hitted "<<siliconhits<<"by an "<<silHit->GetParticleCharge()<<" Energy "<<silHit->GetEnergy()<<endl;
-  }
-  //if(stridesPerEvent>0&& siliconhits>0) {
+
+  //if(stridesPerEvent>0 && siliconhits>0) {
   //  hits++;
-  cout<<"# of strides-> "<<stridesPerEvent<<endl;
+    //cout<<"# of Sil-> "<<siliconhits<<endl;
+  //cout<<"# of strides-> "<<stridesPerEvent<<endl;
   if(stridesPerEvent>0) {
     
     //Clear the ClonesArray before filling it
@@ -237,7 +235,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
       T=new TTree(tname,"Charge distributions");
     for(Int_t h=0;h<stridesPerEvent;h++){
       //cout<<"Stride # "<<h<<endl;
-      cout<<"."<<flush;
+      //cout<<"."<<flush;
       localTrack = (ActarSimSimpleTrack*)simpleTrackCA->At(h);
       
       //         cout << "strideLength=" << localTrack->GetStrideLength() << endl;
@@ -256,7 +254,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
 	//             theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,digiTree);
       }
     }
-    cout<<endl;
+    //cout<<endl;
     //}//end if(i%2!=0) 
     digiTree->Fill();
   }

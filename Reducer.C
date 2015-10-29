@@ -1,3 +1,16 @@
+///////////////////////////////////////////////////////////////////
+//*-- AUTHOR : Piotr Konczykowski
+//*-- Date: 10/2015
+//*-- Last Update: 29/10/15
+//*-- Copyright: GENP (Univ. Santiago de Compostela)
+//
+// --------------------------------------------------------------
+//
+// --------------------------------------------------------------
+// Merge the informations on the pads (digfile) and silicon (simfile)
+// into a root file with the same structure as the Actar data
+// to be used in a common analysis program (Analysis_reduce.C)
+// Save only the events with a silicon hit
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -28,11 +41,8 @@ void Reducer()
   Char_t *digname;
   Char_t *gasname;
       
-  //simname="./root_files/simFile.root";
-  //simname="./root_files/simFile_test_12Caa12C.root";
-  //simname="./root_files/simFile_test.root";
-  //simname="../build-test3/root_files/simFile_40MeV_He3He3_He4He4_iongasmod.root";
-  simname="./root_files/simFile_12C_He4He4_H2He3_12C12C_H2H2_80k.root";
+  simname="./root_files/sim_files/simFile.root";
+  //simname="./root_files/simFile_12C_He4He4_H2He3_12C12C_H2H2_80k.root";
 
   //Event info;
   TFile *simFile=new TFile(simname);
@@ -53,14 +63,10 @@ void Reducer()
   //cout<<"digFile to use: ";
   //cin >> digname;
 
-  //digname="./dig_files/digFile.root";
-  //digname="./dig_files/digFile_test_12Caa12C.root";
-  //digname="./dig_files/digFile_test.root";
-  //digname="./dig_files/digFile_toto.root";
-  digname="./dig_files/digFile_12C_He4He4_H2He3_12C12C_H2H2_80k.root";
+  digname="./root_files/dig_files/digFile.root";
+  //digname="./dig_files/digFile_12C_He4He4_H2He3_12C12C_H2H2_80k.root";
 
-  gROOT->ProcessLine(".L digit_piotr.h+");
-  //gROOT->ProcessLine(".L digit.h+");
+  gROOT->ProcessLine(".L digit.h+");
   
   padsGeometry thePadsGeometry;
   thePadsGeometry.SetGeometryValues(37.,85.,69.,2.,5.,5.);//digit+
@@ -123,8 +129,6 @@ void Reducer()
 
   Double_t driftVelocity = theDriftManager.GetDriftVelocity();
 
-  //digname="./dig_files/digFile_alpha_z80_ionGas.root";
-
   TFile *digFile=new TFile(digname);
   cout<<"Opening digitization file: "<<digname<<endl;
 
@@ -150,10 +154,8 @@ void Reducer()
    //because we want to keep these objects alive when we leave this function.
 
    //Root file to fill
-   //TFile *outfile = new TFile("./output/Output.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_test_12Caa12C.root","RECREATE");
-   //TFile *outfile = new TFile("./output/Output_test2.root","RECREATE");
-   TFile *outfile = new TFile("./output/Output_12C_He4He4_H2He3_12C12C_H2H2_80k.root","RECREATE");
+   //TFile *outfile = new TFile("./root_files/out_files/Output_12C_He4He4_H2He3_12C12C_H2H2_80k.root","RECREATE");
+   TFile *outfile = new TFile("./root_files/out_files/Output.root","RECREATE");
 
    TTree *out_tree = new TTree("out_tree","out_tree");  
 
@@ -189,17 +191,6 @@ void Reducer()
      padCharge[j]=new Double_t[numberOfColumns];
      padTime[j]=new Double_t[numberOfColumns];
    }
-   
-   //Double_t *padChargeTest=new Double_t[numberOfRows];
-   //Double_t *padTimeTest=new Double_t[numberOfRows];
-
-   //TMatrixD *padCharge=0;
-   //TMatrixD *padTime=0;
-   //TMatrixD *padHeight=0;
-
-   //TMatrixD padCharge(32,64,2000);
-   //TMatrixD padTime(32,64,2000);
-   //TMatrixD padHeight(32,64,2000);
 
    //TMatrixD *padChargeTest=0;
    //TMatrixD *padTimeTest=0;
@@ -237,29 +228,6 @@ void Reducer()
    //out_tree->Branch("SilCharge",&SilCharge,"energy/D");
 
 
-   // out_tree->Branch("Energy",&Qtot,"energy/D");
-   // out_tree->Branch("HAngle",&HAngle,"angle/D");
-   // out_tree->Branch("VAngle",&VAngle,"angle/D");
-   // out_tree->Branch("range",&track_range,"rangeProj/D");
-   // out_tree->Branch("rangeXY",&track_rangeXY,"rangeProjXY/D");
-   // out_tree->Branch("sourceX",&SourcePosX,"sourceX/D");
-   // out_tree->Branch("sourceY",&SourcePosY,"sourceY/D");
-   // out_tree->Branch("sourceZ",&SourcePosZ,"sourceZ/D");
-   // out_tree->Branch("range_calcX",&range_calcX,"range_calcX/D");
-   // out_tree->Branch("range_calcY",&range_calcY,"range_calcY/D");
-   // out_tree->Branch("range_calcZ",&range_calcZ,"range_calcZ/D");
-   
-   //Char_t *dname="./dig_files/digFile_alpha_z80_ionGas.root";
-   //Char_t *gasname="isobutane";
-
-   //ReadDig(&dname, &gasname);
-   //ReadDig(dname, gasname);
-   //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane");
-   //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane",&&padCharge,&&padTime);
-   //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane",padChargeTest,padTimeTest,i);
-
-   //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane",padCharge,padTime);
-
     //*********************************************************************************************************//
     //*********************************************************************************************************//
     //**                                                                                                     **//
@@ -269,8 +237,6 @@ void Reducer()
     //*********************************************************************************************************//
 
    for (Long64_t jentry=0;jentry<nentries;jentry++) {
-   //for (Long64_t jentry=60000;jentry<nentries;jentry++) {
-     //for (Long64_t jentry=0;jentry<10;jentry++) {
      //for (Long64_t jentry=5000;jentry<nentries;jentry++) {
      if(jentry%500==0)cout<<jentry<<endl;
      //if(jentry%2==0)cout<<"¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡   NEW (2nd) EVENT : "<<jentry<<"   !!!!!!!!!!!!!!!!!!!!"<<endl;
@@ -290,9 +256,6 @@ void Reducer()
 
      Int_t nbsilicon= silHitsCA->GetEntries();
      //cout<<" SILICON "<<nbsilicon<<endl;
-     
-     //if(simuFlag==1)ReadDig(padSignalCA,padSignal,padCharge,padTime);
-     //if(simuFlag==1)ReadDig(digFile,padCharge,padTime);
 
      padSignalCA->Clear();
 
@@ -409,422 +372,3 @@ void Reducer()
 
 
 } 
-
-void FindMax(TSpline3 *sp,Double_t *maximum,Double_t *x){
-  Double_t max;
-  Double_t posmax=0;
-  Double_t x0=0;
-  Double_t xmax=32;
-  Double_t step=0.2;
-  for(Double_t val=x0;val<xmax;val=val+step){
-    Double_t value=sp->Eval(val);
-    if(value>max){
-      max=value;
-      posmax=val;
-    }
-    //cout<<val<<" "<<value<<endl;
-  }
-  // cout<<"Maximum is at--> "<<posmax<<" "<<max<<endl;
-  *maximum=max;
-  *x=posmax;
-  return; 
-}
-
-void FindRangeX(TSpline3 *sp,Double_t maxval,Double_t maxpos,Double_t theta,Double_t *x){
-  Double_t max;
-  Double_t posmax=0;
-  Double_t x0=maxpos;
-  Double_t xmax=128;
-  Double_t step=0.2;
-  if(theta>0){
-    for(Double_t val=x0;val<xmax;val=val+step){
-    Double_t value=sp->Eval(val);
-    if(value>=maxval/4){
-      max=value;
-      posmax=val;
-    }
-    }
-  }
-
-  else if(theta<0){
-    for(Double_t val=x0;val>0;val=val-step){
-    Double_t value=sp->Eval(val);
-    if(value>=maxval/4){
-      max=value;
-      posmax=val;
-    }
-    }
-
-  }
-  //cout<<"X Range is at--> "<<posmax<<" "<<max<<endl;
-   //*maximum=max;
-  *x=posmax;
-  return; 
-}
-
-void FindRangeY(TSpline3 *sp,Double_t maxval,Double_t maxpos,Double_t *x){
-  Double_t max;
-  Double_t posmax=0;
-  Double_t x0=maxpos;
-  Double_t xmax=64;
-  Double_t step=0.2;
-  for(Double_t val=x0;val<xmax;val=val+step){
-    Double_t value=sp->Eval(val);
-    if(value>=maxval/4){
-      max=value;
-      posmax=val;
-    }
- 
-  }
-  //cout<<"X Range is at--> "<<posmax<<" "<<max<<endl;
-   //*maximum=max;
-  *x=posmax;
-  return; 
-}
-
-void FindRangeZ(TSpline3 *sp,Double_t maxval,Double_t maxpos,Double_t phi,Double_t maxZ, Double_t *x){
-  Double_t max;
-  Double_t posmax=0;
-  Double_t x0=maxpos;
-  Double_t xmax=maxZ;
-  //Double_t xmax=170;
-  Double_t step=0.2;
-  if(phi>0){
-    for(Double_t val=x0;val<xmax;val=val+step){
-      Double_t value=sp->Eval(val);
-      if(value>=maxval/4){
-	max=value;
-	posmax=val;
-      }
-    }
-  }
-
-  else if(phi<0){
-    for(Double_t val=x0;val>0;val=val-step){
-      Double_t value=sp->Eval(val);
-      if(value>=maxval/4){
-	max=value;
-	posmax=val;
-      }
-    }
-
-  }
-  //cout<<"Y Range is at--> "<<posmax<<" "<<max<<endl;
-   //*maximum=max;
-  *x=posmax;
-  return; 
-}
-
-
-void FitStep(Int_t nstep, Double_t *x, Double_t *z, Double_t &a, Double_t &b)
-{
-	Int_t s;
-	Double_t A, B, C, UEV, Q, X, Xg, Y, Yg;
-	A=B=C=UEV=Q=X=Y=Xg=Yg=0.;
-	
-	for (Int_t s=0;s<nstep;s++)
-	  {
-	    Q+=1;
-	    Xg+=z[s];
-	    Yg+=x[s];
-	  }
-
-	Xg/=Q;
-	Yg/=Q;
-	//cout<<"Xg sim : "<<Xg<<" Yg sim : "<<Yg<<endl;
-
-
-	for (Int_t s=0;s<nstep;s++)
-	  {
-	    A+=(z[s]-Xg)*(z[s]-Xg);
-	    B+=(x[s]-Yg)*(z[s]-Xg);
-	    C+=(x[s]-Yg)*(x[s]-Yg);
-	  }
-
-	UEV=0.5*(A+C+sqrt((A+C)*(A+C)-4*(A*C-B*B)));
-	a=B/(UEV-C);
-	b=Yg-a*Xg;
-}
-
-
-void FitMat(Double_t **PADNET, Int_t Rmin, Int_t Rmax, Int_t Cmin, Int_t Cmax, Double_t threshold, Double_t &a, Double_t &b)
-{
-	Int_t Row, Col;
-	Double_t A, B, C, UEV, Q, X, Xg, Y, Yg;
-	A=B=C=UEV=Q=X=Y=Xg=Yg=0.;
-	for (Row=Rmin;Row<=Rmax;Row++)
-		for (Col=Cmin;Col<=Cmax;Col++)
-			if(PADNET[Row][Col]>threshold)
-			{
-			  X= Col*2.+1.;
-			  Y= Row*2.+1.;
-			  Q+=PADNET[Row][Col];
-			  Xg+=X*PADNET[Row][Col];
-			  Yg+=Y*PADNET[Row][Col];
-			}
-	Xg/=Q;
-	Yg/=Q;
-	//cout<<"Xg: "<<Xg<<" Yg: "<<Yg<<endl;
-
-	for (Row=Rmin;Row<=Rmax;Row++)
-		for(Col=Cmin;Col<=Cmax;Col++)
-			if(PADNET[Row][Col]>threshold)
-			{
-				X= Col*2.+1.;
-				Y= Row*2.+1.;
-				A+=PADNET[Row][Col]*(X-Xg)*(X-Xg);
-				B+=PADNET[Row][Col]*(X-Xg)*(Y-Yg);
-				C+=PADNET[Row][Col]*(Y-Yg)*(Y-Yg);
-			}
-
-	UEV=0.5*(A+C+TMath::Sqrt((A+C)*(A+C)-4*(A*C-B*B)));
-	a=B/(UEV-C);
-	b=Yg-a*Xg;
-
-}
-
-
-  void FitMatZ(Double_t **PADNET, Double_t **TIME, Int_t Rmin, Int_t Rmax, Int_t Cmin, Int_t Cmax, Double_t threshold, Double_t Tthreshold, Double_t &a, Double_t &b)
-{
-	Int_t Row, Col;
-	const Int_t NRow=32;
-        Double_t A, B, C, UEV, Q, X, Xg, Y, Yg;
-        Double_t Qrow[NRow],Cm[NRow],Zm[NRow];
-	Int_t min_col,max_col,ncol;
-	//cout<<"Ttreshold: "<<Tthreshold<<", NRow: "<<NRow<<endl;
-	A=B=C=UEV=Q=X=Y=Xg=Yg=0.;
-	for (Row=Rmin;Row<=Rmax;Row++)
-	  {
-	    Zm[Row]=0;
-	    Qrow[Row]=0;
-	    Cm[Row]=0.;
-	    min_col=max_col=ncol=0;
-	    for (Col=Cmin;Col<=Cmax;Col++)
-	      {
-		if(PADNET[Row][Col]>threshold && TIME[Row][Col]>Tthreshold)
-		  {	
-		    ncol++;
-		    if(min_col==0)min_col=Col;
-		    max_col=Col;
-		    Cm[Row]+=PADNET[Row][Col]*(Col+1);//+1 to avoid problem at Col=0
-		    Qrow[Row]+=PADNET[Row][Col];
-		    //cout<<"Row: "<<Row<<", minC: "<<min_col<<", maxC: "<<max_col<<", PAD: "<<PADNET[Row][Col]<<", NRow: "<<NRow<<endl;
-		  }
-	      }
-
-	    if(ncol!=0)
-	      {
-		Cm[Row]/=Qrow[Row];
-		Cm[Row]-=1.;	   
-		for(Col=min_col;Col<max_col+1;Col++)
-		  {
-		    if(PADNET[Row][Col]>threshold && TIME[Row][Col]>Tthreshold)
-		      {
-			Zm[Row]+=TMath::Sqrt(TIME[Row][Col]*TIME[Row][Col]-4*(Col-Cm[Row])*(Col-Cm[Row]));	  
-		      }
-		  }
-		Zm[Row]/=ncol; 
-		//cout<<"Row: "<<Row<<", QCol: "<<Qrow[Row]<<", ZmCol: "<<Zm[Row]<<endl;
-	      }
-	  }
-	
-
-	for (Row=Rmin;Row<=Rmax;Row++)
-	  {
-
-	    if(Cm[Row] && Zm[Row])
-	      {
-		X= Row*2.+1.;
-		Y= Zm[Row];//*2.;
-		Q+=Qrow[Row];
-		Xg+=X*Qrow[Row];
-		Yg+=Y*Qrow[Row];
-		//cout<<"Row: "<<Row<<",Zm: "<<Zm[Row]<<",Cm: "<<Cm[Row]<<endl;
-	      }
-
-
-	  }
-
-	Xg/=Q;
-	Yg/=Q;
-	//cout<<"Xg: "<<Xg<<",Yg: "<<Yg<<endl;
-
-	for (Row=Rmin;Row<=Rmax;Row++)
-	  {
-	    if(Cm[Row] && Zm[Row])
-	      {
-		X= Row*2.+1.;
-		Y= Zm[Row];//*2.;
-		A+=Qrow[Row]*(X-Xg)*(X-Xg);
-		B+=Qrow[Row]*(X-Xg)*(Y-Yg);
-		C+=Qrow[Row]*(Y-Yg)*(Y-Yg);
-	      }
-	  }
-
-	UEV=0.5*(A+C+TMath::Sqrt((A+C)*(A+C)-4*(A*C-B*B)));
-	a=B/(UEV-C);
-	b=Yg-a*Xg;
-}
-
-//Double_t FitMat3D(Int_t T, TMatrixD PADNET, TMatrixD TIME, Int_t Rmin, Int_t Rmax, Int_t Cmin, Int_t Cmax, Double_t threshold, MTrack* T)
-Double_t FitMat3D(Double_t **PADNET, Double_t **HEIGHT, Int_t Rmin, Int_t Rmax, Int_t Cmin, Int_t Cmax, Double_t threshold, MTrack* T)
-{
-	// adapted from: http://fr.scribd.com/doc/31477970/Regressions-et-trajectoires-3D
-	Int_t R, C;
-	Double_t Q,X,Y,Z;
-	Double_t Xm,Ym,Zm;
-	Double_t Sxx,Sxy,Syy,Sxz,Szz,Syz;
-	Double_t theta;
-	Double_t K11,K22,K12,K10,K01,K00;
-	Double_t c0,c1,c2;
-	Double_t p,q,r,dm2;
-	Double_t rho,phi;
-	Double_t a,b;
-	
-	Double_t PI=3.1415926535897932384626433;
-
-	Q=Xm=Ym=Zm=0.;
-	Sxx=Syy=Szz=Sxy=Sxz=Syz=0.;
-	
-	for (R=Rmin;R<=Rmax;R++)
-		for (C=Cmin;C<=Cmax;C++)
-			if(PADNET[R][C]>threshold && HEIGHT[R][C])
-			{
-			  X= C*2.+1.;
-			  Y= R*2.+1.;
-			  Z= HEIGHT[R][C];//*VDRIFT;
-			  Q+=PADNET[R][C];
-			  Xm+=X*PADNET[R][C];
-			  Ym+=Y*PADNET[R][C];
-			  Zm+=Z*PADNET[R][C];
-			  Sxx+=X*X*PADNET[R][C];
-			  Syy+=Y*Y*PADNET[R][C];
-			  Szz+=Z*Z*PADNET[R][C];
-			  Sxy+=X*Y*PADNET[R][C];
-			  Sxz+=X*Z*PADNET[R][C];
-			  Syz+=Y*Z*PADNET[R][C];
-			}
-	Xm/=Q;
-	Ym/=Q;
-	Zm/=Q;
-	Sxx/=Q;
-	Syy/=Q;
-	Szz/=Q;
-	Sxy/=Q;
-	Sxz/=Q;
-	Syz/=Q;
-	Sxx-=(Xm*Xm);
-	Syy-=(Ym*Ym);
-	Szz-=(Zm*Zm);
-	Sxy-=(Xm*Ym);
-	Sxz-=(Xm*Zm);
-	Syz-=(Ym*Zm);
-	
-	theta=0.5*atan((2.*Sxy)/(Sxx-Syy));
-	
-	K11=(Syy+Szz)*pow(cos(theta),2)+(Sxx+Szz)*pow(sin(theta),2)-2.*Sxy*cos(theta)*sin(theta);
-	K22=(Syy+Szz)*pow(sin(theta),2)+(Sxx+Szz)*pow(cos(theta),2)+2.*Sxy*cos(theta)*sin(theta);
-	K12=-Sxy*(pow(cos(theta),2)-pow(sin(theta),2))+(Sxx-Syy)*cos(theta)*sin(theta);
-	K10=Sxz*cos(theta)+Syz*sin(theta);
-	K01=-Sxz*sin(theta)+Syz*cos(theta);
-	K00=Sxx+Syy;
-	
-	c2=-K00-K11-K22;
-	c1=K00*K11+K00*K22+K11*K22-K01*K01-K10*K10;
-	c0=K01*K01*K11+K10*K10*K22-K00*K11*K22;
-		
-	p=c1-pow(c2,2)/3.;
-	q=2.*pow(c2,3)/27.-c1*c2/3.+c0;
-	r=pow(q/2.,2)+pow(p,3)/27.;
-	
-	if(r>0) {dm2=-c2/3.+pow(-q/2.+sqrt(r),1./3.)+pow(-q/2.-sqrt(r),1./3.);cout<<"R>0"<<endl;}
-	if(r<0)
-	{
-	  //cout<<"R<0"<<endl;
-	  rho=sqrt(-pow(p,3)/27.);
-	  phi=acos(-q/(2.*rho));
-	  //dm2=min(-c2/3.+2.*pow(rho,1./3.)*cos(phi/3.),min(-c2/3.+2.*pow(rho,1./3.)*cos((phi+2.*PI)/3.),-c2/3.+2.*pow(rho,1./3.)*cos((phi+4.*PI)/3.)));
-	  dm2=TMath::Min(-c2/3.+2.*pow(rho,1./3.)*cos(phi/3.),TMath::Min(-c2/3.+2.*pow(rho,1./3.)*cos((phi+2.*PI)/3.),-c2/3.+2.*pow(rho,1./3.)*cos((phi+4.*PI)/3.)));
-	}
-	a=-K10*cos(theta)/(K11-dm2)+K01*sin(theta)/(K22-dm2);
-	b=-K10*sin(theta)/(K11-dm2)-K01*cos(theta)/(K22-dm2);
-
-	T->Xm=Xm;
-	T->Ym=Ym;
-	T->Zm=Zm;
-	T->Xh=((1.+b*b)*Xm-a*b*Ym+a*Zm)/(1.+a*a+b*b);
-	T->Yh=((1.+a*a)*Ym-a*b*Xm+b*Zm)/(1.+a*a+b*b);
-	T->Zh=((a*a+b*b)*Zm+a*Xm+b*Ym)/(1.+a*a+b*b);
-	
-	T->L2DXY->SetX1(T->Xm);
-	T->L2DXY->SetY1(T->Ym);
-	T->L2DXY->SetX2(T->Xh);
-	T->L2DXY->SetY2(T->Yh);
-	
-	T->L2DXZ->SetX1(T->Xm);
-	T->L2DXZ->SetY1(T->Zm);
-	T->L2DXZ->SetX2(T->Xh);
-	T->L2DXZ->SetY2(T->Zh);
-	
-	T->L2DYZ->SetX1(T->Ym);
-	T->L2DYZ->SetY1(T->Zm);
-	T->L2DYZ->SetX2(T->Yh);
-	T->L2DYZ->SetY2(T->Zh);
-	
-	return(dm2/Q);
-}
-
-void HeightCorrection(Double_t **PADNET, Double_t **HEIGHT, Int_t Rmin, Int_t Rmax, Int_t Cmin, Int_t Cmax, Double_t threshold, Double_t Tthreshold)
-{
-
-  Int_t Row, Col;
-  const Int_t NRow=32;
-  Double_t Qrow[NRow],Cm[NRow],Zm[NRow];
-  Int_t min_col,max_col,ncol;
-
-  for (Row=Rmin;Row<=Rmax;Row++)
-    {
-      Zm[Row]=0;
-      Qrow[Row]=0;
-      Cm[Row]=0.;
-      min_col=max_col=ncol=0;
-
-      for (Col=Cmin;Col<=Cmax;Col++)
-	{
-	  if(PADNET[Row][Col]>threshold && HEIGHT[Row][Col]>Tthreshold)
-	    {	
-	      ncol++;
-	      if(min_col==0)min_col=Col;
-	      max_col=Col;
-	      Cm[Row]+=PADNET[Row][Col]*(Col+1);//+1 to avoid problem at Col=0
-	      Qrow[Row]+=PADNET[Row][Col];
-	      //cout<<"Row: "<<Row<<", minC: "<<min_col<<", maxC: "<<max_col<<", PAD: "<<PADNET[Row][Col]<<", NRow: "<<NRow<<endl;
-	    }
-	}
-
-      if(ncol!=0)
-	{
-	  Cm[Row]/=Qrow[Row];
-	  Cm[Row]-=1.;	   
-	  for(Col=min_col;Col<max_col+1;Col++)
-	    {
-	      if(PADNET[Row][Col]>threshold && HEIGHT[Row][Col]>Tthreshold)
-		{
-		  Zm[Row]+=TMath::Sqrt(HEIGHT[Row][Col]*HEIGHT[Row][Col]-4*(Col-Cm[Row])*(Col-Cm[Row]));	  
-		}
-	    }
-
-	  Zm[Row]/=ncol; 
-	  //cout<<"Row: "<<Row<<", QCol: "<<Qrow[Row]<<", ZmCol: "<<Zm[Row]<<endl;
-	  for(Col=min_col;Col<max_col+1;Col++)
-	    {
-	      if(PADNET[Row][Col]>threshold && HEIGHT[Row][Col]>Tthreshold)
-		{
-		  HEIGHT[Row][Col]=Zm[Row];	  
-		}
-	    }
-
-	}
-    }
-
-}

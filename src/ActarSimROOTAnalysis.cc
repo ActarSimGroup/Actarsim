@@ -150,7 +150,8 @@ void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
   //TFile for storing the info
   if(!simFile){
     //simFile = new TFile("simFile.root","RECREATE");
-    simFile = new TFile("root_files/simFile.root","RECREATE");
+    //simFile = new TFile("root_files/simFile.root","RECREATE");
+    simFile = new TFile("root_files/sim_files/simFile.root","RECREATE");
     simFile->cd();
 
     eventTree = new TTree("The_ACTAR_Event_Tree","Event_Tree");

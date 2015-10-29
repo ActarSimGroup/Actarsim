@@ -194,7 +194,8 @@
 #/ActarSim/gun/Kine/incidentIon 50 132 50 0.0 131.9178
 
 #/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
-/ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
+#/ActarSim/gun/Kine/targetIon 1 2 1 0.0 2.0141
+/ActarSim/gun/Kine/targetIon 2 4 2 0.0 4.00260325415
 
 #/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
@@ -204,7 +205,8 @@
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
 #/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
-/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
+#/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
+/ActarSim/gun/Kine/recoilIon 2 4 2 0.0 4.00260325415
 
 #/ActarSim/gun/energy 11. MeV
 #/ActarSim/gun/position 0 0 -56 mm
@@ -267,10 +269,31 @@
 /ActarSim/event/printModulo 1000
 #
 # RUN: number of events
-/run/beamOn 100
+/run/beamOn 20000
 #
 #
-
-
-
-
+/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/targetIon 2 4 2 0.0 4.00260325415
+/ActarSim/gun/Kine/recoilIon 2 3 2 0.0 3.01602931914
+/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+#
+#
+/run/beamOn 20000
+#
+#
+/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/targetIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/recoilIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+#
+#
+/run/beamOn 20000
+#
+#
+/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
+/ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
+/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
+/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+#
+#
+/run/beamOn 20000

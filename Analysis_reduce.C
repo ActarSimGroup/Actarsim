@@ -1,3 +1,29 @@
+///////////////////////////////////////////////////////////////////
+//*-- AUTHOR : Piotr Konczykowski
+//*-- Date: 10/2015
+//*-- Last Update: 29/10/15
+//*-- Copyright: GENP (Univ. Santiago de Compostela)
+//
+// --------------------------------------------------------------
+//
+// --------------------------------------------------------------
+// 
+// Common analysis program for ActarSim and Actar data.
+// Adapted for the IPNO experiment on the Actar demonstrator
+// for the particle identification.
+// Select tracks corresponding to a silicon hit, fit it and 
+// calculate the energy deposit
+//
+// --------------------------------------------------------------
+// How to run this program:
+// 1 - 
+//      
+// 2 - Select the output file and choose the flags for visualisation
+//    
+// 3 - Run this macro inside root
+//      gSystem->Load("actarsim.sl");
+//      .L digitizationMacro.C+;
+
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -25,8 +51,13 @@ void Analysis_reduce()
   //gStyle->SetOptStat(000000000);
   //gStyle->SetOptFit(0000);
 
+  //For the Particle Identification, choose the portion of track from which the energy deposit is calculated
+  Double_t DeltaL=20.;//size of the track portion
+  Double_t LOutMax=80.;//distance from the end point on the silicon
 
-  //Flags
+  ///FLAGS///
+
+  //Event by event
   Bool_t Track3DVisuFlag=0;
   Bool_t TrackVisuFlag=1;
   Bool_t TrackSourcePosFlag=0;
@@ -39,6 +70,7 @@ void Analysis_reduce()
   Bool_t ReadWriteFlag=0;// 0: Read, 1: Write
   Int_t DebugFlag=1;// 0: quiet, 1: general, 2: precise
 
+  //At the end of analysis
   Bool_t DeltaTimeFlag=0;
   Bool_t SigmaFlag=0;
   Bool_t ChiFlag=0;
@@ -54,8 +86,6 @@ void Analysis_reduce()
  
   Bool_t simuFlag;
   Bool_t gasflag;
-  Char_t *simname;
-  Char_t *digname;
   Char_t *gasname;
 
   Double_t sampling;
@@ -73,20 +103,19 @@ void Analysis_reduce()
   //theDriftManager.SetDriftVelocity(7.521e-3);
   //theDriftManager.SetDiffusionParameters(2.611e-5,3.796e-5);
 
+  Double_t driftVelocity=6.865e-3;
 
   cout << "Reading Simulation (1) or real datas (0)? ";
   cin >> simuFlag;
   if(simuFlag)
     {
-      dEvsETitle="dE vs E, 80 MeV 12C, Track_length>80mm+delta_l, dl=20mm, ionGasModel, Pad & Si Res";
+      dEvsETitle="dE vs E, 80 MeV 12C, Track_length>80mm+DeltaL, dl=20mm, ionGasModel, Pad & Si Res";
 
       gSystem->Load("libactar.sl");
-      //TFile *f = new TFile("/home/piotr/GEANT4/g4work/ActarSim/ActarSim_G4.9.6.p03/build-test3/output/Output_test.root");
-      //TFile *f = new TFile("/home/piotr/g4work/build-IPNO/output/Output_test_12Caa12C.root");
-      //TFile *f = new TFile("/home/piotr/g4work/build-IPNO/output/Output_test.root");
-      //TFile *f = new TFile("/home/piotr/g4work/build-IPNO/output/Output_test2.root");
-      TFile *f = new TFile("/home/piotr/g4work/build-IPNO/output/Output_12C_He4He4_H2He3_12C12C_H2H2_80k.root");
+      //TFile *f = new TFile("/home/piotr/g4work/build-IPNO/output/Output_12C_He4He4_H2He3_12C12C_H2H2_80k.root");
       //TFile *f = new TFile("/home/piotr/g4work/build-IPNO/output/Output.root");
+      //TFile *f = new TFile("./root_files/out_files/Output_12C_He4He4_H2He3_12C12C_H2H2_80k.root");
+      TFile *f = new TFile("./root_files/out_files/Output.root");
 
       //TTree *t2 = (TTree*)f->Get("pad_signal");
       TTree *t2 = (TTree*)f->Get("out_tree");
@@ -94,34 +123,20 @@ void Analysis_reduce()
       Int_t nentries=t2->GetEntries();
       cout<<"Number of entries : "<<nentries<<endl;
 
-      Double_t Zshift=0;
       sampling=1.;
-      //digname="./dig_files/digFile_alpha_z80_ionGas.root";
-      Double_t driftVelocity=6.865e-3;
     }
   else if(!simuFlag){
     dEvsETitle="dE vs E, Track_length>80mm+#deltal, #deltal=20mm";
 
-    //TFile *f = new TFile("./analysis/anaFile_alpha_z80_padsignal_ionGas_matrix.root");
-    //TFile *f = new TFile("./output/Output_80MeV_12C_aa_a3he_CC_pp_HeiC4H10_9to1.root");
-    //TFile *f = new TFile("./analysis/Output_run161_trigSilOutPad2.root");
-    //TFile *f = new TFile("./analysis/Output_run161_trigSilOutPad3.root");
-    //TFile *f = new TFile("./analysis/Output_run161_trigSilOutPad4.root");
-    //TFile *f = new TFile("./analysis/Output_run161_trigSilOutPad6.root");
-    //TFile *f = new TFile("./analysis/Output_run161_trigSilOutPad7.root");
-    //TFile *f = new TFile("./analysis/Output_run161_trigSilOutPad8.root");
     TFile *f = new TFile("../analysis_output/Output_run161_trigSil_RecoverSat.root");
 
-    //TTree *t1 = (TTree*)f->Get("out_tree");
     TTree *t2 = (TTree*)f->Get("pad_signal");
-    //TTree *t2 = (TTree*)f->Get("out_tree");
 
     Int_t nentries=t2->GetEntries();
     cout<<"Number of entries : "<<nentries<<endl;
     sampling=80.;
-    //Double_t Zshift=3;
-    Double_t Zshift=0;
 	
+    //Calibration parameters for the IPNO experiment
     Double_t MAYACAL[12][2];
     Double_t tmpCAL0[12]={0.006281,0.006195,0.006505,0.006501,0.006290,0.007061,0.006469,0.006497,0.006662,0.006555,0.006574,0.006419};
     Double_t tmpCAL1[12]={0.13,0.18,-0.10,-0.04,0.14,-0.38,0.11,0.13,-0.06,0.01,0.00,0.13};
@@ -131,7 +146,7 @@ void Analysis_reduce()
       MAYACAL[i][1]=tmpCAL1[i];
     }
 
-    Double_t driftVelocity=sampling*6.865E-3;
+    driftVelocity*=sampling;
   }
 
   const Int_t numberOfRows=32;
@@ -153,6 +168,7 @@ void Analysis_reduce()
   if(ReadWriteFlag){
     TFile *outfile = new TFile("./output/Output_v2_39_12MHz_posy37_matrix2.root","RECREATE");
     //TFile *outfile = new TFile("./output/Sim_Output_v2_39_25MHz_posy43_matrix.root","RECREATE");
+
     TTree *out_tree = new TTree("out_tree","out_tree");
   }
 
@@ -236,8 +252,6 @@ void Analysis_reduce()
   Int_t min_row,max_row,nrow;
   Bool_t out_track;
 
-  Double_t delta_l=20.;
-  Double_t l_out=80.;
   Double_t PadToSilX=51.8;
   Double_t PadToSilY=58.8;
   
@@ -274,11 +288,10 @@ void Analysis_reduce()
   Double_t trackPadX,trackPadZ,trackPadY;
   Double_t track_range,track_rangeXY,track_rangePadXY;
 
+  //3 alphas source position inside Actar
   Double_t SourceX=64;
   //Double_t SourceY=-43.;
   Double_t SourceY=-37.43;
-
-  TH2F *hRangeVsVerti = new TH2F("hRangeVsVerti","Range vs Vertical angle, v=2.7, Zshift=3",180,-90.,90.,200,50,150);
    
   //Matrix for the charge map
   Double_t **padCharge=new Double_t*[numberOfRows];
@@ -317,8 +330,8 @@ void Analysis_reduce()
 
    //// Calculating the Scatter Exit Pads (and if there's one, the recoil's exit pad) from the last Column's Rows ////
 
-  Int_t Rmin1,Rmax1,Cmin1,Cmax1; 
-  Int_t Rmin2,Rmax2,Cmin2,Cmax2; 
+  Int_t Rmin1,Rmax1; 
+  Int_t Rmin2,Rmax2; 
   Int_t NRout1,NRout2;
   //Double_t RoutCharge1,RoutCharge2,AvPadout1,AvPadout2;
 
@@ -351,9 +364,6 @@ void Analysis_reduce()
   t2->SetBranchAddress("SilCharge",&SilCharge);
   if(simuFlag)t2->SetBranchAddress("SilID",&SilIDV);
 
-  //t2->SetBranchAddress("PadCharge",&padCharge);
-  //t2->SetBranchAddress("PadTime",&padTime);
-
   if(ReadWriteFlag){
     out_tree->Branch("Energy",&Qtot,"energy/D");
     out_tree->Branch("HAngle",&HAngle,"angle/D");
@@ -372,35 +382,12 @@ void Analysis_reduce()
 
   //create histograms
   if(simuFlag==1){
-    TH1F *h_range_Z=new TH1F("Bragg_Z","",85, 0.,170);
-    TH1F *hSourceZ=new TH1F("hsourceZ","Z track position at Y=-43mm",500, 0.,170.);
-    TH2F *hSourceXZ=new TH2F("hSourceXZ","XZ track position at Y=-43mm",500,1,128,500,0,100);
     TH2F *visu_chargeYZ=new TH2F("visu_chargeYZ","visu_chargeYZ",32,0,32,85,0,85);
     TH3F *h3DTrack=new TH3F("h3DTrack","h3DTrack",64,0,64,32,0,32,85,0,85);
-    TH2F *hdm2vsVAngle=new TH2F("hdm2vsVAngle","Quadratic mean distance vs Vertical angle",180,-90.,90.,1000,3E-9,0.000000015);
-    TH2F *hdm2vsHAngle=new TH2F("hdm2vsHAngle","Quadratic mean distance vs Horizontal angle",180,-90.,90.,1000,3E-9,0.000000015);
-    TH2F *hdm2vsTrackXY=new TH2F("hdm2vsTrackXY","Quadratic mean distance vs XY Range",200,0.,110.,200,3E-9,0.000000015);
-    TH2F *hdm2vsTrackZ=new TH2F("hdm2vsTrackZ","Quadratic mean distance vs Z Range",400,-60.,60.,200,3E-9,0.000000015);
-    TH2F *hdm2vsTrackPadXY=new TH2F("hdm2vsTrackPadXY","Quadratic mean distance vs XY Range (above pads)",200,0.,110.,200,3E-9,0.000000015);
-    TH2F *hdm2vsTrackPadZ=new TH2F("hdm2vsTrackPadZ","Quadratic mean distance vs Z Range (above pads)",400,-60.,60.,200,3E-9,0.000000015);
-    TH2F *hSigmavsZ=new TH2F("hSigmavsZ","Track Pad signal sigma",500,0,160,500,0,5);
   }
   else{
-    //TH1F *h_range_Z=new TH1F("Bragg_Z","",280, 0.,560);
-    TH1F *h_range_Z=new TH1F("Bragg_Z","",150, 300.,600);
-    //TH1F *hSourceZ=new TH1F("hsourceZ","Z track position at Y=-43mm",500, 200.,700.);
-    //TH2F *hSourceXZ=new TH2F("hSourceXZ","XZ track position at Y=-43mm",500,1,128,500,200.,700.);
-    TH1F *hSourceZ=new TH1F("hsourceZ","Z track position at Y=-37.43mm",500, 200.,700.);
-    TH2F *hSourceXZ=new TH2F("hSourceXZ","XZ track position at Y=-37.43mm",500,1,128,500,200.,700.);
     TH2F *visu_chargeYZ=new TH2F("visu_chargeYZ","visu_chargeYZ",32,0,32,300,0.,300.);
     TH3F *h3DTrack=new TH3F("h3DTrack","h3DTrack",64,0,64,32,0,32,300,0.,300.);
-    TH2F *hdm2vsVAngle=new TH2F("hdm2vsVAngle","Quadratic mean distance vs Vertical angle",180,-90.,90.,1000,0.,0.001);
-    TH2F *hdm2vsHAngle=new TH2F("hdm2vsHAngle","Quadratic mean distance vs Horizontal angle",180,-90.,90.,1000,0.,0.001);
-    TH2F *hdm2vsTrackXY=new TH2F("hdm2vsTrackXY","Quadratic mean distance vs XY Range",200,0.,110.,200,3E-9,0.000000015);
-    TH2F *hdm2vsTrackZ=new TH2F("hdm2vsTrackZ","Quadratic mean distance vs Z Range",400,-60.,60.,200,3E-9,0.000000015);
-    TH2F *hdm2vsTrackPadXY=new TH2F("hdm2vsTrackPadXY","Quadratic mean distance vs XY Range (above pads)",200,0.,110.,200,3E-9,0.000000015);
-    TH2F *hdm2vsTrackPadZ=new TH2F("hdm2vsTrackPadZ","Quadratic mean distance vs Z Range (above pads)",400,-60.,60.,200,3E-9,0.000000015);
-    TH2F *hSigmavsZ=new TH2F("hSigmavsZ","Track Pad signal sigma",500,200,700,500,0,5);
   }
 
   TH1F *h_DeltaTime=new TH1F("h_DeltaTime","Pad_Tmax - PadTmin",512,0.,512.);
@@ -428,7 +415,6 @@ void Analysis_reduce()
 
   TH2F* h_dEvsE_ALL2=new TH2F("h_dEvsE_ALL2","dEvsE, dE(Pad)/TrackLength",1000,0.,60.,1000,0.,1.);
   TH2F* h_dEvsE_ALL=new TH2F("h_dEvsE_ALL",dEvsETitle,1000,0.,60.,1000,0.,10.);
-  //TH2F* h_dEvsE_ALL=new TH2F("h_dEvsE_ALL","h_dEvsE_ALL",1000,0.,60.,1000,0.,10.);
   TH2F* h_dEvsE_p=new TH2F("h_dEvsE_p","h_dEvsE_p",1000,0.,60.,1000,0.,10.);
   TH2F* h_dEvsE_3He=new TH2F("h_dEvsE_3He","h_dEvsE_3He",1000,0.,60.,1000,0.,10.);
   TH2F* h_dEvsE_4He=new TH2F("h_dEvsE_4He","h_dEvsE_4He",1000,0.,60.,1000,0.,10.);
@@ -444,20 +430,10 @@ void Analysis_reduce()
   TH2F* h_dEvsE_12C_rej=new TH2F("h_dEvsE_12C_rej","h_dEvsE_12C_rej",1000,0.,60.,1000,0.,10.);
   TH2F* h_dEvsE_13C_rej=new TH2F("h_dEvsE_13C_rej","h_dEvsE_13C_rej",1000,0.,60.,1000,0.,10.);
 
-  //char* BraggTitle1="Track Bragg1";
-  //char* BraggTitle2="Track Bragg2";
-
-
   TH1F *h_scat_range=new TH1F("TrackBragg","Track Bragg",200, 0.,200.);
 
   TH1F *h_scat_range1=new TH1F("TrackBragg1","Track Bragg1",200, 0.,200.);
   TH1F *h_scat_range2=new TH1F("TrackBragg2","Track Bragg2",200, 0.,200.);
-  //TH1F *h_scat_range[0]=new TH1F("TrackBragg1","Track Bragg1",100, 0.,200.);
-  //TH1F *h_scat_range[1]=new TH1F("TrackBragg2","Track Bragg2",100, 0.,200.);
-
-  TH1F *h_range=new TH1F("Range in mm","Range in mm",200,40.,140.);
-  TH1F *h_range_X=new TH1F("Bragg_X","",64, 0.,128);
-  TH1F *h_range_Y=new TH1F("Bragg_Y","",32, 0.,64.);
 
   TH1F *h_energy=new TH1F("Energy","Total Charge Deposited",1000, 3000., 5000.);
   TH2F* visu_multiplicity=new TH2F("visu_multiplicity","visu_multiplicity",64,0,64,32,0,32);
@@ -467,14 +443,8 @@ void Analysis_reduce()
   TH1F *hSourceX=new TH1F("hSourceX","X track position at Y=-37.43mm",500,1,128);
   TH1F *hSourceY=new TH1F("hSourceY","Y track position at X=64mm",400,-100,0);
 
-  TH1F *hdm2=new TH1F("hdm2","Quadratic mean distance",1000,0.,0.001);
-
   TH2F *visu_charge=new TH2F("visu_charge","visu_charge",64,0,64,32,0,32);
   TH2F *visu_time=new TH2F("visu_time","visu_time",64,0,64,32,0,32);
-
-  TH1F *hrangeX=new TH1F("hrangeX","X range",200,0,128);
-  TH1F *hrangeY=new TH1F("hrangeY","Y range",200,0,128);
-  TH1F *hrangeZ=new TH1F("hrangeZ","Z range",200,0,128);
 
   TH1F *hHorizAngle=new TH1F("hHorizAngle","Horizontal Angle",720,-180,180);
   TH1F *hVertiAngle=new TH1F("hVertiAngle","Vertical Angle",360,-90,90);
@@ -487,10 +457,8 @@ void Analysis_reduce()
   TH2F *hdistOFvsVF=new TH2F("hdistOFvsVF","Dist OF vs Dist VF",1000,0,500,1000,0,500);
   TH2F *hdistOFvsTheta=new TH2F("hdistOFvsTheta","Dist OF vs Theta 3D",1000,0,360,1000,0,500);
 
-  //TH1F *htime   = new TH1F("htime","Time*vdrift",500,200.,260.);
   TH1F *hRange   = new TH1F("hRange","Alpha range in mm",200,50.,150.);
   TH1F *hRangeRest   = new TH1F("hRangeRest","Alpha range in mm, |vert angle| < 10 deg",200,50.,150.);
-  //TH2F *hRangeVsVerti = new TH2F("hRangeVsVerti","Range vs Vertical angle",180,-90.,90.,200,50,150);
   TH2F *hRangeVsHoriz = new TH2F("hRangeVsHoriz","Range vs Horizontal angle",180,-90.,90.,200,50,150);
 
   TH1F *hEndTrackX   = new TH1F("hEndTrackX","End track X (mm)",200,0.,128.);
@@ -499,20 +467,6 @@ void Analysis_reduce()
 
   TH2F *hEndTrackXY=new TH2F("hEndTrackXY","XY track final position",64,0,128,32,0,64);
   TH2F *hEndTrackXZ=new TH2F("hEndTrackXZ","XZ track final position",64,0,128,60,190,250);
-
-  TH1F *XRow=new TH1F("XRow","XRow",64,0,128);
-  //TH2F *XRow=new TH2F("XRow","XRow",128,0,128,500,0,10e+7);
-
-  //Char_t *dname="./dig_files/digFile_alpha_z80_ionGas.root";
-  //Char_t *gasname="isobutane";
-
-  //ReadDig(&dname, &gasname);
-  //ReadDig(dname, gasname);
-  //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane");
-  //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane",&&padCharge,&&padTime);
-  //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane",padChargeTest,padTimeTest,i);
-
-  //ReadDig("./dig_files/digFile_alpha_z80_ionGas.root", "isobutane",padCharge,padTime);
 
   //*********************************************************************************************************//
   //*********************************************************************************************************//
@@ -526,7 +480,6 @@ void Analysis_reduce()
     //for (Long64_t jentry=3800;jentry<nentries;jentry++) 
     {
       if(jentry%500==0)cout<<jentry<<endl;
-      //cout<<"¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡   NEW (2nd) EVENT : "<<jentry<<"   !!!!!!!!!!!!!!!!!!!!"<<endl;
       if(DebugFlag>0)cout<<"¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡   NEW EVENT : "<<jentry<<"    !!!!!!!!!!!!!!!!!!!!"<<endl<<endl;
 
       t2->GetEntry(jentry);
@@ -537,8 +490,6 @@ void Analysis_reduce()
       nbsiliconhits=0;
 
       Bool_t StopTrack=false;
-
-      //h_SilCharge->Reset();
 
       for(Int_t s=0;s<16;s++){//Loop on the 12 MAYA Si & 4 DSSD
 	SilHitID=0;
@@ -554,7 +505,6 @@ void Analysis_reduce()
 	    else if(s+1<11)SilLeft=1;
 	    else if(s+1>10)SilRight=1;
 	    //cout<<s+1<<" SilCharge: "<<SilCharge(s)<<endl;
-
 	  
 	    if(simuFlag){
 	      SilID[s]=SilIDV(s);
@@ -568,8 +518,6 @@ void Analysis_reduce()
 	      //cout<<"SilHitID: "<<SilIDV(s)<<endl;
 	    }
 	    else if(!simuFlag){
-
-	      //if(s<4)SilCharge(s)=SilCharge(s)*5.322*1e-3+0.2317;//run177 dssd 140V
 	      if(s<4)SilCharge(s)=SilCharge(s)*5.256*1e-3+0.4312;//run177 dssd 140V
 	      else if(s>3)SilCharge(s)=SilCharge(s)*MAYACAL[s-4][0]+MAYACAL[s-4][1];
 	      h_SilMult->Fill(s);
@@ -578,20 +526,8 @@ void Analysis_reduce()
 	      else if(s==1)h_SilCharge1->Fill(SilCharge(s));
 	      else if(s==2)h_SilCharge2->Fill(SilCharge(s));
 	      else if(s==3)h_SilCharge3->Fill(SilCharge(s));
-
-
-	      /*
-	      //DSSD mapping is different: 0<->1 2<->3
-	      if(s==0){SilCharge(1)=SilCharge(s)*5.322*1e-3+0.2317; h_SilCharge->Fill(s);}
-	      else if(s==1){SilCharge(0)=SilCharge(s)*5.322*1e-3+0.2317; h_SilCharge->Fill(s,1);}
-	      else if(s==2){SilCharge(3)=SilCharge(s)*5.322*1e-3+0.2317; h_SilCharge->Fill(s,1);}
-	      else if(s==3){SilCharge(2)=SilCharge(s)*5.322*1e-3+0.2317; h_SilCharge->Fill(s,1);}
-	      else if(s>3){SilCharge(s)=SilCharge(s)*MAYACAL[s-4][0]+MAYACAL[s-4][1]; h_SilCharge->Fill(s,1);}
-	      */
 	    }
-
 	    //cout<<s<<" SilCharge(s): "<<SilCharge(s)<<endl;
-
 	  }
 
       }
@@ -604,8 +540,6 @@ void Analysis_reduce()
       h_scat_range->Reset();
       h_scat_range1->Reset();
       h_scat_range2->Reset();
-      //h_scat_range[0]->Reset();
-      //h_scat_range[1]->Reset();
 
       T[0]->ResetLines();
       T[1]->ResetLines();
@@ -621,8 +555,8 @@ void Analysis_reduce()
 	for(Int_t r=0;r<numberOfRows;r++){ //LOOP on Rows
 	  if(padChargeTest(r,c) >threshold){
 
-	    //padCharge[r][c]=padChargeTest(r,c);
 	    if(simuFlag){
+	      //Pad energy resolution estimation (to be measured)
 	      if(padChargeTest(r,c)*30/1e6<20)PadESig=0.085;
 	      else if(padChargeTest(r,c)*30/1e6>=20 && padChargeTest(r,c)*30/1e6<=5000)PadESig=-1.6215*1e-5*(padChargeTest(r,c)*30/1e6-20)+0.085;
 	      else if(padChargeTest(r,c)*30/1e6>5000)PadESig=0.00425;
@@ -632,16 +566,17 @@ void Analysis_reduce()
 	      padTime[r][c]=padTimeTest(r,c);
 	      //cout<<"padChargeTest(r,c): "<<padChargeTest(r,c)<<" padChargeTest(r,c) (keV): "<<padChargeTest(r,c)*30/1e6<<" sigma (%): "<<PadESig*100<<" padCharge[r][c] (keV): "<<padCharge[r][c]*30/1e6<<endl;
 
+	      //We left the middle pad band shadowed 
 	      if(r>13 && r<18)padCharge[r][c]=0;
 	    }
 	    else if(!simuFlag){
+	      //Pad chargeto energy (MeV) convertion
 	      padCharge[r][c]=padChargeTest(r,c)*3.299*1e-5+0.0537;
 	      padTime[r][c]=padTimeTest(r,c);
 	      if(r==13 && (c==0 || c==1 || c==2)){padCharge[r][c]=0; padTime[r][c]=0;} //These are noisy channels that I noticed in the end of 1st part. Check if is still the case in the run to analyse
 	    }
 	    //cout<<"Row "<<r<<" Col "<<c<<" padCharge: "<<padCharge[r][c]<<endl;
 
-	    //padTime[r][c]=padTimeTest(r,c);
 	    padHeight[r][c]=padTime[r][c]*driftVelocity;
 
 	    if(maxtime==0){maxtime=mintime=padTime[r][c];}
@@ -682,11 +617,8 @@ void Analysis_reduce()
       for(Int_t m=0;m<numberOfColumns;m++){
 
 	////LEFT SIDE////
-	//if(padCharge[19][m]>threshold)cout<<"Column "<<m<<": "<<padCharge[19][m]<<endl;
-	//if(padCharge[numberOfRows/2+beamWidth+1][m]>threshold&&StopLeft)
 	if(padCharge[numberOfRows/2+beamWidth][m]>threshold)
 	  {
-	    //cout<<"Column "<<m<<": "<<padCharge[19][m]<<endl;
 	    if(m==tmpCmaxbeamleft+1){
 	      NCBeamoutleft++;
 	      Cmaxbeamleft=m;
@@ -714,8 +646,6 @@ void Analysis_reduce()
 	  }
 
 	////RIGHT SIDE////
-	//if(padCharge[12][m]>threshold&&StopRight)    
-	//if(padCharge[numberOfRows/2-beamWidth-2][m]>threshold&&StopRight)    
 	if(padCharge[numberOfRows/2-beamWidth-1][m]>threshold)    
 	  {
 	    if(m==tmpCmaxbeamright+1){
@@ -733,7 +663,6 @@ void Analysis_reduce()
 
 	if(padCharge[0][m]>threshold)    
 	  {
-	    //cout<<"NCoutright "<<NCoutright<<endl;
 	    if(m==Cmaxoutright+1){
 	      NCoutright++;
 	    }
@@ -760,56 +689,37 @@ void Analysis_reduce()
       //// Calculating the Scatter Exit Pads (and if there's one, the recoil's exit pad) from the last Column's Rows ////
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      Rmin1=Rmax1=Cmin1=Cmax1=NRout1=0;
-      Rmin2=Rmax2=Cmin2=Cmax2=NRout2=0;
-      //RoutCharge1=RoutCharge2=AvPadout1=AvPadout2=0.;
+      Rmin1=Rmax1=NRout1=0;
+      Rmin2=Rmax2=NRout2=0;
 
       for(Int_t l=0;l<numberOfRows;l++){
 
 	if(padCharge[l][numberOfColumns-1]>threshold)     
 	  {
-	    //cout<<"NRout1 "<<NRout1<<endl;
 	    if(l==Rmax1+1)
 	      {
 		NRout1++;
 		Rmax1=l;
-		//RoutCharge1+=padCharge[l][numberOfColumns-1];
-		//AvPadout1+=l*padCharge[l][numberOfColumns-1];
-		//cout<<"Case 1"<<endl;
 	      }
 	    else if(NRout1<minpadout)
 	      {
 		Rmax1=l;
 		Rmin1=l;
 		NRout1=1; 
-		//RoutCharge1=padCharge[l][numberOfColumns-1];
-		//AvPadout1=l*padCharge[l][numberOfColumns-1];
-		//cout<<"Case 2"<<endl;
 	      }
 	    else if(NRout1>minpadout-1&&l==Rmax2+1)
 	      {
 		NRout2++;
 		Rmax2=l;
-		//RoutCharge2+=padCharge[l][numberOfColumns-1];
-		//AvPadout2+=l*padCharge[l][numberOfColumns-1];
-		//cout<<"Case 3"<<endl;
 	      }
 	    else if(NRout1>minpadout-1&&NRout2<minpadout)
 	      {
 		Rmax2=l;
 		Rmin2=l;
 		NRout2=1; 
-		//RoutCharge2=padCharge[l][numberOfColumns-1];
-		//AvPadout2=l*padCharge[l][numberOfColumns-1];
-		//cout<<"Case 4"<<endl;
 	      }
 	  }
       }
-
-      //AvPadout1/=RoutCharge1;
-      //AvPadout2/=RoutCharge2;
-
-      //cout<<"Track1 out pad: "<<AvPadout1<<" Track2 out pad: "<<AvPadout2<<endl;
 
       if(NRout1>minpadout-1 && (NRout1<maxpadout || Rmin1==0 || Rmax1==numberOfColumns-1)){trackfront1=1;NTrackOut++;}//If track goes in the corner number of pads can be higher than 5
       if(NRout2>minpadout-1 && (NRout2<maxpadout || Rmax2==numberOfColumns-1)){trackfront2=1;NTrackOut++;}
@@ -839,6 +749,16 @@ void Analysis_reduce()
       //cout<<"E DSSD_1: "<<SilCharge(0)<<" E DSSD_2: "<<SilCharge(1)<<" E DSSD_3: "<<SilCharge(2)<<" E DSSD_4: "<<SilCharge(3)<<endl;
       //cout<<"ID DSSD_1: "<<SilID[0]<<" ID DSSD_2: "<<SilID[1]<<" ID DSSD_3: "<<SilID[2]<<" ID DSSD_4: "<<SilID[3]<<endl;
 
+      // 1 Silicon hit configurations 
+      // Config 1 : left silicon hitted & track exit by the left side
+      // Config 2 : right silicon hitted & track exit by the right side
+      // Config 3 : dssd hitted & track exit by the back side
+      // 2 Silcon hits configurations
+      // Config 4 : left and right silicon hits & 2 tracks exit by left and right sides
+      // Config 5 : left and right silicon hits & 2 tracks exit by left and front sides
+      // Config 6 : left and right silicon hits & 2 tracks exit by right and front sides
+      // Config 7 : left and right dssd hits & 2 tracks exit by front sides
+
       if(nbsiliconhits==1)
 	{
 	  if((SilLeft || DSSD_3 || DSSD_4) && trackleft)config=1;
@@ -865,13 +785,18 @@ void Analysis_reduce()
 
       if(simuFlag){
 	//In the case when the scatter & recoil overlap ///
-	if(NTrackOut==1&&(DSSD_1||DSSD_2)&&!outbeamtrackleft)GOOD_EVENT=0;
-	if(NTrackOut==1&&(DSSD_3||DSSD_4)&&!outbeamtrackright)GOOD_EVENT=0;
+	if(NTrackOut==1 && (DSSD_1||DSSD_2) && !outbeamtrackleft)GOOD_EVENT=0;
+	if(NTrackOut==1 && (DSSD_3||DSSD_4) && !outbeamtrackright)GOOD_EVENT=0;
       }
+
+       
+      ///////////////////////////////////////////////////////////////////////////////////////////
+      //// Determination of the fit boundaries for the tracks depending on the configuration ////
+      ///////////////////////////////////////////////////////////////////////////////////////////
+
 
       if(GOOD_EVENT)
 	{
-
 	  if(DebugFlag>0)cout<<"Config "<<config<<endl;
 	  //cout<<"This is a good event "<<jentry<<endl;
 	  a=b=0.;
@@ -885,7 +810,6 @@ void Analysis_reduce()
 	  track1=track2=0;
 
 	  for(Int_t t=0;t<2;t++){
-	    //IniPoint[t]=IniPoint1[t]=IniPoint2[t]=0.;
 	    Rmin[t]=Rmax[t]=Cmin[t]=Cmax[t]=0;
 	    trackout[t]=SilWall[t]=-1;
 
@@ -897,7 +821,6 @@ void Analysis_reduce()
 	  for(Int_t i=0;i<3;i++){
 	    Start[i]=Out[i]=End[i]=0.;
 	  }
-
 
 	  if(config==1 || config==4 || config==5)
 	    {
@@ -930,8 +853,8 @@ void Analysis_reduce()
 
 	      //if(DebugFlag>1)cout<<Rmin<<" "<<Rmax<<" "<<Cmin<<" "<<Cmax<<endl;
 
-	      track1=1; trackout[0]=0;
-	      DSSD_3 = DSSD_4=0;
+	      track1=1; trackout[0] = 0;
+	      DSSD_3 = DSSD_4 = 0;
 
 	    }//end of config1
 
@@ -1007,7 +930,7 @@ void Analysis_reduce()
 		  //else if(Cmaxbeamleft==numberOfColumns-1 && Cmaxbeamright==numberOfColumns-1){Cmin=TMath::Min((Cmaxbeamleft+Cminbeamleft)/2,(Cmaxbeamright+Cminbeamright)/2); Rmin=numberOfRows/2;}
 		}	     
 
-	      if(DSSD_1||DSSD_2)Cmintmp=(2*Cmaxbeamright+Cminbeamright)/3;//IPNO experiment has a middle band so fits going wrong and this is needed
+	      if(DSSD_1||DSSD_2)Cmintmp=(2*Cmaxbeamright+Cminbeamright)/3;//IPNO experiment has a middle blind band so fits going wrong and this is needed
 	      else if(DSSD_3||DSSD_4)Cmintmp=(2*Cmaxbeamleft+Cminbeamleft)/3;
 
 	      if(Cmintmp==Cmaxtmp)Cmintmp=Cmaxtmp-3;
@@ -1059,12 +982,21 @@ void Analysis_reduce()
 	  //cout<<"track1 "<<track1<<" trackout[0] "<<trackout[0]<<" SilWall[0] "<<SilWall[0]<<endl;
 	  //cout<<"track2 "<<track2<<" trackout[1] "<<trackout[1]<<" SilWall[1] "<<SilWall[1]<<endl;
 
+       
+	  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  //// Fitting and calculating the starting and exit points as well as the energy deposit from a delta L part of the track ////
+	  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
 	  for(Int_t t=0;t<track1+track2;t++){
 	    if(DebugFlag>0)cout<<"Rmin "<<Rmin[t]<<" Rmax "<<Rmax[t]<<" Cmin "<<Cmin[t]<<" Cmax "<<Cmax[t]<<endl;
 	    FitMat(padCharge,Rmin[t],Rmax[t],Cmin[t],Cmax[t],threshold,a,b);
 	    IniPoint[0][t]=0; IniPoint[1][t]=a*IniPoint[0][t]+b/2; FinPoint[0][t]=64; FinPoint[1][t]=FinPoint[0][t]*a+b/2;
 
 	    Double_t chi2=FitMat3D(padCharge,padHeight,Rmin[t],Rmax[t],Cmin[t],Cmax[t],threshold,T[t]);
+
+	    //tstart: parameter to calculate the point Start where the track pass the middle blind band
+	    //t0: parameter to calculate the point Out where the track exit the pad plane
+	    //tf: parameter to calculate the point End where the track hit the silicon
 
 	    xv=2*Cmin[t]+1.;
 
@@ -1108,13 +1040,13 @@ void Analysis_reduce()
 
 	    dist_FO=TMath::Sqrt((Out[0]-End[0])*(Out[0]-End[0])+(Out[1]-End[1])*(Out[1]-End[1])+(Out[2]-End[2])*(Out[2]-End[2]));
 
-	    Double_t tb=l_out/dist_FO;
+	    Double_t tb=LOutMax/dist_FO;
 
 	    PointB[0][t]=tb*(Out[0]-End[0])+End[0];
 	    PointB[1][t]=tb*(Out[1]-End[1])+End[1];
 	    PointB[2][t]=tb*(Out[2]-End[2])+End[2];
 
-	    Double_t ta=(delta_l+l_out)/dist_FO;
+	    Double_t ta=(DeltaL+LOutMax)/dist_FO;
 
 	    PointA[0][t]=ta*(Out[0]-End[0])+End[0];
 	    PointA[1][t]=ta*(Out[1]-End[1])+End[1];
@@ -1215,12 +1147,6 @@ void Analysis_reduce()
 		    else if(t==1)h_scat_range2->Fill(dR[ntimes/2-i],dQ[ntimes/2-i]);
 
 		  }
-		  /*
-		  h_scat_range->Fill(range,padCharge[r][c]);
-		  if(t==0)h_scat_range1->Fill(range,padCharge[r][c]);
-		  else if(t==1)h_scat_range2->Fill(range,padCharge[r][c]);
-		  */
-		  //if(range2<0)cout<<"xPad "<<xPad<<" yPad "<<yPad<<" Range old "<<range<<" range new "<<range2<<" Angle "<<v1.Angle(v2)*deg<<endl;
 		}	    
 	      }
 
@@ -1236,8 +1162,8 @@ void Analysis_reduce()
 
 	    Double_t dE_scat=0.;
 	    Double_t dE_scat2=0.;
-	    //Double_t step=2*TMath::Abs(RangeB[t]-RangeA[t])/100.;
-	    Double_t step=2*TMath::Abs(RangeO[t])/100.;
+	    Double_t step=2*TMath::Abs(RangeB[t]-RangeA[t])/100.;
+	    //Double_t step=2*TMath::Abs(RangeO[t])/100.;
 	    Double_t value;
 
 	    if(RangeA[t]<1000){
@@ -1248,7 +1174,6 @@ void Analysis_reduce()
 		dE_scat+=step*(value+bragR->Eval(val))/2;
 		value=bragR->Eval(val);
 	      }
-
 	    }
 
 	    //cout<<"dE_scat "<<dE_scat<<endl;
@@ -1266,22 +1191,18 @@ void Analysis_reduce()
 
 	    if(DebugFlag>0)cout<<"Energy_in_silicon "<<Energy_in_silicon<<" dE_Pad "<< dE_scat<< endl;
 
-	    if(dist_FO<l_out && dist_VF>(l_out+delta_l)){
-	      //if(dist_FO<l_out && dist_VF>(l_out+delta_l) && TMath::Abs(VAngle)<20){
+	    if(dist_FO<LOutMax && dist_VF>(LOutMax+DeltaL)){
+	      //if(dist_FO<LOutMax && dist_VF>(LOutMax+DeltaL) && TMath::Abs(VAngle)<20){
 	      if(DebugFlag>0)cout<<"ACCEPTED"<<endl;
 	      if(SilWall[t]>1)h_dEvsE_MAYA->Fill(Energy_in_silicon,dE_scat);
 	      if(SilWall[t]<2)h_dEvsE_DSSD->Fill(Energy_in_silicon,dE_scat);
 	      h_dEvsE_ALL->Fill(Energy_in_silicon,dE_scat);
 	      h_dEvsE_ALL2->Fill(Energy_in_silicon,dE_scat2);
 
-	      //if(dE_scat<2.5)StopTrack=true;
-
 	      if(SilCharge(0)>0)h_dEvsE_DSSD1->Fill(Energy_in_silicon,dE_scat);
 	      if(SilCharge(1)>0)h_dEvsE_DSSD2->Fill(Energy_in_silicon,dE_scat);
 	      if(SilCharge(2)>0)h_dEvsE_DSSD3->Fill(Energy_in_silicon,dE_scat);
 	      if(SilCharge(3)>0)h_dEvsE_DSSD4->Fill(Energy_in_silicon,dE_scat);
-
-	      //if(TMath::Abs(Energy_in_silicon-8.85)<0.03 || TMath::Abs(Energy_in_silicon-9.99)<0.03 ||TMath::Abs(Energy_in_silicon-9.81)<0.03 || TMath::Abs(Energy_in_silicon-11.19)<0.03){StopTrack=true;cout<<"Energy_in_silicon "<<Energy_in_silicon<<" dE_scat "<<dE_scat<<endl;}
 
 	      if(simuFlag){
 		if(particleID==1)h_dEvsE_p->Fill(Energy_in_silicon,dE_scat);
@@ -1333,11 +1254,9 @@ void Analysis_reduce()
 	  h_scat_range1->Draw();
 	  bragR1->Draw("same");
 	  TLine lineya1(RangeA[0], 0, RangeA[0], 10e7);
-	  //TLine lineya1(0, 0, 0, 10e7);
 	  lineya1.SetLineWidth(3);
 	  lineya1.Draw("same");
 	  TLine lineyb1(RangeB[0], 0, RangeB[0], 10e7);
-	  //TLine lineyb1(RangeO[0], 0, RangeO[0], 10e7);
 	  lineyb1.Draw("same");
 	  lineyb1.SetLineWidth(3);
 	}
@@ -1347,11 +1266,9 @@ void Analysis_reduce()
 	  h_scat_range2->Draw();
 	  bragR2->Draw("same");
 	  TLine lineya2(RangeA[1], 0, RangeA[1], 10e7);
-	  //TLine lineya2(0, 0, 0, 10e7);
 	  lineya2.SetLineWidth(3);
 	  lineya2.Draw("same");
 	  TLine lineyb2(RangeB[1], 0, RangeB[1], 10e7);
-	  //TLine lineyb2(RangeO[1], 0, RangeO[1], 10e7);
 	  lineyb2.Draw("same");
 	  lineyb2.SetLineWidth(3);
 	}
@@ -1382,16 +1299,10 @@ void Analysis_reduce()
       }
 
       if(TrackVisuFlag){
-	/*
-	Can_sil->cd();
-	h_SilCharge->Draw();
-	Can_sil->Update();
-	*/
-	//if(TrackVisuFlag){
+
 	Can_track->cd(1);
 	visu_charge->Draw("colz");
 
-	//if(FinPoint1[0]!=0. && GOOD_EVENT)
 	if(track1 && GOOD_EVENT)
 	  {
 	    TLine linefit1(IniPoint[0][0], IniPoint[1][0], FinPoint[0][0], FinPoint[1][0]);
@@ -1407,11 +1318,7 @@ void Analysis_reduce()
 	    linedl1.SetLineColor(kBlue);
 	    linedl1.Draw("same");
 	  }
-	//else if(linefit1){linefit1.Clear();linefitreg1.Clear();}
-	//else if(linefit1){linefit1.Delete();linefitreg1.Delete();}
 
-
-	//if(FinPoint2[0] != 0.&&GOOD_EVENT)
 	if(track2 && GOOD_EVENT)
 	  {
 	    TLine linefit2(IniPoint[0][1], IniPoint[1][1], FinPoint[0][1], FinPoint[1][1]);
@@ -1427,8 +1334,6 @@ void Analysis_reduce()
 	    linedl2.SetLineColor(kGreen+2);
 	    linedl2.Draw("same");
 	  }
-	//else if(linefit2){linefit2.Clear();linefitreg2.Clear();}
-	//else if(linefit2){linefit2.Delete();linefitreg2.Delete();}
 
 	TLine line1(0, numberOfRows/2-beamWidth, numberOfColumns, numberOfRows/2-beamWidth);
 	line1.Draw("same");
@@ -1460,7 +1365,7 @@ void Analysis_reduce()
   //*********************************************************************************************************//
   //*********************************************************************************************************//
    
-  if(!ReadWriteFlag&&!EventFlag){
+  if(!ReadWriteFlag && !EventFlag){
 
     if(DeltaTimeFlag){
       TCanvas* Can_DeltaTime=new TCanvas("Can_DeltaTime","Can_DeltaTime",900,900);
@@ -1508,9 +1413,7 @@ void Analysis_reduce()
       hdistOFvsTheta->Draw();
     }
 
-
     if(PIdentFlag){
-
       TCanvas* Can_sil=new TCanvas("Can_sil","Can_sil",900,900);
       Can_sil->Divide(2,2);
       Can_sil->cd(1);
@@ -1553,7 +1456,6 @@ void Analysis_reduce()
       h_dEvsE_DSSD4->SetMarkerStyle(2);
       h_dEvsE_DSSD4->Draw();
     }
-
 
     if(IdentFlag){
       /*

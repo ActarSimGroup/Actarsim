@@ -121,7 +121,7 @@ Float_t Polya(Float_t param=3.2){ //Bellazzini et al NIMA 581 (2007) 246
   
   Int_t check=0;
   Int_t i=0;
-  Long_t rseed;
+  //Long_t rseed;
   Float_t f,buff[1000];
   Float_t lambda;
   Float_t step=0.01;
@@ -317,21 +317,14 @@ private:
                              //PADS, ROWS & COLUMNS begin in 1
                               //(if numberOfRows=80,
                              //then there are rows from 1 to 80).
-  Int_t geoType;            //geometry type (0 box, 1 tube)
-  Int_t padType;            //pad type (0 square, 1 hexagon)
-  Int_t padLayout;          // layout pattern for hexagon pads
-                            //   (0: MAYA like, 1: the one introduced by Hector)
 
-  Double_t padSize;          //pads size (square side or hexagon side)
-  Double_t rHexagon;         //for hexagon only, the apothem
-
-  Double_t radius;           //      cylinder: radius
   Double_t xLength;         //all are half-length! dimension for the box case
   Double_t yLength;
   Double_t zLength;
-  Double_t sideBlankSpace;  // length of blank space for both sides when pad is
-                            //     not fully filled in the chamber (row or column)
+  Double_t padSize;          //pads size
 
+  Double_t sideBlankSpaceX; // length of blank space between the GasBox and the Pad (both side in X direction)
+  Double_t sideBlankSpaceZ; // length of blank space between the GasBox and the Pad (both side in Z direction)
 
   Double_t deltaProximityBeam; //to avoid strides to close to the beam
   Double_t sizeBeamShielding;  //radius of the beam shielding cylinder
@@ -344,29 +337,23 @@ public:
 
   void SetPadsGeometry(void);
 
-  void SetGeometryValues(Int_t geo, Int_t pad, Int_t layout, Double_t x, Double_t y, Double_t z,
-			 Double_t ra, Double_t psi){
-    geoType=geo;  padType=pad; padLayout=layout;
+  void SetGeometryValues(Double_t x, Double_t y, Double_t z, Double_t psi, Double_t gapx, Double_t gapz ){
     xLength = x; yLength = y; zLength = z;
-    radius=ra; padSize=psi;
-    if(padType == 1)rHexagon = 0.8660254037844386467868626478 * padSize;
-    else  rHexagon=0;
+    padSize=psi;
+    sideBlankSpaceX=gapx; sideBlankSpaceZ=gapz;
     SetPadsGeometry();
   }
 
   void SetNumberOfColumns(Int_t col){numberOfColumns=col;}
   void SetNumberOfRows(Int_t row){numberOfRows=row;}
   void SetNumberOfPads(Int_t pad){numberOfPads=pad;}
-  void SetGeoType(Int_t type){geoType=type;}
-  void SetPadType(Int_t type){padType=type;}
-  void SetPadLayout(Int_t layout){padLayout=layout;}
   void SetPadSize(Double_t si){padSize=si;}
-  void SetRHexagon(Double_t si){rHexagon=si;}
   void SetXLength(Double_t x){xLength=x;}
   void SetYLength(Double_t y){yLength=y;}
   void SetZLength(Double_t z){zLength=z;}
-  void SetSideBlankSpace(Double_t blank){sideBlankSpace=blank;}
-  void SetRadius(Double_t ra){radius=ra;}
+
+  void SetSideBlankSpaceX(Double_t gapx){sideBlankSpaceX=gapx;}
+  void SetSideBlankSpaceZ(Double_t gapz){sideBlankSpaceZ=gapz;}
   void SetDeltaProximityBeam(Double_t de){deltaProximityBeam=de;}
   void SetSizeBeamShielding(Double_t le){sizeBeamShielding=le;}
   void SetEndCapModeOn(){endCapMode=1;}
@@ -376,16 +363,12 @@ public:
   Int_t  GetNumberOfColumns(void){return numberOfColumns;}
   Int_t  GetNumberOfRows(void){return numberOfRows;}
   Int_t  GetNumberOfPads(void){return numberOfPads;}
-  Int_t GetGeoType(void){return geoType;}
-  Int_t GetPadType(void){return padType;}
-  Int_t GetPadLayout(void){return padLayout;}
   Double_t GetPadSize(void){return padSize;}
-  Double_t GetRHexagon(void){return rHexagon;}
   Double_t GetXLength(void){return xLength;}
   Double_t GetYLength(void){return yLength;}
   Double_t GetZLength(void){return zLength;}
-  Double_t GetSideBlankSpace(void){return sideBlankSpace;}
-  Double_t GetRadius(void){return radius;}
+  Double_t GetSideBlankSpaceX(void){return sideBlankSpaceX;}
+  Double_t GetSideBlankSpaceZ(void){return sideBlankSpaceZ;}
   Double_t GetDeltaProximityBeam(void){return deltaProximityBeam;}
   Double_t GetSizeBeamShielding(void){return sizeBeamShielding;}
   Int_t GetEndCapMode(void){return endCapMode;}
@@ -418,10 +401,9 @@ public:
 
 padsGeometry::padsGeometry(){
   numberOfColumns=0; numberOfRows=0; numberOfPads=0;
-  geoType=999; padType=999; padLayout=0;
-  padSize=0.; rHexagon=0.;
-  xLength=0; yLength=0; zLength=0; sideBlankSpace=0.;
-  radius=0.;
+  padSize=0.;
+  xLength=0; yLength=0; zLength=0;
+  sideBlankSpaceX=0.; sideBlankSpaceZ=0.;
   deltaProximityBeam=0.; sizeBeamShielding=0.;
   endCapMode=0;
 }
@@ -436,231 +418,52 @@ void padsGeometry::SetPadsGeometry(void){
        << "In padsGeometry::SetPadsGeometry() " << endl
        << "Note that the calculation of the pads geometry could "<< endl
        << "modify slightly the size of the pad you have introduced." << endl;
-  if(geoType == 0 && padType == 0){ //box and square pad
-    numberOfRows = (Int_t) (2*xLength/padSize);
+  //(geoType == 0 && padType == 0) //box and square pad
+  //sideBlankSpaceX = sideBlankSpaceZ = 5; //in mm
+    //numberOfRows = (Int_t) (2*xLength/padSize);
+    numberOfRows = (Int_t) (2*(xLength-sideBlankSpaceX)/padSize);
     cout << "User selected a box with square pads" << endl
 	 << "User selected a padSize = " << padSize;
-    padSize = (2*xLength) / numberOfRows;
+    //padSize = (2*xLength) / numberOfRows;
+    padSize = (2*(xLength-sideBlankSpaceX)) / numberOfRows;
     cout << " after the calculation: padSize = " << padSize <<endl;
-    numberOfColumns = ((Int_t) (2*zLength / padSize)) - 1;
-    if( (numberOfColumns+1)*padSize <= 2*zLength ) numberOfColumns++;
+    //numberOfColumns = ((Int_t) (2*zLength / padSize)) - 1;
+    numberOfColumns = ((Int_t) (2*(zLength-sideBlankSpaceZ) / padSize)) - 1;
+    //if( (numberOfColumns+1)*padSize <= 2*zLength ) numberOfColumns++;
+    if( (numberOfColumns+1)*padSize <= 2*(zLength-sideBlankSpaceZ) ) numberOfColumns++;
     numberOfPads = numberOfRows*numberOfColumns;
     cout  << "________________________________________________________" << endl
 	  << " Output of padsGeometry::SetPadsGeometry() " << endl
 	  << " numberOfRows = "<< numberOfRows
 	  << ", numberOfColumns = " << numberOfColumns << endl
 	  << "________________________________________________________"<< endl;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout==0){ //box and hexagonal pad with MAYA-type layout
-    numberOfColumns = (Int_t) (zLength/rHexagon);
-    cout << "User selected a box with hexagonal pads" << endl
-	 << "User selected a padSize = " << padSize
-	 << " and therefore a rHexagon =  " << rHexagon<< endl;
-    rHexagon =  zLength / numberOfColumns;
-    padSize = 1.154700538379251529013 * rHexagon;
-    cout << " after the calculation: padSize = " << padSize
-	 << " and therefore a rHexagon =  " << rHexagon << endl;
-    numberOfRows = (Int_t) ((2.*xLength-2.*padSize)/(1.5*padSize))+1;
-    sideBlankSpace = (2.*xLength-(numberOfRows-1)*1.5*padSize-2.*padSize )/2.;
-    numberOfPads = numberOfRows*numberOfColumns;
-    cout  << "________________________________________________________" << endl
-	  << " Output of padsGeometry::SetPadsGeometry() " << endl
-	  << " numberOfRows = "<< numberOfRows
-	  << ", numberOfColumns = " << numberOfColumns << endl
-	  << "________________________________________________________"<< endl;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout==1){ //box and hexagonal pad
-    numberOfRows = (Int_t) (xLength/rHexagon);
-    cout << "User selected a box with hexagonal pads" << endl
-         << "User selected a padSize = " << padSize
-         << " and therefore a rHexagon =  " << rHexagon<< endl;
-    rHexagon =  xLength / numberOfRows;
-    padSize = 1.154700538379251529013 * rHexagon;
-    cout << " after the calculation: padSize = " << padSize
-         << " and therefore a rHexagon =  " << rHexagon << endl;
-    numberOfColumns = (Int_t) ((2.*zLength-2.*padSize)/(1.5*padSize)) + 1;
-    sideBlankSpace = (2.*zLength -(numberOfColumns-1)*1.5*padSize-2.*padSize)/2.;
-    numberOfPads = numberOfRows*numberOfColumns;
-    cout  << "________________________________________________________" << endl
-          << " Output of padsGeometry::SetPadsGeometry() " << endl
-          << " numberOfRows = "<< numberOfRows
-          << ", numberOfColumns = " << numberOfColumns << endl
-          << "________________________________________________________"<< endl;
-  }
-  else if(geoType == 1 && padType == 0){ //cylinder and square pad
-    numberOfRows = (Int_t) (2*TMath::Pi()*radius / padSize);
-    cout << "User selected a cylinder with square pads" << endl
-	 << "User selected a padSize = " << padSize;
-    padSize = 2*TMath::Pi()*radius / numberOfRows;
-    cout << " after the calculation: padSize = " << padSize <<endl;
-    numberOfColumns = ((Int_t) (2*zLength / padSize)) - 1;
-    if( (numberOfColumns+1)*padSize <=  2*zLength ) numberOfColumns++;
-    numberOfPads = numberOfRows*numberOfColumns;
-    cout  << "________________________________________________________" << endl
-	  << " Output of padsGeometry::SetPadsGeometry() " << endl
-	  << " numberOfRows = "<< numberOfRows
-	  << ", numberOfColumns = " << numberOfColumns << endl
-	  << "________________________________________________________"<< endl;
-  }
-  else if(geoType == 1 && padType == 1){ //cylinder and hexagonal pad
-    numberOfRows = (Int_t) (TMath::Pi()*radius / rHexagon);
-    cout << "User selected a cylinder with hexagonal pads" << endl
-         << "User selected a padSize = " << padSize
-         << " and therefore a rHexagon =  " << rHexagon<< endl;
-    rHexagon = TMath::Pi()*radius / numberOfRows;
-    padSize = 1.154700538379251529013 * rHexagon;
-    cout << " after the calculation: padSize = " << padSize
-         << " and therefore a rHexagon =  " << rHexagon << endl;
-    numberOfColumns = ((Int_t) (2*zLength / (1.5*padSize))) - 1;
-    if( (numberOfColumns+1)*1.5*padSize <=  2*zLength ) numberOfColumns++;
-    numberOfPads = numberOfRows*numberOfColumns;
-    cout  << "________________________________________________________" << endl
-          << " Output of padsGeometry::SetPadsGeometry() " << endl
-          << " numberOfRows = "<< numberOfRows
-          << ", numberOfColumns = " << numberOfColumns << endl
-          << "________________________________________________________"<< endl;
-  }
-  else
-    cout << "ERROR: No valid geometry... Have you call "
-	 <<"SetGeometryValues() before with valid arguments?" << endl << endl;
+  
+
 }
 
 
 Int_t padsGeometry::IsInPadNumber(TVector3* point){
   //calculates the pad number where the point is
   Int_t column; Int_t row;
-  if(geoType == 0 && padType == 0){ //box and square pad
-    row = (Int_t) (((point->X() + xLength)/ padSize) + 1);
-    column = (Int_t) ((point->Z() / padSize)+1);
-    if(column > 0 && column < numberOfColumns+1
-       && row > 0 && row < numberOfRows+1) {
-      if(DIGI_DEBUG>2)
-	cout << "In padsGeometry::IsInPadNumber()" << endl
-	     << " Pad (" << row << "," << column << ") for point "
-	     << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return CalculatePad(row,column);
-    }
-    else{
-      if(DIGI_DEBUG)
-	cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
-	     << " Invalid pad returned from requested point "
-	     << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return 0;
-    }
-  }
-  else if(geoType == 0 && padType == 1 && padLayout == 0){ //box and hexagonal pad and MAYA-type layout
-    if(point->X()< -xLength || point->X()>xLength || point->Z()< 0 || point->Z()>2*zLength) {
-      if(DIGI_DEBUG)
-	cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
-	     << " Invalid pad returned from requested point "
-	     << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return 0;
-    }
-       row = (Int_t) ((point->X() + xLength - sideBlankSpace)/(1.5*padSize))+1;
-    column = (Int_t) (point->Z()/ (2*rHexagon)) + 1;
-    Double_t shorterDist = padSize; Int_t candidate=0; point->SetY(-yLength);
-    for(Int_t i=0;i<2;i++){   //checking if it is on the next column
-      for(Int_t j=-1;j<1;j++){   //checking if it is on the previous row
-	if((column+i)>numberOfColumns || (row+j)<1 || (row+j)>numberOfRows) continue;
-	TVector3 distance = *point - CoordinatesCenterOfPad(CalculatePad(row+j,column+i));
-	if (distance.Mag() <= rHexagon){
-          return CalculatePad(row+j,column+i);
-        }
-	if( distance.Mag() <= shorterDist ) {
-	  shorterDist = distance.Mag();
-	  candidate = CalculatePad(row+j,column+i);
-	}
+  //(geoType == 0 && padType == 0) //box and square pad
+      row = (Int_t) (((point->X() - sideBlankSpaceX + xLength)/ padSize) + 1);
+      column = (Int_t) (((point->Z() - sideBlankSpaceZ) / padSize)+1);
+      if(column > 0 && column < numberOfColumns+1
+	 && row > 0 && row < numberOfRows+1) {
+	if(DIGI_DEBUG>2)
+	  cout << "In padsGeometry::IsInPadNumber()" << endl
+	       << " Pad (" << row << "," << column << ") for point "
+	       << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
+	return CalculatePad(row,column);
       }
-    }
-    if(DIGI_DEBUG>2)
-      cout << "Finally, In padsGeometry::IsInPadNumber()" << endl
-	   << " Pad (" << row << "," << column << ") for point "
-	   << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-    return candidate;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout == 1){ //box and hexagonal pad
-    if(point->X()< -xLength || point->X()>xLength || point->Z()< 0 || point->Z()>2*zLength) {
-      if(DIGI_DEBUG)
-        cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
-             << " Invalid pad returned from requested point "
-             << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return 0;
-    }
-    row = (Int_t) (((point->X() + xLength)/ (2*rHexagon)) + 1);
-    column = (Int_t) (((point->Z()-sideBlankSpace)/(1.5*padSize))+1);
-    Double_t shorterDist = padSize; Int_t candidate=0; point->SetY(-yLength);
-    for(Int_t i=0;i<2;i++){   //checking if it is on the next row
-      for(Int_t j=-1;j<1;j++){   //checking if it is on the previous column
-        if(row+i>numberOfRows || column+j<1 || column+j>numberOfColumns) continue;
-        TVector3 distance =
-          *point - CoordinatesCenterOfPad(CalculatePad(row+i,column+j));
-        if (distance.Mag() <= rHexagon) return CalculatePad(row+i,column+j);
-        if( distance.Mag() <= shorterDist ) {
-          shorterDist = distance.Mag();
-          candidate = CalculatePad(row+i,column+j);
-        }
+      else{
+	if(DIGI_DEBUG)
+	  cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
+	       << " Invalid pad returned from requested point "
+	       << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
+	return 0;
       }
-    }
-    if(DIGI_DEBUG>2)
-      cout << "In padsGeometry::IsInPadNumber()" << endl
-           << " Pad (" << row << "," << column << ") for point "
-           << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-    return candidate;
-  }
-  else if(geoType == 1 && padType == 0){ //cylinder and square pad
-    if(point->Phi()>=0) row =(Int_t)(numberOfRows * (point->Phi()) / (2*TMath::Pi())) +1;
-    else row =(Int_t)(numberOfRows * ( point->Phi() + (2*TMath::Pi())) / (2*TMath::Pi())) +1;
-    column = (Int_t) ((point->Z() / padSize)+1);
-    if(column > 0 && column < numberOfColumns+1 &&
-       row > 0 && row < numberOfRows+1) {
-      if(DIGI_DEBUG>2)
-	cout << "In padsGeometry::IsInPadNumber()" << endl
-	     << " Pad (" << row << "," << column << ") for point "
-	     << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return CalculatePad(row,column);
-    }
-    else{
-      if(DIGI_DEBUG)
-	cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
-	     << " Invalid pad returned from requested point "
-	     << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return 0;
-    }
-  }
-  else if(geoType == 1 && padType == 1){ //cylinder and hexagonal pad
-    if(point->Z()<0 || point->Z()>2*zLength) {
-      if(DIGI_DEBUG)
-        cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
-             << " Invalid pad returned from requested point "
-             << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-      return 0;
-    }
-    if(point->Phi()>=0) row= (Int_t)(numberOfRows * (point->Phi()) / (2*TMath::Pi())) + 1;
-    else row= (Int_t)(numberOfRows * (point->Phi()+(2*TMath::Pi())) / (2*TMath::Pi())) + 1;
-    column = (Int_t)((point->Z()/(1.5*padSize))+1);
-    Double_t shorterDist = padSize; Int_t candidate=0; point->SetPerp(radius);
-    for(Int_t i=0;i<2;i++){   //checking if it is on the next row
-      for(Int_t j=-1;j<1;j++){   //checking if it is on the previous column
-        if(row+i>numberOfRows || column+j<1 || column+j>numberOfColumns) continue;
-        TVector3 distance =
-          *point - CoordinatesCenterOfPad(CalculatePad(row+i,column+j));
-        if( distance.Mag() <= shorterDist ) {
-          shorterDist = distance.Mag();
-          candidate = CalculatePad(row+i,column+j);
-        }
-      }
-    }
-    if(DIGI_DEBUG>2)
-      cout << "In padsGeometry::IsInPadNumber()" << endl
-           << " Pad (" << row << "," << column << ") for point "
-           << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
-    return candidate;
-  }
-  else {
-        cout << "No valid geometry... Have you call "
-	    <<"SetGeometryValues() before with valid arguments?" <<endl<<endl;
-	    return 0;
-	    }
+
 }
 
 Int_t padsGeometry::GetPadColumnFromXZValue(Double_t x, Double_t z){
@@ -670,45 +473,11 @@ Int_t padsGeometry::GetPadColumnFromXZValue(Double_t x, Double_t z){
   TVector3 point(x, -yLength, z);
   TVector3 vec;
 
-  Int_t column=0, row=0;
-  if(geoType == 0 && padType == 0){ //box and square pad
-    column = (Int_t) ((z / padSize)+1);
-    return column;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout == 0){ //box and hexagonal pad with MAYA-type layout
-    column = (Int_t) ((point.Z()/(2*rHexagon))+1);
-    return column;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout == 1){ //box and hexagonal pad
-    row = (Int_t) (((point.X() + xLength)/ (2*rHexagon)) + 1);
-    column = (Int_t) (((point.Z()-sideBlankSpace)/(1.5*padSize))+1);
-    Double_t shorterDist = padSize; Int_t candidate=0; point.SetY(-yLength);
-    for(Int_t i=0;i<2;i++){   //checking if it is on the next row
-      for(Int_t j=-1;j<1;j++){   //checking if it is on the previous column
-        vec.SetXYZ(-xLength + ((2*(row+i))-1)*rHexagon,
-                   -yLength,
-                    padSize*((column+j)*1.5-0.5)+sideBlankSpace
-                  );
-        if((column+j)%2==0) vec.SetX(vec.X()-rHexagon);
-        TVector3 distance = point - vec;
-        if (distance.Mag() <= rHexagon) return column+j;
-        if( distance.Mag() <= shorterDist ) {
-          shorterDist = distance.Mag();
-          candidate = column+j;
-        }
-      }
-    }
-    if(DIGI_DEBUG>2)
-      cout << "In padsGeometry::IsInPadNumber()" << endl
-           << " Pad (" << row << "," << column << ") for point "
-           << point.X() << ","<< point.Y() << ","<< point.Z()<< endl;
-    return candidate;
-  }
-  else {
-    cout << "No valid geometry... Have you called"
-         <<"SetGeometryValues() before with valid arguments?" <<endl<<endl;
-    return 0;
-  }
+  Int_t column=0;//, row=0;
+  //(geoType == 0 && padType == 0) //box and square pad
+  column = (Int_t) (((z - sideBlankSpaceZ) / padSize)+1);
+  return column;
+
 }
 
 Int_t padsGeometry::GetPadRowFromXZValue(Double_t x, Double_t z){
@@ -718,16 +487,13 @@ Int_t padsGeometry::GetPadRowFromXZValue(Double_t x, Double_t z){
   TVector3 point(x, -yLength, z);
   TVector3 vec;
 
-  Int_t column=0, row=0;
-  if(geoType == 0 && padType == 0){ //box and square pad
-    row =  (Int_t) numberOfRows/2.+ ((x / padSize)+1);
-    return row;
-  }
-  else {
-    cout << "No valid geometry... Have you called"
-         <<"SetGeometryValues() before with valid arguments?" <<endl<<endl;
-    return 0;
-  }
+  //Int_t column=0, row=0;
+  Int_t row=0;
+  //(geoType == 0 && padType == 0)//box and square pad
+  //row =  (Int_t) numberOfRows/2.+ (((x-sideBlankSpaceX) / padSize)+1);
+  row =  (Int_t) numberOfRows/2.+ ((x / padSize)+1);
+  return row;
+  
 }
 
 
@@ -741,95 +507,20 @@ TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
   }
   Int_t row = CalculateRow(pad);
   Int_t column =  CalculateColumn(pad);
-  if(geoType == 0 && padType == 0){ //box and square pad
-    TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,(column-0.5)*padSize);
-    if(DIGI_DEBUG>2)
-      cout <<  "________________________________________________________" << endl
-	   << " Output of padsGeometry::CoordinatesCenterOfPad("
-	   << pad << ") " << endl
-	   <<  " row = "<<  row
-	   << ", column = " <<  column << endl
-	   << " x = "<<  vec.x()
-	   << ", y = " <<  vec.y()
-	   << ", z = " << vec.z() << endl
-	   << "________________________________________________________"<< endl;
-    return vec;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout == 0){ //box and hexagonal pad with MAYA-type layout
-    TVector3 vec(-xLength + sideBlankSpace + padSize*((row*1.5)-0.5),
-                 -yLength,
-                 (2*column-1)*rHexagon
-                );
-    if(row%2==0) vec.SetZ(vec.Z()-rHexagon);
-    if(DIGI_DEBUG>2)
-      cout <<  "________________________________________________________" << endl
-	   << " Output of padsGeometry::CoordinatesCenterOfPad("
-	   << pad << ") " << endl
-	   <<  " row = "<<  row
-	   << ", column = " <<  column << endl
-	   << " x = "<<  vec.x()
-	   << ", y = " <<  vec.y()
-	   << ", z = " << vec.z() << endl
-	   << "________________________________________________________"<< endl;
-    return vec;
-  }
-  else if(geoType == 0 && padType == 1 && padLayout == 1){ //box and hexagonal pad
-    TVector3 vec(-xLength + ((2*row)-1)*rHexagon,
-                  -yLength,
-                  padSize*((column*1.5)-0.5)+sideBlankSpace
-                );
-    if(column%2==0) vec.SetX(vec.X()-rHexagon);
-    if(DIGI_DEBUG>2)
-      cout <<  "________________________________________________________" << endl
-           << " Output of padsGeometry::CoordinatesCenterOfPad("
-           << pad << ") " << endl
-           <<  " row = "<<  row
-           << ", column = " <<  column << endl
-           << " x = "<<  vec.x()
-           << ", y = " <<  vec.y()
-           << ", z = " << vec.z() << endl
-           << "________________________________________________________"<< endl;
-    return vec;
-  }
-  else if(geoType == 1 && padType == 0){ //cylinder and square pad
-    TVector3 vec(radius, radius, (column-0.5)*padSize);
-    vec.SetPerp(radius);
-    vec.SetPhi( (row-0.5) * 2 * TMath::Pi() /  numberOfRows );
-    if(DIGI_DEBUG>2)
-      cout <<  "________________________________________________________" << endl
-	   << " Output of padsGeometry::CoordinatesCenterOfPad("
-	   << pad << ") " << endl
-	   <<  " row = "<<  row
-	   << ", column = " <<  column << endl
-	   << " x = "<<  vec.x()
-	   << ", y = " <<  vec.y()
-	   << ", z = " << vec.z() << endl
-	   << "________________________________________________________"<< endl;
-    return vec;
-  }
-  else if(geoType == 1 && padType == 1){ //cylinder and hexagonal pad
-    TVector3 vec(radius, radius, padSize*((column*1.5)-0.5));
-    vec.SetPerp(radius);
-    if(column%2==1) vec.SetPhi( (row-0.5) * 2 * TMath::Pi() /  numberOfRows ) ;
-    else vec.SetPhi( (row-1) * 2 * TMath::Pi() /  numberOfRows);
-    if(DIGI_DEBUG>2)
-      cout <<  "________________________________________________________" << endl
-           << " Output of padsGeometry::CoordinatesCenterOfPad("
-           << pad << ") " << endl
-           <<  " row = "<<  row
-           << ", column = " <<  column << endl
-           << " x = "<<  vec.x()
-           << ", y = " <<  vec.y()
-           << ", z = " << vec.z() << endl
-           << "________________________________________________________"<< endl;
-    return vec;
-  }
-  else {
-    cout << "No valid geometry... Have you call "
-	 <<"SetGeometryValues() before with valid arguments?" <<endl<<endl;
-    TVector3 vec3(1.,1.,1.);
-    return vec3;
-  }
+  //(geoType == 0 && padType == 0) //box and square pad
+  //TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,(column-0.5)*padSize + sideBlankSpace);
+  TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,(column-0.5)*padSize);
+  if(DIGI_DEBUG>2)
+    cout <<  "________________________________________________________" << endl
+	 << " Output of padsGeometry::CoordinatesCenterOfPad("
+	 << pad << ") " << endl
+	 <<  " row = "<<  row
+	 << ", column = " <<  column << endl 
+	 << " x = "<<  vec.x()
+	 << ", y = " <<  vec.y()
+	 << ", z = " << vec.z() << endl
+	 << "________________________________________________________"<< endl;
+  return vec;
 }
 
 
@@ -1168,8 +859,31 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 
   TRandom *random=new TRandom();
   random->SetSeed(0);
-  if(padsGeo->GetEndCapMode()==1) ;
-  else{
+ 
+  //if(padsGeo->GetGeoType()==0)  //box
+  if(padsGeo->GetEndCapMode()==1){
+    Double_t tempY = pro->GetTrack()->GetYPre();                                 //storing old Y
+    pro->GetTrack()->SetYPre(pro->GetTrack()->GetZPre()-padsGeo->GetYLength());  //move Z to Y
+    pro->GetTrack()->SetZPre(-tempY+padsGeo->GetZLength());                      //move Y to Z
+    tempY= pro->GetTrack()->GetYPost();
+    pro->GetTrack()->SetYPost(pro->GetTrack()->GetZPost()-padsGeo->GetYLength());
+    pro->GetTrack()->SetZPost(-tempY+padsGeo->GetZLength());
+    pro->SetPosition(5);
+    //repeating here the general position selection rules after the change of
+    //coordinates required to project on the endcaps
+    if( pro->GetTrack()->GetZPre() <= 0 ||
+	pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
+	pro->GetTrack()->GetZPost() <= 0 ||
+	pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength() ) pro->SetPosition(5);
+    else if( rhoPre < padsGeo->GetDeltaProximityBeam() ||
+	     rhoPost <padsGeo->GetDeltaProximityBeam() ) pro->SetPosition(1);
+    else if(rhoPre < padsGeo->GetSizeBeamShielding() &&
+	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(2);
+    else if(rhoPre < padsGeo->GetSizeBeamShielding() ||
+	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(3);
+    else pro->SetPosition(4); //still to be checked after as a function of the geoType
+  }
+  else{  //box
     if( pro->GetTrack()->GetZPre() <= 0 ||
 	pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
 	pro->GetTrack()->GetZPost() <= 0 ||
@@ -1182,144 +896,77 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 	    rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(3); //if one point is within the beamShielding
     else pro->SetPosition(4); //if both points lie outside of beamShielding, still to be checked after as a function of geoType
   }
-  if(padsGeo->GetGeoType()==1) { //cylinder
-    if( pro->GetPosition() == 4 &&
-        rhoPre <= padsGeo->GetRadius() &&
-	rhoPost <= padsGeo->GetRadius() ) pro->SetPosition(4);
-    else  pro->SetPosition(5);
-    //if the pads goes out of the gas chamber
-    if( pro->GetPosition()==5 ) return 0;
-    Double_t phiPre = atan2(pro->GetTrack()->GetYPre(),
-			    pro->GetTrack()->GetXPre());
-    Double_t phiPost = atan2(pro->GetTrack()->GetYPost(),
-			     pro->GetTrack()->GetXPost());
-    driftDistPre = padsGeo->GetRadius() - rhoPre;
-    if(lorentzAngle==0.) {
-      //
-      //if no magnetic field, the cloud limits drift to the same point in
-      // phiZ plane. The drift time is obtained from the differences in rho
-      //
-      pro->GetPre()->SetPerp(padsGeo->GetRadius());    //rho is the pad plane rho
-      pro->GetPre()->SetPhi(phiPre);                 //phi is not changed
-      pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());   //Z is not changed
-      pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
-      pro->GetPost()->SetPerp(padsGeo->GetRadius());   //rho is the pad plane rho
-      pro->GetPost()->SetPhi(phiPost);               //phi is not changed
-      pro->GetPost()->SetZ(pro->GetTrack()->GetZPost()); //Z is not changed
-      pro->SetTimePost(pro->GetTrack()->GetTimePost() + (padsGeo->GetRadius() - rhoPost) / driftVelocity);
-    }
-    else{
-      //if the magnetic field is set, the displacement is more complex...
-      //NOT YET DONE... SIMPLY COPYING THE PREVIOUS CASE
-      //if(DIGI_DEBUG)
-	cout <<  "________________________________________________________" << endl
-	     << " Output of driftManager::CalculatePositionAfterDrift()" << endl
-	     <<  " NOT YET INTRODUCED A REALISTIC CASE WITH MAGNETIC FIELD!" << endl;
-      pro->GetPre()->SetPerp(padsGeo->GetRadius());    //rho is the pad plane rho
-      pro->GetPre()->SetPhi(phiPre);                 //phi is not changed
-      pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());   //Z is not changed
-      pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
-      pro->GetPost()->SetPerp(padsGeo->GetRadius());   //rho is the pad plane rho
-      pro->GetPost()->SetPhi(phiPost);               //phi is not changed
-      pro->GetPost()->SetZ(pro->GetTrack()->GetZPost()); //Z is not changed
-      pro->SetTimePost(pro->GetTrack()->GetTimePost() + (padsGeo->GetRadius() - rhoPost) / driftVelocity);
-    }
+
+  if( pro->GetPosition() == 4 &&
+      pro->GetTrack()->GetYPost() <= padsGeo->GetYLength() &&
+      pro->GetTrack()->GetYPost() >= (-padsGeo->GetYLength()) &&
+      pro->GetTrack()->GetXPost() <= padsGeo->GetXLength() &&
+      pro->GetTrack()->GetXPost() >= (-padsGeo->GetXLength()) ) pro->SetPosition(4);
+  else  pro->SetPosition(5);
+  //if the pads goes out of the gas chamber
+  if( pro->GetPosition()==5 ) return 0;
+
+  driftDistPre = padsGeo->GetYLength() + pro->GetTrack()->GetYPre();
+  driftDistPost= padsGeo->GetYLength() + pro->GetTrack()->GetYPost();
+  //cout<< driftDistPre<<endl;
+  if(lorentzAngle==0.) {
+    //
+    //if no magnetic field, the cloud limits drift to the same point in
+    // XZ space. The drift time is obtained from the differences in Y
+    //
+    pro->SetSigmaTransvAtPadPlane(sqrt(driftDistPre*2*transversalDiffusion
+				       / driftVelocity));
+
+    //D. Perez-Loureiro Added Sigma drift
+    //Double_t sigma_drift=0.1*padsGeo->GetPadSize();
+    //Double_t sigma_drift=0;
+    //Double_t sigma_drift=pro->GetSigmaTransvAtPadPlane();
+    //cout<<"sigma "<<sigma_drift<<" "<<driftDistPre<<endl;
+    //Double_t L = ampManager->GetACseparation(); // distance between wire and pads plane
+    //cout<<"L "<<L<<endl;
+    //sigma_drift=sigma_drift/L;
+    //cout<<"sigma "<<sigma_drift<<endl;
+    //pro->GetPre()->SetX(pro->GetTrack()->GetXPre());//X is not changed
+    //Double_t XBefore=pro->GetTrack()->GetXPre();
+    //cout<<"X pre before drift "<<pro->GetTrack()->GetXPre()<<endl;
+    //Double_t XAfter=gRandom->Gaus(XBefore,sigma_drift);
+    //cout<<gRandom->Integer(20)<<endl;
+    //Double_t XAfter=gRandom->Gaus(XBefore,sigma_drift);
+    //XAfter=XBefore;
+    pro->GetPre()->SetX(pro->GetTrack()->GetXPre());//X is not changed
+    //pro->GetPre()->SetX(gRandom->Gaus(pro->GetTrack()->GetXPre(),sigma_drift));      //X is  changed
+    // cout<<"XAfter "<<XAfter<<" Difference "<<XAfter-XBefore<<endl;
+    //cout<<"---------------------------------------------"<<endl;
+    pro->GetPre()->SetY(-padsGeo->GetYLength());          //Y is the pad plane
+    pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());      //Z is not changed
+    //pro->GetPre()->SetZ(gRandom->Gaus(pro->GetTrack()->GetZPre(),sigma_drift));      //Z is  changed
+    pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
+    pro->GetPost()->SetX(pro->GetTrack()->GetXPost());
+    //pro->GetPost()->SetX(gRandom->Gaus(pro->GetTrack()->GetXPost(),sigma_drift));    //X is not changed
+    pro->GetPost()->SetY(-padsGeo->GetYLength());         //Y is the pad plane
+    pro->GetPost()->SetZ(pro->GetTrack()->GetZPost());
+    //pro->GetPost()->SetZ(gRandom->Gaus(pro->GetTrack()->GetZPost(),sigma_drift));    //Z is  changed
+    pro->SetTimePost(pro->GetTrack()->GetTimePost()+driftDistPost/ driftVelocity);
   }
-
-  if(padsGeo->GetGeoType()==0){  //box
-    if(padsGeo->GetEndCapMode()==1){
-      Double_t tempY = pro->GetTrack()->GetYPre();                                 //storing old Y
-      pro->GetTrack()->SetYPre(pro->GetTrack()->GetZPre()-padsGeo->GetYLength());  //move Z to Y
-      pro->GetTrack()->SetZPre(-tempY+padsGeo->GetZLength());                      //move Y to Z
-      tempY= pro->GetTrack()->GetYPost();
-      pro->GetTrack()->SetYPost(pro->GetTrack()->GetZPost()-padsGeo->GetYLength());
-      pro->GetTrack()->SetZPost(-tempY+padsGeo->GetZLength());
-      pro->SetPosition(5);
-      //repeating here the general position selection rules after the change of
-      //coordinates required to project on the endcaps
-      if( pro->GetTrack()->GetZPre() <= 0 ||
-	  pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
-	  pro->GetTrack()->GetZPost() <= 0 ||
-	  pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength() ) pro->SetPosition(5);
-      else if( rhoPre < padsGeo->GetDeltaProximityBeam() ||
-	       rhoPost <padsGeo->GetDeltaProximityBeam() ) pro->SetPosition(1);
-      else if(rhoPre < padsGeo->GetSizeBeamShielding() &&
-	      rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(2);
-      else if(rhoPre < padsGeo->GetSizeBeamShielding() ||
-	      rhoPost < padsGeo->GetSizeBeamShielding() ) pro->SetPosition(3);
-      else pro->SetPosition(4); //still to be checked after as a function of the geoType
-    }
-
-    if( pro->GetPosition() == 4 &&
-	pro->GetTrack()->GetYPre() <= padsGeo->GetYLength() &&
-	pro->GetTrack()->GetYPre() >= (-padsGeo->GetYLength()) &&
-	pro->GetTrack()->GetXPost() <= padsGeo->GetXLength() &&
-	pro->GetTrack()->GetXPost() >= (-padsGeo->GetXLength()) ) pro->SetPosition(4);
-    else  pro->SetPosition(5);
-    //if the pads goes out of the gas chamber
-    if( pro->GetPosition()==5 ) return 0;
-
-    driftDistPre = padsGeo->GetYLength() + pro->GetTrack()->GetYPre();
-    driftDistPost= padsGeo->GetYLength() + pro->GetTrack()->GetYPost();
-    //cout<< driftDistPre<<endl;
-    if(lorentzAngle==0.) {
-      //
-      //if no magnetic field, the cloud limits drift to the same point in
-      // XZ space. The drift time is obtained from the differences in Y
-      //
-      pro->SetSigmaTransvAtPadPlane(sqrt(driftDistPre*2*transversalDiffusion
-					 / driftVelocity));
-
-      //D. Perez-Loureiro Added Sigma drift
-      //Double_t sigma_drift=0.1*padsGeo->GetPadSize();
-      //Double_t sigma_drift=0;
-      Double_t sigma_drift=pro->GetSigmaTransvAtPadPlane();
-      //cout<<"sigma "<<sigma_drift<<" "<<driftDistPre<<endl;
-      //Double_t L = ampManager->GetACseparation(); // distance between wire and pads plane
-      //cout<<"L "<<L<<endl;
-      //sigma_drift=sigma_drift/L;
-      //cout<<"sigma "<<sigma_drift<<endl;
-      //pro->GetPre()->SetX(pro->GetTrack()->GetXPre());//X is not changed
-      Double_t XBefore=pro->GetTrack()->GetXPre();
-      //cout<<"X pre before drift "<<pro->GetTrack()->GetXPre()<<endl;
-      //Double_t XAfter=gRandom->Gaus(XBefore,sigma_drift);
-      //cout<<gRandom->Integer(20)<<endl;
-      //Double_t XAfter=gRandom->Gaus(XBefore,sigma_drift);
-      //XAfter=XBefore;
-      pro->GetPre()->SetX(pro->GetTrack()->GetXPre());//X is not changed
-      //pro->GetPre()->SetX(gRandom->Gaus(pro->GetTrack()->GetXPre(),sigma_drift));      //X is  changed
-      // cout<<"XAfter "<<XAfter<<" Difference "<<XAfter-XBefore<<endl;
-      //cout<<"---------------------------------------------"<<endl;
-      pro->GetPre()->SetY(-padsGeo->GetYLength());          //Y is the pad plane
-      pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());      //Z is not changed
-      //pro->GetPre()->SetZ(gRandom->Gaus(pro->GetTrack()->GetZPre(),sigma_drift));      //Z is  changed
-      pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
-      pro->GetPost()->SetX(pro->GetTrack()->GetXPost());
-      //pro->GetPost()->SetX(gRandom->Gaus(pro->GetTrack()->GetXPost(),sigma_drift));    //X is not changed
-      pro->GetPost()->SetY(-padsGeo->GetYLength());         //Y is the pad plane
-      pro->GetPost()->SetZ(pro->GetTrack()->GetZPost());
-      //pro->GetPost()->SetZ(gRandom->Gaus(pro->GetTrack()->GetZPost(),sigma_drift));    //Z is  changed
-      pro->SetTimePost(pro->GetTrack()->GetTimePost()+driftDistPost/ driftVelocity);
-    }
-    else{
-      //if the magnetic field is set, the displacement is more complex...
-      driftDistPre = driftDistPre / cos(lorentzAngle);
-      Double_t newX = pro->GetTrack()->GetXPre() +
-	(pro->GetTrack()->GetYPre() + padsGeo->GetYLength()) * tan(lorentzAngle);
-      pro->GetPre()->SetX(newX);                         //X is changed by Lorentz angle
-      pro->GetPre()->SetY(-padsGeo->GetYLength());       //Y is the pad plane
-      pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());   //Z is not changed
-      pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
-      newX= pro->GetTrack()->GetXPost() +
-	(pro->GetTrack()->GetYPost() + padsGeo->GetYLength()) * tan(lorentzAngle);
-      pro->GetPost()->SetX(newX);                        //X is changed by Lorentz angle
-      pro->GetPost()->SetY(-padsGeo->GetYLength());      //Y is the pad plane
-      pro->GetPost()->SetZ(pro->GetTrack()->GetZPost()); //Z is not changed
-      pro->SetTimePost(pro->GetTrack()->GetTimePost() +
-		       ((padsGeo->GetYLength()+
-			 pro->GetTrack()->GetYPost())/cos(lorentzAngle))/driftVelocity);
-    }
+  else{
+    //if the magnetic field is set, the displacement is more complex...
+    driftDistPre = driftDistPre / cos(lorentzAngle);
+    Double_t newX = pro->GetTrack()->GetXPre() +
+      (pro->GetTrack()->GetYPre()) * tan(lorentzAngle);
+    pro->GetPre()->SetX(newX);                         //X is changed by Lorentz angle
+    pro->GetPre()->SetY(-padsGeo->GetYLength());       //Y is the pad plane
+    pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());   //Z is not changed
+    pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
+    newX= pro->GetTrack()->GetXPost() +
+      (pro->GetTrack()->GetYPost()) * tan(lorentzAngle);
+    pro->GetPost()->SetX(newX);                        //X is changed by Lorentz angle
+    pro->GetPost()->SetY(-padsGeo->GetYLength());      //Y is the pad plane
+    pro->GetPost()->SetZ(pro->GetTrack()->GetZPost()); //Z is not changed
+    pro->SetTimePost(pro->GetTrack()->GetTimePost() +
+		     ((padsGeo->GetYLength()+
+		       pro->GetTrack()->GetYPost())/cos(lorentzAngle))/driftVelocity);
   }
+  
   pro->SetSigmaLongAtPadPlane(sqrt(driftDistPre*2*longitudinalDiffusion
 				   / driftVelocity));
   //pro->SetSigmaTransvAtPadPlane(sqrt(driftDistPre*2*transversalDiffusion
@@ -1352,8 +999,7 @@ void driftManager::CalculatePadsWithCharge(Double_t k1p, Double_t k2p, Double_t 
   //
   //ofstream *out=new ofstream("test_digit.dat",ios::app);
 
-  Double_t halfPadSize = padsGeo->GetPadSize()/2.;
-  Double_t rHexagon   = padsGeo->GetRHexagon();
+  //Double_t halfPadSize = padsGeo->GetPadSize()/2.;
   TVector3* preOfThisProjection  = pro->GetPre();
   TVector3* postOfThisProjection = pro->GetPost();
   Double_t preOfThisProjectionX  = preOfThisProjection->X();
@@ -1361,14 +1007,14 @@ void driftManager::CalculatePadsWithCharge(Double_t k1p, Double_t k2p, Double_t 
   Double_t postOfThisProjectionX = postOfThisProjection->X();
   Double_t postOfThisProjectionZ = postOfThisProjection->Z();
   Double_t sigma_av=pro->GetSigmaTransvAtPadPlane();
-  Int_t initPad = padsGeo->IsInPadNumber(preOfThisProjection); //init pad
-  Int_t finalPad = padsGeo->IsInPadNumber(postOfThisProjection); //final pad
+  //Int_t initPad = padsGeo->IsInPadNumber(preOfThisProjection); //init pad
+  //Int_t finalPad = padsGeo->IsInPadNumber(postOfThisProjection); //final pad
 /*  Int_t initPad = 1;
   Int_t finalPad = 10201;   // for the purpose of range resolution calculation, remove it afterward!*/
-  Int_t initColumn = padsGeo->CalculateColumn(initPad);
-  Int_t initRow = padsGeo->CalculateRow(initPad);
-  Int_t finalColumn = padsGeo->CalculateColumn(finalPad);
-  Int_t finalRow = padsGeo->CalculateRow(finalPad);
+  //Int_t initColumn = padsGeo->CalculateColumn(initPad);
+  //Int_t initRow = padsGeo->CalculateRow(initPad);
+  //Int_t finalColumn = padsGeo->CalculateColumn(finalPad);
+  //Int_t finalRow = padsGeo->CalculateRow(finalPad);
   TH2F *hist=new TH2F("h2","Padplane",151,0,300,151,-150,150);
   TGraph *g=new TGraph();
   //TCanvas *c=new TCanvas();
@@ -1416,8 +1062,8 @@ void driftManager::CalculatePadsWithCharge(Double_t k1p, Double_t k2p, Double_t 
   EnergyStep= new Double_t[nsteps+2]; 
   Nelectrons=new Int_t[nsteps+2];
   Double_t sum=0;
-  Double_t sumX=0;
-  Double_t sumZ=0;
+  //Double_t sumX=0;
+  //Double_t sumZ=0;
   Int_t total_nelectrons=0;
   Int_t electrons_lost=0;
   //cout<<"HERE!!"<<endl;
@@ -1488,7 +1134,7 @@ void driftManager::CalculatePadsWithCharge(Double_t k1p, Double_t k2p, Double_t 
     //TCanvas *c=new TCanvas();
     //c->DrawFrame(-10,-100,200,100);
     //TH2F *hist=new TH2F("h","PadPlane",150,0,300,150,-150,150);
-    Double_t energyStride=EnergyStep[istep];
+    //Double_t energyStride=EnergyStep[istep];
     
     Int_t number_of_electrons=Nelectrons[istep];
     total_number_of_electrons+=number_of_electrons;
@@ -1501,8 +1147,8 @@ void driftManager::CalculatePadsWithCharge(Double_t k1p, Double_t k2p, Double_t 
       Int_t padColumn=padsGeo->GetPadColumnFromXZValue(electron_posX,electron_posZ);
       if(padRow!=0&&padColumn!=0){
 	chargeOnPads[padRow-1][padColumn-1]++;
-	chargeOnPadsAmplified[padRow-1][padColumn-1]+=1000*Polya();	
-	//chargeOnPadsAmplified[padRow-1][padColumn-1]+=1000;	
+	//chargeOnPadsAmplified[padRow-1][padColumn-1]+=1000*Polya();	
+	chargeOnPadsAmplified[padRow-1][padColumn-1]+=1000;	
       }
       else{
 	//cout<<"electron lost!!!"<<endl;
@@ -1548,7 +1194,8 @@ void driftManager::CalculatePadsWithCharge(Double_t k1p, Double_t k2p, Double_t 
   }
   //cout<<"# Pads with signal "<<padswithsignal<<endl;
   //cin.get();
-  Double_t charge=0; Int_t numberOfPadsWithSignal=0;
+  //Double_t charge=0; 
+  Int_t numberOfPadsWithSignal=0;
   Int_t padUnderTest; TVector3 centerPad;
 
   numberOfPadsWithSignal=padswithsignal;

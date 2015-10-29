@@ -84,7 +84,7 @@ void Analysis_reduce(char* inputFile, char* outputFile){
   Double_t sampling;
   char* dEvsETitle;
 
-  cout << "Reading Simulation (1) or real datas (0)? ";
+  cout << "Reading Simulation (1) or real data (0)? ";
   cin >> simuFlag;
   if(simuFlag){
     dEvsETitle="dE vs E, 80 MeV 12C, Track_length>80mm+DeltaL, dl=20mm, ionGasModel, Pad & Si Res";

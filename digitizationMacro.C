@@ -37,13 +37,14 @@
 //      theDriftManager.SetMagneticField(Double_t mag);     NOT WORKING YET
 //      theDriftManager.SetLorentzAngle(Double_t lor);           in radians
 //
-//      theAmplificationManager.SetIsWireOn();
+//      theAmplificationManager.SetIsWireOn();    for a MAYA-like ACtive TARget
 //      theAmplificationManager.SetWireAmplificationParameters(ra,s,h);
 //
 //      ra: radius of amplification wire: 5, 10, and 20 mu
 //       s: spacing between two amplification wires: 2 or 2.3 mm
 //       h: distance between the amplification wire and induction pads: 10 mm
 //
+//      (Optionally you can set theAmplificationManager.SetOldChargeCalculation(); for old Style calculations)
 //      digitEvents(inputFile, outputFile, run#, numberOfEvents);
 //
 //  the number within brackets means:
@@ -109,175 +110,112 @@ using namespace std;
 padsGeometry thePadsGeometry;
 driftManager theDriftManager;
 amplificationManager theAmplificationManager;
-// ActarPadSignal theActarPadSignal;
- // void progressbar(int percent)
- // {
- //   static stringstream bars;
- //   static int x = 0;
- //   string slash[4];
- //   slash[0] = "\\";
- //   slash[1] = "-";
- //   slash[2] = "/";
- //   slash[3] = "|";
- //   bars << "|";
- //   cout << "\r"; // carriage return back to beginning of line
- //   cout << bars.str() << " " << slash[x] << " " << percent << " %"; // print the bars and percentage
- //   fflush(stdout); 
- //   x++; // increment to make the slash appear to rotate
- //   if(x == 4)
- //     x = 0; // reset slash animation
- // }
 
-
-
-//void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0,Bool_t bTree=0){
 void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
-  Bool_t bTree=kFALSE; 
- //
-  // Function containing the event loop
-  //
-
+  // Digitization event loop
+  Bool_t bTreeChargeDistribution=kFALSE;
+  
   gROOT->SetStyle("Default");
-  //gSystem->Load("actarsim.sl"); //SHOULD BE LOADED BEFORE!
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
-
+  
   theDriftManager.ConnectToGeometry(&thePadsGeometry);
   theDriftManager.ConnectToAmplificationManager(&theAmplificationManager);
-//   theDriftManager.ConnectToActarPadSignal(&theActarPadSignal);
+  //theDriftManager.ConnectToActarPadSignal(&theActarPadSignal); //FUTURE SIGNAL TREATMENT
   theDriftManager.GetStatus();
-
-  // move calculation of the Mathieson Factors here to reduce number of function calls
-  Double_t k1p = theAmplificationManager.GetMathiesonFactorK1P();
-  Double_t k2p = theAmplificationManager.GetMathiesonFactorK2P();
-  Double_t k3p = theAmplificationManager.GetMathiesonFactorK3P();
-  Double_t k1n = theAmplificationManager.GetMathiesonFactorK1N();
-  Double_t k2n = theAmplificationManager.GetMathiesonFactorK2N();
-  Double_t k3n = theAmplificationManager.GetMathiesonFactorK3N();
-
+  
   //input file and tree
   TFile *file1 = TFile::Open(inputFile);
   TTree* eventTree = (TTree*)file1->Get("The_ACTAR_Event_Tree");
-
+  
   TClonesArray* simpleTrackCA;
   simpleTrackCA = new TClonesArray("ActarSimSimpleTrack",100);
   TBranch *branchTrack = eventTree->GetBranch("simpleTrackData");
   branchTrack->SetAddress(&simpleTrackCA);
   branchTrack->SetAutoDelete(kTRUE);
-
-  //ClonesArray to the silicon Hits
-  //TClonesArray *silHitsCA=new TClonesArray("ActarSimSilHit",100);
-  //TBranch *branchSilHits=eventTree->GetBranch("silHits");
-  //branchSilHits->SetAddress(&silHitsCA);
-  //branchSilHits->SetAutoDelete(kTRUE);
-
-  //ActarSimSilHit* silHit=new ActarSimSilHit;
-
-
+  
   ActarSimSimpleTrack* localTrack = new ActarSimSimpleTrack;
-
+  
   //output File and Tree for the analysis result
   TFile* outFile = new TFile(outputFile,"RECREATE");
   outFile->cd();
   TTree* digiTree = new TTree("digiTree","digiEvent Tree");
-
+  
   TClonesArray* padSignalCA;
   padSignalCA = new TClonesArray("ActarPadSignal",50);
   digiTree->Branch("padSignals",&padSignalCA);
-
+  
   projectionOnPadPlane* projection= new projectionOnPadPlane();
-
+  
   Int_t nevents=0;
   Int_t stridesPerEvent=0;
   //Int_t siliconhits=0;
-
-  //Int_t hits=0;
-  TTree *T;
-  if(numberOfEvents)    nevents = numberOfEvents;
+  
+  Int_t hits=0;
+  TTree *TChargeDistribution;
+  if(numberOfEvents) nevents = numberOfEvents;
   else   nevents = eventTree->GetEntries();
   cout<<"nevents= "<<nevents<<endl;
-//   Int_t neventsSim = nevents/2;
-
-  //Int_t nb = 0;
+  //Int_t neventsSim = nevents/2;
+  
+  Int_t nb = 0;
   
   for(Int_t i=0;i<nevents;i++){
-    if(i%500 == 0) printf("Event with strides:%d\n",i);
-    //if(i%10 == 0) printf("Event with strides:%d\n",i);
-    //Int_t percent=Float_t(i)/nevents*100;
-    //if(i%10==0)
-    //progressbar(percent);
-  
-  simpleTrackCA->Clear();
-  //silHitsCA->Clear();
-  //nb += eventTree->GetEvent(i);
-  eventTree->GetEvent(i);
-
-  stridesPerEvent = simpleTrackCA->GetEntries();
-  //siliconhits = silHitsCA->GetEntries();
-
-  //if(stridesPerEvent>0 && siliconhits>0) {
-  //  hits++;
-    //cout<<"# of Sil-> "<<siliconhits<<endl;
-  //cout<<"# of strides-> "<<stridesPerEvent<<endl;
-  if(stridesPerEvent>0) {
+    if(i%100 == 0) printf("Event with strides:%d\n",i);
     
-    //Clear the ClonesArray before filling it
-    padSignalCA->Clear();
-
-    Int_t numberOfPadsBeforeThisLoopStarted=0;
+    simpleTrackCA->Clear();
+    nb += eventTree->GetEvent(i);
     
-    //if(i%2!=0){ // comment this condition if digitization of beam tracks is not necessary.
-    //cout<<"The number of strides is "<<stridesPerEvent<<endl;
-    Char_t tname[256];
-    sprintf(tname,"T%d",i);
-    if(bTree)
-      T=new TTree(tname,"Charge distributions");
-    for(Int_t h=0;h<stridesPerEvent;h++){
-      //cout<<"Stride # "<<h<<endl;
-      //cout<<"."<<flush;
-      localTrack = (ActarSimSimpleTrack*)simpleTrackCA->At(h);
+    stridesPerEvent = simpleTrackCA->GetEntries();
+    
+    if(stridesPerEvent>0) {
+      //cout<<"The number of strides is "<<stridesPerEvent<<endl;
+      //Clear the ClonesArray before filling it
+      padSignalCA->Clear();
       
-      //         cout << "strideLength=" << localTrack->GetStrideLength() << endl;
+      Int_t numberOfPadsBeforeThisLoopStarted=0;
+      Char_t tname[256];
+      sprintf(tname,"T%d",i);
       
-      //Once we know where the track is, we should know where the stride
-      //limits are after the drift and diffussion of the electrons...
-      projection->SetTrack(localTrack);
-      //           if(localTrack->GetTrackID()==1){
-      if(theDriftManager.CalculatePositionAfterDrift(projection)){
-	if(bTree)
-	  theDriftManager.CalculatePadsWithCharge(k1p, k2p, k3p, k1n, k2n, k3n,projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,T);
-	else  
-	  theDriftManager.CalculatePadsWithCharge(k1p, k2p, k3p, k1n, k2n, k3n,projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,0);
-	//theDriftManager.CalculatePadsWithCharge(k1p, k2p, k3p, k1n, k2n, k3n,projection,padSignalCA,numberOfPadsBeforeThisLoopStarted);
-	//gPad->WaitPrimitive();
-	//             theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,digiTree);
+      if(bTreeChargeDistribution)
+	TChargeDistribution = new TTree(tname,"Charge distributions"); //HAPOL: IS THIS THE RIGHT PLACE??
+      
+      for(Int_t h=0;h<stridesPerEvent;h++){
+	cout<<"."<<flush;
+	localTrack = (ActarSimSimpleTrack*)simpleTrackCA->At(h);
+	
+	//Once we know where the track is, we should know where the stride
+	//limits are after the drift and diffussion of the electrons...
+	projection->SetTrack(localTrack);
+	//if(localTrack->GetTrackID()==1){ //restricts to primaries
+	if(theDriftManager.CalculatePositionAfterDrift(projection)){
+	  if(bTreeChargeDistribution)
+	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,T);
+	  else
+	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,0);
+	}
       }
+      
+      cout << endl;
+      digiTree->Fill();
     }
-    //cout<<endl;
-    //}//end if(i%2!=0) 
-    digiTree->Fill();
+    else{
+      continue;
+    }
   }
-  else{
-    //cout<<"=================>Event Skipped"<<endl;
-    //digiTree->Fill();
-    continue;
-  }
-}
-//   digiTree->Scan("padSignals.chargeDeposited");
-
-outFile->Write();
-outFile->Close();
-//if(bTree)
-//delete T;
-cout<<"Total number of digitized events "<<nevents<<endl;
+  
+  outFile->Write();
+  outFile->Close();
+  
+  cout<<"Total number of digitized events "<<nevents<<endl;
 }
 
 /*
-void defineHistograms(Double_t theRadius, Double_t theLength) {
+  void defineHistograms(Double_t theRadius, Double_t theLength) {
   //
   //HERE THE HISTOGRAMS ARE DEFINED...
   //IT IS POSSIBLE TO CHANGE THE RANGE AND THE BINNING
   //
-}
+  }
 */

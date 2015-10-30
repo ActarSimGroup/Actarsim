@@ -16,13 +16,12 @@
 //
 // --------------------------------------------------------------
 // How to run this program:
-// 1 -
-//
-// 2 - Select the output file and choose the flags for visualisation
-//
+// 1 - Run the simulation
+// 2 - Run the digitization
 // 3 - Run this macro inside root
 //      gSystem->Load("actarsim.sl");
-//      .L digitizationMacro.C+;
+//      .L Analysis_reduce.C+;
+//      Analysis_reduce("inputefile","outputFile")
 
 #include "TROOT.h"
 #include "TFile.h"

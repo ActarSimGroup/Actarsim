@@ -49,7 +49,7 @@
 #include "Randomize.hh"
 
 //for calculating the optical photon wavelenght for a given enegy
-static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
+//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 
 ActarSimROOTAnalGas::ActarSimROOTAnalGas():
   storeTracksFlag("off"), storeTrackHistosFlag("off"),
@@ -422,7 +422,7 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
 	    //<< "  finalPos: " <<  (*hitsCollection)[i]->GetPostPos()<< G4endl;
           }
           else {
-            simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x()); 
+            simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x());
             simpleTrack[j]->SetYPost((*hitsCollection)[i]->GetPostPos().y());
             simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
             simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
@@ -448,20 +448,20 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
             strideOrdinal[j]++;
             simpleTrack[j]->Reset();
           }
-          //David Perez Loureiro 28-10-2011-----------------------------------------// 
+          //David Perez Loureiro 28-10-2011-----------------------------------------//
           if(j==0){
             aEnergyInGas1 += (*hitsCollection)[i]->GetEdep();
-            aTLInGas1 +=(*hitsCollection)[i]->GetStepLength();	
+            aTLInGas1 +=(*hitsCollection)[i]->GetStepLength();
           }
           else {
             aEnergyInGas2 += (*hitsCollection)[i]->GetEdep();
-            aTLInGas2 +=(*hitsCollection)[i]->GetStepLength();	
+            aTLInGas2 +=(*hitsCollection)[i]->GetStepLength();
           }
         }
       }//end of loop in primaries
     }//end of loop on hits
 
- 
+
     for(G4int j=0;j<2;j++) {
       if(simpleTrack[j]->GetNumberSteps() > 0){
       	if(simpleTrack[j]->GetStrideLength() > minStrideLength)
@@ -527,8 +527,8 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
   G4Track* myTrack = aStep->GetTrack();
   G4ThreeVector prePoint = aStep->GetPreStepPoint()->GetPosition();
   G4ThreeVector postPoint = aStep->GetPostStepPoint()->GetPosition();
-  
-  G4double z1 = prePoint.z(); 
+
+  G4double z1 = prePoint.z();
   G4double z2 = postPoint.z();
   G4double z  = z1 + G4UniformRand()*(z2-z1);// + 0.5*(fDetector->GetAbsorSizeX());
 
@@ -546,11 +546,11 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
     if(htrackInPads) htrackInPads->Fill(postPoint.x(),
 			                                  postPoint.z(),
 			                                  aStep->GetTotalEnergyDeposit());
-    if(myTrack->GetTrackID()==1 && myTrack->GetParentID()==0) 
+    if(myTrack->GetTrackID()==1 && myTrack->GetParentID()==0)
       if(htrack1InPads) htrack1InPads->Fill(postPoint.x(),
 			                                      postPoint.z(),
 			                                      aStep->GetTotalEnergyDeposit());
-    if(myTrack->GetTrackID()==2 && myTrack->GetParentID()==0) 
+    if(myTrack->GetTrackID()==2 && myTrack->GetParentID()==0)
       if(htrack2InPads) htrack2InPads->Fill(postPoint.x(),
 			                                      postPoint.z(),
 			                                      aStep->GetTotalEnergyDeposit());

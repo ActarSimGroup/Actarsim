@@ -4,11 +4,11 @@
 //*-- Last Update: 07/01/15 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
-//   The ACTAR Scintillator detector part of the ROOT Analysis   
+//   The ACTAR Scintillator detector part of the ROOT Analysis
 //
 // --------------------------------------------------------------
 // Comments:
-// 
+//
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
@@ -51,7 +51,7 @@ private:
   ActarSimSciRingHit** theSciRingHit; //Data
   TClonesArray* sciRingHitCA;
 
-  G4PrimaryParticle* primary;//Storing the primary for accesing during UserStep
+  //G4PrimaryParticle* primary;//Storing the primary for accesing during UserStep NOT USED
 
   G4int theRunID; //To keep some numbers on the Tree
   G4int theEventID; //To keep some numbers on the Tree
@@ -65,10 +65,10 @@ public:
   void SetTheEventID(G4int id){theEventID = id;}
   G4int GetTheRunID(){return theRunID;}
   void SetTheRunID(G4int id){theRunID = id;}
-  
+
   TBranch* GetSciRingHitsBranch(){return sciRingHitsBranch;}
   void SetSciRingHitsBranch(TBranch* aBranch) {sciRingHitsBranch= aBranch;}
-  
+
   TClonesArray* getSciRingHitsCA(void){return sciRingHitCA;}
   void SetSciRingHitsCA(TClonesArray* CA) {sciRingHitCA = CA;}
 
@@ -91,4 +91,3 @@ public:
 
 };
 #endif
-

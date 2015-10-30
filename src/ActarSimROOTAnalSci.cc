@@ -40,7 +40,7 @@
 #include "TClonesArray.h"
 
 //for calculating the optical photon wavelenght for a given enegy
-static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
+//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 
 ActarSimROOTAnalSci::ActarSimROOTAnalSci() {
   //

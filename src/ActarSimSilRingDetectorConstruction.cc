@@ -86,7 +86,7 @@ G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::Construct(G4LogicalVolum
 
 
 
-G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVolume* worldLog) {	
+G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVolume* worldLog) {
 
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
@@ -101,62 +101,62 @@ G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVo
 	G4double Phi_0=0*deg;
 	G4double Phi_f=360*deg;
 	G4double Zlength=0.25*mm; //Half length 500 um
-		
-	
+
+
 	G4Tubs *Silicon=new G4Tubs("Silicon",Rmin,Rmax,Zlength,Phi_0,Phi_f);
-	
-		
-	
-	
+
+
+
+
 	G4VisAttributes* SilVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
 	SilVisAtt->SetVisibility(false);
-	
-	
-	
+
+
+
 	G4LogicalVolume* SiliconDisk_log= new G4LogicalVolume(Silicon,silBulkMaterial,"SiliconDisk_log",0,0,0);
-	
+
 	SiliconDisk_log->SetVisAttributes(SilVisAtt);
-	
-	
+
+
 	G4double sectorPhi=Phi_f/16.;
-	
+
 	G4Tubs *Sector=new G4Tubs("Sector",Rmin,Rmax,Zlength,0.,sectorPhi);
-    
-	
+
+
 	G4LogicalVolume *Sector_log=new G4LogicalVolume(Sector,silBulkMaterial,"Sector_log",0,0,0);
 	G4VisAttributes* SectorVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
 	SectorVisAtt->SetVisibility(true);
-    
-    
-	
+
+
+
 	G4double silPos_x=0;
 	//G4double silPos_y=chamberSizeY/2-10*mm;
 	G4double silPos_y=0;
 	G4double silPos_z=0*mm;
-	
-	
+
+
 	G4double distance[3]={300*mm,530*mm,1070*mm}; //For 10Li experiment
-	
+
 	//G4double distance[3]={550*mm,0*mm,0*mm}; //For 16C experiment Only one ring detector
-	
+
 	for(G4int k=0;k<3;k++){
-		
+
 		silPos_z=distance[k]+chamberSizeZ-zGasBoxPosition;
-				
+
 		G4VPhysicalVolume *SiliconDisk_phys=new G4PVPlacement(0,
 															  G4ThreeVector(silPos_x,silPos_y,silPos_z),
 															  SiliconDisk_log,"SiliconDisk",worldLog,false,k);
-		
-		if(SiliconDisk_phys){;}					
+
+		if(SiliconDisk_phys){;}
 	}
-	
+
 
 
 	Sector_log->SetVisAttributes(SectorVisAtt);
-	
+
 	G4VPhysicalVolume *Sector_phys=new G4PVReplica("Sectors",Sector_log,SiliconDisk_log,kPhi,16,sectorPhi);
-	
-  
+
+
   //------------------------------------------------
   // Sensitive detectors
   //------------------------------------------------

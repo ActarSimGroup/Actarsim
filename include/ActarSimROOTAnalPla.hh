@@ -4,11 +4,11 @@
 //*-- Last Update: 23/12/14 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
-//   The Plastic Scintillator detector part of the ROOT Analysis   
+//   The Plastic Scintillator detector part of the ROOT Analysis
 //
 // --------------------------------------------------------------
 // Comments:
-// 
+//
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
@@ -42,7 +42,7 @@ class ActarSimROOTAnalPla{
 private:
 
   char* dirName;
- 
+
   TFile* simFile;               //Local pointer to simFile
   TTree* eventTree; //Tree
 
@@ -51,7 +51,7 @@ private:
   ActarSimPlaHit** thePlaHit; //Data
   TClonesArray* plaHitCA;
 
-  G4PrimaryParticle* primary;//Storing the primary for accesing during UserStep
+  //G4PrimaryParticle* primary;//Storing the primary for accesing during UserStep NOT USED
 
   G4int theRunID; //To keep some numbers on the Tree
   G4int theEventID; //To keep some numbers on the Tree
@@ -65,11 +65,11 @@ public:
   void SetTheEventID(G4int id){theEventID = id;}
   G4int GetTheRunID(){return theRunID;}
   void SetTheRunID(G4int id){theRunID = id;}
-  
+
   TBranch* GetPlaHitsBranch(){return plaHitsBranch;}
   void SetPlaHitsBranch(TBranch* aBranch) {plaHitsBranch= aBranch;}
-  
-  TClonesArray* getPlaHitsCA(void){return plaHitCA;} 
+
+  TClonesArray* getPlaHitsCA(void){return plaHitCA;}
   void SetPlaHitsCA(TClonesArray* CA) {plaHitCA = CA;}
 
   void FillingHits(const G4Event *anEvent);
@@ -91,4 +91,3 @@ public:
 
 };
 #endif
-

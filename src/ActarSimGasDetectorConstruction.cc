@@ -104,10 +104,10 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   //
   //////////////////////////////////////////////////////////////////////
 
-  //Chamber heigth 
+  //Chamber heigth
   G4double chamberSizeY=detConstruction->GetChamberYLength();
 
-  //Pad Size : GasBox height from chamber floor 
+  //Pad Size : GasBox height from chamber floor
   G4double padSizeY=detConstruction->GetYPadSize();
 
   G4double gasVolumeCenterPosX = 0.*m;
@@ -147,7 +147,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 				 gasMaterial,
 				 "gasLog");
 
-   
+
     gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
 						gasVolumeCenterPosY,
 						0),
@@ -194,10 +194,10 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 	   << G4endl;
   }
 
-  G4LogicalVolume* beamShieldLog(0);                //pointer to logic gas
-  G4VPhysicalVolume* beamShieldPhys;                //pointer to physic gas
+  G4LogicalVolume* beamShieldLog(0);                //pointer to logic
+  G4VPhysicalVolume* beamShieldPhys;                //pointer to physic
 
-  if( beamShieldPhys){;}
+  //if( beamShieldPhys){;}
 
   if( beamShieldGeometry == "tube"){
     G4cout << "##################################################################"
@@ -260,14 +260,14 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   //
   // STP used are P = 1atm and T = 20ºC
   //
-  //Gas Pressure & Temperature 
+  //Gas Pressure & Temperature
   G4double pressure=GetGasPressure();
   G4double temperature=GetGasTemperature();
 
   G4double density;
   G4double a;  // atomic mass
   G4double z;  // atomic number
-  G4double n; 
+  G4double n;
 
   //Gas Mix
   //const G4int NGasMix=NumberOfGasMix;
@@ -315,7 +315,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
     new G4Material("H2", density, ncomponents=2, kStateGas, temperature, pressure);
   H2->AddElement(ele_H, natoms=1);
   H2->AddElement(ele_H, natoms=1);
-  
+
   //D2 (default  0.16746*mg/cm3 STP)
   //density	=(0.16746*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
   density	= (2*2.0140/Vm)*mg/cm3;
@@ -353,27 +353,27 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   iC4H10->AddElement(ele_H,10);
 
   if(mat=="H2"){
-    gasMaterial = H2; 
+    gasMaterial = H2;
     detConstruction->SetUpdateChamberMaterial(H2);
   }
   else if(mat=="D2"){
-    gasMaterial = D2; 
+    gasMaterial = D2;
     detConstruction->SetUpdateChamberMaterial(D2);
   }
   else if(mat=="He"){
-    gasMaterial = He; 
+    gasMaterial = He;
     detConstruction->SetUpdateChamberMaterial(He);
   }
   else if(mat=="Ar"){
-    gasMaterial = Ar; 
+    gasMaterial = Ar;
     detConstruction->SetUpdateChamberMaterial(Ar);
   }
   else if(mat=="CF4"){
-    gasMaterial = CF4; 
+    gasMaterial = CF4;
     detConstruction->SetUpdateChamberMaterial(CF4);
   }
   else if(mat=="iC4H10"){
-    gasMaterial = iC4H10; 
+    gasMaterial = iC4H10;
     detConstruction->SetUpdateChamberMaterial(iC4H10);
   }
   else if(mat=="GasMix"){
@@ -402,7 +402,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
     for(G4int i=0;i<NumberOfGasMix;i++) {
       FractionMass[i]=pttoMaterial[i]->GetDensity()/DensitySum;
     }
-    
+
     G4Material* GasMix =
       new G4Material("GasMix", density, ncomponents=NumberOfGasMix, kStateGas, temperature, pressure);
 
@@ -410,9 +410,9 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
       GasMix->AddMaterial( pttoMaterial[i], fractionmass = FractionMass[i] ) ;
     }
 
-    gasMaterial = GasMix; 
+    gasMaterial = GasMix;
     detConstruction->SetUpdateChamberMaterial(GasMix);
-    
+
   }
 }
 /*

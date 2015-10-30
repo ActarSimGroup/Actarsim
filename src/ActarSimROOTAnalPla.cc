@@ -40,7 +40,7 @@
 #include "TClonesArray.h"
 
 //for calculating the optical photon wavelenght for a given enegy
-static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
+//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 
 ActarSimROOTAnalPla::ActarSimROOTAnalPla() {
   //
@@ -150,7 +150,7 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
   G4int NbHits = hitsCollection->entries();
   //G4int NbHitsWithSomeEnergy = NbHits;
   //G4cout << " NbHits: " << NbHits << G4endl;
-	
+
 	G4int indepHits = 0; //number of Hits
 	G4int* trackIDtable; //stores the trackID of primary particles for each (valid) GeantHit
 	trackIDtable = new G4int[NbHits];
@@ -158,8 +158,8 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
 	detIDtable = new G4int[NbHits];
 	G4int* IDtable;         //stores the order in previous array for each (valid) GeantHit
 	IDtable = new G4int[NbHits];
-	
-	
+
+
 	for (G4int i=0;i<NbHits;i++) {
 		if((*hitsCollection)[i]->GetParentID()==0) { //step from primary
 			if(indepHits==0) { //only for the first Hit
@@ -190,15 +190,15 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
 	thePlaHit = new ActarSimPlaHit*[indepHits];
 	for (G4int i=0;i<indepHits;i++)
 		thePlaHit[i] = new ActarSimPlaHit();
-	
+
 	//Clear the ClonesArray before filling it
 	plaHitCA->Clear();
-	
+
 	//a variable to check if the Hit was already created
 	G4int* existing;
 	existing = new G4int[indepHits];
 	for(G4int i=0;i<indepHits;i++) existing[i] = 0;
-	
+
 	for(G4int i=0;i<NbHits;i++) {
 		if( (*hitsCollection)[i]->GetParentID()==0 ) { //step from primary
 			//the IDtable[i] contains the order in the indepHits list
@@ -210,11 +210,11 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
 				AddCalPlaHit(thePlaHit[IDtable[i]],(*hitsCollection)[i],1);
 		}
 	}
-	
+
 	//at the end, fill the ClonesArray
 	for (G4int i=0;i<indepHits;i++)
 		new((*plaHitCA)[i])ActarSimPlaHit(*thePlaHit[i]);
-	
+
 	delete [] trackIDtable;
 	delete [] IDtable;
 	delete [] existing;
@@ -224,7 +224,7 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
 }
 
 
-	
+
 	//CsI-like hit pattern
 /*
 	//We accept edep=0 GeantHits, we have to remove them
@@ -410,12 +410,12 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
   delete [] name;
   for (G4int i=0;i<NbCrystalsWithHit;i++) delete thePlaHit[i];
   delete [] thePlaHit;
- 
+
  }
- 
- */ 
+
+ */
 	//End of CsI Like hit
- 
+
 
 
 
@@ -435,40 +435,40 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
     if( gHit->GetDetName() == "plaPhys" )   ; //cHit->SetType(1);
     else G4cout << "ERROR in R3BROOTAnalCal::AddCalCrystalHit()." << G4endl
                 << "Unknown Detector Name: "<< gHit->GetDetName() << G4endl << G4endl;
-	  
+
 	  cHit->SetDetectorID(gHit->GetDetID());
-	  
+
 	  //cHit->SetDetCenterCoordinateX(gHit->GetDetCenterCoordinate().x()/mm); // center of the present silicon, dypang 090130
 	  //cHit->SetDetCenterCoordinateY(gHit->GetDetCenterCoordinate().y()/mm); // center of the present silicon, dypang 090130
 	  //cHit->SetDetCenterCoordinateZ(gHit->GetDetCenterCoordinate().z()/mm); // center of the present silicon, dypang 090130
-	  
+
 	  cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
 	  cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
 	  cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
-	  
+
 	  cHit->SetTime(gHit->GetToF()/ns);
 	  cHit->SetEnergy(gHit->GetEdep()/MeV);
 	  cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
 	  cHit->SetEAfterPla(gHit->GetEAfterPla()/MeV);
-	  
+
 	  cHit->SetTrackID(gHit->GetTrackID());
 	  cHit->SetEventID(GetTheEventID());
 	  cHit->SetRunID(GetTheRunID());
-	  
+
 	  cHit->SetParticleID(gHit->GetParticleID());
 	  cHit->SetParticleCharge(gHit->GetParticleCharge());
 	  cHit->SetParticleMass(gHit->GetParticleMass());
-	  
+
 	  cHit->SetStepsContributing(1);
 
-	  
+
 	   //CsI Like
    /* cHit->SetCopy(gHit->GetDetID());
 
     cHit->SetEnergy(gHit->GetEdep()/ MeV);
     cHit->SetTime(gHit->GetToF() / ns);
 
-	cHit->SetTrackID(gHit->GetTrackID());  
+	cHit->SetTrackID(gHit->GetTrackID());
     cHit->SetEventID(GetTheEventID());
     cHit->SetRunID(GetTheRunID());
 
@@ -510,7 +510,7 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
   }
   else if(mode==1){ //addition
     cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ MeV);
-	  
+
 	  cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
 	  // The mean value of a distribution {x_i} can also be computed iteratively
 	  // if the values x_i are drawn one-by-one. After a new value x, the new mean is:
@@ -521,10 +521,10 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
 					(gHit->GetLocalPrePos().y()-cHit->GetYPos())/((G4double)cHit->GetStepsContributing()));
 	  cHit->SetZPos(cHit->GetZPos() +
 					(gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
-	  
-	  
-	  
-	  
+
+
+
+
     if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ ns);
 
     //TODO-> Recover here the simhit/hit duality if needed!!

@@ -32,8 +32,8 @@ class ActarSimSteppingAction : public G4UserSteppingAction
     void UserSteppingAction(const G4Step*);
 
   private:
-    ActarSimDetectorConstruction* detector;
-    ActarSimEventAction*          eventaction;
+    ActarSimDetectorConstruction* detector; //NOT USED
+    ActarSimEventAction*          eventaction; //NOT USED
 };
 
 #endif

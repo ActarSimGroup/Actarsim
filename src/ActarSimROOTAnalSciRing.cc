@@ -40,7 +40,7 @@
 #include "TClonesArray.h"
 
 //for calculating the optical photon wavelenght for a given enegy
-static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
+//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 
 ActarSimROOTAnalSciRing::ActarSimROOTAnalSciRing() {
   //
@@ -359,7 +359,7 @@ void ActarSimROOTAnalSciRing::AddCalCrystalHit(ActarSimSciRingHit* cHit,
     cHit->SetEnergy(gHit->GetEdep()/ MeV);
     cHit->SetTime(gHit->GetToF() / ns);
 
-	cHit->SetTrackID(gHit->GetTrackID());  
+	cHit->SetTrackID(gHit->GetTrackID());
     cHit->SetEventID(GetTheEventID());
     cHit->SetRunID(GetTheRunID());
 

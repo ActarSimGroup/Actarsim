@@ -9,7 +9,7 @@
 // --------------------------------------------------------------
 // Comments:
 //
-//   - 17/04/08 Modularizing the detectors construction 
+//   - 17/04/08 Modularizing the detectors construction
 //   - 04/04/06 Multigeometry with the possibility of updating.
 //              Gas as a sensitive detector...
 //   - 24/05/05 Created based on calGamma simulation
@@ -48,15 +48,15 @@ class ActarSimSciDetectorConstruction;
 class ActarSimSciRingDetectorConstruction;
 class ActarSimPlaDetectorConstruction;
 
-class ActarSimDetectorConstruction : public G4VUserDetectorConstruction {  
+class ActarSimDetectorConstruction : public G4VUserDetectorConstruction {
 private:
 
   ActarSimGasSD* gasSD;
   ActarSimSilSD* silSD;
-  ActarSimSilRingSD* silRingSD;	
+  ActarSimSilRingSD* silRingSD;
   ActarSimSciSD* sciSD;
   ActarSimSciRingSD* sciRingSD;
-  ActarSimPlaSD* plaSD;	
+  ActarSimPlaSD* plaSD;
 
   // Volumes
   G4Box* solidWorld;
@@ -76,8 +76,8 @@ private:
   G4VPhysicalVolume* SupportPhys; //pointer to physical CageField support
 
   //Assembly of slits
-  G4AssemblyVolume* SlitMask;
-  
+  //G4AssemblyVolume* SlitMask;  //NOT USED IN THIS FILE
+
   // Materials
   G4Material* mediumMaterial;
   G4Material* defaultMaterial;
@@ -122,10 +122,10 @@ private:
   G4VPhysicalVolume* ConstructActar();
 
 public:
-  
+
   ActarSimDetectorConstruction();
   ~ActarSimDetectorConstruction();
-  
+
   ActarSimGasSD* GetGasSD(void){return gasSD;}
   ActarSimSilSD* GetSilSD(void){return silSD;}
   ActarSimSilRingSD* GetSilRingSD(void){return silRingSD;}
@@ -135,19 +135,19 @@ public:
 
   G4VPhysicalVolume* Construct();
 
-  void SetXGasChamber(G4double val){chamberSizeX = val;} 
-  void SetYGasChamber(G4double val){chamberSizeY = val;} 
-  void SetZGasChamber(G4double val){chamberSizeZ = val;} 
+  void SetXGasChamber(G4double val){chamberSizeX = val;}
+  void SetYGasChamber(G4double val){chamberSizeY = val;}
+  void SetZGasChamber(G4double val){chamberSizeZ = val;}
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
   void SetChamberMaterial(G4String);
   void SetUpdateChamberMaterial(G4Material*);
   void SetWindowMaterial (G4String);
 
-  void SetYPadSize(G4double val){yPadSize = val;} 
+  void SetYPadSize(G4double val){yPadSize = val;}
 
-  void SetYGasBoxPosition(G4double val){yGasBoxPosition = val;} 
-  void SetZGasBoxPosition(G4double val){zGasBoxPosition = val;} 
+  void SetYGasBoxPosition(G4double val){yGasBoxPosition = val;}
+  void SetZGasBoxPosition(G4double val){zGasBoxPosition = val;}
 
   void UpdateGeometry();
   void UpdateEMField();
@@ -155,7 +155,7 @@ public:
   G4Material* GetMediumMaterial() {return mediumMaterial;};
   G4Material* GetDefaultMaterial() {return defaultMaterial;};
   G4Material* GetChamberMaterial() {return chamberMaterial;};
- 
+
   //const G4VPhysicalVolume* GetWorldPhys()   {return worldPhys;};
   //const G4VPhysicalVolume* GetGasPhys() {return gasPhys;};
   //const G4LogicalVolume* GetWorldLog()     {return worldLog;};
@@ -166,14 +166,14 @@ public:
   G4LogicalVolume* GetChamberLogicalVolume(){return chamberLog;}
   G4VPhysicalVolume* GetChamberPhysicalVolume(){return chamberPhys;}
 
-  G4double GetChamberXLength(void){return chamberSizeX;} 
-  G4double GetChamberYLength(void){return chamberSizeY;} 
-  G4double GetChamberZLength(void){return chamberSizeZ;} 
+  G4double GetChamberXLength(void){return chamberSizeX;}
+  G4double GetChamberYLength(void){return chamberSizeY;}
+  G4double GetChamberZLength(void){return chamberSizeZ;}
 
-  G4double GetYPadSize(void){return yPadSize;} 
+  G4double GetYPadSize(void){return yPadSize;}
 
-  G4double GetYGasBoxPosition(void){return yGasBoxPosition;} 
-  G4double GetZGasBoxPosition(void){return zGasBoxPosition;} 
+  G4double GetYGasBoxPosition(void){return yGasBoxPosition;}
+  G4double GetZGasBoxPosition(void){return zGasBoxPosition;}
 
   ActarSimGasDetectorConstruction* GetGasDetector() {return gasDet;}
   ActarSimSilDetectorConstruction* GetSilDetector() {return silDet;}
@@ -194,4 +194,3 @@ public:
 };
 
 #endif
-

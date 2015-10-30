@@ -7,7 +7,7 @@ $cd ../ActarSim-build
 
 2. Call cmake to create the makefile adapted to your system
 
-$cmake -DGean4_DIR=/pathToGeant4Instalation/lib/Geant<version> /pathToActarSimSource
+$cmake -DGeant4_DIR=/pathToGeant4Instalation/lib/Geant<version> /pathToActarSimSource
 
 3. Compile
 
@@ -15,4 +15,4 @@ $make
 
 4. Install
 
-$make install 
+$make install

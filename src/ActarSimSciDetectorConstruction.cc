@@ -288,7 +288,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
         sciPhys =
           new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSciHalfLength + separationFromBox + sciBulk_z),
 						   (rowY-0.5)*2*(sciBulk_y+defectHalfLength),
-						   zBoxSciHalfLength+(rowZ-0.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition), 
+						   zBoxSciHalfLength+(rowZ-0.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
 						   sciLog, "sciPhys", worldLog, false, iterationNumber);
 
       }

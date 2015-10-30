@@ -84,20 +84,20 @@ private:
 
   ActarSimBeamInfo* pBeamInfo;
 
-  G4PrimaryParticle* primary;               //Storing the primary for accesing during UserStep
+  //G4PrimaryParticle* primary;      //Storing the primary for accesing during UserStep //NOT USED
   ActarSimAnalysisMessenger* analMessenger; // pointer to messenger
 
   TBranch* primaryInfoBranch; //Local primaries branch
   TBranch* beamInfoBranch;    //Beam Info branch
 
-  TClonesArray*  simpleTrackCA;
+  //TClonesArray*  simpleTrackCA; //NOT USED
 
   ActarSimData* theData; //Data
   //ActarSimTrack* theTracks; //Data tracks
-  ActarSimSimpleTrack** simpleTrack; //the two simple data track
+  //ActarSimSimpleTrack** simpleTrack; //the two simple data track NOT USED
 
-  G4double primTheta;
-  G4double primPhi;
+  //G4double primTheta; //NOT USED
+  //G4double primPhi; //NOT USED
 
   //primary physics (momentum and mass are given by the pointer)
   TH1D *hPrimTheta;              // Primary Theta angle
@@ -159,7 +159,7 @@ public:
   void SetSilRingAnalOn(){silRingAnalIncludedFlag=1;}
   void SetSciAnalOn(){sciAnalIncludedFlag=1;}
   void SetSciRingAnalOn(){sciRingAnalIncludedFlag=1;}
-  void SetPlaAnalOn(){plaAnalIncludedFlag=1;}	
+  void SetPlaAnalOn(){plaAnalIncludedFlag=1;}
   void SetGasAnalOff(){gasAnalIncludedFlag=0;}
   void SetSilAnalOff(){silAnalIncludedFlag=0;}
   void SetSciAnalOff(){sciAnalIncludedFlag=0;}
@@ -176,7 +176,7 @@ public:
 
   G4int GetGasAnalStatus(){return gasAnalIncludedFlag;}
   G4int GetSilAnalStatus(){return silAnalIncludedFlag;}
-  G4int GetSilRingAnalStatus(){return silRingAnalIncludedFlag;}	
+  G4int GetSilRingAnalStatus(){return silRingAnalIncludedFlag;}
   G4int GetSciAnalStatus(){return sciAnalIncludedFlag;}
   G4int GetSciRingAnalStatus(){return sciRingAnalIncludedFlag;}
   G4int GetPlaAnalStatus(){return plaAnalIncludedFlag;}
@@ -185,7 +185,7 @@ public:
 
   //DPL 29NOV2012
   void SetMinStrideLength(Double_t value);
- 
+
  // G4VUserDetectorConstruction
   void Construct(const G4VPhysicalVolume*);
 
@@ -227,4 +227,3 @@ public:
 };
 
 #endif
-

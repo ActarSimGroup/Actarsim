@@ -26,23 +26,23 @@ class G4Material;
 class ActarSimSciDetectorMessenger;
 class ActarSimDetectorConstruction;
 
-class ActarSimSciDetectorConstruction {  
+class ActarSimSciDetectorConstruction {
 private:
-  
+
   //Position of the GasBox
-  G4double zGasBoxPosition;
+  //G4double zGasBoxPosition; //NOT USED HERE
 
   // Materials
   G4Material* sciBulkMaterial;
- 
+
   ActarSimSciDetectorMessenger* sciMessenger;   //pointer to the Messenger
   ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
-  
+
   G4VPhysicalVolume* ConstructSci(G4LogicalVolume*);
 
   G4int sideCoverage;   // 6 bits to indicate which sci wall is present (1) or absent (0)
 			// order is:
-			// bit1 (lsb) beam output wall 
+			// bit1 (lsb) beam output wall
 			// bit2 lower (gravity based) wall
 			// bit3 upper (gravity based) wall
 			// bit4 left (from beam point of view) wall
@@ -55,10 +55,10 @@ private:
   G4double zBoxSciHalfLength;   // Remember: z is along beam
 
 public:
-  
+
   ActarSimSciDetectorConstruction(ActarSimDetectorConstruction*);
   ~ActarSimSciDetectorConstruction();
-  
+
   G4VPhysicalVolume* Construct(G4LogicalVolume*);
 
   void SetSciBulkMaterial (G4String);
@@ -79,4 +79,3 @@ public:
 
 };
 #endif
-

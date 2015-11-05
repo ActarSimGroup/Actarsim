@@ -20,7 +20,7 @@
 // 2 - Open a root session
 //      root -l
 // 3 - Run this macro inside root
-//      gSystem->Load("actarsim.sl");
+//      gSystem->Load("libactar.sl");
 //      .L digitizationMacro.C+;
 //
 //      thePadsGeometry.SetGeometryValues(Int_t geometryType,
@@ -123,16 +123,16 @@ Float_t Polya(Float_t param=3.2){
   //
   static Short_t firstcall=0;
   static Float_t integral[1000];
-  
+
   Int_t check=0;
   Int_t i=0;
-  
+
   Float_t f,buff[1000];
   Float_t lambda;
   Float_t step=0.01;
   Float_t shift=0.005;
   Float_t pran=0;
-  
+
   if(firstcall==0){
     for(i=0;i<1000;i++){
       lambda=i*step+shift; //gain: number of electrons produced for a single incoming electron
@@ -148,7 +148,7 @@ Float_t Polya(Float_t param=3.2){
     f=gRandom->Rndm();
     if(f>0.0001 && f<0.9999) check=1;
   }
-  
+
   i=0;
   while(i<1000){
     if(f<integral[i]/integral[999]){
@@ -167,55 +167,55 @@ class ActarPadSignal : public TObject {
   Int_t padNumber;                 //pad control number
   Int_t padRow;                    //pad address: row
   Int_t padColumn;                 //pad address: column
-  
+
   Int_t numberOfStrides;           //number of strides on the pad
-  
+
   //TIME CONTENT IS GOING TO BE SOON MODIFIED TO REPRODUCE A GET SIGNAL
   Double_t initTime;                //first induction time
   Double_t finalTime;               //last induction time
   Double_t sigmaTime;               //sigma in induction time
-  
+
   Double_t chargeDeposited;         //charge deposited
-  
+
   Int_t eventID;
   Int_t runID;
-  
+
  public:
   ActarPadSignal();
   ~ActarPadSignal();
-  
+
   void Reset(void);
-  
+
   ActarPadSignal& operator=(const ActarPadSignal &right);
-  
+
   Int_t GetPadNumber(){return padNumber;}
   Int_t GetPadRow(){return padRow;}
   Int_t GetPadColumn(){return padColumn;}
-  
+
   Int_t GetNumberOfStrides(){return numberOfStrides;}
-  
+
   Double_t GetInitTime(){return initTime;}
   Double_t GetFinalTime(){return finalTime;}
   Double_t GetSigmaTime(){return sigmaTime;}
   Double_t GetChargeDeposited(){return chargeDeposited;}
-  
+
   Int_t GetEventID(){return eventID;}
   Int_t GetRunID(){return runID;}
-  
+
   void SetPadNumber(Int_t pad){padNumber=pad;}
   void SetPadRow(Int_t pad){padRow=pad;}
   void SetPadColumn(Int_t pad){padColumn=pad;}
-  
+
   void SetNumberOfStrides(Int_t num){numberOfStrides=num;}
-  
+
   void SetInitTime(Double_t time){initTime=time;}
   void SetFinalTime(Double_t time){finalTime=time;}
   void SetSigmaTime(Double_t time){sigmaTime=time;}
   void SetChargeDeposited(Double_t cha){chargeDeposited = cha;}
-  
+
   void SetEventID(Int_t id){eventID=id;}
   void SetRunID(Int_t id){runID=id;}
-  
+
   ClassDef(ActarPadSignal,1);
 };
 
@@ -255,20 +255,20 @@ ActarPadSignal& ActarPadSignal::operator=(const ActarPadSignal &right){
   }
   return *this;
 }
-  
-  
+
+
 class projectionOnPadPlane{
-    
+
  private:
   ActarSimSimpleTrack* track;    //the track to be projected
   TVector3* pre;                 //projection of the initial point
   TVector3* post;                //projection of the final point
   Double_t timePre;              //drift time of the initial point
   Double_t timePost;             //drift time of the final point
-  
+
   Double_t sigmaLongAtPadPlane;        //spatial spread at the pad plane
   Double_t sigmaTransvAtPadPlane;      //time spread at the pad plane
-  
+
   Int_t position;               //0 still not calculated
                                 //1 if any point is closer to the (0,0,z) than a delta (rho<delta)
                                 //2 else if both points lies within the limits of the beamShielding
@@ -278,7 +278,7 @@ class projectionOnPadPlane{
  public:
   projectionOnPadPlane();
   virtual ~projectionOnPadPlane();
-  
+
   ActarSimSimpleTrack* GetTrack(){return track;}
   TVector3* GetPre(){return pre;}
   TVector3* GetPost(){return post;}
@@ -287,7 +287,7 @@ class projectionOnPadPlane{
   Double_t GetSigmaLongAtPadPlane(){return sigmaLongAtPadPlane;}
   Double_t GetSigmaTransvAtPadPlane(){return sigmaTransvAtPadPlane;}
   Int_t GetPosition(){return position;}
-  
+
   void SetTrack(ActarSimSimpleTrack* tr){track = tr;}
   void SetPre(TVector3* ve){pre = ve;}
   void SetPost(TVector3* ve){post = ve;}
@@ -296,7 +296,7 @@ class projectionOnPadPlane{
   void SetSigmaLongAtPadPlane(Double_t del){sigmaLongAtPadPlane = del;}
   void SetSigmaTransvAtPadPlane(Double_t del){sigmaTransvAtPadPlane = del;}
   void SetPosition(Int_t pos){position=pos;}
-  
+
   ClassDef(projectionOnPadPlane,1);
 };
 
@@ -313,34 +313,40 @@ projectionOnPadPlane::~projectionOnPadPlane(){
 
 
 class padsGeometry{
-  
+
  private:
   Int_t numberOfColumns;    //columns: determined by the Z length
   Int_t numberOfRows;       //rows: determined by the sizes of pads and ACTAR
   Int_t numberOfPads;       //number of pads in the detector
                             //PADS, ROWS & COLUMNS begin in 1
                             //(if numberOfRows=80, then there are rows from 1 to 80).
-  
+  Int_t geoType;            //geometry type (0 box, 1 tube)
+  Int_t padType;            //pad type (0 square, 1 hexagon)
+  Int_t padLayout;          // layout pattern for hexagon pads
+                            //   (0: MAYA like, 1: rotated MAYA-like)
+  Double_t padSize;         //pads size (square side or hexagon side)
+  Double_t rHexagon;         //for hexagon only, the apothem
+
+  Double_t radius;           //      cylinder: radius
   Double_t xLength;         //all are half-length! dimension for the box case
   Double_t yLength;
   Double_t zLength;
-  Double_t padSize;          //pads size
-  
+
   Double_t sideBlankSpaceX; // length of blank space between the GasBox and the Pad (both side in X direction)
   Double_t sideBlankSpaceZ; // length of blank space between the GasBox and the Pad (both side in Z direction)
-  
+
   Double_t deltaProximityBeam; //to avoid strides to close to the beam
   Double_t sizeBeamShielding;  //radius of the beam shielding cylinder
-  
+
   Int_t endCapMode;         //set to 1 for projection on the end cups
-  
+
  public:
   padsGeometry();
   virtual ~padsGeometry();
-  
+
   void SetPadsGeometry(void);
-  
-  
+
+
   void SetGeometryValues(Int_t geo, Int_t pad, Int_t layout, Double_t x, Double_t y, Double_t z,
 			 Double_t ra, Double_t psi, Double_t gapx, Double_t gapz){
     geoType=geo;  padType=pad; padLayout=layout;
@@ -351,11 +357,15 @@ class padsGeometry{
     sideBlankSpaceX=gapx; sideBlankSpaceZ=gapz;
     SetPadsGeometry();
   }
-  
+
   void SetNumberOfColumns(Int_t col){numberOfColumns=col;}
   void SetNumberOfRows(Int_t row){numberOfRows=row;}
   void SetNumberOfPads(Int_t pad){numberOfPads=pad;}
+  void SetGeoType(Int_t type){geoType=type;}
+  void SetPadType(Int_t type){padType=type;}
+  void SetPadLayout(Int_t layout){padLayout=layout;}
   void SetPadSize(Double_t si){padSize=si;}
+  void SetRHexagon(Double_t si){rHexagon=si;}
   void SetXLength(Double_t x){xLength=x;}
   void SetYLength(Double_t y){yLength=y;}
   void SetZLength(Double_t z){zLength=z;}
@@ -370,7 +380,11 @@ class padsGeometry{
   Int_t  GetNumberOfColumns(void){return numberOfColumns;}
   Int_t  GetNumberOfRows(void){return numberOfRows;}
   Int_t  GetNumberOfPads(void){return numberOfPads;}
+  Int_t GetGeoType(void){return geoType;}
+  Int_t GetPadType(void){return padType;}
+  Int_t GetPadLayout(void){return padLayout;}
   Double_t GetPadSize(void){return padSize;}
+  Double_t GetRHexagon(void){return rHexagon;}
   Double_t GetXLength(void){return xLength;}
   Double_t GetYLength(void){return yLength;}
   Double_t GetZLength(void){return zLength;}
@@ -385,7 +399,7 @@ class padsGeometry{
   Int_t IsInPadNumber(TVector3* point);
   Int_t GetPadColumnFromXZValue(Double_t x, Double_t z);
   Int_t GetPadRowFromXZValue(Double_t x, Double_t z);
-  
+
   Int_t CalculatePad(Int_t r, Int_t c){
     //Pad number calculation from row and column (PADS, ROWS & COLUMNS begin in 1)
     if(r<=0 || r>numberOfRows || c<=0 || c>numberOfColumns){
@@ -397,18 +411,18 @@ class padsGeometry{
     }
     else return ((r-1) * numberOfColumns + (c-1) + 1);
   }
-  
+
   Int_t CalculateColumn(Int_t p){
     //Column calculation from pad (PADS, ROWS & COLUMNS begin in 1)
     if(p>numberOfPads || p==0) return 0;
     if(p%numberOfColumns==0) return numberOfColumns;
     else return p%numberOfColumns;}
-  
+
   Int_t CalculateRow(Int_t p){
     //Row calculation from pad (PADS, ROWS & COLUMNS begin in 1)
     if(p>numberOfPads || p==0) return 0;
     else return (Int_t)(((p-1)/numberOfColumns)+1);}
-  
+
   ClassDef(padsGeometry,1);
 };
 
@@ -545,7 +559,7 @@ Int_t padsGeometry::IsInPadNumber(TVector3* point){
   Int_t column; Int_t row;
   if(geoType == 0 && padType == 0) { //box and square pad
     row = (Int_t) (((point->X() - sideBlankSpaceX + xLength)/ padSize) + 1);
-    column = (Int_t) ((point->Z() - sideBlankSpaceZ)/ padSize)+1);
+    column = (Int_t) (((point->Z() - sideBlankSpaceZ)/ padSize)+1);
     if(column > 0 && column < numberOfColumns+1
        && row > 0 && row < numberOfRows+1) {
       if(DIGI_DEBUG>2)
@@ -728,7 +742,7 @@ Int_t padsGeometry::GetPadRowFromXZValue(Double_t x, Double_t z){
   // column number returned here is allowed to be out of the range of the chamber
   TVector3 point(x, -yLength, z);
   TVector3 vec;
-  
+
   Int_t column=0, row=0;
   if(geoType == 0 && padType == 0){ //box and square pad
     row =  (Int_t) numberOfRows/2.+ ((x / padSize)+1);
@@ -824,7 +838,7 @@ TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
 
 
 class amplificationManager{
-  
+
  private:
   Int_t isWire;
   Double_t radiusOfAmpliWire; // radius of amplification wire (ra in Mathieson)
@@ -836,25 +850,25 @@ class amplificationManager{
                               //   for x (parallel      to the wire) and
                               //       y (perpendicular to the wire), respectively
   Double_t rhoP, rhoN;        // relative induction charge, rho in Mathieson, for X and Y
-  
+
  public:
   amplificationManager();
   virtual ~amplificationManager();
-  
+
   void SetIsWireOn(){
     isWire=1;
   }
-  
+
   void SetIsWireOff(){
     isWire=0;
   }
-  
+
   Int_t GetIsWire(){
     return isWire;
   }
-  
+
   void SetWireAmplificationParameters(Double_t ra, Double_t s, Double_t h);
-  
+
   void SetRadiusOfAmpliWire(Double_t ra) {radiusOfAmpliWire = ra;}
   void SetPitchOfAmpliWire(Double_t s) {pitchOfAmpliWire = s;}
   void SetACseparation(Double_t h) {ACseparation = h;}
@@ -864,7 +878,7 @@ class amplificationManager{
   void SetMathiesonFactorK1N(Double_t k1n) {K1N = k1n;}
   void SetMathiesonFactorK2N(Double_t k2n) {K2N = k2n;}
   void SetMathiesonFactorK3N(Double_t k3n) {K3N = k3n;}
-  
+
   Double_t GetRadiusOfAmpliWire() {return radiusOfAmpliWire;}
   Double_t GetPitchOfAmpliWire()  {return pitchOfAmpliWire;}
   Double_t GetACseparation()      {return ACseparation;}
@@ -874,7 +888,7 @@ class amplificationManager{
   Double_t GetMathiesonFactorK1N() {return K1N;}
   Double_t GetMathiesonFactorK2N() {return K2N;}
   Double_t GetMathiesonFactorK3N() {return K3N;}
-  
+
   Double_t CalculateRhoP(Double_t x){
     //calculation of the relative induction charge for X (see Mathieson paper)
     lambdaP= x/ACseparation;
@@ -882,7 +896,7 @@ class amplificationManager{
     rhoP=K1P*(1.-commonFactor)/(1.+K3P*commonFactor);
     return rhoP;
   }
-  
+
   Double_t CalculateRhoN(Double_t y){
     //calculation of the relative induction charge for Y (see Mathieson paper)
     lambdaN= y/ACseparation;
@@ -913,19 +927,19 @@ void amplificationManager::SetWireAmplificationParameters(Double_t ra, Double_t 
   //     pitchOfAmpliWire  = s;
   //     ACseparation      = h;
   Double_t k1p=0.0, k2p=0.0, k3p=0.0, k1n=0.0, k2n=0.0, k3n=0.0;
-  
+
   Double_t ras=ra/s;
   Double_t ras1=1.5e-3, ras2=2.5e-3, ras3=3.75e-3, ras4=5.25e-3, ras5=7.5e-3;
-  
+
   Double_t ras01=ras -ras1, ras02=ras -ras2, ras03=ras -ras3, ras04=ras -ras4, ras05=ras -ras5;
   Double_t ras12=ras1-ras2, ras13=ras1-ras3, ras14=ras1-ras4, ras15=ras1-ras5;
   Double_t ras21=ras2-ras1, ras23=ras2-ras3, ras24=ras2-ras4, ras25=ras2-ras5;
   Double_t ras31=ras3-ras1, ras32=ras3-ras2, ras34=ras3-ras4, ras35=ras3-ras5;
   Double_t ras41=ras4-ras1, ras42=ras4-ras2, ras43=ras4-ras3, ras45=ras4-ras5;
   Double_t ras51=ras5-ras1, ras52=ras5-ras2, ras53=ras5-ras3, ras54=ras5-ras4;
-  
+
   Double_t hs = h/s;
-  
+
   if(hs <= 1.40){ // K3 factor for direction parallel to wire or normal to wire are different
     // calculate K3P
     Double_t a14 = -0.26171, a13 = 1.0914, a12 = -1.61916, a11 = 0.765601, a10 = 0.602428;
@@ -933,32 +947,32 @@ void amplificationManager::SetWireAmplificationParameters(Double_t ra, Double_t 
     Double_t a34 = -0.356592,a33 = 1.45366,a32 = -2.1068,  a31 = 1.02757,  a30 =0.492266;
     Double_t a44 = -0.398035,a43 = 1.62109,a42 = -2.34602, a41 = 1.17147,  a40 =0.433379;
     Double_t a54 = -0.449798,a53 = 1.83572,a52 = -2.66741, a51 = 1.37198,  a50 =0.355622;
-    
+
     Double_t K3P1=a14*pow(hs,4.)+a13*pow(hs,3.)+a12*hs*hs+a11*hs+a10;
     Double_t K3P2=a24*pow(hs,4.)+a23*pow(hs,3.)+a22*hs*hs+a21*hs+a20;
     Double_t K3P3=a34*pow(hs,4.)+a33*pow(hs,3.)+a32*hs*hs+a31*hs+a30;
     Double_t K3P4=a44*pow(hs,4.)+a43*pow(hs,3.)+a42*hs*hs+a41*hs+a40;
     Double_t K3P5=a54*pow(hs,4.)+a53*pow(hs,3.)+a52*hs*hs+a51*hs+a50;
-    
+
     k3p=K3P1*(ras02*ras03*ras04*ras05)/(ras12*ras13*ras14*ras15)+
       K3P2*(ras01*ras03*ras04*ras05)/(ras21*ras23*ras24*ras25)+
       K3P3*(ras01*ras02*ras04*ras05)/(ras31*ras32*ras34*ras35)+
       K3P4*(ras01*ras02*ras03*ras05)/(ras41*ras42*ras43*ras45)+
       K3P5*(ras01*ras02*ras03*ras04)/(ras51*ras52*ras53*ras54);
-    
+
     // calculate K3N
     a14 =-0.56927 ;a13 =2.15238; a12 =-2.68646; a11 =0.815535; a10 =0.929974;
     a24 =-0.601139;a23 =2.2645;  a22 =-2.80946; a21 =0.828462; a20 =0.932558;
     a34 =-0.615971;a33 =2.34445; a32 =-2.92218; a31 =0.844926; a30 =0.935198;
     a44 =-0.79293 ;a43 =2.94533; a42 =-3.58834; a41 = 1.08576; a40 =0.908493;
     a54 =-0.841875;a53 =3.10651; a52 =-3.74454; a51 =1.09552;  a50 =0.914561;
-    
+
     Double_t K3N1=a14*pow(hs,4.)+a13*pow(hs,3.)+a12*hs*hs+a11*hs+a10;
     Double_t K3N2=a24*pow(hs,4.)+a23*pow(hs,3.)+a22*hs*hs+a21*hs+a20;
     Double_t K3N3=a34*pow(hs,4.)+a33*pow(hs,3.)+a32*hs*hs+a31*hs+a30;
     Double_t K3N4=a44*pow(hs,4.)+a43*pow(hs,3.)+a42*hs*hs+a41*hs+a40;
     Double_t K3N5=a54*pow(hs,4.)+a53*pow(hs,3.)+a52*hs*hs+a51*hs+a50;
-    
+
     k3n=K3N1*(ras02*ras03*ras04*ras05)/(ras12*ras13*ras14*ras15)+
       K3N2*(ras01*ras03*ras04*ras05)/(ras21*ras23*ras24*ras25)+
       K3N3*(ras01*ras02*ras04*ras05)/(ras31*ras32*ras34*ras35)+
@@ -971,34 +985,34 @@ void amplificationManager::SetWireAmplificationParameters(Double_t ra, Double_t 
     Double_t a33 = -0.003576, a32 = 0.05678, a31 = -0.3279, a30 = 0.7774;
     Double_t a43 = -0.003753, a42 = 0.05816, a41 = -0.3257, a40 = 0.7409;
     Double_t a53 = -0.003850, a52 = 0.05845, a51 = -0.3184, a50 = 0.6947;
-    
+
     Double_t K3P1=a13*pow(hs,3.)+a12*hs*hs+a11*hs+a10;
     Double_t K3P2=a23*pow(hs,3.)+a22*hs*hs+a21*hs+a20;
     Double_t K3P3=a33*pow(hs,3.)+a32*hs*hs+a31*hs+a30;
     Double_t K3P4=a43*pow(hs,3.)+a42*hs*hs+a41*hs+a40;
     Double_t K3P5=a53*pow(hs,3.)+a52*hs*hs+a51*hs+a50;
-    
+
     k3p=K3P1*(ras02*ras03*ras04*ras05)/(ras12*ras13*ras14*ras15)+
       K3P2*(ras01*ras03*ras04*ras05)/(ras21*ras23*ras24*ras25)+
       K3P3*(ras01*ras02*ras04*ras05)/(ras31*ras32*ras34*ras35)+
       K3P4*(ras01*ras02*ras03*ras05)/(ras41*ras42*ras43*ras45)+
       K3P5*(ras01*ras02*ras03*ras04)/(ras51*ras52*ras53*ras54);
-    
+
     k3n=k3p;
   }
-  
+
   // calculate K1 and K2
   Double_t sqrtK3P = sqrt(k3p);
   Double_t sqrtK3N = sqrt(k3n);
-  
+
   // K2=PI*(1-sqrt(K3)/2)/2, PI/2=1.571
   k2p=1.571*(1.0-sqrtK3P/2.0);
   k2n=1.571*(1.0-sqrtK3N/2.0);
-  
+
   // K1=K2*sqrt(K3)/(4.*atan(sqrt(K3)))
   k1p=k2p*sqrtK3P/(4.*atan(sqrtK3P));
   k1n=k2n*sqrtK3N/(4.*atan(sqrtK3N));
-  
+
   SetRadiusOfAmpliWire(ra);
   SetPitchOfAmpliWire(s);
   SetACseparation(h);
@@ -1012,7 +1026,7 @@ void amplificationManager::SetWireAmplificationParameters(Double_t ra, Double_t 
 
 
 class driftManager{
-  
+
  private:
   padsGeometry* padsGeo;          //ACTAR pads geometry class
   amplificationManager* ampManager;
@@ -1020,40 +1034,40 @@ class driftManager{
   Double_t transversalDiffusion;  //gas transversal diff. for e-
   Double_t driftVelocity;         //gas drift velocity for e
   Double_t lorentzAngle;
-  
+
   Double_t magneticField;         //magnetic field (T)
                                   //for a box: normal to E
                                   //for a cylinder: parallel to Z
   //creo que si pongo diffusion y drift no deberia poner campo magnetico
   //sino parameters de deriva asociados al campo magnetico...
-  
+
   Double_t padPlaneRadius;
   Double_t gasWvalue;      //The W-value is defined as the average energy lost by
                            //the incident particle per ion pair formed. Due to the
                            //competing mechanism of the energy loss, i.e. excitation,
                            //W-value is always greater than the ionization energy.
                            //It runs from 25 to 45 eV for most gases of interest.
-  
+
   Bool_t oldChargeCalculation; //Make it True if you want to test the old style of calculation
-  
+
  public:
   driftManager();
   virtual ~driftManager();
-  
+
   void SetDiffusionParameters(Double_t lon, Double_t tra){
     longitudinalDiffusion = lon;
     transversalDiffusion = tra;
   }
-  
-  void SetDriftParameters(Double_t votage, Double_t height, Double_t pressure, TString gasName);
-  
+
+  void SetDriftParameters(Double_t voltage, Double_t height, Double_t pressure, TString gasName);
+
   void SetDriftVelocity(Double_t vel){driftVelocity=vel;}
   void SetLorentzAngle(Double_t vel){lorentzAngle=vel;}
   void SetMagneticField(Double_t vel){magneticField=vel;}
   void SetGasWvalue(Double_t value){gasWvalue=value;}
   void SetOldChargeCalculation(void){oldChargeCalculation=kTRUE;}
   void SetNewChargeCalculation(void){oldChargeCalculation=kFALSE;}
-  
+
   Double_t GetLongitudinalDiffusion(void){return longitudinalDiffusion;}
   Double_t GetTransversalDiffusion(void){return transversalDiffusion;}
   Double_t GetDriftVelocity(void){return driftVelocity;}
@@ -1061,14 +1075,14 @@ class driftManager{
   Double_t GetMagneticField(void){return magneticField;}
   Double_t GetGasWvalue(void){return gasWvalue;}
   Bool_t GetOldChargeCalculation(void){return oldChargeCalculation;}
-  
+
   void GetStatus(void);
-  
+
   void ConnectToGeometry(padsGeometry* pad){padsGeo = pad;}
   void ConnectToAmplificationManager(amplificationManager* amp){ampManager = amp;}
   Int_t CalculatePositionAfterDrift(projectionOnPadPlane* pro);
   void CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo,
-                               Int_t &numberOfPadsBeforeThisLoopStarted,TTree *T);
+                               Int_t &numberOfPadsBeforeThisLoopStarted);
   void CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, Double_t k3p,
                                         Double_t k1n, Double_t k2n, Double_t k3n,
                                         projectionOnPadPlane* pro, TClonesArray* clo,
@@ -1151,10 +1165,10 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 			  pro->GetTrack()->GetYPost() +
 			  pro->GetTrack()->GetXPost()*
 			  pro->GetTrack()->GetXPost());
-  
+
   TRandom *random=new TRandom();
   random->SetSeed(0);
-  
+
   if(padsGeo->GetEndCapMode()==1) ;
   else{
     if(pro->GetTrack()->GetZPre() <= 0 ||
@@ -1169,7 +1183,7 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
             rhoPost < padsGeo->GetSizeBeamShielding()) pro->SetPosition(3); //if one point is within the beamShielding
     else pro->SetPosition(4); //if both points lie outside of beamShielding, still to be checked after as a function of geoType
   }
-  
+
   if(padsGeo->GetGeoType()==1) { //cylinder
     if(pro->GetPosition() == 4 &&
        rhoPre <= padsGeo->GetRadius() &&
@@ -1217,7 +1231,7 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
       pro->SetTimePost(pro->GetTrack()->GetTimePost() + (padsGeo->GetRadius() - rhoPost) / driftVelocity);
     }
   }
-  
+
   if(padsGeo->GetGeoType()==0){  //box
     if(padsGeo->GetEndCapMode()==1){
       Double_t tempY = pro->GetTrack()->GetYPre();                                 //storing old Y
@@ -1241,7 +1255,7 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
               rhoPost < padsGeo->GetSizeBeamShielding()) pro->SetPosition(3);
       else pro->SetPosition(4); //still to be checked after as a function of the geoType
     }
-    
+
     if(pro->GetPosition() == 4 &&
        pro->GetTrack()->GetYPre() <= 2 * padsGeo->GetYLength() &&
        pro->GetTrack()->GetYPre() >= 0 &&
@@ -1250,15 +1264,15 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
     else  pro->SetPosition(5);
     //if the pads goes out of the gas chamber
     if(pro->GetPosition()==5) return 0;
-    
+
     driftDistPre = pro->GetTrack()->GetYPre();
     driftDistPost= pro->GetTrack()->GetYPost();
-    
+
     if(lorentzAngle==0.) {
       //if no magnetic field, the cloud limits drift to the same point in
       // XZ space. The drift time is obtained from the differences in Y
       pro->SetSigmaTransvAtPadPlane(sqrt(driftDistPre*2*transversalDiffusion/driftVelocity));
-      
+
       pro->GetPre()->SetX(pro->GetTrack()->GetXPre());      //X is not changed
       pro->GetPre()->SetY(0.);          //Y is the pad plane
       pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());      //Z is not changed
@@ -1288,7 +1302,7 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
   }
   pro->SetSigmaLongAtPadPlane(sqrt(driftDistPre*2*longitudinalDiffusion/driftVelocity));
   pro->SetSigmaTransvAtPadPlane(sqrt(driftDistPre*2*transversalDiffusion/driftVelocity));
-  
+
   if(DIGI_DEBUG>1)
     cout <<  "________________________________________________________" << endl
          << " Output of driftManager::CalculatePositionAfterDrift()" << endl
@@ -1305,16 +1319,16 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 	 <<  pro->GetPost()->Y() << ","
 	 <<  pro->GetPost()->Z() << ") timePost = " << pro->GetTimePost() << endl
 	 << "________________________________________________________"<< endl;
-  
+
   return 1;
 }
 
 void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo,
-                                           Int_t &numberOfPadsBeforeThisLoopStarted, TTree* T) {
+                                           Int_t &numberOfPadsBeforeThisLoopStarted) {
   //
   // Calculates the pads with charge after the electron swarm drift
   //
-  
+
   Double_t halfPadSize = padsGeo->GetPadSize()/2.;
   Double_t rHexagon   = padsGeo->GetRHexagon();
   TVector3* preOfThisProjection  = pro->GetPre();
@@ -1329,15 +1343,14 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
   Int_t initRow = padsGeo->CalculateRow(initPad);
   Int_t finalColumn = padsGeo->CalculateColumn(finalPad);
   Int_t finalRow = padsGeo->CalculateRow(finalPad);
-  
   //Int_t numberofpoints=0;
   //TH2F *hist=new TH2F("h2","Padplane",151,0,300,151,-150,150);
   //TGraph *g=new TGraph();
   //TCanvas *c=new TCanvas();
-  
+
   Double_t strideLength=pro->GetTrack()->GetStrideLength();
   Double_t energyStride=pro->GetTrack()->GetEnergyStride();
-  
+
   if(DIGI_DEBUG>2)
     cout <<  "________________________________________________________" << endl
          << " Output of driftManager::CalculatePadsWithCharge()" << endl
@@ -1350,27 +1363,27 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
          << preOfThisProjectionZ << endl
          << " Final pos " << postOfThisProjectionX << " "
          << postOfThisProjectionZ << endl;
-  
+
   Double_t energyPerPair=GetGasWvalue(); // W value in eV
-  
+
   //Calculating electrons produced every 0.5 mm
   Int_t nsteps=strideLength/0.5; //0 if below 0.5, ...
   Double_t sigmaTrans=pro->GetSigmaTransvAtPadPlane();
   Double_t sigmaLong=pro->GetSigmaLongAtPadPlane();
-  
-  Double_t *EnergyStep;
-  Int_t *NumberOfElectrons;
-  EnergyStep= new Double_t[nsteps+2];
-  NumberOfElectrons=new Int_t[nsteps+2];
-  
+
+  Double_t *Xstep = new Double_t[nsteps+2];
+  Double_t *Zstep = new Double_t[nsteps+2];
+  Double_t *EnergyStep= new Double_t[nsteps+2];
+  Int_t *NumberOfElectrons=new Int_t[nsteps+2];
+
   Int_t numberOfRows=padsGeo->GetNumberOfRows();
   Int_t numberOfColumns=padsGeo->GetNumberOfColumns();
-  
+
   //HAPOL HARDCODED! SOLVE IT! ->HINT: Create a TClonesArray of an object with the data
   Int_t chargeOnPads[151][151]={0};
   Int_t chargeOnPadsAmplified[151][151]={0};
   Int_t chargeOnPadsTotal[151][151]={0};
-  
+
   /* Int_t **chargeOnPads; */
   /* chargeOnPads=new Int_t*[numberOfRows]; */
   /* Int_t **chargeOnPadsAmplified=new Int_t*[numberOfRows]; */
@@ -1380,27 +1393,29 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
   /*   chargeOnPadsAmplified[nrows]=new Int_t[numberOfColumns]; */
   /*   chargeOnPadsTotal[nrows]=new Int_t[numberOfColumns]; */
   /* } */
-  
+
   Int_t *rowList=new Int_t[4000];
   Int_t *columnList=new Int_t[4000];
   //for(Int_t u=0;u<numberOfRows;u++){
   //  for(Int_t k=0;k<numberOfColumns;k++)
   //    chargeOnPads[u][k]=0.;
   //}
-  
+
   Double_t sumX=0;
   Double_t sumZ=0;
   Int_t electrons_lost=0;
-  
+
   for(Int_t k=0;k<(nsteps+1);k++){
     //the step is the strideLength if below 0.5 mm and is between 0.5 mm and 1 mm otherwise
     Double_t stepx=(postOfThisProjectionX-preOfThisProjectionX)/(nsteps+1);
     Double_t stepz=(postOfThisProjectionZ-preOfThisProjectionZ)/(nsteps+1);
+    Xstep[k]=preOfThisProjectionX+k*stepx;
+    Zstep[k]=preOfThisProjectionZ+k*stepz;
     EnergyStep[k]=energyStride/(nsteps+1);
     Int_t electrons = 1e6 * EnergyStep[k] / energyPerPair;
     NumberOfElectrons[k]=gRandom->Poisson(electrons);
   }
-  
+
   Double_t electron_posX = 0;
   Double_t electron_posZ = 0;
   Int_t padRow = 0;
@@ -1412,12 +1427,12 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
 	chargeOnPadsAmplified[u][k]=0;
       }
     }
-    Double_t strideCenterX= preOfThisProjectionX+(istep+0.5)*stepx;
-    Double_t strideCenterZ= preOfThisProjectionZ+(istep+0.5)*stepz;
-    
+    Double_t strideCenterX = (Xstep[istep+1]+Xstep[istep])/2.;
+    Double_t strideCenterZ = (Zstep[istep+1]+Zstep[istep])/2.;
+
     //g->SetPoint(numberofpoints,strideCenterZ,strideCenterX);
     //numberofpoints++;
-    
+
     Double_t energyStride=EnergyStep[istep];
     for(Int_t ielectron=0;ielectron<NumberOfElectrons[istep]; ielectron++){
       electron_posX = gRandom->Gaus(strideCenterX,sigmaTrans); //Better if we also random starting position
@@ -1430,7 +1445,7 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
       }
       else electrons_lost++;
     }
-    
+
     for(Int_t u=0;u<numberOfRows;u++){
       for(Int_t k=0;k<numberOfColumns;k++){
 	if(chargeOnPads[u][k]>0){
@@ -1439,7 +1454,7 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
       }
     }
   }//End of Loop on steps
-  
+
   Int_t padswithsignal=0;
   for(Int_t u=0;u<numberOfRows;u++){
     for(Int_t k=0;k<numberOfColumns;k++){
@@ -1450,33 +1465,33 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
       }
     }
   }
-  
+
   Int_t numberOfPadsWithSignal=0;
   Int_t padUnderTest;
   TVector3 centerPad;
-  
+
   numberOfPadsWithSignal=padswithsignal;
-  
+
   if(numberOfPadsWithSignal>0) {
     Float_t total_charge=0;
     ActarPadSignal** thePadSignal;
     thePadSignal = new ActarPadSignal*[numberOfPadsWithSignal];
-    
+
     for(Int_t iterOnPads=0;iterOnPads<numberOfPadsWithSignal;iterOnPads++){
       padUnderTest = padsGeo->CalculatePad(rowList[iterOnPads],columnList[iterOnPads]);
-      
+
       Float_t charge=chargeOnPadsTotal[rowList[iterOnPads]-1][columnList[iterOnPads]-1];
-      
+
       total_charge+=charge;
       if(DIGI_DEBUG)
 	cout << rowList[iterOnPads] << " " << columnList[iterOnPads]
              << " ====================>Charge " << charge << endl;
       //hist->SetBinContent(columnList[iterOnPads],rowList[iterOnPads],charge);
-      
+
       if(DIGI_DEBUG && (rowList[iterOnPads]<0 || columnList[iterOnPads]<0))
 	cout << "something WRONG: (row, column) = (" << rowList[iterOnPads] << "," << columnList[iterOnPads]
              << ")" << ", CHARGE=" <<  charge << "iterOnPads=" << iterOnPads << endl;
-      
+
       //Let us create and fill as many padSignals as pads in the event
       thePadSignal[iterOnPads] = new ActarPadSignal();
       thePadSignal[iterOnPads]->SetPadNumber(padUnderTest);
@@ -1491,7 +1506,7 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
       thePadSignal[iterOnPads]->SetChargeDeposited(charge);
       thePadSignal[iterOnPads]->SetEventID(pro->GetTrack()->GetEventID());
       thePadSignal[iterOnPads]->SetRunID(pro->GetTrack()->GetRunID());
-      
+
       new((*clo)[iterOnPads+numberOfPadsBeforeThisLoopStarted])ActarPadSignal(*thePadSignal[iterOnPads]);
       thePadSignal[iterOnPads]->Reset();
     }
@@ -1506,9 +1521,9 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
     }
     for (Int_t i=0;i<numberOfPadsWithSignal;i++) delete thePadSignal[i];
     delete thePadSignal;
-    
+
   }//if numberOfPadsWith Signal>0
-  
+
   delete[] EnergyStep;
   delete[] NumberOfElectrons;
   delete[] rowList;
@@ -1534,7 +1549,7 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
   /* delete[] chargeOnPadsAmplified; */
   /* delete[] chargeOnPadsTotal; */
   //cout<<"HERE!!"<<endl;
-  
+
 }
 
 void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, Double_t k3p,
@@ -1546,14 +1561,14 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
   //
   Double_t halfPadSize = padsGeo->GetPadSize()/2.;
   Double_t rHexagon   = padsGeo->GetRHexagon();
-  
+
   TVector3* preOfThisProjection  = pro->GetPre();
   TVector3* postOfThisProjection = pro->GetPost();
   Double_t preOfThisProjectionX  = preOfThisProjection->X();
   Double_t preOfThisProjectionZ  = preOfThisProjection->Z();
   Double_t postOfThisProjectionX = postOfThisProjection->X();
   Double_t postOfThisProjectionZ = postOfThisProjection->Z();
-  
+
   Int_t initPad = padsGeo->IsInPadNumber(preOfThisProjection); //init pad
   Int_t finalPad = padsGeo->IsInPadNumber(postOfThisProjection); //final pad
   /*  Int_t initPad = 1;
@@ -1562,22 +1577,22 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
   Int_t initRow = padsGeo->CalculateRow(initPad);
   Int_t finalColumn = padsGeo->CalculateColumn(finalPad);
   Int_t finalRow = padsGeo->CalculateRow(finalPad);
-  
+
   Double_t strideCenterX=(preOfThisProjectionX+postOfThisProjectionX)/2.;
   Double_t strideCenterZ=(preOfThisProjectionZ+postOfThisProjectionZ)/2.;
-  
+
   if(DIGI_DEBUG)
     cout <<  "________________________________________________________" << endl
 	 << " Output of driftManager::CalculatePadsWithCharge()" << endl
 	 << " From (pre) " << initPad  << " (" << initRow << "," << initColumn
 	 << ") to (post) " << finalPad  << " (" << finalRow << ","
 	 << finalColumn << ")" << endl;
-  
+
   //calculate the vector between pre and post projections
-  TVector3 strideOnPadPlane = postOfThisProjection - preOfThisProjection;
+  TVector3 strideOnPadPlane = *postOfThisProjection - *preOfThisProjection;
   Double_t alpha = 0; char buffer[1000];
   Double_t sigma = pro->GetSigmaTransvAtPadPlane();
-  
+
   if(padsGeo->GetGeoType()==0) {//box
     //first, avoid the strides with points with rho<delta which are not
     //well defined in this situation
@@ -1586,7 +1601,7 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
     }
     else
       if( pro->GetPosition() != 4) return;
-    
+
     alpha = atan2(strideOnPadPlane.X(),strideOnPadPlane.Z());
   }
   else if (padsGeo->GetGeoType()==1) {//cylinder
@@ -1599,8 +1614,8 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
     alpha = atan2((postOfThisProjection->Phi()-preOfThisProjection->Phi())*padPlaneRadius,
 		  strideOnPadPlane.Z());
   }
-  
-  
+
+
   if(DIGI_DEBUG) {
     cout <<  "______________________________TF2__________________________" << endl
 	 << " Output of driftManager::CalculatePadsWithCharge()" << endl
@@ -1611,7 +1626,7 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
     if(padsGeo->GetGeoType()==1)
       cout   << "[the angle is calculated from differences in Phi] "<< endl;
   }
-  
+
   if(padsGeo->GetGeoType()==0) {//box
     if(ampManager->GetIsWire()==0) {
       /*      sprintf(buffer,
@@ -1627,15 +1642,15 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
               sigma,sigma);
     }
     else if(ampManager->GetIsWire()==1){
-      
+
       Double_t pitchWire = ampManager->GetPitchOfAmpliWire();
       Double_t         L = ampManager->GetACseparation(); // distance between wire and pads plane
       Double_t zWire =        (preOfThisProjectionZ + postOfThisProjectionZ)/2.;
       Double_t xWire = Int_t(((preOfThisProjectionX + postOfThisProjectionX)/2.)/pitchWire+0.5)*pitchWire;
-      
+
       //       cout << "end point z=" << pro->GetPost()->Z() << ", x=" << pro->GetPost()->X()
       //            << ", y=" << pro->GetPost()->Y() << ", removable diagnoisis output, dypang 09051627" << endl;
-      
+
       sprintf(buffer,
 	      "%f*%f*((1.-pow(tanh(%f*abs(%f-x)/%f),2.))/(1.+%f*pow(tanh(%f*abs(%f-x)/%f),2.)))*%f*((1.-pow(tanh(%f*abs(%f-y)/%f),2.))/(1.+%f*pow(tanh(%f*abs(%f-y)/%f),2.)))",
               pro->GetTrack()->GetEnergyStride()*100.,
@@ -1653,7 +1668,7 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
       //               zWire,zWire,xWire,xWire,L,L,L,
       //               zWire,zWire,xWire,xWire,L,L,L
       //               ); // formula used by Thomas and Manuel
-      
+
       /*       cout << "Pre(" << pro->GetPre()->X() << "," << pro->GetPre()->Z() << ")" << endl;
 	       cout << "Post(" << pro->GetPost()->X() << "," << pro->GetPost()->Z() << ")" << endl;*/
     }
@@ -1666,11 +1681,11 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
 	    preOfThisProjectionZ,sin(alpha),preOfThisProjection->Phi()*padPlaneRadius,cos(alpha),
 	    sigma,sigma);
   }
-  
-  
+
+
   if(DIGI_DEBUG>2)
     cout << endl << " Function to integrate " << buffer << endl;
-  
+
   TF2 *f2=0;
   if(padsGeo->GetGeoType()==0) {//box
     if(ampManager->GetIsWire()==0){
@@ -1696,7 +1711,7 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
 		  preOfThisProjection->Phi()*padPlaneRadius-10*sigma,
 		  preOfThisProjection->Phi()*padPlaneRadius+10*sigma);//adjust the number before the sigma!
   }
-  
+
   //Swap the initial an final row and columns if track goes back
   if(initRow>finalRow){
     Int_t tempRow = initRow;
@@ -1708,21 +1723,21 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
     initColumn = finalColumn;
     finalColumn = tempColumn;
   }
-  
+
   //we need to know which pads are going to be checked!
   //IDEA! Use the vector to determine the conditions to take a pad:
   //  1 - scalar product(strideOnPadPlane,padCenter-pro->GetPre())>0
   //  2 - scalar product(strideOnPadPlane,padCenter-pro->GetPost())<0
-  
+
   Int_t securityFactor = (Int_t)(2*sigma/padsGeo->GetPadSize());
   if(securityFactor<1) securityFactor = 1;
-  
+
   //      Int_t securityFactor=5;
-  
+
   //TO BE IMPROVED... TESTING TOO MUCH PADS
   Int_t rowsUnderTest    = (finalRow   +securityFactor+1) - (initRow   -securityFactor);
   Int_t columnsUnderTest = (finalColumn+securityFactor+1) - (initColumn-securityFactor);
-  
+
   if(DIGI_DEBUG)
     cout <<  "________________________________________________________" << endl
          << " Output of driftManager::CalculatePadsWithCharge()" << endl
@@ -1732,7 +1747,7 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
          << "), columnsUnderTest " << columnsUnderTest
          << " (from " << initColumn-securityFactor << " to "
          << initColumn-securityFactor+rowsUnderTest << ")" << endl;
-  
+
   Double_t charge=0; Int_t numberOfPadsWithSignal=0;
   Int_t padUnderTest; TVector3 centerPad;
   Int_t rowList[40000]={0}; Int_t columnList[40000]={0};
@@ -1750,10 +1765,10 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
              << " scalar with post " << strideOnPadPlane.Dot(centerPad-(*(pro->GetPost())))
              << endl;
       }
-      
+
       rowNumber = initRow-securityFactor+i;
       colNumber = initColumn-securityFactor+j;
-      
+
       if(rowNumber>=1 && rowNumber <= padsGeo->GetNumberOfRows()
 	 && colNumber>=1 && colNumber <= padsGeo->GetNumberOfColumns()){
         rowList[numberOfPadsWithSignal] = rowNumber;
@@ -1766,13 +1781,13 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
     cout <<  "________________________________________________________" << endl
 	 << " Output of driftManager::CalculatePadsWithCharge()" << endl
 	 << "  numberOfPadsWithSignal = " << numberOfPadsWithSignal<<endl;
-  
+
   Double_t phiPad, xPad, zPad;
-  
+
   if( numberOfPadsWithSignal>0) {
     ActarPadSignal** thePadSignal;
     thePadSignal = new ActarPadSignal*[numberOfPadsWithSignal];
-    
+
     for(Int_t iterOnPads=0;iterOnPads<numberOfPadsWithSignal;iterOnPads++){
       padUnderTest = padsGeo->CalculatePad(rowList[iterOnPads],columnList[iterOnPads]);
       centerPad = padsGeo->CoordinatesCenterOfPad(padUnderTest);
@@ -1781,11 +1796,11 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
 	     << " Output of driftManager::CalculatePadsWithCharge()" << endl
 	     << " Calculating charge for pad " << padUnderTest << " ("
 	     << rowList[iterOnPads] << "," << columnList[iterOnPads] << ")" << endl;
-      
+
       phiPad = centerPad.Phi();
       xPad = centerPad.X();
       zPad = centerPad.Z();
-      
+
       if(padsGeo->GetGeoType()==0) {//box
         if(padsGeo->GetPadType()==0){  //square pad
           charge = f2->Integral(zPad-halfPadSize,zPad+halfPadSize,xPad-halfPadSize,xPad+halfPadSize);
@@ -1818,11 +1833,11 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
 				(phiPad*padPlaneRadius)-rHexagon,
 				(phiPad*padPlaneRadius)+rHexagon);
       }
-      
+
       if(DIGI_DEBUG && (rowList[iterOnPads]<0 || columnList[iterOnPads]<0))
         cout << "some thing WRONG: (row, column) = ("    << rowList[iterOnPads] << ","
              << columnList[iterOnPads] << ")" << ", CHARGE="<<  charge << "iterOnPads=" << iterOnPads << endl;
-      
+
       //Let us create and fill as many padSignals as pads in the event
       thePadSignal[iterOnPads] = new ActarPadSignal();
       thePadSignal[iterOnPads]->SetPadNumber(padUnderTest);
@@ -1835,17 +1850,17 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
       thePadSignal[iterOnPads]->SetChargeDeposited(charge);
       thePadSignal[iterOnPads]->SetEventID(pro->GetTrack()->GetEventID());
       thePadSignal[iterOnPads]->SetRunID(pro->GetTrack()->GetRunID());
-      
+
       new((*clo)[iterOnPads+numberOfPadsBeforeThisLoopStarted])ActarPadSignal(*thePadSignal[iterOnPads]);
-      thePadSignal[iterOnPads]->Reset(); 
+      thePadSignal[iterOnPads]->Reset();
     }
-    
+
     numberOfPadsBeforeThisLoopStarted+=numberOfPadsWithSignal;
-    
+
     delete f2;
     for (Int_t i=0;i<numberOfPadsWithSignal;i++) delete thePadSignal[i];
     delete thePadSignal;
-    
+
   }
 }
 

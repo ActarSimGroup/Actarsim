@@ -21,7 +21,7 @@
 //      root -l
 // 3 - Run this macro inside root
 //      gSystem->Load("actarsim.sl");
-//      .L digitizationMacro.C+;
+//      .L digitizationMacro.C+
 //
 //      thePadsGeometry.SetGeometryValues(Int_t geometryType,
 //                                        Int_t padType,
@@ -114,89 +114,86 @@ amplificationManager theAmplificationManager;
 void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
   // Digitization event loop
   Bool_t bTreeChargeDistribution=kFALSE;
-  
+
   gROOT->SetStyle("Default");
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
-  
+
   theDriftManager.ConnectToGeometry(&thePadsGeometry);
   theDriftManager.ConnectToAmplificationManager(&theAmplificationManager);
   //theDriftManager.ConnectToActarPadSignal(&theActarPadSignal); //FUTURE SIGNAL TREATMENT
   theDriftManager.GetStatus();
-  
+
   //input file and tree
   TFile *file1 = TFile::Open(inputFile);
   TTree* eventTree = (TTree*)file1->Get("The_ACTAR_Event_Tree");
-  
+
   TClonesArray* simpleTrackCA;
   simpleTrackCA = new TClonesArray("ActarSimSimpleTrack",100);
   TBranch *branchTrack = eventTree->GetBranch("simpleTrackData");
   branchTrack->SetAddress(&simpleTrackCA);
   branchTrack->SetAutoDelete(kTRUE);
-  
+
   ActarSimSimpleTrack* localTrack = new ActarSimSimpleTrack;
-  
+
   //output File and Tree for the analysis result
   TFile* outFile = new TFile(outputFile,"RECREATE");
   outFile->cd();
   TTree* digiTree = new TTree("digiTree","digiEvent Tree");
-  
+
   TClonesArray* padSignalCA;
   padSignalCA = new TClonesArray("ActarPadSignal",50);
   digiTree->Branch("padSignals",&padSignalCA);
-  
+
   projectionOnPadPlane* projection= new projectionOnPadPlane();
-  
+
   Int_t nevents=0;
   Int_t stridesPerEvent=0;
   //Int_t siliconhits=0;
-  
+
   Int_t hits=0;
   TTree *TChargeDistribution;
   if(numberOfEvents) nevents = numberOfEvents;
   else   nevents = eventTree->GetEntries();
   cout<<"nevents= "<<nevents<<endl;
   //Int_t neventsSim = nevents/2;
-  
+
   Int_t nb = 0;
-  
+
   for(Int_t i=0;i<nevents;i++){
     if(i%100 == 0) printf("Event with strides:%d\n",i);
-    
+
     simpleTrackCA->Clear();
     nb += eventTree->GetEvent(i);
-    
+
     stridesPerEvent = simpleTrackCA->GetEntries();
-    
+
     if(stridesPerEvent>0) {
       //cout<<"The number of strides is "<<stridesPerEvent<<endl;
       //Clear the ClonesArray before filling it
       padSignalCA->Clear();
-      
+
       Int_t numberOfPadsBeforeThisLoopStarted=0;
       Char_t tname[256];
       sprintf(tname,"T%d",i);
-      
+
       if(bTreeChargeDistribution)
 	TChargeDistribution = new TTree(tname,"Charge distributions"); //HAPOL: IS THIS THE RIGHT PLACE??
-      
+
       for(Int_t h=0;h<stridesPerEvent;h++){
 	cout<<"."<<flush;
 	localTrack = (ActarSimSimpleTrack*)simpleTrackCA->At(h);
-	
+
 	//Once we know where the track is, we should know where the stride
 	//limits are after the drift and diffussion of the electrons...
 	projection->SetTrack(localTrack);
 	//if(localTrack->GetTrackID()==1){ //restricts to primaries
 	if(theDriftManager.CalculatePositionAfterDrift(projection)){
-	  if(bTreeChargeDistribution)
-	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,T);
-	  else
-	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted,0);
+	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted);
 	}
       }
-      
+
       cout << endl;
       digiTree->Fill();
     }
@@ -204,10 +201,10 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
       continue;
     }
   }
-  
+
   outFile->Write();
   outFile->Close();
-  
+
   cout<<"Total number of digitized events "<<nevents<<endl;
 }
 

@@ -220,11 +220,13 @@ class ActarPadSignal : public TObject {
 };
 
 ActarPadSignal::ActarPadSignal(){
+  if(DIGI_DEBUG>3) cout << "Enters ActarPadSignal::ActarPadSignal()" << endl;
   padNumber=0; padRow=0; padColumn=0;
   numberOfStrides=0;
   initTime=0.; finalTime=0.; sigmaTime=0.;
   chargeDeposited=0.;
   eventID=0; runID=0;
+  if(DIGI_DEBUG>3) cout << "Exits ActarPadSignal::ActarPadSignal()" << endl;
 }
 
 ActarPadSignal::~ActarPadSignal(){
@@ -232,15 +234,18 @@ ActarPadSignal::~ActarPadSignal(){
 
 void ActarPadSignal::Reset(void){
   // clearing to defaults
+  if(DIGI_DEBUG>3) cout << "Enters ActarPadSignal::Reset()" << endl;
   padNumber=0; padRow=0; padColumn=0;
   numberOfStrides=0;
   initTime=0.; finalTime=0.; sigmaTime=0.;
   chargeDeposited=0.;
   eventID=0; runID=0;
+  if(DIGI_DEBUG>3) cout << "Exits ActarPadSignal::Reset()" << endl;
 }
 
 ActarPadSignal& ActarPadSignal::operator=(const ActarPadSignal &right){
   // overloading the copy operator, similar as it in the ActarSimSimpleTrack class
+  if(DIGI_DEBUG>3) cout << "Enters ActarPadSignal::operator=()" << endl;
   if(this != &right){
     padNumber = right.padNumber;
     padRow    = right.padRow;
@@ -253,6 +258,7 @@ ActarPadSignal& ActarPadSignal::operator=(const ActarPadSignal &right){
     eventID   = right.eventID;
     runID     = right.runID;
   }
+  if(DIGI_DEBUG>3) cout << "Exits ActarPadSignal::operator=()" << endl;
   return *this;
 }
 
@@ -301,14 +307,18 @@ class projectionOnPadPlane{
 };
 
 projectionOnPadPlane::projectionOnPadPlane(){
+  if(DIGI_DEBUG>3) cout << "Enters projectionOnPadPlane::projectionOnPadPlane()" << endl;
   track=0; pre=new TVector3(1,1,1); post=new TVector3(1,1,1);
   timePre=-1.; timePost=-1.;
   sigmaLongAtPadPlane=-1.; sigmaTransvAtPadPlane=-1.;
   position=0;
+  if(DIGI_DEBUG>3) cout << "Exits projectionOnPadPlane::projectionOnPadPlane()" << endl;
 }
 projectionOnPadPlane::~projectionOnPadPlane(){
+  if(DIGI_DEBUG>3) cout << "Enters projectionOnPadPlane::~projectionOnPadPlane()" << endl;
   delete pre;
   delete post;
+  if(DIGI_DEBUG>3) cout << "Exits projectionOnPadPlane::~projectionOnPadPlane()" << endl;
 }
 
 
@@ -349,6 +359,7 @@ class padsGeometry{
 
   void SetGeometryValues(Int_t geo, Int_t pad, Int_t layout, Double_t x, Double_t y, Double_t z,
 			 Double_t ra, Double_t psi, Double_t gapx, Double_t gapz){
+    if(DIGI_DEBUG>3) cout << "Enters padsGeometry::SetGeometryValues()" << endl;
     geoType=geo;  padType=pad; padLayout=layout;
     xLength = x; yLength = y; zLength = z;
     radius=ra; padSize=psi;
@@ -356,6 +367,7 @@ class padsGeometry{
     else  rHexagon=0;
     sideBlankSpaceX=gapx; sideBlankSpaceZ=gapz;
     SetPadsGeometry();
+    if(DIGI_DEBUG>3) cout << "Exits padsGeometry::SetGeometryValues()" << endl;
   }
 
   void SetNumberOfColumns(Int_t col){numberOfColumns=col;}
@@ -402,6 +414,7 @@ class padsGeometry{
 
   Int_t CalculatePad(Int_t r, Int_t c){
     //Pad number calculation from row and column (PADS, ROWS & COLUMNS begin in 1)
+    if(DIGI_DEBUG>3) cout << "Enters padsGeometry::CalculatePad()" << endl;
     if(r<=0 || r>numberOfRows || c<=0 || c>numberOfColumns){
       if(DIGI_DEBUG>4) {
         cout << "WARNING: padsGeometry:CalculatePad(" << r << "," << c
@@ -414,12 +427,15 @@ class padsGeometry{
 
   Int_t CalculateColumn(Int_t p){
     //Column calculation from pad (PADS, ROWS & COLUMNS begin in 1)
+    if(DIGI_DEBUG>3) cout << "Enters padsGeometry::CalculateColumn()" << endl;
     if(p>numberOfPads || p==0) return 0;
     if(p%numberOfColumns==0) return numberOfColumns;
-    else return p%numberOfColumns;}
+    else return p%numberOfColumns;
+  }
 
   Int_t CalculateRow(Int_t p){
     //Row calculation from pad (PADS, ROWS & COLUMNS begin in 1)
+    if(DIGI_DEBUG>3) cout << "Enters padsGeometry::CalculateRow()" << endl;
     if(p>numberOfPads || p==0) return 0;
     else return (Int_t)(((p-1)/numberOfColumns)+1);}
 
@@ -427,6 +443,7 @@ class padsGeometry{
 };
 
 padsGeometry::padsGeometry(){
+  if(DIGI_DEBUG>3) cout << "Enters padsGeometry::padsGeometry()" << endl;
   numberOfColumns=0; numberOfRows=0; numberOfPads=0;
   geoType=999; padType=999; padLayout=0;
   padSize=0.; rHexagon=0.;
@@ -435,6 +452,7 @@ padsGeometry::padsGeometry(){
   radius=0.;
   deltaProximityBeam=0.; sizeBeamShielding=0.;
   endCapMode=0;
+  if(DIGI_DEBUG>3) cout << "Exits padsGeometry::padsGeometry()" << endl;
 }
 
 padsGeometry::~padsGeometry(){
@@ -443,6 +461,7 @@ padsGeometry::~padsGeometry(){
 void padsGeometry::SetPadsGeometry(void){
   // the pads geometry should be calculated using this function
   // from the sizes and types of ACTAR geometry and pads geometry
+  if(DIGI_DEBUG>3) cout << "Enters padsGeometry::SetPadsGeometry()" << endl;
   if(DIGI_DEBUG)
     cout << "________________________________________________________" << endl
          << "In padsGeometry::SetPadsGeometry() " << endl
@@ -552,10 +571,12 @@ void padsGeometry::SetPadsGeometry(void){
       cout << "ERROR: No valid geometry... Have you called "
 	   << "SetGeometryValues() with valid arguments?" << endl << endl;
   }
+  if(DIGI_DEBUG>3) cout << "Exits padsGeometry::SetPadsGeometry()" << endl;
 }
 
 Int_t padsGeometry::IsInPadNumber(TVector3* point){
   //calculates the pad number where the point is
+  if(DIGI_DEBUG>3) cout << "Enters padsGeometry::IsInPadNumber()" << endl;
   Int_t column; Int_t row;
   if(geoType == 0 && padType == 0) { //box and square pad
     row = (Int_t) (((point->X() - sideBlankSpaceX + xLength)/ padSize) + 1);
@@ -694,6 +715,7 @@ Int_t padsGeometry::GetPadColumnFromXZValue(Double_t x, Double_t z){
   //calculates the pad column number by x, z-values of a point
   // NOTE: column number here start from 1
   // column number returned here is allowed to be out of the range of the chamber
+  //if(DIGI_DEBUG>3) cout << "Enters padsGeometry::GetPadColumnFromXZValue()" << endl;
   TVector3 point(x, -yLength, z);
   TVector3 vec;
   Int_t column=0, row=0;
@@ -740,6 +762,7 @@ Int_t padsGeometry::GetPadRowFromXZValue(Double_t x, Double_t z){
   //calculates the pad column number by x, z-values of a point
   // NOTE: column number here start from 1
   // column number returned here is allowed to be out of the range of the chamber
+  //if(DIGI_DEBUG>3) cout << "Enters padsGeometry::GetPadRowFromXZValue()" << endl;
   TVector3 point(x, -yLength, z);
   TVector3 vec;
 
@@ -756,6 +779,7 @@ Int_t padsGeometry::GetPadRowFromXZValue(Double_t x, Double_t z){
 }
 
 TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
+  if(DIGI_DEBUG>3) cout << "Enters padsGeometry::CoordinatesCenterOfPad()" << endl;
   if(pad==0 || pad> numberOfPads) {
     if(DIGI_DEBUG)
       cout << "ERROR in padsGeometry::CoordinatesCenterOfPad() " << endl
@@ -891,6 +915,7 @@ class amplificationManager{
 
   Double_t CalculateRhoP(Double_t x){
     //calculation of the relative induction charge for X (see Mathieson paper)
+    if(DIGI_DEBUG>3) cout << "Enters amplificationManager::CalculateRhoP()" << endl;
     lambdaP= x/ACseparation;
     Double_t commonFactor=tanh(K2P*lambdaP)*tanh(K2P*lambdaP);
     rhoP=K1P*(1.-commonFactor)/(1.+K3P*commonFactor);
@@ -899,6 +924,7 @@ class amplificationManager{
 
   Double_t CalculateRhoN(Double_t y){
     //calculation of the relative induction charge for Y (see Mathieson paper)
+    if(DIGI_DEBUG>3) cout << "Enters amplificationManager::CalculateRhoN()" << endl;
     lambdaN= y/ACseparation;
     Double_t commonFactor=tanh(K2N*lambdaN)*tanh(K2N*lambdaN);
     rhoN=K1N*(1.-commonFactor)/(1.+K3N*commonFactor);
@@ -908,6 +934,7 @@ class amplificationManager{
 };
 
 amplificationManager::amplificationManager(){
+  if(DIGI_DEBUG>3) cout << "Enters amplificationManager::amplificationManager()" << endl;
   isWire=0;
   radiusOfAmpliWire=0.02; // 20 mu
   pitchOfAmpliWire=2.0;   // 2 mm
@@ -918,6 +945,7 @@ amplificationManager::amplificationManager(){
                               //   for x (parallel      to the wire) and
                               //       y (perpendicular to the wire), respectively
   rhoP=0.; rhoN=0.;        // relative induction charge, rho in Mathieson, for X and Y
+  if(DIGI_DEBUG>3) cout << "Exits amplificationManager::amplificationManager()" << endl;
 }
 amplificationManager::~amplificationManager(){
 }
@@ -926,6 +954,7 @@ void amplificationManager::SetWireAmplificationParameters(Double_t ra, Double_t 
   //     radiusOfAmpliWire = ra;
   //     pitchOfAmpliWire  = s;
   //     ACseparation      = h;
+  if(DIGI_DEBUG>3) cout << "Enters amplificationManager::SetWireAmplificationParameters()" << endl;
   Double_t k1p=0.0, k2p=0.0, k3p=0.0, k1n=0.0, k2n=0.0, k3n=0.0;
 
   Double_t ras=ra/s;
@@ -1022,6 +1051,7 @@ void amplificationManager::SetWireAmplificationParameters(Double_t ra, Double_t 
   SetMathiesonFactorK1N(k1n);
   SetMathiesonFactorK2N(k2n);
   SetMathiesonFactorK3N(k3n);
+  if(DIGI_DEBUG>3) cout << "Exits amplificationManager::SetWireAmplificationParameters()" << endl;
 }
 
 
@@ -1081,12 +1111,10 @@ class driftManager{
   void ConnectToGeometry(padsGeometry* pad){padsGeo = pad;}
   void ConnectToAmplificationManager(amplificationManager* amp){ampManager = amp;}
   Int_t CalculatePositionAfterDrift(projectionOnPadPlane* pro);
-  void CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo,
-                               Int_t &numberOfPadsBeforeThisLoopStarted);
+  void CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo);
   void CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, Double_t k3p,
                                         Double_t k1n, Double_t k2n, Double_t k3n,
-                                        projectionOnPadPlane* pro, TClonesArray* clo,
-                                        Int_t &numberOfPadsBeforeThisLoopStarted);
+                                        projectionOnPadPlane* pro, TClonesArray* clo);
   ClassDef(driftManager,1);
 };
 
@@ -1109,6 +1137,7 @@ void driftManager::SetDriftParameters(Double_t voltage, Double_t height, Double_
   //        height:  mm, for MAYA, this is the distance between the upper cathode and the Frish grid
   //        pressure: mbar, pressure of the active gas
   // cf:  simulation report of D.Y. Pang
+  if(DIGI_DEBUG>3) cout << "Enters driftManager::SetDriftParameters()" << endl;
   if(gasName=="deuterium"){
     Double_t fieldStrength= voltage/(height/10.);            // E=V/D, in volts/cm
     Double_t eOverP = fieldStrength/(pressure*0.75006);      // E/P,   in volts cm^-1 torr^-1
@@ -1151,10 +1180,12 @@ void driftManager::SetDriftParameters(Double_t voltage, Double_t height, Double_
   else{
     if(DIGI_DEBUG) cout << endl << "drift and diffusion parameters for this gas are not implemented yet!" << endl << endl;
   }
+  if(DIGI_DEBUG>3) cout << "Exits driftManager::SetDriftParameters()" << endl;
 }
 
 Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
   // calculates the position on the pads plane after the electron swarm drift
+  if(DIGI_DEBUG>3) cout << "Enters driftManager::CalculatePositionAfterDrift()" << endl;
   Double_t driftDistPre=0.;
   Double_t driftDistPost=0.;
   Double_t rhoPre = sqrt(pro->GetTrack()->GetYPre()*
@@ -1323,11 +1354,11 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
   return 1;
 }
 
-void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo,
-                                           Int_t &numberOfPadsBeforeThisLoopStarted) {
+void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo) {
   //
   // Calculates the pads with charge after the electron swarm drift
   //
+  if(DIGI_DEBUG>3) cout << "Enters driftManager::CalculatePadsWithCharge()" << endl;
 
   Double_t halfPadSize = padsGeo->GetPadSize()/2.;
   Double_t rHexagon   = padsGeo->GetRHexagon();
@@ -1382,16 +1413,16 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
   //HAPOL HARDCODED! SOLVE IT! ->HINT: Create a TClonesArray of an object with the data
   Int_t chargeOnPads[151][151]={0};
   Int_t chargeOnPadsAmplified[151][151]={0};
-  Int_t chargeOnPadsTotal[151][151]={0};
+  Int_t chargeOnPadsTotalAmplified[151][151]={0};
 
   /* Int_t **chargeOnPads; */
   /* chargeOnPads=new Int_t*[numberOfRows]; */
   /* Int_t **chargeOnPadsAmplified=new Int_t*[numberOfRows]; */
-  /* Int_t **chargeOnPadsTotal=new Int_t*[numberOfRows]; */
+  /* Int_t **chargeOnPadsTotalAmplified=new Int_t*[numberOfRows]; */
   /* for(Int_t nrows=0;nrows<numberOfRows;nrows++){ */
   /*   chargeOnPads[nrows]=new Int_t[numberOfColumns]; */
   /*   chargeOnPadsAmplified[nrows]=new Int_t[numberOfColumns]; */
-  /*   chargeOnPadsTotal[nrows]=new Int_t[numberOfColumns]; */
+  /*   chargeOnPadsTotalAmplified[nrows]=new Int_t[numberOfColumns]; */
   /* } */
 
   Int_t *rowList=new Int_t[4000];
@@ -1435,11 +1466,12 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
 
     Double_t energyStride=EnergyStep[istep];
     for(Int_t ielectron=0;ielectron<NumberOfElectrons[istep]; ielectron++){
-      electron_posX = gRandom->Gaus(strideCenterX,sigmaTrans); //Better if we also random starting position
+      electron_posX = gRandom->Gaus(strideCenterX,sigmaTrans); //HAPOL Better if we also random starting position
       electron_posZ = gRandom->Gaus(strideCenterZ,sigmaTrans);
       padRow = padsGeo->GetPadRowFromXZValue(electron_posX,electron_posZ);
       padColumn = padsGeo->GetPadColumnFromXZValue(electron_posX,electron_posZ);
-      if(padRow!=0 && padColumn!=0 && padRow<152 && padColumn<152 ){ //HAPOL SOLVE THE HARDCODED DATA
+
+      if(padRow>0 && padColumn>0 && padRow<152 && padColumn<152 ){ //HAPOL SOLVE THE HARDCODED DATA
 	chargeOnPads[padRow-1][padColumn-1]++;
 	chargeOnPadsAmplified[padRow-1][padColumn-1]+=1000*Polya();
       }
@@ -1449,41 +1481,38 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
     for(Int_t u=0;u<numberOfRows;u++){
       for(Int_t k=0;k<numberOfColumns;k++){
 	if(chargeOnPads[u][k]>0){
-	  chargeOnPadsTotal[u][k]+=chargeOnPadsAmplified[u][k];
+	  chargeOnPadsTotalAmplified[u][k]+=chargeOnPadsAmplified[u][k];
 	}
       }
     }
   }//End of Loop on steps
 
-  Int_t padswithsignal=0;
+  Int_t padsWithSignal=0;
   for(Int_t u=0;u<numberOfRows;u++){
     for(Int_t k=0;k<numberOfColumns;k++){
-      if(chargeOnPadsTotal[u][k]>0){
-        rowList[padswithsignal]=u+1;
-        columnList[padswithsignal]=k+1;
-        padswithsignal++;
+      if(chargeOnPadsTotalAmplified[u][k]>0){
+        rowList[padsWithSignal]=u+1;
+        columnList[padsWithSignal]=k+1;
+        padsWithSignal++;
       }
     }
   }
 
-  Int_t numberOfPadsWithSignal=0;
   Int_t padUnderTest;
   TVector3 centerPad;
 
-  numberOfPadsWithSignal=padswithsignal;
-
-  if(numberOfPadsWithSignal>0) {
+  if(padsWithSignal>0) {
     Float_t total_charge=0;
     ActarPadSignal** thePadSignal;
-    thePadSignal = new ActarPadSignal*[numberOfPadsWithSignal];
+    thePadSignal = new ActarPadSignal*[padsWithSignal];
 
-    for(Int_t iterOnPads=0;iterOnPads<numberOfPadsWithSignal;iterOnPads++){
+    for(Int_t iterOnPads=0;iterOnPads<padsWithSignal;iterOnPads++){
       padUnderTest = padsGeo->CalculatePad(rowList[iterOnPads],columnList[iterOnPads]);
 
-      Float_t charge=chargeOnPadsTotal[rowList[iterOnPads]-1][columnList[iterOnPads]-1];
+      Float_t charge=chargeOnPadsTotalAmplified[rowList[iterOnPads]-1][columnList[iterOnPads]-1];
 
       total_charge+=charge;
-      if(DIGI_DEBUG)
+      if(DIGI_DEBUG>1)
 	cout << rowList[iterOnPads] << " " << columnList[iterOnPads]
              << " ====================>Charge " << charge << endl;
       //hist->SetBinContent(columnList[iterOnPads],rowList[iterOnPads],charge);
@@ -1507,19 +1536,18 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
       thePadSignal[iterOnPads]->SetEventID(pro->GetTrack()->GetEventID());
       thePadSignal[iterOnPads]->SetRunID(pro->GetTrack()->GetRunID());
 
-      new((*clo)[iterOnPads+numberOfPadsBeforeThisLoopStarted])ActarPadSignal(*thePadSignal[iterOnPads]);
+      new((*clo)[iterOnPads])ActarPadSignal(*thePadSignal[iterOnPads]);
       thePadSignal[iterOnPads]->Reset();
     }
     //hist->Draw("colz");
     //g->Draw("*same");
     //c->Update();
     //c->WaitPrimitive();
-    numberOfPadsBeforeThisLoopStarted+=numberOfPadsWithSignal;
-    if(DIGI_DEBUG){
-      cout<<"total charge-->"<<total_charge<<" "<<total_charge/(pro->GetTrack()->GetEnergyStride()*1000)*100<<"% ot total"<<endl;
-      cout<<"numberOfPadsBeforeThisLoopStarted "<<numberOfPadsBeforeThisLoopStarted<<endl;
+    if(DIGI_DEBUG>1){
+      cout<<"total charge-->"<<total_charge<<" "<<total_charge/(pro->GetTrack()->GetEnergyStride()*1000)*100<<"% of total"<<endl;
+      cout<<"Number Of Pads With Signal: "<<padsWithSignal<<endl;
     }
-    for (Int_t i=0;i<numberOfPadsWithSignal;i++) delete thePadSignal[i];
+    for (Int_t i=0;i<padsWithSignal;i++) delete thePadSignal[i];
     delete thePadSignal;
 
   }//if numberOfPadsWith Signal>0
@@ -1541,24 +1569,26 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
   /*  delete[](chargeOnPadsAmplified[jj]); */
   /*  } */
   /*  for (Int_t jj=0; jj<numberOfRows; jj++){ */
-  /*  cout<<numberOfRows<<" "<<jj<<" Deleting chargeOnPadsTotal..."<<endl; */
-  /*   delete[](chargeOnPadsTotal[jj]); */
+  /*  cout<<numberOfRows<<" "<<jj<<" Deleting chargeOnPadsTotalAmplified..."<<endl; */
+  /*   delete[](chargeOnPadsTotalAmplified[jj]); */
   /* } */
   //cout<<"HERE!!"<<endl;
   /* delete[] chargeOnPads; */
   /* delete[] chargeOnPadsAmplified; */
-  /* delete[] chargeOnPadsTotal; */
+  /* delete[] chargeOnPadsTotalAmplified; */
   //cout<<"HERE!!"<<endl;
-
+    if(DIGI_DEBUG>3) cout << "Exits driftManager::CalculatePadsWithCharge()" << endl;
 }
 
 void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, Double_t k3p,
 						    Double_t k1n, Double_t k2n, Double_t k3n,
 						    projectionOnPadPlane* pro,
-						    TClonesArray* clo, Int_t &numberOfPadsBeforeThisLoopStarted) {
+						    TClonesArray* clo) {
   //TClonesArray* clo, TTree* tree) {
   // calculates the pads with charge after the electron swarm drift
   //
+  if(DIGI_DEBUG>3) cout << "Enters driftManager::CalculatePadsWithCharge_oldStyle()" << endl;
+
   Double_t halfPadSize = padsGeo->GetPadSize()/2.;
   Double_t rHexagon   = padsGeo->GetRHexagon();
 
@@ -1851,20 +1881,20 @@ void driftManager::CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, 
       thePadSignal[iterOnPads]->SetEventID(pro->GetTrack()->GetEventID());
       thePadSignal[iterOnPads]->SetRunID(pro->GetTrack()->GetRunID());
 
-      new((*clo)[iterOnPads+numberOfPadsBeforeThisLoopStarted])ActarPadSignal(*thePadSignal[iterOnPads]);
+      new((*clo)[iterOnPads])ActarPadSignal(*thePadSignal[iterOnPads]);
       thePadSignal[iterOnPads]->Reset();
     }
-
-    numberOfPadsBeforeThisLoopStarted+=numberOfPadsWithSignal;
 
     delete f2;
     for (Int_t i=0;i<numberOfPadsWithSignal;i++) delete thePadSignal[i];
     delete thePadSignal;
 
   }
+  if(DIGI_DEBUG>3) cout << "Exits driftManager::CalculatePadsWithCharge_oldStyle()" << endl;
 }
 
 void driftManager::GetStatus(void){
+  if(DIGI_DEBUG>3) cout << "Enters driftManager::GetStatus()" << endl;
   cout << "Connected to geometry "<< padsGeo << endl
        <<"with longitudinalDiffusion = " << longitudinalDiffusion
        <<", transversalDiffusion = " << transversalDiffusion << endl

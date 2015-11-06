@@ -174,7 +174,6 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
       //Clear the ClonesArray before filling it
       padSignalCA->Clear();
 
-      Int_t numberOfPadsBeforeThisLoopStarted=0;
       Char_t tname[256];
       sprintf(tname,"T%d",i);
 
@@ -190,7 +189,7 @@ void digitEvents(char* inputFile, char* outputFile, Int_t numberOfEvents=0){
 	projection->SetTrack(localTrack);
 	//if(localTrack->GetTrackID()==1){ //restricts to primaries
 	if(theDriftManager.CalculatePositionAfterDrift(projection)){
-	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA,numberOfPadsBeforeThisLoopStarted);
+	    theDriftManager.CalculatePadsWithCharge(projection,padSignalCA);
 	}
       }
 

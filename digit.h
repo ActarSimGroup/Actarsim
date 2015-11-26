@@ -1111,7 +1111,7 @@ class driftManager{
   void ConnectToGeometry(padsGeometry* pad){padsGeo = pad;}
   void ConnectToAmplificationManager(amplificationManager* amp){ampManager = amp;}
   Int_t CalculatePositionAfterDrift(projectionOnPadPlane* pro);
-  void CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo);
+  void CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo, Int_t &numberOfPadsBeforeThisLoopStarted);
   void CalculatePadsWithCharge_oldStyle(Double_t k1p, Double_t k2p, Double_t k3p,
                                         Double_t k1n, Double_t k2n, Double_t k3n,
                                         projectionOnPadPlane* pro, TClonesArray* clo);
@@ -1286,18 +1286,20 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
               rhoPost < padsGeo->GetSizeBeamShielding()) pro->SetPosition(3);
       else pro->SetPosition(4); //still to be checked after as a function of the geoType
     }
-
-    if(pro->GetPosition() == 4 &&
-       pro->GetTrack()->GetYPre() <= 2 * padsGeo->GetYLength() &&
-       pro->GetTrack()->GetYPre() >= 0 &&
-       pro->GetTrack()->GetXPost() <= padsGeo->GetXLength() &&
-       pro->GetTrack()->GetXPost() >= (-padsGeo->GetXLength())) pro->SetPosition(4);
+    //Correcting the Y position: it is defined at the center of gasbox
+    if( pro->GetPosition() == 4 &&
+        pro->GetTrack()->GetYPost() <= padsGeo->GetYLength() &&
+	      pro->GetTrack()->GetYPost() >= (-padsGeo->GetYLength()) &&
+	      pro->GetTrack()->GetXPost() <= padsGeo->GetXLength() &&
+	      pro->GetTrack()->GetXPost() >= (-padsGeo->GetXLength()) ) pro->SetPosition(4);
     else  pro->SetPosition(5);
+
     //if the pads goes out of the gas chamber
     if(pro->GetPosition()==5) return 0;
 
-    driftDistPre = pro->GetTrack()->GetYPre();
-    driftDistPost= pro->GetTrack()->GetYPost();
+    //Correcting the Y position: it is defined at the center of gasbox
+    driftDistPre = padsGeo->GetYLength() + pro->GetTrack()->GetYPre();
+    driftDistPost= padsGeo->GetYLength() + pro->GetTrack()->GetYPost();
 
     if(lorentzAngle==0.) {
       //if no magnetic field, the cloud limits drift to the same point in
@@ -1305,11 +1307,11 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
       pro->SetSigmaTransvAtPadPlane(sqrt(driftDistPre*2*transversalDiffusion/driftVelocity));
 
       pro->GetPre()->SetX(pro->GetTrack()->GetXPre());      //X is not changed
-      pro->GetPre()->SetY(0.);          //Y is the pad plane
+      pro->GetPre()->SetY(-padsGeo->GetYLength());          //Correcting! Y is the pad plane
       pro->GetPre()->SetZ(pro->GetTrack()->GetZPre());      //Z is not changed
       pro->SetTimePre(pro->GetTrack()->GetTimePre() + driftDistPre / driftVelocity);
       pro->GetPost()->SetX(pro->GetTrack()->GetXPost());
-      pro->GetPost()->SetY(0.);         //Y is the pad plane
+      pro->GetPost()->SetY(-padsGeo->GetYLength());         //Correcting! Y is the pad plane
       pro->GetPost()->SetZ(pro->GetTrack()->GetZPost());
       pro->SetTimePost(pro->GetTrack()->GetTimePost()+driftDistPost/ driftVelocity);
     }
@@ -1354,7 +1356,7 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
   return 1;
 }
 
-void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo) {
+void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArray* clo, Int_t &numberOfPadsBeforeThisLoopStarted) {
   //
   // Calculates the pads with charge after the electron swarm drift
   //
@@ -1436,7 +1438,7 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
   Double_t sumZ=0;
   Int_t electrons_lost=0;
 
-  for(Int_t k=0;k<(nsteps+1);k++){
+  for(Int_t k=0;k<=(nsteps+1);k++){    //NOTE: a = was missing here before...
     //the step is the strideLength if below 0.5 mm and is between 0.5 mm and 1 mm otherwise
     Double_t stepx=(postOfThisProjectionX-preOfThisProjectionX)/(nsteps+1);
     Double_t stepz=(postOfThisProjectionZ-preOfThisProjectionZ)/(nsteps+1);
@@ -1536,9 +1538,11 @@ void driftManager::CalculatePadsWithCharge(projectionOnPadPlane* pro, TClonesArr
       thePadSignal[iterOnPads]->SetEventID(pro->GetTrack()->GetEventID());
       thePadSignal[iterOnPads]->SetRunID(pro->GetTrack()->GetRunID());
 
-      new((*clo)[iterOnPads])ActarPadSignal(*thePadSignal[iterOnPads]);
+      new((*clo)[iterOnPads+numberOfPadsBeforeThisLoopStarted])ActarPadSignal(*thePadSignal[iterOnPads]); //numberOfPadsBeforeThisLoopStarted was missing
       thePadSignal[iterOnPads]->Reset();
     }
+
+    numberOfPadsBeforeThisLoopStarted+=padsWithSignal;
     //hist->Draw("colz");
     //g->Draw("*same");
     //c->Update();

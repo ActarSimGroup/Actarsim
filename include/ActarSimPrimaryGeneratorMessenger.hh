@@ -69,7 +69,6 @@ private:
   G4UIcmdWith3VectorAndUnit*   beamPositionCmd;
   G4UIcmdWithADoubleAndUnit*   beamRadiusAtEntranceCmd;  // emittance (in position at detector entrance)
 
-// for Kine, dypang 080228
   G4UIcmdWithAString*          reactionFromKineCmd;
   G4UIdirectory*               KineDir;
   G4UIcmdWithAString*          KineRandomThetaCmd;
@@ -83,7 +82,6 @@ private:
   G4UIcmdWithADoubleAndUnit*   KineUserThetaCMCmd;
   G4UIcmdWithADoubleAndUnit*   KineUserPhiAngleCmd;
   G4UIcmdWith3VectorAndUnit*   vertexPositionCmd;
-// end of Kine part, dypang 080228
 
   G4UIcommand* incidentIonCmd;
   G4UIcommand* targetIonCmd;
@@ -127,4 +125,3 @@ public:
 };
 
 #endif
-

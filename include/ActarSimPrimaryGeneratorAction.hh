@@ -1,19 +1,19 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 16/12/14 by Hector Alvarez Pol
+//*-- Last Update: 04/12/15 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   Actions to perform to generate a primary vertex
 //
 // --------------------------------------------------------------
 // Comments:
+//   - 04/12/15 Complete cleanup and recovering of functions
 //   - 25/11/04 Created based on example/novice/N01 structure
 //
 // --------------------------------------------------------------
-//
 /////////////////////////////////////////////////////////////////
- 
+
 #ifndef ActarSimPrimaryGeneratorAction_h
 #define ActarSimPrimaryGeneratorAction_h 1
 
@@ -39,7 +39,7 @@ private:
   G4ParticleGun* particleGun;
   G4ParticleTable* particleTable;
   ActarSimPrimaryGeneratorMessenger* gunMessenger; // pointer to messenger
-  ActarSimEventGenerator *pReadEvGen;
+  //ActarSimEventGenerator *pReadEvGen;
 
   ActarSimGasDetectorConstruction* gasDetector;  //to get some geometrical info
 
@@ -51,37 +51,21 @@ private:
   G4double targetIonCharge;
   G4double scatteredIonCharge;
   G4double recoilIonCharge;
-  //G4double incidentIonExcEnergy;    //not included in G4ParticleDefinition
-  //G4double targetIonExcEnergy;      //not included in G4ParticleDefinition
-  //G4double scatteredIonExcEnergy;   //not included in G4ParticleDefinition
-  //G4double recoilIonExcEnergy;      //not included in G4ParticleDefinition
   G4double reactionQ;
   G4double labEnergy;
   G4double incidentEnergy;
   G4double thetaLabAngle;
+
   G4String randomVertexZPositionFlag;
   G4double randomVertexZPositionMin;
   G4double randomVertexZPositionMax;
-  G4double vertexZPosition; // vertex Z position, dypang 080704
-
-  G4ThreeVector ParticlePosition;
-  G4ParticleMomentum ParticleDirection;
+  G4double vertexZPosition;
 
   //beam parameters
   G4double emittance;
   G4double beamRadiusAtEntrance;
-  G4ThreeVector BeamPosition;
-  G4ParticleMomentum BeamMomentumDirection;
-
-  G4double entranceY;
-  G4double entranceZ;
-
-  //
-  G4double theta1;
-  G4double theta2;
-  G4double energy1;
-  G4double energy2;
-  //
+  G4ThreeVector beamPosition;
+  G4ParticleMomentum beamMomentumDirection;
 
   G4double lengthParameter;       //parameter coming from the geometry selection
   G4double  randomThetaMin;       // min random theta angle in CINE
@@ -101,7 +85,7 @@ private:
   G4String  alphaSourceFlag;      //
   G4String  reactionFile;         // file definition for a reaction
 
-// data member for Kine, dypang 080228
+  // Kine data members
   G4String  reactionFromKineFlag;
   G4double  thetaCMAngle;
   G4double  userPhiAngle;
@@ -115,7 +99,6 @@ private:
   G4double  exEnergyOfRecoiled;
   G4ThreeVector vertexPosition;
   G4String  randomPhiAngleFlag;
-// end of data member for Kine, dypang 080228
 
 
 public:
@@ -197,9 +180,6 @@ public:
        incidentEnergy = val;
        }
 
-  void SetEntranceYPosition(G4double val){ entranceY = val;}
-  void SetEntranceZPosition(G4double val){ entranceZ = val;}
-
   void SetThetaLabAngle(G4double val) { thetaLabAngle = val;}
   void SetVertexZPosition(G4double val) { vertexZPosition = val;} // vertex Z position, dypang 080704
 
@@ -243,7 +223,7 @@ public:
   inline void SetParticleMomentum(G4ParticleMomentum aMomentum)
      { particleGun->SetParticleMomentum(aMomentum);}
   inline void SetParticleMomentumDirection(G4ParticleMomentum aMomentumDirection)
-     { particleGun->SetParticleMomentumDirection(aMomentumDirection); ParticleDirection=aMomentumDirection;}
+     { particleGun->SetParticleMomentumDirection(aMomentumDirection); }
   inline void SetParticleEnergy(G4double aKineticEnergy)
      { particleGun->SetParticleEnergy(aKineticEnergy); }
   inline void SetParticleCharge(G4double aCharge)
@@ -251,16 +231,16 @@ public:
   inline void SetParticlePolarization(G4ThreeVector aVal)
      { particleGun->SetParticlePolarization(aVal); }
   inline void SetParticlePosition(G4ThreeVector aPos)
-     { particleGun->SetParticlePosition(aPos); ParticlePosition=aPos;}
+     { particleGun->SetParticlePosition(aPos); }
   inline void SetParticleTime(G4double aTime)
      { particleGun->SetParticleTime(aTime); }
   inline void SetNumberOfParticles(G4int i)
      { particleGun->SetNumberOfParticles(i); }
 
    void SetBeamMomentumDirection(G4ParticleMomentum aMomentumDirection)
-     { BeamMomentumDirection=aMomentumDirection;}
+     { beamMomentumDirection=aMomentumDirection;}
    void SetBeamPosition(G4ThreeVector aPos)
-     { BeamPosition=aPos;}
+     { beamPosition=aPos;}
 
   inline G4ParticleDefinition* GetParticleDefinition()
      { return particleGun->GetParticleDefinition(); }
@@ -303,5 +283,3 @@ public:
 };
 
 #endif
-
-

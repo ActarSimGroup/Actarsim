@@ -1,6 +1,5 @@
 //INSTALLING ACTARSIM
-After uncompressing the file
-1. Create a new directory where the program will be compiled and installed and change to it
+1. Create a new directory (ActarSim_build) where the program will be compiled and installed and change to it
 
 $mkdir ../ActarSim-build
 $cd ../ActarSim-build

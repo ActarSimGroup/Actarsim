@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 1/12/14
+//*-- Last Update: 26/11/15
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the detector construction
@@ -34,33 +34,37 @@ class ActarSimDetectorMessenger: public G4UImessenger
 {
 private:
   ActarSimDetectorConstruction* ActarSimDetector;
-  
+
   G4UIdirectory*             ActarSimDir;
   G4UIdirectory*             detDir;
   //G4UIcmdWith3VectorAndUnit* worldSizeCmd;
 
   G4UIcmdWithAString* MaikoGeoIncludedFlagCmd;
-  G4UIcmdWithADoubleAndUnit* xGasChamberCmd;
-  G4UIcmdWithADoubleAndUnit* yGasChamberCmd;
-  G4UIcmdWithADoubleAndUnit* zGasChamberCmd;
+  G4UIcmdWithAString* ACTARTPCDEMOGeoIncludedFlagCmd;
+  G4UIcmdWithAString* ACTARTPCGeoIncludedFlagCmd;
+  G4UIcmdWithADoubleAndUnit* chamberSizeXCmd;
+  G4UIcmdWithADoubleAndUnit* chamberSizeYCmd;
+  G4UIcmdWithADoubleAndUnit* chamberSizeZCmd;
+  G4UIcmdWithADoubleAndUnit* worldSizeXCmd;
+  G4UIcmdWithADoubleAndUnit* worldSizeYCmd;
+  G4UIcmdWithADoubleAndUnit* worldSizeZCmd;
   G4UIcmdWithAString* gasGeoIncludedFlagCmd;
   G4UIcmdWithAString* silGeoIncludedFlagCmd;
   G4UIcmdWithAString* sciGeoIncludedFlagCmd;
- 
-  G4UIcmdWithAString*        mediumMaterCmd;   
+
+  G4UIcmdWithAString*        mediumMaterialCmd;
 
   G4UIcmdWith3Vector*        eleFieldCmd; //problems defining elec field units
   G4UIcmdWith3VectorAndUnit* magFieldCmd;
   G4UIcmdWithoutParameter*   updateCmd;
   G4UIcmdWithoutParameter*   printCmd;
-  
+
 public:
   ActarSimDetectorMessenger(ActarSimDetectorConstruction* );
   ~ActarSimDetectorMessenger();
-  
+
   void SetNewValue(G4UIcommand*, G4String);
   //G4String GetCurrentValue(G4UIcommand*);
 };
 
 #endif
-

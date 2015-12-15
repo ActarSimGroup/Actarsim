@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 1/12/14
+//*-- Last Update: 26/11/15
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the detector construction
@@ -35,7 +35,7 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   ActarSimDir->SetGuidance("UI commands of ActarSim program");
 
   detDir = new G4UIdirectory("/ActarSim/det/");
-  detDir->SetGuidance("Detector control");  
+  detDir->SetGuidance("Detector control");
 
   MaikoGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/MaikoGeoIncludedFlag",this);
   MaikoGeoIncludedFlagCmd->SetGuidance("Includes the Maiko geometry in the simulation (default off).");
@@ -45,26 +45,63 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   MaikoGeoIncludedFlagCmd->SetCandidates("on off");
   MaikoGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  xGasChamberCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setXLengthGasChamber",this);
-  xGasChamberCmd->SetGuidance("Select the half-length X dimension of the Gas Chamber.");
-  xGasChamberCmd->SetParameterName("xGasChamber",false);
-  xGasChamberCmd->SetRange("xGasChamber>=0.");
-  xGasChamberCmd->SetUnitCategory("Length");
-  xGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  ACTARTPCDEMOGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/ACTARTPCDEMOGeoIncludedFlag",this);
+  ACTARTPCDEMOGeoIncludedFlagCmd->SetGuidance("Includes the ACTARTPC Demonstrator geometry in the simulation (default off).");
+  ACTARTPCDEMOGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
+  ACTARTPCDEMOGeoIncludedFlagCmd->SetParameterName("choice",true);
+  ACTARTPCDEMOGeoIncludedFlagCmd->SetDefaultValue("off");
+  ACTARTPCDEMOGeoIncludedFlagCmd->SetCandidates("on off");
+  ACTARTPCDEMOGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  yGasChamberCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setYLengthGasChamber",this);
-  yGasChamberCmd->SetGuidance("Select the half-length Y dimension of the Gas Chamber.");
-  yGasChamberCmd->SetParameterName("yGasChamber",false);
-  yGasChamberCmd->SetRange("yGasChamber>=0.");
-  yGasChamberCmd->SetUnitCategory("Length");
-  yGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  ACTARTPCGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/ACTARTPCGeoIncludedFlag",this);
+  ACTARTPCGeoIncludedFlagCmd->SetGuidance("Includes the ACTARTPC geometry in the simulation (default off).");
+  ACTARTPCGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
+  ACTARTPCGeoIncludedFlagCmd->SetParameterName("choice",true);
+  ACTARTPCGeoIncludedFlagCmd->SetDefaultValue("off");
+  ACTARTPCGeoIncludedFlagCmd->SetCandidates("on off");
+  ACTARTPCGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  zGasChamberCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setZLengthGasChamber",this);
-  zGasChamberCmd->SetGuidance("Select the half-length Z dimension of the Gas Chamber.");
-  zGasChamberCmd->SetParameterName("zGasChamber",false);
-  zGasChamberCmd->SetRange("zGasChamber>=0.");
-  zGasChamberCmd->SetUnitCategory("Length");
-  zGasChamberCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  worldSizeXCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setWorldSizeX",this);
+  worldSizeXCmd->SetGuidance("Select the half-length X dimension of the World.");
+  worldSizeXCmd->SetParameterName("xWorld",false);
+  worldSizeXCmd->SetRange("xWorld>=0.");
+  worldSizeXCmd->SetUnitCategory("Length");
+  worldSizeXCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  worldSizeYCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setWorldSizeY",this);
+  worldSizeYCmd->SetGuidance("Select the half-length Y dimension of the World.");
+  worldSizeYCmd->SetParameterName("yWorld",false);
+  worldSizeYCmd->SetRange("yWorld>=0.");
+  worldSizeYCmd->SetUnitCategory("Length");
+  worldSizeYCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  worldSizeZCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setWorldSizeZ",this);
+  worldSizeZCmd->SetGuidance("Select the half-length Z dimension of the World.");
+  worldSizeZCmd->SetParameterName("zWorld",false);
+  worldSizeZCmd->SetRange("zWorld>=0.");
+  worldSizeZCmd->SetUnitCategory("Length");
+  worldSizeZCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  chamberSizeXCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setXLengthGasChamber",this);
+  chamberSizeXCmd->SetGuidance("Select the half-length X dimension of the Gas Chamber.");
+  chamberSizeXCmd->SetParameterName("xGasChamber",false);
+  chamberSizeXCmd->SetRange("xGasChamber>=0.");
+  chamberSizeXCmd->SetUnitCategory("Length");
+  chamberSizeXCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  chamberSizeYCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setYLengthGasChamber",this);
+  chamberSizeYCmd->SetGuidance("Select the half-length Y dimension of the Gas Chamber.");
+  chamberSizeYCmd->SetParameterName("yGasChamber",false);
+  chamberSizeYCmd->SetRange("yGasChamber>=0.");
+  chamberSizeYCmd->SetUnitCategory("Length");
+  chamberSizeYCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  chamberSizeZCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setZLengthGasChamber",this);
+  chamberSizeZCmd->SetGuidance("Select the half-length Z dimension of the Gas Chamber.");
+  chamberSizeZCmd->SetParameterName("zGasChamber",false);
+  chamberSizeZCmd->SetRange("zGasChamber>=0.");
+  chamberSizeZCmd->SetUnitCategory("Length");
+  chamberSizeZCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   gasGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/gasGeoIncludedFlag",this);
   gasGeoIncludedFlagCmd->SetGuidance("Includes the geometry of the gas volume in the simulation (default off).");
@@ -90,12 +127,11 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   sciGeoIncludedFlagCmd->SetCandidates("on off");
   sciGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  mediumMaterCmd = new G4UIcmdWithAString("/ActarSim/det/setMediumMat",this);
-  //mediumMaterCmd->SetGuidance("Select Material of the Medium.");
-  mediumMaterCmd->SetGuidance("Select Material outside the Chamber.");
-  mediumMaterCmd->SetParameterName("mediumMat",false);
-  mediumMaterCmd->SetDefaultValue("Air");
-  mediumMaterCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  mediumMaterialCmd = new G4UIcmdWithAString("/ActarSim/det/setMediumMat",this);
+  mediumMaterialCmd->SetGuidance("Select Material outside the Chamber.");
+  mediumMaterialCmd->SetParameterName("mediumMat",false);
+  mediumMaterialCmd->SetDefaultValue("Air");
+  mediumMaterialCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   eleFieldCmd = new G4UIcmdWith3Vector("/ActarSim/det/setEleField",this);
   eleFieldCmd->SetGuidance("Define electric field.");
@@ -123,7 +159,6 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   printCmd = new G4UIcmdWithoutParameter("/ActarSim/det/print",this);
   printCmd->SetGuidance("Prints geometry.");
   printCmd->AvailableForStates(G4State_Idle);
-
 }
 
 
@@ -134,13 +169,18 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete ActarSimDir;
   delete detDir;
   delete MaikoGeoIncludedFlagCmd;
-  delete xGasChamberCmd;
-  delete yGasChamberCmd;
-  delete zGasChamberCmd;
+  delete ACTARTPCDEMOGeoIncludedFlagCmd;
+  delete ACTARTPCGeoIncludedFlagCmd;
+  delete worldSizeXCmd;
+  delete worldSizeYCmd;
+  delete worldSizeZCmd;
+  delete chamberSizeXCmd;
+  delete chamberSizeYCmd;
+  delete chamberSizeZCmd;
   delete gasGeoIncludedFlagCmd;
   delete silGeoIncludedFlagCmd;
   delete sciGeoIncludedFlagCmd;
-  delete mediumMaterCmd;
+  delete mediumMaterialCmd;
   delete eleFieldCmd;
   delete magFieldCmd;
   delete updateCmd;
@@ -157,20 +197,29 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   if( command == MaikoGeoIncludedFlagCmd )
     ActarSimDetector->SetMaikoGeoIncludedFlag(newValue);
 
-  if(command == xGasChamberCmd)
-  {
-    ActarSimDetector->SetXGasChamber(xGasChamberCmd->GetNewDoubleValue(newValue));
-  }
+  if( command == ACTARTPCDEMOGeoIncludedFlagCmd )
+    ActarSimDetector->SetACTARTPCDEMOGeoIncludedFlag(newValue);
 
-  if(command == yGasChamberCmd)
-  {
-    ActarSimDetector->SetYGasChamber(yGasChamberCmd->GetNewDoubleValue(newValue));
-  }
+  if( command == ACTARTPCGeoIncludedFlagCmd )
+    ActarSimDetector->SetACTARTPCGeoIncludedFlag(newValue);
 
-  if(command == zGasChamberCmd)
-  {
-    ActarSimDetector->SetZGasChamber(zGasChamberCmd->GetNewDoubleValue(newValue));
-  }
+  if(command == worldSizeXCmd)
+    ActarSimDetector->SetWorldSizeX(worldSizeXCmd->GetNewDoubleValue(newValue));
+
+  if(command == worldSizeYCmd)
+  ActarSimDetector->SetWorldSizeY(worldSizeYCmd->GetNewDoubleValue(newValue));
+
+  if(command == worldSizeZCmd)
+    ActarSimDetector->SetWorldSizeZ(worldSizeZCmd->GetNewDoubleValue(newValue));
+
+  if(command == chamberSizeXCmd)
+    ActarSimDetector->SetChamberSizeX(chamberSizeXCmd->GetNewDoubleValue(newValue));
+
+  if(command == chamberSizeYCmd)
+    ActarSimDetector->SetChamberSizeY(chamberSizeYCmd->GetNewDoubleValue(newValue));
+
+  if(command == chamberSizeZCmd)
+    ActarSimDetector->SetChamberSizeZ(chamberSizeZCmd->GetNewDoubleValue(newValue));
 
   if( command == gasGeoIncludedFlagCmd )
     ActarSimDetector->SetGasGeoIncludedFlag(newValue);
@@ -181,20 +230,14 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   if( command == sciGeoIncludedFlagCmd )
     ActarSimDetector->SetSciGeoIncludedFlag(newValue);
 
-  if(command == mediumMaterCmd)
-  {
+  if(command == mediumMaterialCmd)
     ActarSimDetector->SetMediumMaterial(newValue);
-  }
 
   if( command == eleFieldCmd )
-    {
 		ActarSimDetector->SetEleField(eleFieldCmd->GetNew3VectorValue(newValue));
-	}
 
   if( command == magFieldCmd )
-    {
 		ActarSimDetector->SetMagField(magFieldCmd->GetNew3VectorValue(newValue));
-	}
 
   if( command == updateCmd ) {
     ActarSimDetector->UpdateGeometry();
@@ -203,8 +246,5 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   }
 
   if( command == printCmd )
-    {
 		ActarSimDetector->PrintDetectorParameters();
-	}
-
 }

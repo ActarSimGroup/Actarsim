@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 15/12/14 by Hector Alvarez
+//*-- Last Update: 01/12/15 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   Gas volume detector description
@@ -9,6 +9,7 @@
 // --------------------------------------------------------------
 // Comments:
 //
+//   - 01/12/15 Recovering old functionality and correcting
 //   - 17/04/08 Modularizing the ACTAR geometry
 //
 // --------------------------------------------------------------
@@ -17,6 +18,7 @@
 #include "ActarSimGasDetectorConstruction.hh"
 #include "ActarSimDetectorConstruction.hh"
 #include "ActarSimGasDetectorMessenger.hh"
+//#include "ActarSimDetectorMessenger.hh"
 #include "ActarSimROOTAnalysis.hh"
 #include "ActarSimGasSD.hh"
 
@@ -49,19 +51,24 @@ ActarSimGasDetectorConstruction(ActarSimDetectorConstruction* det)
   //Default value for the volume is a Box
   SetDetectorGeometry("box");
 
-  //default size of GasBox (1x1x1 m3)
-  xGasBox = 1 * m;
-  yGasBox = 1 * m;
-  zGasBox = 1 * m;
+  //default size of GasBox (0.5x0.5x0.5 m3)
+  gasBoxSizeX = 0.5 * m;
+  gasBoxSizeY = 0.5 * m;
+  gasBoxSizeZ = 0.5 * m;
 
-  //default size of GasTub (pi x 1 x 1 m3 )
-  radiusGasTub = 1 * m;
-  lengthGasTub = 1 * m;
+  //default center of the gas (if the gasChamber is a box)
+  gasBoxCenterX = 0.;
+  gasBoxCenterY = 0.;
+  gasBoxCenterZ = 0.;
 
-  //default size of BeamShieldTub (pi x 1 x 1 m3 )
+  //default size of GasTub (pi x .5 x 0.5 m3 )
+  radiusGasTub = 0.5 * m;
+  lengthGasTub = 0.5 * m;
+
+  //default size of BeamShieldTub (pi x 0.1 x 0.5 m3 )
   innerRadiusBeamShieldTub = 0.1*m;
-  outerRadiusBeamShieldTub = 0.10001*m;
-  lengthBeamShieldTub = 0.95 * m;
+  outerRadiusBeamShieldTub = 0.1001*m;
+  lengthBeamShieldTub = 0.5 * m;
 
   // create commands for interactive definition of the calorimeter
   gasMessenger = new ActarSimGasDetectorMessenger(det,this);
@@ -75,118 +82,84 @@ ActarSimGasDetectorConstruction::~ActarSimGasDetectorConstruction(){
   delete gasMessenger;
 }
 
-
 //G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
 G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* chamberLog) {
   //
   // Wrap for the construction functions within the TOF
   //
-
-  //Introduce here other constructors for materials around the TOF (windows, frames...)
-  //which can be controlled by the calMessenger
-  //ConstructTOFWorld(worldLog);
-  //return ConstructGas(worldLog);
   return ConstructGas(chamberLog);
 }
 
-
-
-//G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume* worldLog) {
 G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume* chamberLog) {
   //
   //  Constructs the Gas volume detector elements
   //
   //////////////////////////////////////////////////////////////////////
   //      GAS VOLUME
-  //
   // Several geometries are possible. Select the different options using
   // the messenger commands
-  //
   //////////////////////////////////////////////////////////////////////
-
-  //Chamber heigth
-  G4double chamberSizeY=detConstruction->GetChamberYLength();
-
-  //Pad Size : GasBox height from chamber floor
-  G4double padSizeY=detConstruction->GetYPadSize();
-
-  G4double gasVolumeCenterPosX = 0.*m;
-  G4double gasVolumeCenterPosY = 0.*m;
-  G4double gasVolumeCenterPosZ = 0.*m;
 
   G4LogicalVolume* gasLog(0);                   //pointer to logic gas
   G4VPhysicalVolume* gasPhys(0);                //pointer to physic gas
 
   if(detectorGeometry == "box"){
-    G4cout << "##################################################################"
-	   << G4endl
-	   << "######  ActarSimGasDetectorConstruction::ConstructActar()  #######"
-	   << G4endl
-	   << " Box-like gas geometry."
-	   << G4endl;
-    G4cout << " Box Parameters: "
-      	   << G4endl
-	   << " xGasBox = " <<  xGasBox
-	   << ",  yGasBox = " <<  yGasBox
-	   << ",  zGasBox = " <<  zGasBox
-      	   << G4endl
-	   << " gasMaterial: " <<  gasMaterial
-	   << G4endl;
-    G4cout << "##################################################################"
-	   << G4endl;
+    G4cout << "##################################################################" << G4endl
+	    << "######  ActarSimGasDetectorConstruction::ConstructActar()  #######" << G4endl
+	    << " Box-like gas geometry." << G4endl;
+    G4cout << " Box Parameters: " << G4endl
+ 	    << " gasBoxSizeX = " <<  gasBoxSizeX
+ 	    << ",  gasBoxSizeY = " <<  gasBoxSizeY
+ 	    << ",  gasBoxSizeZ = " <<  gasBoxSizeZ << G4endl
+ 	    << " gasBoxCenterX = " <<  gasBoxCenterX
+ 	    << ",  gasBoxCenterY = " <<  gasBoxCenterY
+ 	    << ",  gasBoxCenterZ = " <<  gasBoxCenterZ << G4endl
+	    << " gasMaterial: " <<  gasMaterial << G4endl;
+    G4cout << "##################################################################"<< G4endl;
 
-    //centered in (0,0,zGasBox) to have origin in the detector entrance
-    gasVolumeCenterPosY = -chamberSizeY+yGasBox+padSizeY;
-    gasVolumeCenterPosZ = zGasBox;
+    if(detConstruction->GetACTARTPCDEMOGeoIncludedFlag() == "on"){
+      //gas Box size: (74*170*138)mm
+      gasBoxSizeX = 37.*mm;
+      gasBoxSizeY = 85.*mm;
+      gasBoxSizeZ = 69.*mm;
+      //centered in (0,0,gasBoxSizeZ) to have origin in the detector entrance
+      //Pad Size : GasBox height from chamber floor = 4.54mm
+      gasBoxCenterY = 0.*mm; //-105.0+gasBoxSizeY+4.54*mm; //OLD -chamberSizeY+yGasBox+padSizeY
+      gasBoxCenterZ = 0.;
+    }
+    else gasBoxCenterZ = gasBoxSizeZ;
 
     G4Box* gasBox;
-    gasBox = new G4Box("gasBox",
-		       xGasBox,yGasBox,zGasBox);
+    gasBox = new G4Box("gasBox",gasBoxSizeX,gasBoxSizeY,gasBoxSizeZ);
 
-    gasLog = new G4LogicalVolume(gasBox,
-				 gasMaterial,
-				 "gasLog");
+    gasLog = new G4LogicalVolume(gasBox,gasMaterial,"gasLog");
 
-
-    gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
-						gasVolumeCenterPosY,
-						0),
-				gasLog,"gasPhys",chamberLog,false,0);
-
+    gasPhys = new G4PVPlacement(0,
+      G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
+      gasLog,"gasPhys",chamberLog,false,0);
+//HAPOL NOTE CHECK!!! gasVolumeCenterPosZ is zero in working version (ACTARTPCDEMO). How it can be!??
   }
   else if(detectorGeometry == "tube"){
-    G4cout << "##################################################################"
-	   << G4endl
-	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########"
-	   << G4endl
-	   << " Tube-like gas geometry."
-	   << G4endl;
-    G4cout << " Tube Parameters: "
-      	   << G4endl
+    G4cout << "##################################################################" << G4endl
+	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########" << G4endl
+	   << " Tube-like gas geometry." << G4endl;
+    G4cout << " Tube Parameters: " << G4endl
 	   << " radiusGasTub = " <<  radiusGasTub
-	   << ",  lengthGasTub = " <<  lengthGasTub
-      	   << G4endl
-	   << " gasMaterial: " <<  gasMaterial
-	   << G4endl;
-    G4cout << "##################################################################"
-	   << G4endl;
+	   << ",  lengthGasTub = " <<  lengthGasTub << G4endl
+	   << " gasMaterial: " <<  gasMaterial << G4endl;
+    G4cout << "##################################################################" << G4endl;
 
     //centered in (0,0,lengthGasTub) to have origin in the detector entrance
-    gasVolumeCenterPosZ = lengthGasTub;
+    gasBoxCenterZ = lengthGasTub;
 
     G4Tubs* gasTub;
-    gasTub = new G4Tubs("gasTub",
-			0*mm,radiusGasTub,lengthGasTub,0,twopi);
+    gasTub = new G4Tubs("gasTub",0*mm,radiusGasTub,lengthGasTub,0,twopi);
 
-    gasLog = new G4LogicalVolume(gasTub,
-				 gasMaterial,
-			 	 "gasLog");
+    gasLog = new G4LogicalVolume(gasTub,gasMaterial,"gasLog");
 
-    gasPhys = new G4PVPlacement(0,G4ThreeVector(gasVolumeCenterPosX,
-						gasVolumeCenterPosY,
-						gasVolumeCenterPosZ),
-				//gasLog,"gasPhys",worldLog,false,0);
-				gasLog,"gasPhys",chamberLog,false,0);
+    gasPhys = new G4PVPlacement(0,
+      G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
+      gasLog,"gasPhys",chamberLog,false,0);
   }
   else {
     G4cout << G4endl
@@ -200,39 +173,25 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   //if( beamShieldPhys){;}
 
   if( beamShieldGeometry == "tube"){
-    G4cout << "##################################################################"
-	   << G4endl
-	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########"
-	   << G4endl
-	   << " Beam shielding geometry."
-	   << G4endl;
-    G4cout << " Tube Parameters: "
-      	   << G4endl
+    G4cout << "##################################################################" << G4endl
+	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########" << G4endl
+	   << " Beam shielding geometry." << G4endl;
+    G4cout << " Tube Parameters: " << G4endl
 	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub
-	   << ", outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub
-      	   << G4endl
+	   << ", outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub << G4endl
 	   << " lengthBeamShieldTub = " <<  lengthBeamShieldTub
-	   << ", beamShieldMaterial: " <<  beamShieldMaterial
-	   << G4endl;
-    G4cout << "##################################################################"
-	   << G4endl;
-
+	   << ", beamShieldMaterial: " <<  beamShieldMaterial << G4endl;
+    G4cout << "##################################################################" << G4endl;
 
     G4Tubs* beamShieldTub;
-    beamShieldTub = new G4Tubs("beamShieldTub",
-			       innerRadiusBeamShieldTub,
-			       outerRadiusBeamShieldTub,
-			       lengthBeamShieldTub,
-			       0,twopi);
+    beamShieldTub = new G4Tubs("beamShieldTub",innerRadiusBeamShieldTub,
+      outerRadiusBeamShieldTub,lengthBeamShieldTub,0,twopi);
 
-    beamShieldLog = new G4LogicalVolume(beamShieldTub,
-					beamShieldMaterial,
-					"beamShieldLog");
+    beamShieldLog = new G4LogicalVolume(beamShieldTub,beamShieldMaterial,"beamShieldLog");
 
-    beamShieldPhys = new G4PVPlacement(0,G4ThreeVector(),
-				       beamShieldLog,"beamShieldPhys",gasLog,false,0);
-
-
+    beamShieldPhys = new G4PVPlacement(0,
+      G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
+      beamShieldLog,"beamShieldPhys",gasLog,false,0);
   }
 
   //------------------------------------------------
@@ -272,6 +231,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   //Gas Mix
   //const G4int NGasMix=NumberOfGasMix;
 
+//HAPOL NOTE: REMOVE REPETITIONS
   G4Element* ele_H  = new G4Element("Hydrogen" ,"H" , z= 1., a=   1.00794*g/mole);
   //G4Element* ele_D  = new G4Element("Deuterium","D" , z= 1., a=    2.0140*g/mole);
   //G4Element* ele_He = new G4Element("Helium"   ,"He", z= 2., a=    4.0026*g/mole);
@@ -415,20 +375,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
 
   }
 }
-/*
-void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
-  //
-  // Sets the material the gas is made of
-  //
-  //detConstruction->DefineMaterials();
-  //detConstruction->SetGasMaterial(mat);
-  //detConstruction->ActarSimDetectorConstruction();
-  G4Material* pttoMaterial = G4Material::GetMaterial(mat);
-  if (pttoMaterial) {gasMaterial = pttoMaterial; detConstruction->SetUpdateChamberMaterial(pttoMaterial);}
-  //detConstruction->SetUpdateChamberMaterial(mat);
-  //gasMaterial=mat;
-}
-*/
+
 
 void ActarSimGasDetectorConstruction::SetBeamShieldMaterial(G4String mat) {
   //
@@ -476,10 +423,8 @@ void ActarSimGasDetectorConstruction::PrintDetectorParameters() {
   // Prints Gas volume detector parameters. To be filled
   //
 
-  G4cout << "##################################################################"
-	 << G4endl
-	 << "##  ActarSimGasDetectorConstruction::PrintDetectorParameters() ###"
-	 << G4endl
+  G4cout << "##################################################################" << G4endl
+	 << "##  ActarSimGasDetectorConstruction::PrintDetectorParameters() ###" << G4endl
 	 << " The gas volume is a " ;
   if(detectorGeometry == "box")
     G4cout << "box; its parameters are:" << G4endl;
@@ -487,8 +432,8 @@ void ActarSimGasDetectorConstruction::PrintDetectorParameters() {
     G4cout << "tube; its parameters are:" << G4endl;
   G4cout << " The gas material is: " << gasMaterial  << G4endl;
   if(detectorGeometry == "box")
-    G4cout << " The gasBox size is : " << xGasBox/cm << "x" << yGasBox/cm
-	   << "x" << zGasBox/cm << " cm3 " << G4endl << G4endl ;
+    G4cout << " The gasBox size is : " << gasBoxSizeX/cm << "x" << gasBoxSizeY/cm
+	   << "x" << gasBoxSizeZ/cm << " cm3 " << G4endl << G4endl ;
   if(detectorGeometry == "tube")
     G4cout << " The gasTube parameters are: " << G4endl
 	   << " radiusGasTub = " <<  radiusGasTub
@@ -496,13 +441,10 @@ void ActarSimGasDetectorConstruction::PrintDetectorParameters() {
   if( beamShieldGeometry == "tube"){
     G4cout << " The beam shielding parameters are:"  << G4endl
 	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub
-	   << ", outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub
-      	   << G4endl
+	   << ", outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub << G4endl
 	   << " lengthBeamShieldTub = " <<  lengthBeamShieldTub
-	   << ", beamShieldMaterial: " <<  beamShieldMaterial
-	   << G4endl;
+	   << ", beamShieldMaterial: " <<  beamShieldMaterial << G4endl;
   }
-
   G4cout << "##################################################################"
 	 << G4endl;
 }

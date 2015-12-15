@@ -16,6 +16,7 @@
 
 #include "ActarSimSilRingDetectorConstruction.hh"
 #include "ActarSimDetectorConstruction.hh"
+#include "ActarSimGasDetectorConstruction.hh"
 //#include "ActarSimSilDetectorMessenger.hh"
 #include "ActarSimROOTAnalysis.hh"
 #include "ActarSimSilRingSD.hh"
@@ -90,10 +91,11 @@ G4VPhysicalVolume* ActarSimSilRingDetectorConstruction::ConstructSil(G4LogicalVo
 
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
-  G4double chamberSizeZ=detConstruction->GetChamberZLength();
+  G4double chamberSizeZ=detConstruction->GetChamberSizeZ();
 
   //Gas chamber position inside the chamber
-  G4double zGasBoxPosition=detConstruction->GetZGasBoxPosition();
+  ActarSimGasDetectorConstruction* gasDet = detConstruction->GetGasDetector();
+  G4double zGasBoxPosition=gasDet->GetGasBoxCenterZ();
 
 	//----------------------------- the Silicon and CsI disks
 	G4double Rmax=48*mm;

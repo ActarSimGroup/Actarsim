@@ -1,47 +1,39 @@
-///////////////////////////////////////////////////////////////// 
+/////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2005
-//*-- Last Update:  1/12/014
+//*-- Last Update:  1/12/2015
 // --------------------------------------------------------------
 // Description:
-//   Data definition 
+//   Data definition
 //
 // --------------------------------------------------------------
-// Comments: 
+// Comments:
 //     - 31/05/05 Data structure for analysis in ACTAR
 //
-///////////////////////////////////////////////////////////////// 
+/////////////////////////////////////////////////////////////////
 
 #ifndef ActarSimData_h
 #define ActarSimData_h 1
 
-//#include "G4Types.hh"
 #include "TROOT.h"  //for including Rtypes.h
 
-//#ifndef __CINT__
-//#include "G4String.hh" //Explicit inclusion for root dictionary
-//using namespace std;
-//#else
-//struct G4String;
-//#endif
+class ActarSimData{
 
-class ActarSimData{  
-  
 private:
-  
-  Double_t thetaPrim1;
-  Double_t thetaPrim2;
-  Double_t phiPrim1;
-  Double_t phiPrim2;
-  Double_t energyPrim1;
-  Double_t energyPrim2;
-  Double_t energyOnGasPrim1;
-  Double_t energyOnGasPrim2;
-  Double_t stepSumLengthOnGasPrim1;
-  Double_t stepSumLengthOnGasPrim2;
-  Int_t    eventID;
-  Int_t    runID;
-  
+
+  Double_t thetaPrim1;                //polar angle for first primary
+  Double_t thetaPrim2;                //polar angle for second primary
+  Double_t phiPrim1;                  //azimuthal angle for first primary
+  Double_t phiPrim2;                  //azimuthal angle for second primary
+  Double_t energyPrim1;               //energy for first primary
+  Double_t energyPrim2;               //energy for second primary
+  Double_t energyOnGasPrim1;          //energy deposited in the gas for first primary
+  Double_t energyOnGasPrim2;          //energy deposited in the gas for second primary
+  Double_t stepSumLengthOnGasPrim1;   //sum of steps length in the gas for first primary
+  Double_t stepSumLengthOnGasPrim2;   //sum of steps length in the gas for second primary
+  Int_t    eventID;                   //event number
+  Int_t    runID;                     //run number
+
 public:
   ActarSimData();
   virtual ~ActarSimData();

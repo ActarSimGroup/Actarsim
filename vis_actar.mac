@@ -1,10 +1,11 @@
 ################################################################
 #*-- AUTHOR : Hector Alvarez-Pol
 #*-- Date: 05/2005
-#*-- Last Update: 15/05/08
+#*-- Last Update: 05/12/15
 #*-- Copyright: GENP (Univ. Santiago de Compostela)
 # --------------------------------------------------------------
 # Comments:
+#     - 05/12/15 Add ACTARTPCDEMO Flag
 #     - 15/05/08 Multidetector geometry
 #     - 05/05/06 Updating to new ActarSim (geant4.8) code
 #     - 22/11/05 Updated including CINE options
@@ -45,14 +46,12 @@
 #/ActarSim/phys/addPhysics emstandard_opt4
 /ActarSim/phys/addPhysics ionGasModels
 #
-#
-#
 # Cuts for the particles  (incomplete list, see README)
 #
-#  /ActarSim/phys/setGCut 0.1
-#  /ActarSim/phys/setECut 0.1
-#  /ActarSim/phys/setPCut 0.1
-#  /ActarSim/phys/setCuts 1 mm
+#/ActarSim/phys/setGCut 0.1
+#/ActarSim/phys/setECut 0.1
+#/ActarSim/phys/setPCut 0.1
+#/ActarSim/phys/setCuts 1 mm
 /ActarSim/phys/verbose 0
 #
 # Initialization is moved here from the main allowing PhysicsList
@@ -63,11 +62,13 @@
 #
 # GENERAL COMMANDS
 #
+/ActarSim/det/ACTARTPCDEMOGeoIncludedFlag on
+#
 # Control of the materials
 #/ActarSim/det/setMediumMat D2_STP
 #/ActarSim/det/setMediumMat Galactic
 #/ActarSim/det/setMediumMat Water
-#Electric and Magnetic fields 
+#Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
 #
@@ -78,18 +79,17 @@
 /ActarSim/det/gas/setGasMat iC4H10
 
 # Make a gas mixture : first select number of elements (up to 10)
-# And then set all gases with their ratio 
+# And then set all gases with their ratio
 #/ActarSim/det/gas/mixture/GasMixture 2
 #/ActarSim/det/gas/mixture/setGasMix 1 He 0.90
 #/ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10
 #/ActarSim/det/gas/setGasMat GasMix
 #
 # GAS CHAMBER
-#
-/ActarSim/det/setXLengthGasChamber 95. mm
-/ActarSim/det/setYLengthGasChamber 105. mm
-/ActarSim/det/setZLengthGasChamber 120. mm
-#
+# VALUES NOT VALID WHILE ACTARTPCDEMOGeoIncludedFlag is on
+#/ActarSim/det/setXLengthGasChamber 95. mm
+#/ActarSim/det/setYLengthGasChamber 105. mm
+#/ActarSim/det/setZLengthGasChamber 120. mm
 #
 # GAS DETECTOR
 #
@@ -97,9 +97,10 @@
 # if box
 /ActarSim/det/gas/setDetectorGeometry box
 #
-/ActarSim/det/gas/setXLengthGasBox 37. mm
-/ActarSim/det/gas/setYLengthGasBox 85. mm
-/ActarSim/det/gas/setZLengthGasBox 69. mm
+# VALUES NOT VALID WHILE ACTARTPCDEMOGeoIncludedFlag is on
+#/ActarSim/det/gas/setXLengthGasBox 37. mm
+#/ActarSim/det/gas/setYLengthGasBox 85. mm
+#/ActarSim/det/gas/setZLengthGasBox 69. mm
 #
 # Beam shield? tube or off
 /ActarSim/det/gas/setBeamShield off
@@ -163,7 +164,8 @@
 #/ActarSim/gun/emittance 200.0
 /gun/particle alpha
 /ActarSim/gun/beamDirection 0 0 1
-/ActarSim/gun/beamPosition 0 100 -19 mm  
+#/ActarSim/gun/beamPosition 0 100 -19 mm
+/ActarSim/gun/beamPosition 0 0 0 mm
 /ActarSim/gun/Kine/labEnergy 20 MeV
 #
 # Realistic Event-Generator on
@@ -183,7 +185,7 @@
 #/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
 #/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
 #/ActarSim/gun/ion 6 12 6 0.0 12.
-#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
+#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/ActarSim/gun/ion 26 56 26 0.0 55.934937475
 
@@ -248,7 +250,7 @@
 # create an empty scene and add the detector geometry to it
 #/vis/drawVolume
 #/vis/scene/add/axes 0 0 0 0.1 m
-/vis/scene/add/trajectories 
+/vis/scene/add/trajectories
 /vis/scene/add/hits
 #/ActarSim/event/drawTracks all
 /ActarSim/event/printModulo 10

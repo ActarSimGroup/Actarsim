@@ -39,7 +39,7 @@ class ActarSimGasDetectorMessenger: public G4UImessenger {
 private:
   ActarSimDetectorConstruction* ActarSimDetector;
   ActarSimGasDetectorConstruction* ActarSimGasDetector;
-     
+
   G4UIcmdWithAnInteger*      gasMixtureFlagCmd;
   G4UIcommand*               gasMixtureCmd;
 
@@ -56,9 +56,9 @@ private:
 
   G4UIcmdWithAString*        detectorGeometryCmd;
   G4UIcmdWithAString*        setBeamShieldCmd;
-  G4UIcmdWithADoubleAndUnit* xGasBoxCmd;
-  G4UIcmdWithADoubleAndUnit* yGasBoxCmd;
-  G4UIcmdWithADoubleAndUnit* zGasBoxCmd;
+  G4UIcmdWithADoubleAndUnit* gasBoxSizeXCmd;
+  G4UIcmdWithADoubleAndUnit* gasBoxSizeYCmd;
+  G4UIcmdWithADoubleAndUnit* gasBoxSizeZCmd;
   G4UIcmdWithADoubleAndUnit* radiusGasTubCmd;
   G4UIcmdWithADoubleAndUnit* lengthGasTubCmd;
   G4UIcmdWithADoubleAndUnit* innerRadiusBeamShieldTubCmd;
@@ -76,9 +76,8 @@ private:
 public:
   ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ,ActarSimGasDetectorConstruction* );
   ~ActarSimGasDetectorMessenger();
-  
+
   void SetNewValue(G4UIcommand*, G4String);
   //G4String GetCurrentValue(G4UIcommand*);
 };
 #endif
-

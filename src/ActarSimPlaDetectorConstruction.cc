@@ -16,6 +16,7 @@
 
 #include "ActarSimPlaDetectorConstruction.hh"
 #include "ActarSimDetectorConstruction.hh"
+#include "ActarSimGasDetectorConstruction.hh"
 //#include "ActarSimPlaDetectorMessenger.hh"
 #include "ActarSimROOTAnalysis.hh"
 #include "ActarSimPlaSD.hh"
@@ -81,34 +82,35 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::Construct(G4LogicalVolume* w
 
 
 G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume* worldLog) {
-    
+
   //
 
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
-  G4double chamberSizeZ=detConstruction->GetChamberZLength();
+  G4double chamberSizeZ=detConstruction->GetChamberSizeZ();
 
   //Gas chamber position inside the chamber
-  G4double zGasBoxPosition=detConstruction->GetZGasBoxPosition();
+  ActarSimGasDetectorConstruction* gasDet = detConstruction->GetGasDetector();
+  G4double zGasBoxPosition=gasDet->GetGasBoxCenterZ();
 
-  
+
     //Hodo Box
 	G4double hodo_x=105*cm;
 	G4double hodo_y=105*cm;
 	G4double hodo_z=60.0*cm;
-  
-    
+
+
   G4double plaBulk_x = 9.95*mm;   //half length=12.5mm
   G4double plaBulk_y = 100*mm;   //half length=12.5mm
   G4double plaBulk_z = 5.0*mm;   //half length=15.0mm
-    
-    
+
+
 	//the numbers
 	G4double nDE=13; //number of Scint in dE
 	G4double nE1=16; //number of Scint in E1
 	G4double nE2=13;//number of Scint in E2
 	//G4double nTarget=1;//number of Targets
-    
+
 	//G4double yHodo=chamberSizeY/2-1*mm;
 	G4double yHodo=0;
 	G4double zHodo=5.0*m+chamberSizeZ-zGasBoxPosition;
@@ -143,25 +145,25 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
 
  // sciLog =
    // new G4LogicalVolume(sciBox, sciBulkMaterial, "sciLog");
-  
-    
+
+
   G4double density;//, pressure, temperature;
   //G4int ncomponents, natoms;
   //G4double fractionmass;
-    
+
     G4double a;  // atomic mass
     G4double z;  // atomic number
-    
+
     G4Material* Vacuum =
     new G4Material("Galactic", z=1., a=1.01*g/mole,density= universe_mean_density,
                    kStateGas, 3.e-18*pascal, 2.73*kelvin);
     Vacuum->SetChemicalFormula("NOMATTER");
-    
+
     //Hodo
     G4Box* solidHodo  = new G4Box("solidhodo",0.5*hodo_x,0.5*hodo_y,0.5*hodo_z);
 	G4LogicalVolume* logicHodo  = new G4LogicalVolume(solidHodo,Vacuum,"logichodo",0,0,0);
 	G4VPhysicalVolume* physiHodo  = new G4PVPlacement(0,G4ThreeVector(0.,yHodo,zHodo),logicHodo,"physihodo",worldLog,false,0);
-    
+
 	if(physiHodo){;}
 
 	G4VisAttributes* logicHodo_VisAtt = new G4VisAttributes(G4Colour(0,0,1.0));
@@ -170,17 +172,17 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
 	//
 	G4Box* plaBox =new G4Box("solidbar",0.5*plaBulk_x,0.5*plaBulk_y,0.5*plaBulk_z);
 	plaLog  = new G4LogicalVolume(plaBox,plaBulkMaterial,"logicbar",0,0,0);
-    
+
 	G4VPVParameterisation* BarParam  = new HodoParametrisation(nDE,nE1,nE2,-0.0*hodo_z);
 	// dummy value : kXAxis -- modified by parameterised volume
 	plaPhys =  new G4PVParameterised("plaPhys",plaLog,logicHodo,kXAxis, nDE+nE1+nE2, BarParam);
-    
+
 	G4VisAttributes* logicBar_VisAtt = new G4VisAttributes(G4Colour(0.7,1.0,0.0));
 	plaLog->SetVisAttributes(logicBar_VisAtt);
-    
 
 
-    
+
+
 
 
   //------------------------------------------------

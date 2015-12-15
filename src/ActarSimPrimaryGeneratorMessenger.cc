@@ -109,8 +109,9 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   beamRadiusAtEntranceCmd->SetDefaultValue(1.);
   beamRadiusAtEntranceCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+  //HAPOL NOTE: REMOVE OR REBUILT COMPLETELY
   reactionFromEvGenCmd = new G4UIcmdWithAString("/ActarSim/gun/reactionFromEvGen",this);
-  reactionFromEvGenCmd->SetGuidance("Simulates beam/target from event generator.");
+  reactionFromEvGenCmd->SetGuidance("DO NOT USE. Simulates beam/target from event generator. DO NOT USE.");
   reactionFromEvGenCmd->SetGuidance("  Choice : on, off(default)");
   reactionFromEvGenCmd->SetParameterName("choice",true);
   reactionFromEvGenCmd->SetDefaultValue("off");
@@ -127,8 +128,9 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   reactionFromFileCmd->SetCandidates("on off");
   reactionFromFileCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+  //HAPOL NOTE: REMOVE OR REBUILT COMPLETELY
   reactionFromCrossSectionCmd = new G4UIcmdWithAString("/ActarSim/gun/reactionFromCrossSection",this);
-  reactionFromCrossSectionCmd->SetGuidance("Simulates beam/target from the cross-sections.");
+  reactionFromCrossSectionCmd->SetGuidance("DO NOT USE. Simulates beam/target from the cross-sections. DO NOT USE.");
   reactionFromCrossSectionCmd->SetGuidance("  Choice : on, off(default)");
   reactionFromCrossSectionCmd->SetParameterName("choice",true);
   reactionFromCrossSectionCmd->SetDefaultValue("off");
@@ -726,7 +728,7 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == randomThetaCmd )
     actarSimActionGun->SetRandomThetaFlag(newValues);
- 
+
  if( command == randomPhiCmd )
     actarSimActionGun->SetRandomPhiFlag(newValues);
 
@@ -769,7 +771,7 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
     actarSimActionGun->SetRandomPhiVal(phiMin,phiMax);
   }
- 
+
  if( command == CinerandomThetaValCmd ){
     G4double thetaMax, thetaMin;
     //    ConvertToDoublePair(newValues, thetaMin, thetaMax);

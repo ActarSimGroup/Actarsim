@@ -26,14 +26,16 @@ ActarSimBeamInfo::ActarSimBeamInfo() {
   energyEntrance = 0.;     // Energy at the entrance
   energyVertex = 0.;       // Energy at the vertex
   thetaEntrance = 0.;      // theta emission angle
-  phiEntrance = 0.;         // phi emission angle
-  xEntrance = 0. ;          // beam entrance position
+  phiEntrance = 0.;        // phi emission angle
+  thetaVertex = 0.;        // theta vertex angle
+  phiVertex = 0.;          // phi vertex angle
+  xEntrance = 0. ;         // beam entrance position
   yEntrance = 0.;
   zEntrance = 0.;
   xVertex = 0.;            // reaction vertex position
   yVertex = 0.;
   zVertex = 0.;
-  timeVertex = 0.;        // time at vertex formation
+  timeVertex = 0.;         // time at vertex formation
   status = 0;
 }
 
@@ -90,10 +92,7 @@ void ActarSimBeamInfo::SetPositionVertex(Double_t x, Double_t y, Double_t z) {
   yVertex = y;
   zVertex = z;
 }
-//   void SetPositionEntrance(Double_t ,Double_t ,Double_t );
-//   void SetAnglesEntrance(Double_t ,Double_t );
-//   void SetPositionVertex(Double_t ,Double_t ,Double_t );
-//   void SetAnglesVertex(Double_t ,Double_t );
+
 
 void ActarSimBeamInfo::SetAnglesEntrance(Double_t angleTheta, Double_t anglePhi){
   //
@@ -110,8 +109,3 @@ void ActarSimBeamInfo::SetAnglesVertex(Double_t angleTheta, Double_t anglePhi){
   thetaEntrance = angleTheta;
   phiEntrance = anglePhi;
 }
-
-
-
-
-

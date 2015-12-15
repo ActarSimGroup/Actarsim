@@ -16,6 +16,7 @@
 
 #include "ActarSimSciDetectorConstruction.hh"
 #include "ActarSimDetectorConstruction.hh"
+#include "ActarSimGasDetectorConstruction.hh"
 #include "ActarSimSciDetectorMessenger.hh"
 #include "ActarSimROOTAnalysis.hh"
 #include "ActarSimSciSD.hh"
@@ -118,7 +119,8 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   G4double separationFromBox = 25*mm;
 
   //Position of the GasBox inside the Chamber
-  G4double zGasBoxPosition=detConstruction->GetZGasBoxPosition();
+  ActarSimGasDetectorConstruction* gasDet = detConstruction->GetGasDetector();
+  G4double zGasBoxPosition=gasDet->GetGasBoxCenterZ();
 
   // Printing the final settings...
   G4cout << "##################################################################"

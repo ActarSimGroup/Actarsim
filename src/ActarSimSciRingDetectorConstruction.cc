@@ -16,6 +16,7 @@
 
 #include "ActarSimSciRingDetectorConstruction.hh"
 #include "ActarSimDetectorConstruction.hh"
+#include "ActarSimGasDetectorConstruction.hh"
 //#include "ActarSimSciRingDetectorMessenger.hh"
 #include "ActarSimROOTAnalysis.hh"
 #include "ActarSimSciRingSD.hh"
@@ -91,10 +92,11 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
 
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
-  G4double chamberSizeZ=detConstruction->GetChamberZLength();
+  G4double chamberSizeZ=detConstruction->GetChamberSizeZ();
 
   //Gas chamber position inside the chamber
-  G4double zGasBoxPosition=detConstruction->GetZGasBoxPosition();
+  ActarSimGasDetectorConstruction* gasDet = detConstruction->GetGasDetector();
+  G4double zGasBoxPosition=gasDet->GetGasBoxCenterZ();
 
 
    //----------------------------- the Silicon and CsI disks
@@ -103,54 +105,54 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
   G4double Phi_0=0*deg;
   G4double Phi_f=360*deg;
   G4double ZlengthCsI=10.00*mm;
-    
+
   G4Tubs *CsIring=new G4Tubs("CsIring",Rmin,Rmax,ZlengthCsI,Phi_0,Phi_f);
-  
+
   G4LogicalVolume* CsIring_log= new G4LogicalVolume(CsIring,sciBulkMaterial,"CsIring_log",0,0,0);
- 
-  
-  
+
+
+
   G4double sectorPhi=Phi_f/16.;
 
-  
+
     G4Tubs *CsISector=new G4Tubs("CsISector",Rmin,Rmax,ZlengthCsI,0.,sectorPhi);
 
-    
+
     G4LogicalVolume *CsISector_log=new G4LogicalVolume(CsISector,sciBulkMaterial,"CsISector_log",0,0,0);
     G4VisAttributes* CsISectorVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
-    
+
     CsISectorVisAtt->SetVisibility(true);
 
-    
+
     G4double CsIPos_x=0*mm;
     //G4double CsIPos_y=chamberSizeY/2-1*mm;
     G4double CsIPos_y=0;
     G4double CsIPos_z=0.0*mm;
 
     G4double distance[3]={320*mm,550*mm,1090*mm}; //For 10Li experiment
-	
+
 	//G4double distance[3]={570*mm,0*mm,0*mm}; //For 16C experiment Only one ring detector
 
   for(G4int k=0;k<3;k++){
 
       CsIPos_z=distance[k]+chamberSizeZ-zGasBoxPosition;
 
-  
-      
-      
+
+
+
       G4VPhysicalVolume *CsIring_phys=new G4PVPlacement(0,
                                                              G4ThreeVector(CsIPos_x,CsIPos_y,CsIPos_z),
                                                              CsIring_log,"CsIringdet",worldLog,false,k);
-   
+
       if(CsIring_phys){;}
   }
-    
-   
-   
-    G4VPhysicalVolume *CsISector_phys=new G4PVReplica("CsISector",CsISector_log,CsIring_log,kPhi,16,sectorPhi);
-    
 
-  
+
+
+    G4VPhysicalVolume *CsISector_phys=new G4PVReplica("CsISector",CsISector_log,CsIring_log,kPhi,16,sectorPhi);
+
+
+
 
   //------------------------------------------------
   // Sensitive detectors
@@ -160,7 +162,7 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
   //------------------------------------------------------------------
   // Visualization attributes
   //------------------------------------------------------------------
- 
+
 
   return CsISector_phys;
 }

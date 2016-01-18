@@ -14,11 +14,11 @@
 # Macro file for testing online jobs
 ################################################################
 # verbosity levels and saveHistory
-/control/verbose 1
+/control/verbose 2
 /control/saveHistory
-/run/verbose 0
-/event/verbose 0
-/tracking/verbose 0
+/run/verbose 2
+/event/verbose 2
+/tracking/verbose 2
 #
 # Setting the Physics modules; valid values are here listed:
 #   em: standard, lowenergy, penelope, (choose one from this three)
@@ -53,7 +53,7 @@
 #  /ActarSim/phys/setECut 0.1
 #  /ActarSim/phys/setPCut 0.1
 #  /ActarSim/phys/setCuts 1 mm
-/ActarSim/phys/verbose 0
+/ActarSim/phys/verbose 5
 #
 # Initialization is moved here from the main allowing PhysicsList
 #
@@ -67,7 +67,7 @@
 #/ActarSim/det/setMediumMat D2_STP
 #/ActarSim/det/setMediumMat Galactic
 #/ActarSim/det/setMediumMat Water
-#Electric and Magnetic fields 
+#Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
 #
@@ -78,7 +78,7 @@
 #/ActarSim/det/gas/setGasMat iC4H10
 
 # Make a gas mixture : first select number of elements (up to 10)
-# And then set all gases with their ratio 
+# And then set all gases with their ratio
 /ActarSim/det/gas/mixture/GasMixture 2
 /ActarSim/det/gas/mixture/setGasMix 1 He 0.90
 /ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10
@@ -163,7 +163,7 @@
 #/ActarSim/gun/emittance 200.0
 #/gun/particle alpha
 #/ActarSim/gun/beamDirection 0 0 1
-#/ActarSim/gun/beamPosition 0 100 -19 mm  
+#/ActarSim/gun/beamPosition 0 100 -19 mm
 #/ActarSim/gun/Kine/labEnergy 20 MeV
 #
 # Realistic Event-Generator on
@@ -197,7 +197,7 @@
 /ActarSim/gun/alphaSource on
 
 #/ActarSim/gun/beamDirection 1 0 0
-/ActarSim/gun/beamPosition -62 100 69 mm  
+/ActarSim/gun/beamPosition -62 100 69 mm
 /ActarSim/gun/Kine/randomThetaCM on
 /ActarSim/gun/Kine/randomThetaRange 30.0 150.0
 /ActarSim/gun/randomPhi on
@@ -237,7 +237,7 @@
 # create an empty scene and add the detector geometry to it
 #/vis/drawVolume
 #/vis/scene/add/axes 0 0 0 0.1 m
-/vis/scene/add/trajectories 
+/vis/scene/add/trajectories
 /vis/scene/add/hits
 #/ActarSim/event/drawTracks all
 /ActarSim/event/printModulo 10

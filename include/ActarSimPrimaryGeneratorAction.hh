@@ -225,7 +225,7 @@ public:
   inline void SetParticleMomentumDirection(G4ParticleMomentum aMomentumDirection)
      { particleGun->SetParticleMomentumDirection(aMomentumDirection); }
   inline void SetParticleEnergy(G4double aKineticEnergy)
-     { particleGun->SetParticleEnergy(aKineticEnergy); }
+     { particleGun->SetParticleEnergy(aKineticEnergy); incidentEnergy = aKineticEnergy;}
   inline void SetParticleCharge(G4double aCharge)
      { particleGun->SetParticleCharge(aCharge); }
   inline void SetParticlePolarization(G4ThreeVector aVal)

@@ -45,6 +45,9 @@ private:
   G4UIcmdWithADoubleAndUnit* chamberSizeXCmd;
   G4UIcmdWithADoubleAndUnit* chamberSizeYCmd;
   G4UIcmdWithADoubleAndUnit* chamberSizeZCmd;
+  G4UIcmdWithADoubleAndUnit* chamberCenterXCmd;
+  G4UIcmdWithADoubleAndUnit* chamberCenterYCmd;
+  G4UIcmdWithADoubleAndUnit* chamberCenterZCmd;
   G4UIcmdWithADoubleAndUnit* worldSizeXCmd;
   G4UIcmdWithADoubleAndUnit* worldSizeYCmd;
   G4UIcmdWithADoubleAndUnit* worldSizeZCmd;
@@ -53,6 +56,7 @@ private:
   G4UIcmdWithAString* sciGeoIncludedFlagCmd;
 
   G4UIcmdWithAString*        mediumMaterialCmd;
+  G4UIcmdWithAString*        chamberMaterialCmd;
 
   G4UIcmdWith3Vector*        eleFieldCmd; //problems defining elec field units
   G4UIcmdWith3VectorAndUnit* magFieldCmd;

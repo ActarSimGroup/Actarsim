@@ -23,7 +23,7 @@ include(${Geant4_USE_FILE})
 #----------------------------------------------------------------------------
 # Cmake Path for installation
 #
-#CMAKE_INSTALL_PREFIX 
+#CMAKE_INSTALL_PREFIX
 #----------------------------------------------------------------------------
 # Load some basic macros which are needed later on
 include(FindROOT.cmake)
@@ -79,11 +79,11 @@ if (CMAKE_SYSTEM_NAME MATCHES Darwin)
       set(CMAKE_C_FLAGS_DEBUGFULL        "-g3 -fno-inline -Wno-long-long -std=iso9899:1990 -Wundef -Wcast-align -Werror-implicit-function-declaration -Wchar-subscripts -Wall -W -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute -fno-common")
       set(CMAKE_C_FLAGS_PROFILE          "-g3 -fno-inline -ftest-coverage -fprofile-arcs")
 
-      
-      
+
+
       endif (CMAKE_COMPILER_IS_GNUCXX)
 
-endif (CMAKE_SYSTEM_NAME MATCHES Darwin) 
+endif (CMAKE_SYSTEM_NAME MATCHES Darwin)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -96,8 +96,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Set everything needed for the root dictonary and create the
 # dictionary
-set(ActarSim_HEADERS ${PROJECT_SOURCE_DIR}/include/ActarSimData.hh 
-		     ${PROJECT_SOURCE_DIR}/include/ActarSimTrack.hh 
+set(ActarSim_HEADERS ${PROJECT_SOURCE_DIR}/include/ActarSimData.hh
+		     ${PROJECT_SOURCE_DIR}/include/ActarSimTrack.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSimpleTrack.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSilHit.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimSilRingHit.hh
@@ -108,7 +108,7 @@ set(ActarSim_HEADERS ${PROJECT_SOURCE_DIR}/include/ActarSimData.hh
 		     ${PROJECT_SOURCE_DIR}/include/ActarSimBeamInfo.hh
 		     )
 set(ActarSim_LINKDEF ${PROJECT_SOURCE_DIR}/src/ActarSimLinkDef.hh )
-set(ActarSim_DICTIONARY ActarSimDict.cc) 
+set(ActarSim_DICTIONARY ActarSimDict.cc)
 ROOT_GENERATE_DICTIONARY("${ActarSim_HEADERS}" "${ActarSim_LINKDEF}" "${ActarSim_DICTIONARY}" "${ROOT_INCLUDE_DIR}")
 
 
@@ -146,10 +146,12 @@ add_dependencies(actarsim actar)
 #
 set(ACTARSIM_SCRIPTS
 gui.mac
-vis_actar.mac 
-vis_maiko.mac 
-vis_kine.mac 
+vis_actar.mac
+vis_maiko.mac
+vis_kine.mac
 vis_alpha.mac
+vis_simpleBox.mac
+vis_simpleTube.mac
 kine_batch.mac
 12C_batch.mac
 digitizationMacro.C

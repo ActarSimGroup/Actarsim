@@ -108,12 +108,12 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 	    << "######  ActarSimGasDetectorConstruction::ConstructActar()  #######" << G4endl
 	    << " Box-like gas geometry." << G4endl;
     G4cout << " Box Parameters: " << G4endl
- 	    << " gasBoxSizeX = " <<  gasBoxSizeX
- 	    << ",  gasBoxSizeY = " <<  gasBoxSizeY
- 	    << ",  gasBoxSizeZ = " <<  gasBoxSizeZ << G4endl
- 	    << " gasBoxCenterX = " <<  gasBoxCenterX
- 	    << ",  gasBoxCenterY = " <<  gasBoxCenterY
- 	    << ",  gasBoxCenterZ = " <<  gasBoxCenterZ << G4endl
+ 	    << " gasBoxSizeX = " <<  gasBoxSizeX/mm
+ 	    << " mm,  gasBoxSizeY = " <<  gasBoxSizeY/mm
+ 	    << " mm,  gasBoxSizeZ = " <<  gasBoxSizeZ/mm << " mm" << G4endl
+ 	    << " gasBoxCenterX = " <<  gasBoxCenterX/mm
+ 	    << " mm,  gasBoxCenterY = " <<  gasBoxCenterY/mm
+ 	    << " mm,  gasBoxCenterZ = " <<  gasBoxCenterZ << " mm" << G4endl
 	    << " gasMaterial: " <<  gasMaterial << G4endl;
     G4cout << "##################################################################"<< G4endl;
 
@@ -124,11 +124,16 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
       gasBoxSizeZ = 69.*mm;
       //centered in (0,0,gasBoxSizeZ) to have origin in the detector entrance
       //Pad Size : GasBox height from chamber floor = 4.54mm
+      gasBoxCenterX = 0.*mm;
       gasBoxCenterY = 0.*mm; //-105.0+gasBoxSizeY+4.54*mm; //OLD -chamberSizeY+yGasBox+padSizeY
-      gasBoxCenterZ = 0.;
+      gasBoxCenterZ = 0.*mm;
     }
-    else gasBoxCenterZ = gasBoxSizeZ;
-
+    else {
+      gasBoxCenterX = 0.;
+      gasBoxCenterY = 0.;
+      gasBoxCenterZ = 0.;
+    //gasBoxCenterZ = gasBoxSizeZ; //WHY?? NO!!!!
+    }
     G4Box* gasBox;
     gasBox = new G4Box("gasBox",gasBoxSizeX,gasBoxSizeY,gasBoxSizeZ);
 
@@ -144,13 +149,14 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########" << G4endl
 	   << " Tube-like gas geometry." << G4endl;
     G4cout << " Tube Parameters: " << G4endl
-	   << " radiusGasTub = " <<  radiusGasTub
-	   << ",  lengthGasTub = " <<  lengthGasTub << G4endl
+	   << " radiusGasTub = " <<  radiusGasTub/mm
+	   << " mm,  lengthGasTub = " <<  lengthGasTub/mm << " mm" << G4endl
 	   << " gasMaterial: " <<  gasMaterial << G4endl;
     G4cout << "##################################################################" << G4endl;
 
     //centered in (0,0,lengthGasTub) to have origin in the detector entrance
-    gasBoxCenterZ = lengthGasTub;
+    //gasBoxCenterZ = lengthGasTub;
+    gasBoxCenterZ = 0.*mm;
 
     G4Tubs* gasTub;
     gasTub = new G4Tubs("gasTub",0*mm,radiusGasTub,lengthGasTub,0,twopi);
@@ -177,10 +183,10 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########" << G4endl
 	   << " Beam shielding geometry." << G4endl;
     G4cout << " Tube Parameters: " << G4endl
-	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub
-	   << ", outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub << G4endl
-	   << " lengthBeamShieldTub = " <<  lengthBeamShieldTub
-	   << ", beamShieldMaterial: " <<  beamShieldMaterial << G4endl;
+	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub/mm
+	   << " mm, outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub/mm << " mm" << G4endl
+	   << " lengthBeamShieldTub = " <<  lengthBeamShieldTub/mm
+	   << "mm, beamShieldMaterial: " <<  beamShieldMaterial << G4endl;
     G4cout << "##################################################################" << G4endl;
 
     G4Tubs* beamShieldTub;
@@ -432,18 +438,18 @@ void ActarSimGasDetectorConstruction::PrintDetectorParameters() {
     G4cout << "tube; its parameters are:" << G4endl;
   G4cout << " The gas material is: " << gasMaterial  << G4endl;
   if(detectorGeometry == "box")
-    G4cout << " The gasBox size is : " << gasBoxSizeX/cm << "x" << gasBoxSizeY/cm
-	   << "x" << gasBoxSizeZ/cm << " cm3 " << G4endl << G4endl ;
+    G4cout << " The gasBox size is : " << gasBoxSizeX/mm << "x" << gasBoxSizeY/mm
+	   << "x" << gasBoxSizeZ/mm << " mm3 " << G4endl << G4endl ;
   if(detectorGeometry == "tube")
     G4cout << " The gasTube parameters are: " << G4endl
-	   << " radiusGasTub = " <<  radiusGasTub
-	   << ",  lengthGasTub = " <<  lengthGasTub << G4endl ;
+	   << " radiusGasTub = " <<  radiusGasTub/mm
+	   << "mm,  lengthGasTub = " <<  lengthGasTub/mm << " mm" << G4endl ;
   if( beamShieldGeometry == "tube"){
     G4cout << " The beam shielding parameters are:"  << G4endl
-	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub
-	   << ", outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub << G4endl
-	   << " lengthBeamShieldTub = " <<  lengthBeamShieldTub
-	   << ", beamShieldMaterial: " <<  beamShieldMaterial << G4endl;
+	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub/mm
+	   << " mm, outerRadiusBeamShieldTub = " <<  outerRadiusBeamShieldTub/mm << " mm" << G4endl
+	   << " lengthBeamShieldTub = " <<  lengthBeamShieldTub/mm
+	   << " mm, beamShieldMaterial: " <<  beamShieldMaterial << G4endl;
   }
   G4cout << "##################################################################"
 	 << G4endl;

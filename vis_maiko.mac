@@ -95,7 +95,8 @@
 /ActarSim/det/gas/setYLengthGasBox 70. mm
 /ActarSim/det/gas/setZLengthGasBox 50. mm
 #
-/ActarSim/det/gas/setYGasBoxPos 50 mm
+#TODO HAPOL!!!! CREAR ESTA FUNCION O EQUIVALENTE
+#/ActarSim/det/gas/setYGasBoxPos 50 mm
 #
 # if tube
 #  /ActarSim/det/gas/setDetectorGeometry tube
@@ -184,7 +185,7 @@
 #/ActarSim/gun/ion 1 1 1 0.0 1.00782503207
 #/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
 #/ActarSim/gun/ion 6 12 6 0.0 12.
-/ActarSim/gun/ion 6 13 6 0.0 13.00335483778 
+/ActarSim/gun/ion 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/ActarSim/gun/ion 26 56 26 0.0 55.934937475
 
@@ -220,7 +221,7 @@
 #/ActarSim/gun/Cine/incidentIon 28 78 28 0.0
 #/ActarSim/gun/Cine/targetIon 1 2 1 0.0
 #/ActarSim/gun/Cine/scatteredIon 28 79 28 0.
-#/ActarSim/gun/Cine/recoilIon 1 1 1 0.0 
+#/ActarSim/gun/Cine/recoilIon 1 1 1 0.0
 #/ActarSim/gun/Cine/reactionQ -1.5 MeV
 #/ActarSim/gun/Cine/labEnergy 624 MeV
 #/ActarSim/gun/Cine/randomTheta off
@@ -241,8 +242,8 @@
 
 #/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
-#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
-#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325
+#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
 #/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
@@ -289,7 +290,7 @@
 # create an empty scene and add the detector geometry to it
 #/vis/drawVolume
 #/vis/scene/add/axes 0 0 0 0.1 m
-/vis/scene/add/trajectories 
+/vis/scene/add/trajectories
 /vis/scene/add/hits
 #/ActarSim/event/drawTracks all
 /ActarSim/event/printModulo 10

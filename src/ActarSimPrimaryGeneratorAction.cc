@@ -79,8 +79,8 @@ ActarSimPrimaryGeneratorAction::ActarSimPrimaryGeneratorAction()
   //pReadEvGen = new ActarSimEventGenerator();
 
   reactionQ = 0.0001;   //does 0 work? (QM)
-  labEnergy = 100;      // 15MeV*numero de nucleones (EI)
-  incidentEnergy=labEnergy;
+  labEnergy = 100 *MeV;      // 15MeV*numero de nucleones (EI)
+  incidentEnergy = 10 *MeV;
   // (EN) and (ENI) are taken from the target and projectile ion definitions
   thetaLabAngle = 45 * deg;   // 45 degrees (TH)
   randomThetaMin = 0.*deg;
@@ -1053,7 +1053,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       particleGun->SetParticleEnergy(alpha_energy[i]*MeV);
     }
     else{
-      particleGun->SetParticleEnergy(GetLabEnergy());
+      particleGun->SetParticleEnergy(GetIncidentEnergy());
     }
 
     particleGun->SetParticlePosition(beamPosition);

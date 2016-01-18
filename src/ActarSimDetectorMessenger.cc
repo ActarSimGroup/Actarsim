@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 26/11/15
+//*-- Last Update: 10/01/16
 // --------------------------------------------------------------
 // Description:
 //   Messenger for the detector construction
@@ -103,8 +103,26 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   chamberSizeZCmd->SetUnitCategory("Length");
   chamberSizeZCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+  chamberCenterXCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setXCenterChamber",this);
+  chamberCenterXCmd->SetGuidance("Select the X offset of the Chamber center.");
+  chamberCenterXCmd->SetParameterName("chamberCenterX",false);
+  chamberCenterXCmd->SetUnitCategory("Length");
+  chamberCenterXCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  chamberCenterYCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setYCenterChamber",this);
+  chamberCenterYCmd->SetGuidance("Select the Y offset of the Chamber center.");
+  chamberCenterYCmd->SetParameterName("chamberCenterY",false);
+  chamberCenterYCmd->SetUnitCategory("Length");
+  chamberCenterYCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  chamberCenterZCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setZCenterChamber",this);
+  chamberCenterZCmd->SetGuidance("Select the Z offset of the Chamber center.");
+  chamberCenterZCmd->SetParameterName("chamberCenterZ",false);
+  chamberCenterZCmd->SetUnitCategory("Length");
+  chamberCenterZCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
   gasGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/gasGeoIncludedFlag",this);
-  gasGeoIncludedFlagCmd->SetGuidance("Includes the geometry of the gas volume in the simulation (default off).");
+  gasGeoIncludedFlagCmd->SetGuidance("Includes the geometry of the gas volume in the simulation (default on).");
   gasGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
   gasGeoIncludedFlagCmd->SetParameterName("choice",true);
   gasGeoIncludedFlagCmd->SetDefaultValue("off");
@@ -132,6 +150,12 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   mediumMaterialCmd->SetParameterName("mediumMat",false);
   mediumMaterialCmd->SetDefaultValue("Air");
   mediumMaterialCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  chamberMaterialCmd = new G4UIcmdWithAString("/ActarSim/det/setChamberMat",this);
+  chamberMaterialCmd->SetGuidance("Select Material in the Chamber (but not in the gas!).");
+  chamberMaterialCmd->SetParameterName("chamberMat",false);
+  chamberMaterialCmd->SetDefaultValue("Air");
+  chamberMaterialCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   eleFieldCmd = new G4UIcmdWith3Vector("/ActarSim/det/setEleField",this);
   eleFieldCmd->SetGuidance("Define electric field.");
@@ -177,10 +201,14 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete chamberSizeXCmd;
   delete chamberSizeYCmd;
   delete chamberSizeZCmd;
+  delete chamberCenterXCmd;
+  delete chamberCenterYCmd;
+  delete chamberCenterZCmd;
   delete gasGeoIncludedFlagCmd;
   delete silGeoIncludedFlagCmd;
   delete sciGeoIncludedFlagCmd;
   delete mediumMaterialCmd;
+  delete chamberMaterialCmd;
   delete eleFieldCmd;
   delete magFieldCmd;
   delete updateCmd;
@@ -221,6 +249,15 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == chamberSizeZCmd)
     ActarSimDetector->SetChamberSizeZ(chamberSizeZCmd->GetNewDoubleValue(newValue));
 
+//HAPOL NOW!!! TODO CORRECT IT! JUST TESTING
+  //if(command == chamberCenterXCmd) {
+  //  ActarSimGasDetector->chamberCenterXCmd(gasBoxSizeXCmd->GetNewDoubleValue(newValue));
+  //}
+
+
+
+
+
   if( command == gasGeoIncludedFlagCmd )
     ActarSimDetector->SetGasGeoIncludedFlag(newValue);
 
@@ -232,6 +269,9 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if(command == mediumMaterialCmd)
     ActarSimDetector->SetMediumMaterial(newValue);
+
+  if(command == chamberMaterialCmd)
+    ActarSimDetector->SetChamberMaterial(newValue);
 
   if( command == eleFieldCmd )
 		ActarSimDetector->SetEleField(eleFieldCmd->GetNew3VectorValue(newValue));

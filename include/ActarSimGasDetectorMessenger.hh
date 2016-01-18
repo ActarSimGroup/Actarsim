@@ -59,6 +59,9 @@ private:
   G4UIcmdWithADoubleAndUnit* gasBoxSizeXCmd;
   G4UIcmdWithADoubleAndUnit* gasBoxSizeYCmd;
   G4UIcmdWithADoubleAndUnit* gasBoxSizeZCmd;
+  G4UIcmdWithADoubleAndUnit* gasBoxCenterXCmd;
+  G4UIcmdWithADoubleAndUnit* gasBoxCenterYCmd;
+  G4UIcmdWithADoubleAndUnit* gasBoxCenterZCmd;
   G4UIcmdWithADoubleAndUnit* radiusGasTubCmd;
   G4UIcmdWithADoubleAndUnit* lengthGasTubCmd;
   G4UIcmdWithADoubleAndUnit* innerRadiusBeamShieldTubCmd;

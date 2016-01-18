@@ -1,6 +1,6 @@
 ################################################################
 #*-- AUTHOR : Hector Alvarez-Pol
-#*-- Date: 05/2005
+#*-- Date: 01/2016
 #*-- Last Update: 10/01/16
 #*-- Copyright: GENP (Univ. Santiago de Compostela)
 # --------------------------------------------------------------
@@ -9,17 +9,7 @@
 #   Available from the "G4file" menu in an ActarSim interactive
 #   (only for Qt) session. Please, modify values, comment and
 #   uncomment commands but do not modify the order or remove comments.
-#   ACTARTPCDEMO case: The ACTAR-TPC Demonstrator detector.
-#
-#     - 05/12/15 Add ACTARTPCDEMO Flag
-#     - 15/05/08 Multidetector geometry
-#     - 05/05/06 Updating to new ActarSim (geant4.8) code
-#     - 22/11/05 Updated including CINE options
-#     - 31/05/05 Macro for ACTAR simulation
-#
-################################################################
-# Macro file for testing online jobs
-################################################################
+#   SIMPLEBOX case: a simple box geometry.
 ################################################################
 #
 # VERBOSITY AND HISTORY CONTROL
@@ -39,30 +29,17 @@
 #   ion-LowE-ziegler2000, ion-standard
 #   standards: emstandard_opt0, emstandard_opt3, emstandard_opt4,
 #   others: ionGasModels
+#/ActarSim/phys/addPhysics standard               #Add modula physics list
+#/ActarSim/phys/addPhysics emstandard_opt0        #Add modula physics list
+/ActarSim/phys/addPhysics emstandard_opt3        #Add modula physics list
+/ActarSim/phys/addPhysics ionGasModels           #Add modula physics list
 #/ActarSim/phys/RemovePhysics                     #Remove all modula physics list
-#/ActarSim/phys/addPhysics standard              #Add modula physics list
-#/ActarSim/phys/addPhysics decay
-#/ActarSim/phys/addPhysics elastic
-#/ActarSim/phys/addPhysics binary
-#/ActarSim/phys/addPhysics binary_ion
-#/ActarSim/phys/addPhysics gamma_nuc
-#/ActarSim/phys/addPhysics lowenergy
-#/ActarSim/phys/addPhysics ion-LowE
-#/ActarSim/phys/addPhysics ion-LowE-ziegler1977
-#/ActarSim/phys/addPhysics ion-LowE-ziegler1985
-#/ActarSim/phys/addPhysics ion-LowE-ziegler2000
-#/ActarSim/phys/addPhysics ion-standard
-#/ActarSim/phys/addPhysics penelope
-#/ActarSim/phys/addPhysics emstandard_opt0
-/ActarSim/phys/addPhysics emstandard_opt3
-#/ActarSim/phys/addPhysics emstandard_opt4
-/ActarSim/phys/addPhysics ionGasModels
 #/ActarSim/phys/verbose 2                         #Set verbose level for processes
 # Cuts for the particles  (incomplete list, see README)
-#/ActarSim/phys/setGCut 0.1                    #Set gamma cut
-#/ActarSim/phys/setECut 0.1                    #Set electron cut
-#/ActarSim/phys/setPCut 0.1                    #Set positron cut
-#/ActarSim/phys/setCuts 1 mm                   #Set cut for all
+#/ActarSim/phys/setGCut 0.1 mm                    #Set gamma cut
+#/ActarSim/phys/setECut 0.1 mm                    #Set electron cut
+#/ActarSim/phys/setPCut 0.1 mm                    #Set positron cut
+#/ActarSim/phys/setCuts 1 mm                      #Set cut for all
 /ActarSim/phys/verbose 2
 # Initialization is moved here from the main allowing PhysicsList
 /run/initialize
@@ -70,10 +47,25 @@
 # DETECTOR CHARACTERIZATION
 # PRE-DEFINED DETECTORS (if any of this predefined detectors is on, most detector commands are not used)
 /ActarSim/det/MaikoGeoIncludedFlag off           #Includes the Maiko geometry in the simulation
-/ActarSim/det/ACTARTPCDEMOGeoIncludedFlag on    #Includes the ACTARTPC Demonstrator geometry in the simulation
+/ActarSim/det/ACTARTPCDEMOGeoIncludedFlag off    #Includes the ACTARTPC Demonstrator geometry in the simulation
 /ActarSim/det/ACTARTPCGeoIncludedFlag off        #Includes the ACTARTPC geometry in the simulation
+# World size (not valid if any pre-defined detector is on)
+/ActarSim/det/setWorldSizeX 2 m                  #Selects the half-length X dimension of the World.
+/ActarSim/det/setWorldSizeY 2 m                  #Selects the half-length Y dimension of the World.
+/ActarSim/det/setWorldSizeZ 2 m                  #Selects the half-length Z dimension of the World.
+# Gas Chamber and position (not valid if any pre-defined detector is on)
+/ActarSim/det/setXLengthGasChamber 60 cm         #Selects the half-length X dimension of the Gas Chamber
+/ActarSim/det/setYLengthGasChamber 40 cm         #Selects the half-length Y dimension of the Gas Chamber
+/ActarSim/det/setZLengthGasChamber 80 cm         #Selects the half-length Z dimension of the Gas Chamber
+/ActarSim/det/setXCenterChamber 0 cm             #Selects the X offset of the Chamber center.
+/ActarSim/det/setYCenterChamber 0 cm             #Selects the Y offset of the Chamber center.
+/ActarSim/det/setZCenterChamber 0 cm             #Selects the Z offset of the Chamber center.
+# Detector components
+/ActarSim/det/gasGeoIncludedFlag on              #Includes the geometry of the gas volume in the simulation
+/ActarSim/det/silGeoIncludedFlag off             #Includes the geometry of the silicons in the simulation
+/ActarSim/det/sciGeoIncludedFlag off             #Includes the geometry of the scintillator in the simulation
 # Control of the materials (options: Galactic, D2_STP, Water, ...)
-/ActarSim/det/setMediumMat D2_STP                #Selects Material outside the Chamber.
+/ActarSim/det/setMediumMat Galactic              #Selects Material outside the Chamber.
 /ActarSim/det/setChamberMat Galactic             #Selects Material in the Chamber (but not in the gas!)
 # Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0               #Defines electric field
@@ -88,8 +80,30 @@
 #/ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10   #Set a Gas Mixture for the Gas box
 #/ActarSim/det/gas/setGasMat GasMix               #Set a Gas Mixture for the Gas box
 #
-# SILICON DETECTOR (valid if /ActarSim/det/silGeoIncludedFlag on has been settled)
-/ActarSim/det/silGeoIncludedFlag on              #Includes the geometry of the silicons in the simulation
+# CHAMBER (not valid if any pre-defined detector is on)
+# MISSING!!!
+
+# Gas detector particular features (not valid if any pre-defined detector is on)
+# if box, uncomment (and if tube comment)
+/ActarSim/det/gas/setDetectorGeometry box        #Select the geometry of the detector
+/ActarSim/det/gas/setXLengthGasBox 50 cm         #Select the half-length X dimension of the Gas Box
+/ActarSim/det/gas/setYLengthGasBox 30 cm         #Select the half-length Y dimension of the Gas Box
+/ActarSim/det/gas/setZLengthGasBox 70 cm         #Select the half-length Z dimension of the Gas Box
+/ActarSim/det/gas/setXCenterGasBox 0 cm          #Select the X offset of the Gas Box center
+/ActarSim/det/gas/setYCenterGasBox 5 cm          #Select the Y offset of the Gas Box center
+/ActarSim/det/gas/setZCenterGasBox 0 cm          #Select the Z offset of the Gas Box center
+# if tube, uncomment (and if box comment)
+#/ActarSim/det/gas/setDetectorGeometry tube       #Select the geometry of the detector
+#/ActarSim/det/gas/setRadiusGasTub 10 cm          #Select the external radius of the Gas Tube
+#/ActarSim/det/gas/setLengthGasTub 30 cm          #Select the half-length of the Gas Tube
+# Beam shield? tube or off are the only possible options
+/ActarSim/det/gas/setBeamShield off              #Sets a beam shield and selects the geometry
+/ActarSim/det/gas/setBeamShieldMat Air           #Select Material of the beam shield.
+/ActarSim/det/gas/setInnerRadiusBeamShieldTub 1 cm  #Select the external radius of the Gas Tube.
+# Printing the final status on the screen
+/ActarSim/det/gas/print                          #Prints gas detector geometry.
+#
+# SILICON DETECTOR (valid if /ActarSim/det/silGeoIncludedFlag on has been settled before)
 #Options for Silicon and scintillator coverage:
 # 6 bits to indicate which sci wall is present (1) or absent (0)
 # order is:
@@ -106,14 +120,12 @@
 /ActarSim/det/sil/zBoxHalfLength 46.8 mm         #Sets the z half length of the silicon detectors box
 /ActarSim/det/sil/print                          #Prints geometry
 #
-# SCINTILLATOR DETECTOR (valid if /ActarSim/det/sciGeoIncludedFlag on has been settled)
-/ActarSim/det/sciGeoIncludedFlag off
-# see above explanation in the equivalent command for the Silicons
-#/ActarSim/det/sci/sideCoverage 25               #Selects the silicon coverage (default 1). See above explanation for the Silicons
-#/ActarSim/det/sci/xBoxHalfLength 150. mm        #Sets the x half length of the scintillator detectors box
-#/ActarSim/det/sci/yBoxHalfLength 150. mm        #Sets the y half length of the scintillator detectors box
-#/ActarSim/det/sci/zBoxHalfLength 150. mm        #Sets the z half length of the scintillator detectors box
-#/ActarSim/det/sci/print                         #Prints geometry
+# SCINTILLATOR DETECTOR (valid if /ActarSim/det/sciGeoIncludedFlag on has been settled before)
+/ActarSim/det/sci/sideCoverage 25                #Selects the silicon coverage (default 1). See above explanation for the Silicons
+/ActarSim/det/sci/xBoxHalfLength 150. mm         #Sets the x half length of the scintillator detectors box
+/ActarSim/det/sci/yBoxHalfLength 150. mm         #Sets the y half length of the scintillator detectors box
+/ActarSim/det/sci/zBoxHalfLength 150. mm         #Sets the z half length of the scintillator detectors box
+/ActarSim/det/sci/print                          #Prints geometry
 #
 # Update is MANDATORY after any material, field or detector change
 /ActarSim/det/update                             #Updates geometry
@@ -128,7 +140,7 @@
 /ActarSim/analControl/storeHistograms off        #Stores histograms in the output Tree
 /ActarSim/analControl/storeSimpleTracks off      #Stores the simple tracks in the output Tree
 #/ActarSim/analControl/setMinStrideLength 0.1     #Specifies the minimum length of the strides in the simpleTracks
-#/ActarSim/phys/stepMax 1000000.                  #Set max allowed step length for the default region
+#/ActarSim/phys/stepMax 1000000. mm               #Set max allowed step length for the default region
 #
 # Control of the primary events
 #For all cases the possibility to have realistic beam distribution
@@ -145,21 +157,19 @@
 /ActarSim/gun/alphaSource off                    #CHECK THIS COMMAND!! TODO
 #
 # A) Track a particle or set of particles defined from the Particles list
-#
 #/ActarSim/gun/List                               #List available particles.
-#/ActarSim/gun/particle proton                    #Select the incident particle
+/ActarSim/gun/particle alpha                      #Select the incident particle
 #if you want to use an ion, write "ion" in the previous command
 #and set the Z, A and charge state in the next...
-#/ActarSim/gun/ion 1 1 1 0.0 1.00782503207       #example
-#/ActarSim/gun/ion 2 4 2 0.0 4.00260325415
-#/ActarSim/gun/ion 6 12 6 0.0 12.
-#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778
+#/ActarSim/gun/ion 2 4 2 0.0 4.00260325415         #example for 4He
+#/ActarSim/gun/ion 6 12 6 0.0 12.                  #example for 12C
+#/ActarSim/gun/ion 6 13 6 0.0 13.00335483778       #example for 13C
 #/ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/ActarSim/gun/ion 26 56 26 0.0 55.934937475
-#/ActarSim/gun/energy 11. MeV                   #Sets the kinetic energy of the primary particle
-#/ActarSim/gun/position 0 0 0                   #Set starting position of the particle
-#/ActarSim/gun/direction 0 0 1                  #Set momentum direction. Direction does not need to be a unit vector
-#Set starting position of the particle
+/ActarSim/gun/energy 1. MeV                    #Sets the kinetic energy of the primary particle
+#/ActarSim/gun/position 0 0 0                    #Set starting position of the particle
+#/ActarSim/gun/direction 0 0 1                   #Set momentum direction. Direction does not need to be a unit vector
+#/ActarSim/gun/time 0                            #Set starting position of the particle
 #/ActarSim/gun/polarization 0 0 0                #Set polarization
 #/ActarSim/gun/number 1                          #Set number of particles to be generated in a single event
 /ActarSim/gun/randomVertexZPosition off         #Randomize the reaction vertex Z position
@@ -168,10 +178,13 @@
 #
 # B) Track a predefined reaction from a file, or predefined cross sections:
 # DO NOT USE ANY OF THESE OPTIONS AT THE MOMENT
-/ActarSim/gun/reactionFromFile off
+#/ActarSim/gun/reactionFromFile off               #Select a reaction from an input file
+#/ActarSim/gun/reactionFile He8onC12Elastic.dat   #Select the reaction definition file
+#/ActarSim/gun/reactionFromCrossSection off       #Simulates beam/target from the cross-sections
+#/ActarSim/gun/reactionFromEvGen off              #Simulates beam/target from event generator
 #
 #C) Track a reacion calculated from CINE. Disable/enable it with the first command
-/ActarSim/gun/reactionFromCine off
+/ActarSim/gun/reactionFromCine off               #Select a reaction using Cine
 /ActarSim/gun/Cine/randomTheta on                #Select a random Theta angle for the scattered particle
 /ActarSim/gun/Cine/randomThetaVal 0 180          #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
 /ActarSim/gun/Cine/incidentIon 26 56 26 0.0      #Set properties of incident ion to be generated.

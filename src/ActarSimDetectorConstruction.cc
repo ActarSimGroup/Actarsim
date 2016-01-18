@@ -56,7 +56,7 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
       worldPhys(0), chamberPhys(0), AlplatePhys(0), DiamondPhys(0), SupportPhys(0),
       mediumMaterial(0), defaultMaterial(0), chamberMaterial(0), windowMaterial(0),
       emField(0), MaikoGeoIncludedFlag("off"), ACTARTPCGeoIncludedFlag("off"),
-      gasGeoIncludedFlag("off"), silGeoIncludedFlag("off"), sciGeoIncludedFlag("off"),
+      gasGeoIncludedFlag("on"), silGeoIncludedFlag("off"), sciGeoIncludedFlag("off"),
       gasDet(0), silDet(0),silRingDet(0), sciDet(0), sciRingDet(0), plaDet(0){
   //
   // Constructor
@@ -152,10 +152,10 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   //World will be a 1 m^3 box, but in Maiko where it is a 12 m^3 box
 
   if(ACTARTPCDEMOGeoIncludedFlag == "on"){
-    //Harcoded geometry for the ACTAR TPC Demonstrator (8 m^3 box)
-    SetWorldSizeX(1.*m);
-    SetWorldSizeY(1.*m);
-    SetWorldSizeZ(1.*m);
+    //Harcoded geometry for the ACTAR TPC Demonstrator (27 m^3 box)
+    SetWorldSizeX(1.5*m);
+    SetWorldSizeY(1.5*m);
+    SetWorldSizeZ(1.5*m);
   }
   else if(ACTARTPCGeoIncludedFlag == "on"){
     //Harcoded geometry for the ACTAR TPC (27 m^3 box)... Still to be defined!!!!
@@ -185,7 +185,6 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 				false,                 //no boolean operation
 				0);                    //copy number
 
-  G4VPhysicalVolume* chamberPhys;
 
   if( ACTARTPCDEMOGeoIncludedFlag == "on") {
     //Definition of the ACTAR-TPC Demonstrator
@@ -198,7 +197,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     //Chamber X,Y,Z Center
     chamberCenterX = 0.*m;
     chamberCenterY = 0.*m; //chamberSizeY-4.54*mm;   //OLD chamberSizeY-(yGasBoxPosition+yPadSize
-    chamberCenterZ = 0.;                      //OLD zGasBoxPosition
+    chamberCenterZ = 0.*m;                      //OLD zGasBoxPosition
   }
 
   G4Box* solidChamber = new G4Box("Chamber",         //its name
@@ -208,7 +207,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 						    chamberMaterial,
 						    "Chamber");            //its name
 
-  chamberPhys = new G4PVPlacement(0,                     //no rotation
+  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
                                   G4ThreeVector(chamberCenterX,
 						                      chamberCenterY,
 					                        chamberCenterZ),
@@ -220,7 +219,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
   if(chamberPhys){;}
 
-  if( MaikoGeoIncludedFlag == "on"){
+  if(MaikoGeoIncludedFlag == "on"){
     //--------------------------
     // Beam exit Window in Chamber
     //--------------------------
@@ -301,9 +300,9 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     SupportLog=new G4LogicalVolume(SupportBox,G4Material::GetMaterial("Lead"),"SupportLog");
 
     //TO BE IMPROVED: should take the pad x syze from a variable, will do it later
-    SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,-15,64+6.575),
+    SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,0,64+6.575),
     				SupportLog,"Support",chamberLog,false,0);
-    SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,-15,64+6.575),
+    SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,0,64+6.575),
     				SupportLog,"Support",chamberLog,false,1);
 
     G4VisAttributes* SupportVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
@@ -312,10 +311,10 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
     SupportLog=new G4LogicalVolume(SupportBox2,G4Material::GetMaterial("Lead"),"SupportLog");
 
-    SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,-15,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
     				SupportLog,"Support",chamberLog,false,2);
 
-    SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,-15,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
     				SupportLog,"Support",chamberLog,false,2);
 
     SupportVisAtt->SetVisibility(true);
@@ -335,25 +334,6 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     G4VisAttributes* DiamondVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
     DiamondVisAtt->SetVisibility(true);
     DiamondLog->SetVisAttributes(DiamondVisAtt);
-
-    //An aluminium plate to see the Pads active area
-    G4double plateSizeX = 32*mm;
-    G4double plateSizeY = 4.54/2*mm;
-    G4double plateSizeZ = 64*mm;
-
-    G4Box *Alplate=new G4Box("Al_plate",plateSizeX,plateSizeY,plateSizeZ);
-    AlplateLog=new G4LogicalVolume(Alplate,G4Material::GetMaterial("Aluminum"),"Al_plate");
-
-    G4double platePosX = 0*cm;
-    G4double platePosY = -chamberSizeY+plateSizeY;
-    G4double platePosZ = 0*cm;
-
-    AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
-    				AlplateLog,"Al_plate",chamberLog,false,0);
-
-    G4VisAttributes* plateVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
-    plateVisAtt->SetVisibility(true);
-    AlplateLog->SetVisAttributes(plateVisAtt);
   }
 
   //--------------------------
@@ -361,6 +341,29 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   //--------------------------
   if(gasGeoIncludedFlag=="on")
     gasDet->Construct(chamberLog);
+
+  if( ACTARTPCDEMOGeoIncludedFlag == "on") {
+    //An aluminium plate to see the Pads active area just below the gas volume
+    G4double plateSizeX = 32.*mm;
+    G4double plateSizeY = 4.54/2*mm;
+    G4double plateSizeZ = 64.*mm;
+
+    G4Box *Alplate=new G4Box("Al_plate",plateSizeX,plateSizeY,plateSizeZ);
+    AlplateLog=new G4LogicalVolume(Alplate,G4Material::GetMaterial("Aluminum"),"Al_plate");
+
+    G4double platePosX = 0.*cm;
+    //G4double platePosY = 0.*cm;
+    G4double platePosY = -gasDet->GetGasBoxSizeY() +2* plateSizeY;
+    G4double platePosZ = 0.*cm;
+
+    //HAPOL TODO WHY IS IT NOT WORKING
+    //AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
+    //        AlplateLog,"Al_plate",chamberLog,false,0);
+
+    G4VisAttributes* plateVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
+    plateVisAtt->SetVisibility(true);
+    AlplateLog->SetVisAttributes(plateVisAtt);
+  }
 
   //--------------------------
   // Sil volume

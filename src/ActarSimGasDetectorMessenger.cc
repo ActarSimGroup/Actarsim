@@ -106,6 +106,24 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   gasBoxSizeZCmd->SetUnitCategory("Length");
   gasBoxSizeZCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+  gasBoxCenterXCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setXCenterGasBox",this);
+  gasBoxCenterXCmd->SetGuidance("Select the X offset of the Gas Box center.");
+  gasBoxCenterXCmd->SetParameterName("gasBoxCenterX",false);
+  gasBoxCenterXCmd->SetUnitCategory("Length");
+  gasBoxCenterXCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  gasBoxCenterYCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setYCenterGasBox",this);
+  gasBoxCenterYCmd->SetGuidance("Select the Y offset of the Gas Box center.");
+  gasBoxCenterYCmd->SetParameterName("gasBoxCenterY",false);
+  gasBoxCenterYCmd->SetUnitCategory("Length");
+  gasBoxCenterYCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  gasBoxCenterZCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setZCenterGasBox",this);
+  gasBoxCenterZCmd->SetGuidance("Select the Z offset of the Gas Box center.");
+  gasBoxCenterZCmd->SetParameterName("gasBoxCenterZ",false);
+  gasBoxCenterZCmd->SetUnitCategory("Length");
+  gasBoxCenterZCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
   radiusGasTubCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setRadiusGasTub",this);
   radiusGasTubCmd->SetGuidance("Select the external radius of the Gas Tube.");
   radiusGasTubCmd->SetParameterName("radiusGasTub",false);
@@ -200,6 +218,9 @@ ActarSimGasDetectorMessenger::~ActarSimGasDetectorMessenger() {
   delete gasBoxSizeXCmd;
   delete gasBoxSizeYCmd;
   delete gasBoxSizeZCmd;
+  delete gasBoxCenterXCmd;
+  delete gasBoxCenterYCmd;
+  delete gasBoxCenterZCmd;
   delete radiusGasTubCmd;
   delete lengthGasTubCmd;
   delete innerRadiusBeamShieldTubCmd;
@@ -220,7 +241,7 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
       //ActarSimGasDetector->DefineGas();
       ActarSimGasDetector->SetGasMaterial(newValue);
       //ActarSimDetector->SetChamberMaterial(newValue);
-      ActarSimDetector->UpdateGeometry();
+      //ActarSimDetector->UpdateGeometry();
       //ActarSimDetector->PrintDetectorParameters();
     }
 
@@ -254,30 +275,35 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
     ActarSimGasDetector->SetBeamShieldGeometry(newValue);
   }
 
-  if(command == gasBoxSizeXCmd)
-  {
+  if(command == gasBoxSizeXCmd) {
     ActarSimGasDetector->SetGasBoxSizeX(gasBoxSizeXCmd->GetNewDoubleValue(newValue));
   }
 
-  if(command == gasBoxSizeYCmd)  {
-    //HAPOL NOTE CHECK THIS DOUBLE COMMAND!!!!
+  if(command == gasBoxSizeYCmd) {
     ActarSimGasDetector->SetGasBoxSizeY(gasBoxSizeYCmd->GetNewDoubleValue(newValue));
-    ActarSimGasDetector->SetGasBoxCenterY(gasBoxSizeYCmd->GetNewDoubleValue(newValue));
   }
 
   if(command == gasBoxSizeZCmd)  {
-    //HAPOL NOTE CHECK THIS DOUBLE COMMAND!!!!
     ActarSimGasDetector->SetGasBoxSizeZ(gasBoxSizeZCmd->GetNewDoubleValue(newValue));
-    ActarSimGasDetector->SetGasBoxCenterZ(gasBoxSizeZCmd->GetNewDoubleValue(newValue));
   }
 
-  if(command == radiusGasTubCmd)
-  {
+  if(command == gasBoxCenterXCmd) {
+    ActarSimGasDetector->SetGasBoxCenterY(gasBoxCenterXCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == gasBoxCenterYCmd) {
+    ActarSimGasDetector->SetGasBoxCenterY(gasBoxCenterYCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == gasBoxCenterZCmd) {
+    ActarSimGasDetector->SetGasBoxCenterZ(gasBoxCenterZCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == radiusGasTubCmd) {
     ActarSimGasDetector->SetRadiusGasTub(radiusGasTubCmd->GetNewDoubleValue(newValue));
   }
 
-  if(command == lengthGasTubCmd)
-  {
+  if(command == lengthGasTubCmd) {
     ActarSimGasDetector->SetLengthGasTub(lengthGasTubCmd->GetNewDoubleValue(newValue));
   }
 

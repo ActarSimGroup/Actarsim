@@ -66,6 +66,7 @@ private:
   G4double beamRadiusAtEntrance;
   G4ThreeVector beamPosition;
   G4ParticleMomentum beamMomentumDirection;
+  G4bool  beamDirectionFlag;      // flag for a beam direction defined by angles (0) or vector (1)
 
   G4double lengthParameter;       //parameter coming from the geometry selection
   G4double  randomThetaMin;       // min random theta angle in CINE
@@ -136,8 +137,8 @@ public:
 // ---------------------------------------------------- corresponding Kine part, dypang 080228
 
   void SetReactionFromKineFlag(G4String val) { reactionFromKineFlag = val;}
-  void SetThetaCMAngle(G4double val){thetaCMAngle=val;}
-  void SetUserPhiAngle(G4double val){userPhiAngle=val;}
+  void SetThetaCMAngle(G4double val){thetaCMAngle=val; beamDirectionFlag=0;}
+  void SetUserPhiAngle(G4double val){userPhiAngle=val; beamDirectionFlag=0;}
   G4double GetThetaCMAngle(){return thetaCMAngle;}
   G4double GetUserPhiAngle(){return userPhiAngle;}
 
@@ -238,7 +239,7 @@ public:
      { particleGun->SetNumberOfParticles(i); }
 
    void SetBeamMomentumDirection(G4ParticleMomentum aMomentumDirection)
-     { beamMomentumDirection=aMomentumDirection;}
+     { beamMomentumDirection=aMomentumDirection; beamDirectionFlag=1;}
    void SetBeamPosition(G4ThreeVector aPos)
      { beamPosition=aPos;}
 

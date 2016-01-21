@@ -191,7 +191,7 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   gasMixtureCmd->SetParameter(gasMixtureParam);
   gasMixtureParam = new G4UIparameter("GasMat",'s',false);
   gasMixtureParam->SetDefaultValue("D2");
-  gasMixtureParam->SetParameterCandidates("H2 D2 He Ar CF4 iC4H10");
+  gasMixtureParam->SetParameterCandidates("H2 D2 He Ar CF4 CH4 iC4H10");
   gasMixtureCmd->SetParameter(gasMixtureParam);
   gasMixtureParam = new G4UIparameter("GasRatio",'d',false);
   gasMixtureParam->SetDefaultValue("0");
@@ -258,6 +258,11 @@ void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
   if(command == gasTempCmd)
   {
     ActarSimGasDetector->SetGasTemperature(gasTempCmd->GetNewDoubleValue(newValue));
+  }
+
+  if(command == gasPresCmd)
+  {
+    ActarSimGasDetector->SetGasPressure(gasPresCmd->GetNewDoubleValue(newValue));
   }
 
   if(command == beamShieldMaterCmd)

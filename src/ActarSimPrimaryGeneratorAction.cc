@@ -86,6 +86,8 @@ ActarSimPrimaryGeneratorAction::ActarSimPrimaryGeneratorAction()
   randomThetaMin = 0.*deg;
   randomThetaMax = 180.*deg;
 
+  beamDirectionFlag = 1; // 0 : direction given by angles, 1 : direction given by vector
+
   //additional initial values for some variables
   SetBeamMomentumDirection(G4ThreeVector(0.0,0.0,1.0));
 }
@@ -1059,8 +1061,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     particleGun->SetParticlePosition(beamPosition);
 
     //Particle momentum
-    if(randomThetaFlag == "on" || randomPhiFlag == "on") particleGun->SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );
-    else particleGun->SetParticleMomentumDirection(beamMomentumDirection);
+    if(randomThetaFlag == "on" || randomPhiFlag == "on" || !beamDirectionFlag) particleGun->SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );
+    else if(beamDirectionFlag) particleGun->SetParticleMomentumDirection(beamMomentumDirection);
 
     particleGun->GeneratePrimaryVertex(anEvent);
   }

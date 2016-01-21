@@ -311,6 +311,14 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   CF4->AddElement(ele_C, natoms=1);
   CF4->AddElement(ele_F, natoms=4);
 
+  //Methane (default  0.66697*mg/cm3 STP)
+  //density = (0.6669*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
+  density	= ((12.0107+4*1.00794)/Vm)*mg/cm3;
+  G4Material* CH4 =
+    new G4Material("CH4", density, ncomponents=2, kStateGas, temperature, pressure) ;
+  CH4->AddElement(ele_C,1);
+  CH4->AddElement(ele_H,4);
+
   //Isobutane (default  2.41464*mg/cm3 STP)
   //density = (2.41464*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
   density	= ((4*12.0107+10*1.00794)/Vm)*mg/cm3;
@@ -339,6 +347,10 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
     gasMaterial = CF4;
     detConstruction->SetUpdateChamberMaterial(CF4);
   }
+  else if(mat=="CH4"){
+    gasMaterial = CH4; 
+    detConstruction->SetUpdateChamberMaterial(CH4);
+  }
   else if(mat=="iC4H10"){
     gasMaterial = iC4H10;
     detConstruction->SetUpdateChamberMaterial(iC4H10);
@@ -359,6 +371,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
       else if(gasMixMaterial[i]=="He")pttoMaterial[i]=He;
       else if(gasMixMaterial[i]=="Ar")pttoMaterial[i]=Ar;
       else if(gasMixMaterial[i]=="CF4")pttoMaterial[i]=CF4;
+      else if(gasMixMaterial[i]=="CH4")pttoMaterial[i]=CH4;
       else if(gasMixMaterial[i]=="iC4H10")pttoMaterial[i]=iC4H10;
 
       density+= ((gasMixRatio[i]*pttoMaterial[i]->GetDensity()));

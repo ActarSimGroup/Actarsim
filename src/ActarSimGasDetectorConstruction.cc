@@ -125,7 +125,8 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
       //centered in (0,0,gasBoxSizeZ) to have origin in the detector entrance
       //Pad Size : GasBox height from chamber floor = 4.54mm
       gasBoxCenterX = 0.*mm;
-      gasBoxCenterY = 0.*mm; //-105.0+gasBoxSizeY+4.54*mm; //OLD -chamberSizeY+yGasBox+padSizeY
+      //gasBoxCenterY = 0.*mm; //-105.0+gasBoxSizeY+4.54*mm; //OLD -chamberSizeY+yGasBox+padSizeY
+      gasBoxCenterY = -105.0+gasBoxSizeY+4.54*mm; //Piotr : gasBox shifted to be at the bottom of chamber and above the pads
       gasBoxCenterZ = 0.*mm;
     }
     else {

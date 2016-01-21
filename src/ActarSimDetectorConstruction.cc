@@ -164,7 +164,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     SetWorldSizeZ(1.5*m);
   }
   else if( MaikoGeoIncludedFlag == "on") {
-    //Harcoded geometry for the MAIKO detector (216 m^3 box!)
+    //Hard coded geometry for the MAIKO detector (216 m^3 box!)
     SetWorldSizeX(6.0*m);
     SetWorldSizeY(6.0*m);
     SetWorldSizeZ(6.0*m);
@@ -197,6 +197,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     //Chamber X,Y,Z Center
     chamberCenterX = 0.*m;
     chamberCenterY = 0.*m; //chamberSizeY-4.54*mm;   //OLD chamberSizeY-(yGasBoxPosition+yPadSize
+    //chamberCenterY = 105.*mm-85.*mm-4.54*mm;  //So Y centered with GasBox
     chamberCenterZ = 0.*m;                      //OLD zGasBoxPosition
   }
 
@@ -291,6 +292,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     G4double Support_x = 8.*mm;
     G4double Support_x2 = 6.4*mm;
     G4double Support_y = 85.*mm;
+    //G4double Support_y = 89.54*mm;
     G4double Support_z = 1.6*mm;
 
     G4Box* SupportBox = new G4Box("SupportBox", Support_x, Support_y, Support_z);
@@ -300,9 +302,11 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     SupportLog=new G4LogicalVolume(SupportBox,G4Material::GetMaterial("Lead"),"SupportLog");
 
     //TO BE IMPROVED: should take the pad x syze from a variable, will do it later
-    SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,0,64+6.575),
+    //SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,0,64+6.575),
+    SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,-105+85+4.54,64+6.575),
     				SupportLog,"Support",chamberLog,false,0);
-    SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,0,64+6.575),
+    //SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,0,64+6.575),
+    SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,-105+85+4.54,64+6.575),
     				SupportLog,"Support",chamberLog,false,1);
 
     G4VisAttributes* SupportVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
@@ -311,10 +315,12 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 
     SupportLog=new G4LogicalVolume(SupportBox2,G4Material::GetMaterial("Lead"),"SupportLog");
 
-    SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    //SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,-105+85+4.54,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
     				SupportLog,"Support",chamberLog,false,2);
 
-    SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    //SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,-105+85+4.54,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
     				SupportLog,"Support",chamberLog,false,2);
 
     SupportVisAtt->SetVisibility(true);
@@ -352,13 +358,12 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     AlplateLog=new G4LogicalVolume(Alplate,G4Material::GetMaterial("Aluminum"),"Al_plate");
 
     G4double platePosX = 0.*cm;
-    //G4double platePosY = 0.*cm;
-    G4double platePosY = -gasDet->GetGasBoxSizeY() +2* plateSizeY;
+    //G4double platePosY = -gasDet->GetGasBoxSizeY() +2* plateSizeY;
+    G4double platePosY =-chamberSizeY + plateSizeY;
     G4double platePosZ = 0.*cm;
 
-    //HAPOL TODO WHY IS IT NOT WORKING
-    //AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
-    //        AlplateLog,"Al_plate",chamberLog,false,0);
+    AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
+            AlplateLog,"Al_plate",chamberLog,false,0);
 
     G4VisAttributes* plateVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
     plateVisAtt->SetVisibility(true);

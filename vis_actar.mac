@@ -24,10 +24,10 @@
 #
 # VERBOSITY AND HISTORY CONTROL
 # verbosity levels and saveHistory (commands that do not belong to ACTARSIM)
-/control/verbose 2
-/run/verbose 2
-/event/verbose 2
-/tracking/verbose 2
+/control/verbose 1
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
 /control/saveHistory
 #
 # MODULAR PHYSICS CONTROL
@@ -56,7 +56,7 @@
 #/ActarSim/phys/addPhysics emstandard_opt0
 /ActarSim/phys/addPhysics emstandard_opt3
 #/ActarSim/phys/addPhysics emstandard_opt4
-/ActarSim/phys/addPhysics ionGasModels
+#/ActarSim/phys/addPhysics ionGasModels
 #/ActarSim/phys/verbose 2                         #Set verbose level for processes
 # Cuts for the particles  (incomplete list, see README)
 #/ActarSim/phys/setGCut 0.1                    #Set gamma cut
@@ -137,7 +137,7 @@
 #/ActarSim/gun/emittance 200.0                   #Selects the value of the emittance [in mm mrad]
 #/ActarSim/gun/beamRadiusAtEntrance 18. mm        #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
 /ActarSim/gun/beamDirection 0 0 1                #Set beam momentum direction
-/ActarSim/gun/beamPosition 0 0 -120 cm           #Set beam starting position
+/ActarSim/gun/beamPosition 0 0 -64 mm           #Set beam starting position
 /ActarSim/gun/randomTheta off                    #Select a random Theta angle for the scattered particle
 /ActarSim/gun/randomThetaVal 0 180              #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
 /ActarSim/gun/randomPhi off                        #Select a random Phi angle for the scattered particle

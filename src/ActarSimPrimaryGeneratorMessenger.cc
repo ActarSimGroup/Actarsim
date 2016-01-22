@@ -527,7 +527,7 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   energyCmd->SetParameterName("energy",false);
   energyCmd->SetRange("energy>=0.");
   energyCmd->SetUnitCategory("Energy");
-  energyCmd->SetDefaultValue(20.);
+  energyCmd->SetDefaultValue(1.);
   energyCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   directionCmd = new G4UIcmdWith3Vector("/ActarSim/gun/direction",this);
@@ -872,8 +872,10 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     actarSimActionGun->
       SetThetaLabAngle(thetaLabAngleCmd->GetNewDoubleValue(newValues));
 
-  if( command == energyCmd )
-    actarSimActionGun->SetParticleEnergy(energyCmd->GetNewDoubleValue(newValues));
+  if( command == energyCmd ){
+    actarSimActionGun->SetParticleEnergy(energyCmd->GetNewDoubleValue(newValues));//Piotr: Doesn't set the energy when modify
+    actarSimActionGun->SetIncidentEnergy(energyCmd->GetNewDoubleValue(newValues));
+  }
 
   if( command==directionCmd )
     actarSimActionGun->SetParticleMomentumDirection(directionCmd->GetNew3VectorValue(newValues));
@@ -949,7 +951,7 @@ void ActarSimPrimaryGeneratorMessenger::IonCommand(G4String newValues) {
   //
   // Particular behavior of the ion command. Ion state should be selected.
   //
-  if (fShootIon) {
+  //if (fShootIon) {
     G4Tokenizer next( newValues );
     // check argument
     fAtomicNumber = StoI(next());
@@ -980,7 +982,7 @@ void ActarSimPrimaryGeneratorMessenger::IonCommand(G4String newValues) {
     } else {
       actarSimActionGun->SetParticleDefinition(ion);
       actarSimActionGun->SetParticleCharge(fIonCharge*eplus);
-    }
+    }/*
   } else {
     G4cout << "##################################################################"
 	   << G4endl
@@ -988,7 +990,7 @@ void ActarSimPrimaryGeneratorMessenger::IonCommand(G4String newValues) {
 	   << "Set /gun/particle to ion before using /gun/ion command" << G4endl;
     G4cout << "##################################################################"
 	   << G4endl;
-  }
+	   }*/
 }
 
 void ActarSimPrimaryGeneratorMessenger::incidentIonCommand(G4String newValues){

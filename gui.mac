@@ -42,13 +42,14 @@
 
 # Gun menu :
 /gui/addMenu gun Gun
-/gui/addButton gun "beam" /ActarSim/gun/ion
+/gui/addButton gun "Beam (particle)" /ActarSim/gun/particle 
+/gui/addButton gun "Beam (ion)" /ActarSim/gun/ion
 #/gui/addButton gun "proton" /ActarSim/gun/ion 1 1 1 0.0 1.00782503207
 #/gui/addButton gun "alpha" /ActarSim/gun/ion 2 4 2 0.0 4.00260325415
 #/gui/addButton gun "Carbon12" /ActarSim/gun/ion 6 12 6 0.0 12.
 #/gui/addButton gun "Mg24" /ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/gui/addButton gun "Fe56" /ActarSim/gun/ion 26 56 26 0.0 55.934937475
-/gui/addButton gun "Energy" /ActarSim/gun/Kine/labEnergy
+/gui/addButton gun "Energy" /ActarSim/gun/energy
 #/gui/addButton gun "5 MeV" /ActarSim/gun/Kine/labEnergy 5 MeV
 #/gui/addButton gun "50 MeV" /ActarSim/gun/Kine/labEnergy 50 MeV
 #/gui/addButton gun "100 MeV" /ActarSim/gun/Kine/labEnergy 100 MeV

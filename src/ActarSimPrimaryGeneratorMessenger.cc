@@ -842,6 +842,7 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     G4double incidentEnergyTmp;
     incidentEnergyTmp=KineLabEnergyCmd->GetNewDoubleValue(newValues);
     actarSimActionGun->SetLabEnergy(incidentEnergyTmp);
+    actarSimActionGun->SetIncidentEnergy(incidentEnergyTmp);//Piotr: why do we have incident energy and lab energy?
   }
 
   if( command == KineUserThetaCMCmd )

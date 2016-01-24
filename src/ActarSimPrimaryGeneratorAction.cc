@@ -67,12 +67,12 @@ ActarSimPrimaryGeneratorAction::ActarSimPrimaryGeneratorAction()
   G4ParticleDefinition* pd = particleTable->FindParticle("proton");
   if(pd != 0)
     particleGun->SetParticleDefinition(pd);
-  particleGun->SetParticlePosition(zero);
-  particleGun->SetParticleTime(0.0);
-  particleGun->SetParticlePolarization(zero);
-  particleGun->SetParticleCharge(1.0);
-  particleGun->SetParticleMomentumDirection(G4ThreeVector(0.0,0.0,1.0));
-  particleGun->SetParticleEnergy(1*MeV);
+    particleGun->SetParticlePosition(zero);
+    particleGun->SetParticleTime(0.0);
+    particleGun->SetParticlePolarization(zero);
+    particleGun->SetParticleCharge(1.0);
+    particleGun->SetParticleMomentumDirection(G4ThreeVector(0.0,0.0,1.0));
+    particleGun->SetParticleEnergy(1*MeV);
 
   //NOTE: FOR THE MOMENT THIS IS NOT ACCESIBLE. REVIEW IN THE FUTURE
   //create a pointer that gives access to the tabulated xs
@@ -140,7 +140,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   //
   if(beamInteractionFlag == "on"){
     // The beam is described by the (G4Ions*) incidentIon (or incident particles)
-    // and it is tracked in the gas in the even events (beggining at zero, 0,2,4, ...)
+    // and it is tracked in the gas in the even events (begining at zero, 0,2,4, ...)
     // while in the odd events (1,3,5, ...) the reaction products are tracked,
     // (CINE, KINE, from file, one output particle, ...) using some parameters
     // (vertex position, remaining beam ion energy, ...) obtained in the beam tracking.
@@ -262,9 +262,9 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       } //end of if(realisticBeamFlag == "on")
       else{ // simplest case: beam at (0,0,0) with direction along Z
 	      particleGun->SetParticlePosition(beamPosition);
-        particleGun->SetParticleMomentumDirection(beamMomentumDirection);
-        pBeamInfo->SetPositionEntrance(beamPosition.x(),beamPosition.y(),beamPosition.z());
-        pBeamInfo->SetAnglesEntrance(0.,0.);
+	      particleGun->SetParticleMomentumDirection(beamMomentumDirection);
+	      pBeamInfo->SetPositionEntrance(beamPosition.x(),beamPosition.y(),beamPosition.z());
+	      pBeamInfo->SetAnglesEntrance(0.,0.);
       }
       particleGun->SetParticleTime(0.0);
       particleGun->SetParticlePolarization(zero);
@@ -292,13 +292,14 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //Vertexcoordinates (vertex_x0,vertex_y0,vertex_z0) with angles (thetaAtEntrance, phiAtEntrance)
     G4double vertex_x0 = radiusAtEntrance*cos(phi2AtEntrance)+beamPosition.x();
     G4double vertex_y0 = radiusAtEntrance*sin(phi2AtEntrance)+beamPosition.y();
-    G4double vertex_z0;
+    G4double vertex_z0 = 0.;
 
     if(randomVertexZPositionFlag=="on"){
       vertex_z0 = randomVertexZPositionMin+ G4UniformRand()*(randomVertexZPositionMax-randomVertexZPositionMin);
     }
     else{
-      vertex_z0 = G4UniformRand()*(2.* lengthParameter);
+      //vertex_z0 = G4UniformRand()*(2.* lengthParameter);
+      vertex_z0 = -lengthParameter + G4UniformRand()*lengthParameter;//If Z origin is at the center of GasBox
     }
 
     if(verboseLevel>0){

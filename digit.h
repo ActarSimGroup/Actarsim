@@ -100,7 +100,7 @@
 
 using namespace std;
 
-Int_t DIGI_DEBUG=1; //A global DEBUG variable:
+Int_t DIGI_DEBUG=0; //A global DEBUG variable:
                     //0 absolutly no output (quiet)
                     //1 minimum output when trouble, status or warnings
                     //2 tracking the functions behavior
@@ -370,6 +370,19 @@ class padsGeometry{
     if(DIGI_DEBUG>3) cout << "Exits padsGeometry::SetGeometryValues()" << endl;
   }
 
+  void SetGeometryValues(TString DetectorConfig){
+
+    if(DetectorConfig=="ActarTPCDemo"){
+      geoType=0;  padType=0; padLayout=0;
+      radius=0.; padSize=2.;
+      xLength = 37.; yLength = 85.; zLength = 69.;
+      sideBlankSpaceX=5.; sideBlankSpaceZ=5.;
+    }
+
+    SetPadsGeometry();
+    if(DIGI_DEBUG>3) cout << "Exits padsGeometry::SetGeometryValues()" << endl;
+  }
+
   void SetNumberOfColumns(Int_t col){numberOfColumns=col;}
   void SetNumberOfRows(Int_t row){numberOfRows=row;}
   void SetNumberOfPads(Int_t pad){numberOfPads=pad;}
@@ -580,7 +593,8 @@ Int_t padsGeometry::IsInPadNumber(TVector3* point){
   Int_t column; Int_t row;
   if(geoType == 0 && padType == 0) { //box and square pad
     row = (Int_t) (((point->X() - sideBlankSpaceX + xLength)/ padSize) + 1);
-    column = (Int_t) (((point->Z() - sideBlankSpaceZ)/ padSize)+1);
+    //column = (Int_t) (((point->Z() - sideBlankSpaceZ)/ padSize)+1);
+    column = (Int_t) (((point->Z() - sideBlankSpaceZ + zLength)/ padSize)+1);//Piotr : Now that origin is at the middle of the GasBox
     if(column > 0 && column < numberOfColumns+1
        && row > 0 && row < numberOfRows+1) {
       if(DIGI_DEBUG>2)
@@ -593,12 +607,14 @@ Int_t padsGeometry::IsInPadNumber(TVector3* point){
       if(DIGI_DEBUG)
 	cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
 	     << " Invalid pad returned from requested point "
+	     << " sideBlankSpaceZ "<<sideBlankSpaceZ <<" Pad (" << row << "," << column << ") for point "
 	     << point->X() << ","<< point->Y() << ","<< point->Z()<< endl;
       return 0;
     }
   }
   else if(geoType == 0 && padType == 1 && padLayout == 0){ //box and hexagonal pad and MAYA-type layout
-    if(point->X()< -xLength || point->X()>xLength || point->Z()< 0 || point->Z()>2*zLength) {
+    //if(point->X()< -xLength || point->X()>xLength || point->Z()< 0 || point->Z()>2*zLength) {
+    if(point->X()< -xLength || point->X()>xLength || point->Z()< -zLength || point->Z()>zLength) {//Piotr : Now that origin is at the middle of the GasBox
       if(DIGI_DEBUG)
         cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
 	     << " Invalid pad returned from requested point "
@@ -628,7 +644,8 @@ Int_t padsGeometry::IsInPadNumber(TVector3* point){
     return candidate;
   }
   else if(geoType == 0 && padType == 1 && padLayout == 1){ //box and hexagonal pad
-    if(point->X()< -xLength || point->X()>xLength || point->Z()< 0 || point->Z()>2*zLength) {
+    //if(point->X()< -xLength || point->X()>xLength || point->Z()< 0 || point->Z()>2*zLength) {
+    if(point->X()< -xLength || point->X()>xLength || point->Z()< -zLength || point->Z()>zLength) {//Piotr : Now that origin is at the middle of the GasBox
       if(DIGI_DEBUG)
 	cout << "ERROR: in padsGeometry::IsInPadNumber()" << endl
 	     << " Invalid pad returned from requested point "
@@ -636,7 +653,8 @@ Int_t padsGeometry::IsInPadNumber(TVector3* point){
       return 0;
     }
     row = (Int_t) (((point->X() + xLength)/ (2*rHexagon)) + 1);
-    column = (Int_t) (((point->Z()-sideBlankSpaceZ)/(1.5*padSize))+1);
+    //column = (Int_t) (((point->Z()-sideBlankSpaceZ)/(1.5*padSize))+1);
+    column = (Int_t) (((point->Z() - sideBlankSpaceZ + xLength)/(1.5*padSize))+1);//Piotr : Now that origin is at the middle of the GasBox
     Double_t shorterDist = padSize; Int_t candidate=0; point->SetY(-yLength);
     for(Int_t i=0;i<2;i++){   //checking if it is on the next row
       for(Int_t j=-1;j<1;j++){   //checking if it is on the previous column
@@ -720,7 +738,8 @@ Int_t padsGeometry::GetPadColumnFromXZValue(Double_t x, Double_t z){
   TVector3 vec;
   Int_t column=0, row=0;
   if(geoType == 0 && padType == 0){ //box and square pad
-    column = (Int_t) (((z - sideBlankSpaceZ) / padSize)+1);
+    //column = (Int_t) (((z - sideBlankSpaceZ) / padSize)+1);
+    column =  (Int_t) numberOfColumns/2.+ ((z / padSize)+1);//Piotr : Now that origin is at the middle of the GasBox
     return column;
   }
   else if(geoType == 0 && padType == 1 && padLayout == 0){ //box and hexagonal pad with MAYA-type layout
@@ -791,7 +810,8 @@ TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
   Int_t row = CalculateRow(pad);
   Int_t column =  CalculateColumn(pad);
   if(geoType == 0 && padType == 0){ //box and square pad
-    TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,(column-0.5)*padSize);
+    //TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,(column-0.5)*padSize);
+    TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,-zLength + (column-0.5)*padSize);//Piotr : Now that origin is at the middle of the GasBox
     if(DIGI_DEBUG>2)
       cout <<  "________________________________________________________" << endl
 	   << " Output of padsGeometry::CoordinatesCenterOfPad(" << pad << ") " << endl
@@ -1202,10 +1222,14 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 
   if(padsGeo->GetEndCapMode()==1) ;
   else{
-    if(pro->GetTrack()->GetZPre() <= 0 ||
-       pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
-       pro->GetTrack()->GetZPost() <= 0 ||
-       pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength()) pro->SetPosition(5); // out of range
+    //if(pro->GetTrack()->GetZPre() <= 0 ||
+    //   pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
+    //   pro->GetTrack()->GetZPost() <= 0 ||
+    //   pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength()) pro->SetPosition(5); // out of range
+    if(pro->GetTrack()->GetZPre() <= -padsGeo->GetZLength() ||
+       pro->GetTrack()->GetZPre() >=  padsGeo->GetZLength() ||
+       pro->GetTrack()->GetZPost() <= -padsGeo->GetZLength() ||
+       pro->GetTrack()->GetZPost() >=  padsGeo->GetZLength()) pro->SetPosition(5); // out of range
     else if(rhoPre  < padsGeo->GetDeltaProximityBeam() ||
             rhoPost < padsGeo->GetDeltaProximityBeam()) pro->SetPosition(1); //if any point is closer to the (0,0,z) than a delta
     else if(rhoPre  < padsGeo->GetSizeBeamShielding() &&

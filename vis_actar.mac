@@ -39,6 +39,7 @@
 #   ion-LowE-ziegler2000, ion-standard
 #   standards: emstandard_opt0, emstandard_opt3, emstandard_opt4,
 #   others: ionGasModels
+#
 #/ActarSim/phys/RemovePhysics                     #Remove all modula physics list
 #/ActarSim/phys/addPhysics standard              #Add modula physics list
 #/ActarSim/phys/addPhysics decay
@@ -57,18 +58,24 @@
 /ActarSim/phys/addPhysics emstandard_opt3
 #/ActarSim/phys/addPhysics emstandard_opt4
 #/ActarSim/phys/addPhysics ionGasModels
-#/ActarSim/phys/verbose 2                         #Set verbose level for processes
+#
+#
 # Cuts for the particles  (incomplete list, see README)
+#
+#
 #/ActarSim/phys/setGCut 0.1                    #Set gamma cut
 #/ActarSim/phys/setECut 0.1                    #Set electron cut
 #/ActarSim/phys/setPCut 0.1                    #Set positron cut
 #/ActarSim/phys/setCuts 1 mm                   #Set cut for all
-/ActarSim/phys/verbose 0
+/ActarSim/phys/verbose 0                       #Set verbose level for processes
+#
 #
 # Initialization is moved here from the main allowing PhysicsList
+#
 /run/initialize
 #
 # DETECTOR CHARACTERIZATION
+#
 # PRE-DEFINED DETECTORS (if any of this predefined detectors is on, most detector commands are not used)
 /ActarSim/det/MaikoGeoIncludedFlag off           #Includes the Maiko geometry in the simulation
 /ActarSim/det/ACTARTPCDEMOGeoIncludedFlag on    #Includes the ACTARTPC Demonstrator geometry in the simulation
@@ -79,19 +86,21 @@
 # Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0               #Defines electric field
 #/ActarSim/det/setMagField 0 0 0 T                #Defines magnetic field
-
-#/ActarSim/det/gas/setGasPressure 1.01325        #Select the Gas Pressure for the Gas box
+#
+#
+# GAS CHARACTERISTICS (options are H2, D2, He, Ar, CF4, CH4, iC4H10, set both in GasBox and GasChamber) 
+#
+#/ActarSim/det/gas/setGasPressure 1.01325         #Select the Gas Pressure for the Gas box
 /ActarSim/det/gas/setGasPressure 0.1 
 /ActarSim/det/gas/setGasTemperature 293.15       #Select the Gas Temperature for the Gas box
-
-# Gas material (options are H2, D2, He, Ar, CF4, iC4H10, ...) and characteristics
+#
 /ActarSim/det/gas/setGasMat iC4H10               #Select Material of the Gas for the Gas box
-
-# Make a gas mixture: first select number of elements (up to 10) and then set all gases with their ratio
-#/ActarSim/det/gas/mixture/GasMixture 2           #Set a Gas Mixture with N number of elements (default 0)
-#/ActarSim/det/gas/mixture/setGasMix 1 He 0.90    #Set a Gas Mixture for the Gas box
+#
+# GAS MIXTURE: first select number of elements (up to 10) and then set all gases with their ratio
+#/ActarSim/det/gas/mixture/GasMixture 2              #Set a Gas Mixture with N number of elements (default 0)
+#/ActarSim/det/gas/mixture/setGasMix 1 He 0.90       #Set a Gas Mixture for the Gas box
 #/ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10   #Set a Gas Mixture for the Gas box
-#/ActarSim/det/gas/setGasMat GasMix               #Set a Gas Mixture for the Gas box
+#/ActarSim/det/gas/setGasMat GasMix                  #Set a Gas Mixture for the Gas box
 #
 #
 # SILICON DETECTOR (valid if /ActarSim/det/silGeoIncludedFlag on has been settled)
@@ -136,15 +145,15 @@
 #/ActarSim/analControl/setMinStrideLength 0.1     #Specifies the minimum length of the strides in the simpleTracks
 #/ActarSim/phys/stepMax 1000000.                  #Set max allowed step length for the default region
 #
-# Control of the primary events
+# CONTROL OF THE PRIMARY EVENTS
 #For all cases the possibility to have realistic beam distribution
 /ActarSim/gun/beamInteraction off                #Simulates the beam energy loss in gas
 /ActarSim/gun/realisticBeam off                  #Simulates beam emittance according to emittance parameters
 #/ActarSim/gun/emittance 200.0                   #Selects the value of the emittance [in mm mrad]
 #/ActarSim/gun/beamRadiusAtEntrance 18. mm        #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
 /ActarSim/gun/beamDirection 0 0 1                #Set beam momentum direction
-#/ActarSim/gun/beamPosition 0 0 -64 mm           #Set beam starting position
-/ActarSim/gun/beamPosition 0 0 -54 mm  
+/ActarSim/gun/beamPosition 0 0 -69 mm           #Set beam starting position
+#/ActarSim/gun/beamPosition 0 0 -54 mm  
 /ActarSim/gun/randomTheta off                    #Select a random Theta angle for the scattered particle
 /ActarSim/gun/randomThetaVal 0 180              #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
 /ActarSim/gun/randomPhi off                        #Select a random Phi angle for the scattered particle
@@ -165,7 +174,7 @@
 #/ActarSim/gun/ion 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/ion 12 24 12 0.0 23.985041699
 #/ActarSim/gun/ion 26 56 26 0.0 55.934937475
-/ActarSim/gun/energy 3. MeV                   #Sets the kinetic energy of the primary particle
+/ActarSim/gun/energy 6. MeV                   #Sets the kinetic energy of the primary particle
 #/ActarSim/gun/position 0 0 0                   #Set starting position of the particle
 #/ActarSim/gun/direction 0 0 1                  #Set momentum direction. Direction does not need to be a unit vector
 #Set starting position of the particle

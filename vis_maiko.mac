@@ -194,6 +194,7 @@
 /ActarSim/gun/Kine/labEnergy 650 MeV
 #/ActarSim/gun/energy 11. MeV
 #/ActarSim/gun/position 0 0 0
+/ActarSim/gun/beamPosition 0 0 -69 mm
 #/ActarSim/gun/direction 0 0 1
 #/ActarSim/gun/time 0
 #/ActarSim/gun/polarization 0

@@ -149,7 +149,7 @@
 #/ActarSim/gun/emittance 200.0                   #Selects the value of the emittance [in mm mrad]
 #/ActarSim/gun/beamRadiusAtEntrance 18. mm        #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
 /ActarSim/gun/beamDirection 0 0 1                #Set beam momentum direction
-/ActarSim/gun/beamPosition 0 0 -120 cm           #Set beam starting position
+/ActarSim/gun/beamPosition 0 0 0 cm           #Set beam starting position
 /ActarSim/gun/randomTheta off                    #Select a random Theta angle for the scattered particle
 /ActarSim/gun/randomThetaVal 0 180              #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
 /ActarSim/gun/randomPhiVal 0 360                #Sets the limits in the Phi angle for the scattered particle. The value is randomly chosen between the limits

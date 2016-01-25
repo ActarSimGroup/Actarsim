@@ -158,7 +158,6 @@
 #/ActarSim/gun/randomThetaVal 0 180              #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
 #/ActarSim/gun/randomPhi off                        #Select a random Phi angle for the scattered particle
 #/ActarSim/gun/randomPhiVal 0 360                #Sets the limits in the Phi angle for the scattered particle. The value is randomly chosen between the limits
-/ActarSim/gun/alphaSource on                    #CHECK THIS COMMAND!! TODO
 #
 # A) Track a particle or set of particles defined from the Particles list
 #

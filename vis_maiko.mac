@@ -5,6 +5,13 @@
 #*-- Copyright: GENP (Univ. Santiago de Compostela)
 # --------------------------------------------------------------
 # Comments:
+# - Updated macro with the available options for ActarSim control.
+#   Available from the "G4file" menu in an ActarSim interactive
+#   (only for Qt) session. Please, modify values, comment and
+#   uncomment commands but do not modify the order or remove comments.
+#   ACTARTPCDEMO case: The ACTAR-TPC Demonstrator detector.
+#
+#     - 05/12/15 Add ACTARTPCDEMO Flag
 #     - 15/05/08 Multidetector geometry
 #     - 05/05/06 Updating to new ActarSim (geant4.8) code
 #     - 22/11/05 Updated including CINE options
@@ -13,13 +20,17 @@
 ################################################################
 # Macro file for testing online jobs
 ################################################################
-# verbosity levels and saveHistory
+################################################################
+#
+# VERBOSITY AND HISTORY CONTROL
+# verbosity levels and saveHistory (commands that do not belong to ACTARSIM)
 /control/verbose 1
 /control/saveHistory
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
 #
+# MODULAR PHYSICS CONTROL
 # Setting the Physics modules; valid values are here listed:
 #   em: standard, lowenergy, penelope, (choose one from this three)
 #   common: decay,
@@ -27,7 +38,8 @@
 #   ion low-energy: ion-LowE, ion-LowE-ziegler1977, ion-LowE-ziegler1985,
 #   ion-LowE-ziegler2000, ion-standard
 #
-#/ActarSim/phys/addPhysics standard
+#/ActarSim/phys/RemovePhysics                     #Remove all modula physics list
+#/ActarSim/phys/addPhysics standard              #Add modula physics list
 #/ActarSim/phys/addPhysics decay
 #/ActarSim/phys/addPhysics elastic
 #/ActarSim/phys/addPhysics binary
@@ -59,25 +71,32 @@
 /run/initialize
 #
 # DETECTOR CHARACTERIZATION
+##
+# PRE-DEFINED DETECTORS (if any of this predefined detectors is on, most detector commands are not used)
+/ActarSim/det/MaikoGeoIncludedFlag on           #Includes the Maiko geometry in the simulation
+/ActarSim/det/ACTARTPCDEMOGeoIncludedFlag off   #Includes the ACTARTPC Demonstrator geometry in the simulation
+/ActarSim/det/ACTARTPCGeoIncludedFlag off        #Includes the ACTARTPC geometry in the simulation
+# Control of the materials (options: Galactic, D2_STP, Water, ...)
+/ActarSim/det/setMediumMat D2                #Selects Material outside the Chamber.
+#/ActarSim/det/setChamberMat Galactic             #Selects Material in the Chamber (but not in the gas!)
+# Electric and Magnetic fields
+#/ActarSim/det/setEleField 0 5e-3 0               #Defines electric field
+#/ActarSim/det/setMagField 0 0 0 T                #Defines magnetic field
 #
-# GENERAL COMMANDS
 #
-# Control of the materials
-#/ActarSim/det/setMediumMat Air
-/ActarSim/det/setMediumMat D2
-#/ActarSim/det/setMediumMat Galactic
-#/ActarSim/det/setMediumMat Water
-#Electric and Magnetic fields
-#/ActarSim/det/setEleField 0 5e-3 0
-#/ActarSim/det/setMagField 0 0 0 T
+# GAS CHARACTERISTICS (options are H2, D2, He, Ar, CF4, CH4, iC4H10, set both in GasBox and GasChamber) 
 #
-# gas material: isoC4H10, D2, H2, He, He2, Ar, Ar2, CF4...
+/ActarSim/det/gas/setGasPressure 1.01325         #Select the Gas Pressure for the Gas box
+/ActarSim/det/gas/setGasTemperature 293.15       #Select the Gas Temperature for the Gas box
 #
-/ActarSim/det/gas/setGasPressure 1.01325
-/ActarSim/det/gas/setGasTemperature 293.15
-/ActarSim/det/gas/setGasMat D2
+/ActarSim/det/gas/setGasMat D2               #Select Material of the Gas for the Gas box
 #
-/ActarSim/det/MaikoGeoIncludedFlag on
+# GAS MIXTURE: first select number of elements (up to 10) and then set all gases with their ratio
+#/ActarSim/det/gas/mixture/GasMixture 2              #Set a Gas Mixture with N number of elements (default 0)
+#/ActarSim/det/gas/mixture/setGasMix 1 He 0.90       #Set a Gas Mixture for the Gas box
+#/ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10   #Set a Gas Mixture for the Gas box
+#/ActarSim/det/gas/setGasMat GasMix                  #Set a Gas Mixture for the Gas box
+#
 #
 # GAS CHAMBER
 #
@@ -94,22 +113,6 @@
 /ActarSim/det/gas/setXLengthGasBox 50. mm
 /ActarSim/det/gas/setYLengthGasBox 70. mm
 /ActarSim/det/gas/setZLengthGasBox 50. mm
-#
-#TODO HAPOL!!!! CREAR ESTA FUNCION O EQUIVALENTE
-#/ActarSim/det/gas/setYGasBoxPos 50 mm
-#
-# if tube
-#  /ActarSim/det/gas/setDetectorGeometry tube
-#  /ActarSim/det/gas/setRadiusGasTub 1.0 cm
-#  /ActarSim/det/gas/setLengthGasTub 1.0 cm
-#
-# Beam shield? tube or off
-/ActarSim/det/gas/setBeamShield off
-#  /ActarSim/det/gas/setBeamShield on
-#  /ActarSim/det/gas/setBeamShieldMat Ion
-#  /ActarSim/det/gas/setInnerRadiusBeamShieldTub 1.0 mm
-#  /ActarSim/det/gas/setRadiusBeamShieldTub 1.001 mm
-#  /ActarSim/det/gas/setLengthBeamShieldTub 1.0 m
 #
 #
 # SILICON DETECTOR
@@ -145,35 +148,36 @@
 #
 /ActarSim/det/sci/print
 #
+#
 #Control of the output on the ROOT file
 #all the tracks are stored (note: huge space comsumption)
 #Note: it should come before the update!!!
-/ActarSim/analControl/storeTracks off
-/ActarSim/analControl/storeTrackHistos off
-/ActarSim/analControl/storeEvents off
-/ActarSim/analControl/storeHistograms off
-/ActarSim/analControl/storeSimpleTracks off
-#/ActarSim/analControl/setMinStrideLength 0.1
-#/ActarSim/phys/stepMax 1000000.
+/ActarSim/analControl/storeTracks off            #Stores the tracks in the output Tree
+/ActarSim/analControl/storeTrackHistos off       #Stores the tracks in Histograms
+/ActarSim/analControl/storeEvents on             #Stores the events in the output Tree
+/ActarSim/analControl/storeHistograms off        #Stores histograms in the output Tree
+/ActarSim/analControl/storeSimpleTracks off      #Stores the simple tracks in the output Tree
+#/ActarSim/analControl/setMinStrideLength 0.1     #Specifies the minimum length of the strides in the simpleTracks
+#/ActarSim/phys/stepMax 1000000.                  #Set max allowed step length for the default region
 #
 # Update is mandatory after any material,field or detector change
 #
 /ActarSim/det/update
 #/ActarSim/det/print
 #
-# Control of the primary events
+# CONTROL OF THE PRIMARY EVENTS
 #For all cases the possibility to have realistic beam distribution
-/ActarSim/gun/beamInteraction off
-/ActarSim/gun/realisticBeam off
-#/ActarSim/gun/beamRadiusAtEntrance 32. mm
-#/ActarSim/gun/emittance 200.0
-#
-# Realistic Event-Generator on
-/ActarSim/gun/reactionFromEvGen off
-#
-# Reaction from Cine and Event-Generator
-/ActarSim/gun/reactionFromCine off
-/ActarSim/gun/reactionFromCrossSection off
+/ActarSim/gun/beamInteraction off                #Simulates the beam energy loss in gas
+/ActarSim/gun/realisticBeam off                  #Simulates beam emittance according to emittance parameters
+#/ActarSim/gun/emittance 200.0                   #Selects the value of the emittance [in mm mrad]
+#/ActarSim/gun/beamRadiusAtEntrance 18. mm        #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
+#/ActarSim/gun/beamDirection 0 0 1                #Set beam momentum direction
+#/ActarSim/gun/beamPosition 0 0 -69 mm           #Set beam starting position
+#/ActarSim/gun/beamPosition 0 0 -54 mm  
+#/ActarSim/gun/randomTheta off                    #Select a random Theta angle for the scattered particle
+#/ActarSim/gun/randomThetaVal 0 180              #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
+#/ActarSim/gun/randomPhi off                        #Select a random Phi angle for the scattered particle
+#/ActarSim/gun/randomPhiVal 0 360                #Sets the limits in the Phi angle for the scattered particle. The value is randomly chosen between the limits
 #
 # A) Track a particle or set of particles defined from the Particles list
 #

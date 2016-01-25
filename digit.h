@@ -29,9 +29,14 @@
 //        			          Double_t xLength,
 //        			          Double_t yLength,
 //        			          Double_t zLength,
+//        			          Double_t xBeamShift,
+//        			          Double_t yBeamShift,
 //        			          Double_t radius,
 //                                        Double_t padSize);
 //      where all distances are in mm
+//
+//      or use a predefined geometry 
+//      thePadsGeometry.SetGeometryValues("ActarTPCDemo")
 //
 //      theDriftManager.SetDriftVelocity(Double_t velocity);      in mm/ns
 //      theDriftManager.SetDiffusionParameters(Double_t long,
@@ -57,6 +62,8 @@
 //  the xLength is the half-length of the box along x
 //  the yLength is the half-length of the box along y
 //  the zLength is the half-length of the box along z
+//  the xBeamShift is the distance between beam axis and GasBox center along x
+//  the yBeamShift is the distance between beam axis and GasBox center along y
 //  the padSize is the square or hexagonal pad side
 //  the velocity is the drift velocity in the gas
 //  the long and trans are the longitudinal and transversal diffusion
@@ -342,6 +349,9 @@ class padsGeometry{
   Double_t yLength;
   Double_t zLength;
 
+  Double_t xBeamShift;      //distance between beam axis and GasBox center along x
+  Double_t yBeamShift;      //distance between beam axis and GasBox center along y
+
   Double_t sideBlankSpaceX; // length of blank space between the GasBox and the Pad (both side in X direction)
   Double_t sideBlankSpaceZ; // length of blank space between the GasBox and the Pad (both side in Z direction)
 
@@ -357,15 +367,16 @@ class padsGeometry{
   void SetPadsGeometry(void);
 
 
-  void SetGeometryValues(Int_t geo, Int_t pad, Int_t layout, Double_t x, Double_t y, Double_t z,
+  void SetGeometryValues(Int_t geo, Int_t pad, Int_t layout, Double_t x, Double_t y, Double_t z, Double_t xBeam, Double_t yBeam,
 			 Double_t ra, Double_t psi, Double_t gapx, Double_t gapz){
     if(DIGI_DEBUG>3) cout << "Enters padsGeometry::SetGeometryValues()" << endl;
     geoType=geo;  padType=pad; padLayout=layout;
     xLength = x; yLength = y; zLength = z;
+    xBeamShift = xBeam; yBeamShift = yBeam;
     radius=ra; padSize=psi;
     if(padType == 1)rHexagon = 0.8660254037844386467868626478 * padSize;
     else  rHexagon=0;
-    sideBlankSpaceX=gapx; sideBlankSpaceZ=gapz;
+    sideBlankSpaceX = gapx; sideBlankSpaceZ = gapz;
     SetPadsGeometry();
     if(DIGI_DEBUG>3) cout << "Exits padsGeometry::SetGeometryValues()" << endl;
   }
@@ -376,6 +387,7 @@ class padsGeometry{
       geoType=0;  padType=0; padLayout=0;
       radius=0.; padSize=2.;
       xLength = 37.; yLength = 85.; zLength = 69.;
+      xBeamShift = 0.; yBeamShift = 15.;
       sideBlankSpaceX=5.; sideBlankSpaceZ=5.;
     }
 
@@ -394,6 +406,8 @@ class padsGeometry{
   void SetXLength(Double_t x){xLength=x;}
   void SetYLength(Double_t y){yLength=y;}
   void SetZLength(Double_t z){zLength=z;}
+  void SetXBeamShift(Double_t xBeam){xBeamShift=xBeam;}
+  void SetYBeamShift(Double_t yBeam){yBeamShift=yBeam;}
   void SetSideBlankSpaceX(Double_t gapx){sideBlankSpaceX=gapx;}
   void SetSideBlankSpaceZ(Double_t gapz){sideBlankSpaceZ=gapz;}
   void SetRadius(Double_t ra){radius=ra;}
@@ -413,6 +427,8 @@ class padsGeometry{
   Double_t GetXLength(void){return xLength;}
   Double_t GetYLength(void){return yLength;}
   Double_t GetZLength(void){return zLength;}
+  Double_t GetXBeamShift(void){return xBeamShift;}
+  Double_t GetYBeamShift(void){return yBeamShift;}
   Double_t GetSideBlankSpaceX(void){return sideBlankSpaceX;}
   Double_t GetSideBlankSpaceZ(void){return sideBlankSpaceZ;}
   Double_t GetRadius(void){return radius;}
@@ -734,7 +750,7 @@ Int_t padsGeometry::GetPadColumnFromXZValue(Double_t x, Double_t z){
   // NOTE: column number here start from 1
   // column number returned here is allowed to be out of the range of the chamber
   //if(DIGI_DEBUG>3) cout << "Enters padsGeometry::GetPadColumnFromXZValue()" << endl;
-  TVector3 point(x, -yLength, z);
+  TVector3 point(x, -yBeamShift-yLength, z);
   TVector3 vec;
   Int_t column=0, row=0;
   if(geoType == 0 && padType == 0){ //box and square pad
@@ -749,11 +765,11 @@ Int_t padsGeometry::GetPadColumnFromXZValue(Double_t x, Double_t z){
   else if(geoType == 0 && padType == 1 && padLayout == 1){ //box and hexagonal pad
     row = (Int_t) (((point.X() + xLength)/ (2*rHexagon)) + 1);
     column = (Int_t) (((point.Z()-sideBlankSpaceZ)/(1.5*padSize))+1);
-    Double_t shorterDist = padSize; Int_t candidate=0; point.SetY(-yLength);
+    Double_t shorterDist = padSize; Int_t candidate=0; point.SetY(-yBeamShift-yLength);
     for(Int_t i=0;i<2;i++){   //checking if it is on the next row
       for(Int_t j=-1;j<1;j++){   //checking if it is on the previous column
         vec.SetXYZ(-xLength + ((2*(row+i))-1)*rHexagon,
-                   -yLength,
+                   -yBeamShift-yLength,
                    padSize*((column+j)*1.5-0.5)+sideBlankSpaceZ);
         if((column+j)%2==0) vec.SetX(vec.X()-rHexagon);
         TVector3 distance = point - vec;
@@ -782,7 +798,7 @@ Int_t padsGeometry::GetPadRowFromXZValue(Double_t x, Double_t z){
   // NOTE: column number here start from 1
   // column number returned here is allowed to be out of the range of the chamber
   //if(DIGI_DEBUG>3) cout << "Enters padsGeometry::GetPadRowFromXZValue()" << endl;
-  TVector3 point(x, -yLength, z);
+  TVector3 point(x, -yBeamShift-yLength, z);
   TVector3 vec;
 
   Int_t column=0, row=0;
@@ -811,7 +827,7 @@ TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
   Int_t column =  CalculateColumn(pad);
   if(geoType == 0 && padType == 0){ //box and square pad
     //TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,(column-0.5)*padSize);
-    TVector3 vec(-xLength + (row-0.5)*padSize, -yLength,-zLength + (column-0.5)*padSize);//Piotr : Now that origin is at the middle of the GasBox
+    TVector3 vec(-xLength + (row-0.5)*padSize, -yBeamShift-yLength,-zLength + (column-0.5)*padSize);//Piotr : Now that origin is at the middle of the GasBox
     if(DIGI_DEBUG>2)
       cout <<  "________________________________________________________" << endl
 	   << " Output of padsGeometry::CoordinatesCenterOfPad(" << pad << ") " << endl
@@ -822,7 +838,7 @@ TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
   }
   else if(geoType == 0 && padType == 1 && padLayout == 0){ //box and hexagonal pad with MAYA-type layout
     TVector3 vec(-xLength + sideBlankSpaceX + padSize*((row*1.5)-0.5),
-                 -yLength,
+                 -yBeamShift-yLength,
                  (2*column-1)*rHexagon);
     if(row%2==0) vec.SetZ(vec.Z()-rHexagon);
     if(DIGI_DEBUG>2)
@@ -835,7 +851,7 @@ TVector3 padsGeometry::CoordinatesCenterOfPad(Int_t pad){
   }
   else if(geoType == 0 && padType == 1 && padLayout == 1){ //box and hexagonal pad
     TVector3 vec(-xLength + ((2*row)-1)*rHexagon,
-		 -yLength,
+		 -yBeamShift-yLength,
 		 padSize*((column*1.5)-0.5)+sideBlankSpaceZ);
     if(column%2==0) vec.SetX(vec.X()-rHexagon);
     if(DIGI_DEBUG>2)
@@ -1298,10 +1314,14 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
       pro->SetPosition(5);
       //repeating here the general position selection rules after the change of
       //coordinates required to project on the endcaps
-      if(pro->GetTrack()->GetZPre() <= 0 ||
-         pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
-         pro->GetTrack()->GetZPost() <= 0 ||
-         pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength()) pro->SetPosition(5);
+      //if(pro->GetTrack()->GetZPre() <= 0 ||
+      //   pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
+      //   pro->GetTrack()->GetZPost() <= 0 ||
+      //   pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength()) pro->SetPosition(5);
+      if(pro->GetTrack()->GetZPre() <= -padsGeo->GetZLength() ||
+	 pro->GetTrack()->GetZPre() >=  padsGeo->GetZLength() ||
+	 pro->GetTrack()->GetZPost() <= -padsGeo->GetZLength() ||
+	 pro->GetTrack()->GetZPost() >=  padsGeo->GetZLength()) pro->SetPosition(5); // out of range
       else if(rhoPre < padsGeo->GetDeltaProximityBeam() ||
               rhoPost <padsGeo->GetDeltaProximityBeam()) pro->SetPosition(1);
       else if(rhoPre < padsGeo->GetSizeBeamShielding() &&
@@ -1310,10 +1330,10 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
               rhoPost < padsGeo->GetSizeBeamShielding()) pro->SetPosition(3);
       else pro->SetPosition(4); //still to be checked after as a function of the geoType
     }
-    //Correcting the Y position: it is defined at the center of gasbox
+    //Correcting the Y position: it is defined at the center of gaschamber
     if( pro->GetPosition() == 4 &&
-        pro->GetTrack()->GetYPost() <= padsGeo->GetYLength() &&
-	      pro->GetTrack()->GetYPost() >= (-padsGeo->GetYLength()) &&
+        pro->GetTrack()->GetYPost() <= padsGeo->GetYLength() - padsGeo->GetYBeamShift() &&
+	pro->GetTrack()->GetYPost() >= (padsGeo->GetYBeamShift() - padsGeo->GetYLength()) &&
 	      pro->GetTrack()->GetXPost() <= padsGeo->GetXLength() &&
 	      pro->GetTrack()->GetXPost() >= (-padsGeo->GetXLength()) ) pro->SetPosition(4);
     else  pro->SetPosition(5);
@@ -1321,9 +1341,9 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
     //if the pads goes out of the gas chamber
     if(pro->GetPosition()==5) return 0;
 
-    //Correcting the Y position: it is defined at the center of gasbox
-    driftDistPre = padsGeo->GetYLength() + pro->GetTrack()->GetYPre();
-    driftDistPost= padsGeo->GetYLength() + pro->GetTrack()->GetYPost();
+    //Correcting the Y position: it is defined at the center of gaschamber
+    driftDistPre = padsGeo->GetYBeamShift() + padsGeo->GetYLength() + pro->GetTrack()->GetYPre();
+    driftDistPost= padsGeo->GetYBeamShift() + padsGeo->GetYLength() + pro->GetTrack()->GetYPost();
 
     if(lorentzAngle==0.) {
       //if no magnetic field, the cloud limits drift to the same point in

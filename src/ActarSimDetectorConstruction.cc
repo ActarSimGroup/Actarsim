@@ -50,6 +50,7 @@
 #include "globals.hh"
 #include "G4AssemblyVolume.hh"
 
+//_______________________________________________________________________________________________________
 ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   :   gasSD(0), silSD(0), silRingSD(0), sciSD(0),sciRingSD(0),plaSD(0),
       solidWorld(0), worldLog(0), chamberLog(0), AlplateLog(0), DiamondLog(0), SupportLog(0),
@@ -70,6 +71,8 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   chamberSizeX = 0.5*m;
   chamberSizeY = 0.5*m;
   chamberSizeZ = 0.5*m;
+
+  AT_Project = 1;
 
   //SD are here defined to avoid problems in the Construct function
   //turning on twice the detectors
@@ -121,6 +124,7 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   detectorMessenger = new ActarSimDetectorMessenger(this);
 }
 
+//_______________________________________________________________________________________________________
 ActarSimDetectorConstruction::~ActarSimDetectorConstruction() {
   //
   // Destructor
@@ -141,24 +145,28 @@ ActarSimDetectorConstruction::~ActarSimDetectorConstruction() {
   delete detectorMessenger;
 }
 
+//_______________________________________________________________________________________________________
 G4VPhysicalVolume* ActarSimDetectorConstruction::Construct() {
-  return ConstructActar();
-}
+	/*!
+	 *  GEANT4 MANDATORY METHOD for the geometry implementation.
+	 *  A-The World volume is defined according to specific flags
+	 *  B-The geometry of the detector is constructed. 
+     *    Available detectors:
+     *    1-ACTAR_TPC cubic (?) geometry
+     *    2-SpecMAT geometry
+	 *
+     *  Returns a pointer to the World Physical Volume according to G4 specifications
+	 */
 
-G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
-  //
-  // Geometrical definition of the world and gas volume
-  //
-  //World will be a 1 m^3 box, but in Maiko where it is a 12 m^3 box
-
+  //Decide the size of the World 
   if(ACTARTPCDEMOGeoIncludedFlag == "on"){
-    //Harcoded geometry for the ACTAR TPC Demonstrator (27 m^3 box)
+    //Harcoded geometry for the ACTAR TPC Demonstrator (27 m^3 box)      ?????????????
     SetWorldSizeX(1.5*m);
     SetWorldSizeY(1.5*m);
     SetWorldSizeZ(1.5*m);
   }
   else if(ACTARTPCGeoIncludedFlag == "on"){
-    //Harcoded geometry for the ACTAR TPC (27 m^3 box)... Still to be defined!!!!
+    //Harcoded geometry for the ACTAR TPC (27 m^3 box)... Still to be defined!!!! ????
     SetWorldSizeX(1.5*m);
     SetWorldSizeY(1.5*m);
     SetWorldSizeZ(1.5*m);
@@ -170,14 +178,15 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
     SetWorldSizeZ(6.0*m);
   }
 
-  solidWorld = new G4Box("World",           //its name
-			 worldSizeX,worldSizeY,worldSizeZ);   //its size
+  //Build the World Volume
+  solidWorld = new G4Box("World",                //its name
+			 worldSizeX,worldSizeY,worldSizeZ);  //its size
 
-  worldLog = new G4LogicalVolume(solidWorld,          //its solid
-				 mediumMaterial,      //its material
-				 "World");            //its name
+  worldLog = new G4LogicalVolume(solidWorld,     //its solid
+				 mediumMaterial,                 //its material
+				 "World");                       //its name
 
-  worldPhys = new G4PVPlacement(0,                     //no rotation
+  worldPhys = new G4PVPlacement(0,     //no rotation
 				G4ThreeVector(),       //at (0,0,0)
 				worldLog,              //its logical volume
 				"World",               //its name
@@ -185,6 +194,30 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
 				false,                 //no boolean operation
 				0);                    //copy number
 
+  //Build the DETECTOR according to the specified layout
+  switch (AT_Project){
+		
+    case 1: G4cout << "Building ACTAR_TPC geometry" <<G4endl;
+	        ConstructActarTPC();
+    break;
+	
+    case 2: G4cout << "Building SpecMAT geometry"<<G4endl;
+	        ConstructSpecMAT();
+    break;
+	
+    default: G4cout << "UNKNOWN geometry"<<G4endl;
+             return NULL;
+  }
+	
+return worldPhys;
+}
+
+//_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
+  //
+  // Geometrical definition of the world and gas volume
+  //
+  //World will be a 1 m^3 box, but in Maiko where it is a 12 m^3 box
 
   if( ACTARTPCDEMOGeoIncludedFlag == "on") {
     //Definition of the ACTAR-TPC Demonstrator
@@ -409,6 +442,13 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActar() {
   return worldPhys;
 }
 
+//_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructSpecMAT() {
+	
+return worldPhys;
+}
+
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::PrintDetectorParameters() {
   //
   // Print the current detector parameters
@@ -440,7 +480,7 @@ void ActarSimDetectorConstruction::PrintDetectorParameters() {
   }
 }
 
-
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetMediumMaterial(G4String mat) {
   //
   // Sets the material the medium is made of
@@ -449,7 +489,7 @@ void ActarSimDetectorConstruction::SetMediumMaterial(G4String mat) {
   if (pttoMaterial) mediumMaterial = pttoMaterial;
 }
 
-
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetDefaultMaterial(G4String mat) {
   //
   // Sets the default material
@@ -458,7 +498,7 @@ void ActarSimDetectorConstruction::SetDefaultMaterial(G4String mat) {
   if (pttoMaterial) defaultMaterial = pttoMaterial;
 }
 
-
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetChamberMaterial(G4String mat) {
   //
   // Sets the material the chamber is made of (the same as GasBox)
@@ -469,6 +509,7 @@ void ActarSimDetectorConstruction::SetChamberMaterial(G4String mat) {
   //G4cout << " The chamber gas material is: " << chamberMaterial  << G4endl;
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetUpdateChamberMaterial(G4Material* mater) {
   //
   // Sets the material the chamber is made of (the same as GasBox)
@@ -477,6 +518,7 @@ void ActarSimDetectorConstruction::SetUpdateChamberMaterial(G4Material* mater) {
   //G4cout << " The chamber gas material is: " << chamberMaterial  << G4endl;
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetWindowMaterial (G4String mat) {
   //
   // Sets the material the window is made of
@@ -485,13 +527,15 @@ void ActarSimDetectorConstruction::SetWindowMaterial (G4String mat) {
   if (pttoMaterial) windowMaterial = pttoMaterial;
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::UpdateGeometry() {
   //
   // Updates any change on the geometry of the detectors
   //
-  G4RunManager::GetRunManager()->DefineWorldVolume(ConstructActar());
+  G4RunManager::GetRunManager()->DefineWorldVolume(this->Construct());
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::UpdateEMField() {
   //
   // Setting the uniform EM field
@@ -499,6 +543,7 @@ void ActarSimDetectorConstruction::UpdateEMField() {
   emField->SetFieldValue(mField,eField);
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::DefineMaterials() {
   //
   // Define the materials to be used
@@ -706,6 +751,7 @@ void ActarSimDetectorConstruction::DefineMaterials() {
   defaultMaterial  = Vacuum;
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetEleField(G4ThreeVector eVector){
   //
   // Setting the uniform electric field vector
@@ -717,6 +763,7 @@ void ActarSimDetectorConstruction::SetEleField(G4ThreeVector eVector){
   eField = eVector;
 }
 
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetMagField(G4ThreeVector mVector){
   //
   // Setting the uniform magnetic field vector

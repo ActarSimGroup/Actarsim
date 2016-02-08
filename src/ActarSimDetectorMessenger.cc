@@ -144,6 +144,14 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   sciGeoIncludedFlagCmd->SetDefaultValue("off");
   sciGeoIncludedFlagCmd->SetCandidates("on off");
   sciGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  
+  AT_ProjectSwitchCmd = new G4UIcmdWithAString("/ActarSim/det/AT_ProjectSwitch",this);
+  AT_ProjectSwitchCmd->SetGuidance("Select the main geometry features according to the project (default off).");
+  AT_ProjectSwitchCmd->SetGuidance("Choice : Actar_TPC (default), SpecMAT");
+  AT_ProjectSwitchCmd->SetParameterName("AT_ProjectSwitch",false);
+  AT_ProjectSwitchCmd->SetDefaultValue("Actar_TPC");
+  AT_ProjectSwitchCmd->SetCandidates("Actar_TPC SpecMAT");
+  AT_ProjectSwitchCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   mediumMaterialCmd = new G4UIcmdWithAString("/ActarSim/det/setMediumMat",this);
   mediumMaterialCmd->SetGuidance("Select Material outside the Chamber.");
@@ -207,6 +215,7 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete gasGeoIncludedFlagCmd;
   delete silGeoIncludedFlagCmd;
   delete sciGeoIncludedFlagCmd;
+  delete AT_ProjectSwitchCmd;
   delete mediumMaterialCmd;
   delete chamberMaterialCmd;
   delete eleFieldCmd;
@@ -266,6 +275,14 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == sciGeoIncludedFlagCmd )
     ActarSimDetector->SetSciGeoIncludedFlag(newValue);
+
+  if(command == AT_ProjectSwitchCmd){
+    
+	if (newValue == "Actar_TPC") ActarSimDetector->SetAT_Project(1);
+	if (newValue == "SpecMAT") ActarSimDetector->SetAT_Project(2);
+	
+  }
+
 
   if(command == mediumMaterialCmd)
     ActarSimDetector->SetMediumMaterial(newValue);

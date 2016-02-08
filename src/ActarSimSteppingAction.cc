@@ -29,10 +29,10 @@ ActarSimSteppingAction::ActarSimSteppingAction(ActarSimDetectorConstruction* det
   //
   //
   //
-	if(detector)
-		;
-	if(eventaction)
-		;
+	if(detector){
+	;}
+	if(eventaction){
+	;}
 }
 
 

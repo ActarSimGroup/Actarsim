@@ -105,7 +105,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 
   if(detectorGeometry == "box"){
     G4cout << "##################################################################" << G4endl
-	    << "######  ActarSimGasDetectorConstruction::ConstructActar()  #######" << G4endl
+	    << "######  ActarSimGasDetectorConstruction::ConstructActarTPC()  #######" << G4endl
 	    << " Box-like gas geometry." << G4endl;
     G4cout << " Box Parameters: " << G4endl
  	    << " gasBoxSizeX = " <<  gasBoxSizeX/mm
@@ -147,7 +147,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   }
   else if(detectorGeometry == "tube"){
     G4cout << "##################################################################" << G4endl
-	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########" << G4endl
+	   << "########  ActarSimGasDetectorConstruction::ConstructActarTPC()  ########" << G4endl
 	   << " Tube-like gas geometry." << G4endl;
     G4cout << " Tube Parameters: " << G4endl
 	   << " radiusGasTub = " <<  radiusGasTub/mm
@@ -170,7 +170,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   }
   else {
     G4cout << G4endl
-	   << " ERROR in ActarSimGasDetectorConstruction::ConstructActar(). No valid volume type defined "
+	   << " ERROR in ActarSimGasDetectorConstruction::ConstructActarTPC(). No valid volume type defined "
 	   << G4endl;
   }
 
@@ -181,7 +181,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 
   if( beamShieldGeometry == "tube"){
     G4cout << "##################################################################" << G4endl
-	   << "########  ActarSimGasDetectorConstruction::ConstructActar()  ########" << G4endl
+	   << "########  ActarSimGasDetectorConstruction::ConstructActarTPC()  ########" << G4endl
 	   << " Beam shielding geometry." << G4endl;
     G4cout << " Tube Parameters: " << G4endl
 	   << " innerRadiusBeamShieldTub = " <<  innerRadiusBeamShieldTub/mm

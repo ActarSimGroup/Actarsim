@@ -113,6 +113,8 @@ private:
   G4String gasGeoIncludedFlag;
   G4String silGeoIncludedFlag;
   G4String sciGeoIncludedFlag;
+  
+  G4int    AT_Project;                              //Main switch to select the type of detector
 
   //Detectors
   ActarSimGasDetectorConstruction* gasDet;          //target
@@ -125,7 +127,8 @@ private:
   ActarSimDetectorMessenger* detectorMessenger;  //pointer to the Messenger
 
   void DefineMaterials();
-  G4VPhysicalVolume* ConstructActar();
+  G4VPhysicalVolume* ConstructActarTPC();
+  G4VPhysicalVolume* ConstructSpecMAT();
 
 public:
 
@@ -146,11 +149,12 @@ public:
   void SetChamberCenterY(G4double val){chamberCenterY = val;}
   void SetChamberCenterZ(G4double val){chamberCenterZ = val;}
 
+  void SetAT_Project(G4int val){AT_Project=val;}
+
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
   void SetChamberMaterial(G4String);
   void SetWindowMaterial (G4String);
-
   void SetUpdateChamberMaterial(G4Material*);
 
   void SetMaikoGeoIncludedFlag(G4String val){MaikoGeoIncludedFlag=val;}
@@ -186,6 +190,8 @@ public:
   G4double GetChamberCenterY(void){return chamberCenterY;}
   G4double GetChamberCenterZ(void){return chamberCenterZ;}
 
+  G4int GetAT_Project(){return AT_Project;}
+  
   G4Material* GetMediumMaterial() {return mediumMaterial;};
   G4Material* GetDefaultMaterial() {return defaultMaterial;};
   G4Material* GetChamberMaterial() {return chamberMaterial;};

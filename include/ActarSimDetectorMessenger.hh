@@ -55,6 +55,8 @@ private:
   G4UIcmdWithAString* silGeoIncludedFlagCmd;
   G4UIcmdWithAString* sciGeoIncludedFlagCmd;
 
+  G4UIcmdWithAString* AT_ProjectSwitchCmd;
+  
   G4UIcmdWithAString*        mediumMaterialCmd;
   G4UIcmdWithAString*        chamberMaterialCmd;
 

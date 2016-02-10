@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2005
-//*-- Last Update:  26/11/15
+//*-- Last Update:  10/02/16
 // --------------------------------------------------------------
 // Description:
 //   Detector construction and complementary definitions
@@ -9,6 +9,7 @@
 // --------------------------------------------------------------
 // Comments:
 //
+//   - 10/02/16 Splitting ConstructActar according to TPC project.
 //   - 26/11/15 Recovering old functionality and correcting
 //   - 17/04/08 Modularizing the detectors construction
 //   - 04/04/06 Multigeometry with the possibility of updating.
@@ -59,9 +60,11 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
       emField(0), MaikoGeoIncludedFlag("off"), ACTARTPCGeoIncludedFlag("off"),
       gasGeoIncludedFlag("on"), silGeoIncludedFlag("off"), sciGeoIncludedFlag("off"),
       gasDet(0), silDet(0),silRingDet(0), sciDet(0), sciRingDet(0), plaDet(0){
-  //
-  // Constructor
-  //
+   
+   /*!
+    *  ActarSimDetectorConstruction standard constructor
+	*  
+    */
 
   //default values of half-length -> size of World (2x2x2 m3)
   worldSizeX = 1.*m;
@@ -71,8 +74,6 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
   chamberSizeX = 0.5*m;
   chamberSizeY = 0.5*m;
   chamberSizeZ = 0.5*m;
-
-  AT_Project = 1;
 
   //SD are here defined to avoid problems in the Construct function
   //turning on twice the detectors
@@ -126,9 +127,10 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
 
 //_______________________________________________________________________________________________________
 ActarSimDetectorConstruction::~ActarSimDetectorConstruction() {
-  //
-  // Destructor
-  //
+   /*!
+    *  ActarSimDetectorConstruction standard destructor
+	*  
+    */
   delete emField;
   delete gasDet;
   delete silDet;
@@ -149,36 +151,110 @@ ActarSimDetectorConstruction::~ActarSimDetectorConstruction() {
 G4VPhysicalVolume* ActarSimDetectorConstruction::Construct() {
 	/*!
 	 *  GEANT4 MANDATORY METHOD for the geometry implementation.
-	 *  A-The World volume is defined according to specific flags
-	 *  B-The geometry of the detector is constructed. 
+	 *  
+	 *  The geometry of the detector is constructed according to user-specified flags. 
      *    Available detectors:
-     *    1-ACTAR_TPC cubic (?) geometry
-     *    2-SpecMAT geometry
+     *     -ACTAR_TPC 
+	 *     -ACTAR demonstrator
+	 *     -Maiko geometry
+     *     -SpecMAT geometry
+	 *     -Genereic geometry
 	 *
-     *  Returns a pointer to the World Physical Volume according to G4 specifications
+	 *  Returns a pointer to the World Physical Volume according to G4 specifications
+	 *
+	 *  Only one geometry option can be specified. 
+	 *  In case of multiple geometry definiotn an error message is displayed and a NULL pointer returned.
+     *  
 	 */
 
-  //Decide the size of the World 
+  G4int geo = 0;
+  G4int i_geo = 0;
+   
+  if(ACTARTPCGeoIncludedFlag == "on"){
+	 geo = 1; i_geo += 1;
+  }
+  
   if(ACTARTPCDEMOGeoIncludedFlag == "on"){
-    //Harcoded geometry for the ACTAR TPC Demonstrator (27 m^3 box)      ?????????????
-    SetWorldSizeX(1.5*m);
-    SetWorldSizeY(1.5*m);
-    SetWorldSizeZ(1.5*m);
+	 geo = 2; i_geo += 1;
   }
-  else if(ACTARTPCGeoIncludedFlag == "on"){
-    //Harcoded geometry for the ACTAR TPC (27 m^3 box)... Still to be defined!!!! ????
-    SetWorldSizeX(1.5*m);
-    SetWorldSizeY(1.5*m);
-    SetWorldSizeZ(1.5*m);
+  
+  if(SpecMATGeoIncludedFlag == "on"){
+	  geo = 3; i_geo += 1;	
   }
-  else if( MaikoGeoIncludedFlag == "on") {
-    //Hard coded geometry for the MAIKO detector (216 m^3 box!)
-    SetWorldSizeX(6.0*m);
-    SetWorldSizeY(6.0*m);
-    SetWorldSizeZ(6.0*m);
+  
+  if(MaikoGeoIncludedFlag == "on"){
+  	  geo = 4; i_geo += 1;
+  }
+  
+  if(OthersGeoIncludedFlag == "on"){
+  	  geo = 5; i_geo += 1;
+  }
+  
+  if (i_geo !=1){
+	  G4cout<<"ERROR, none or multiple geometry definition. Verify inputfile"<<G4endl;
+	  return NULL;
   }
 
-  //Build the World Volume
+  //Build the DETECTOR according to the specified layout		
+  switch (geo){
+
+    case 1: G4cout << "Building ACTAR_TPC geometry" <<G4endl;
+	  	    return ConstructActarTPC();  
+    
+    case 2: G4cout << "Building ACTAR_TPC Demonstrator geometry"<<G4endl;
+	        return ConstructActarTPCDEMO();
+
+    case 3: G4cout << "Building SpecMAT geometry"<<G4endl;
+	        return ConstructSpecMAT();
+    
+    case 4: G4cout << "Building MAIKO geometry"<<G4endl;
+	        return ConstructMAIKO();
+    
+    case 5: G4cout << "Building Other geometry"<<G4endl;
+	        return ConstructOthers();
+    
+	default: G4cout << "UNKNOWN geometry"<<G4endl;
+	         
+  }
+	
+ 
+return NULL;
+}
+
+//_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
+   /*!
+    *   This methods constructs the ActarTPC geometry
+	*
+	*   A-The World is a Box with HALF-SIZES OF 1.5m x 1.5m x 1.5m (user-settings overridden).
+    *
+	*   B-The scattering chamber is a box with user-defined sizes 
+	*   (default HALF-LENGTH values are 0.5x0.5x0.5 m^3 set in the constructor)
+	*   The position is user-defined
+	*
+	*   C-Hard-coded subvolumes:
+	*
+	*
+	*   D-Optional sub-volumes and ancillaries:
+	*     -Gas volume (see ActarSimGasDetectorConstruction)
+	*     -Sil volume (see ActarSimSilDetectorConstruction)
+	*     -Sci volume (see ActarSimSciDetectorConstruction)
+	*     
+	*   The Analysis is eventually configured according to the implemented geometry.
+	*
+	*   Returns a pointer to the world's physical volume.
+    */
+  
+  
+  //--------------------------
+  //World Volume
+  //--------------------------
+  
+  //Geometrical definition of the world, half sizes
+  SetWorldSizeX(1.5*m);
+  SetWorldSizeY(1.5*m);
+  SetWorldSizeZ(1.5*m);
+  
   solidWorld = new G4Box("World",                //its name
 			 worldSizeX,worldSizeY,worldSizeZ);  //its size
 
@@ -194,45 +270,139 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::Construct() {
 				false,                 //no boolean operation
 				0);                    //copy number
 
-  //Build the DETECTOR according to the specified layout
-  switch (AT_Project){
-		
-    case 1: G4cout << "Building ACTAR_TPC geometry" <<G4endl;
-	        ConstructActarTPC();
-    break;
-	
-    case 2: G4cout << "Building SpecMAT geometry"<<G4endl;
-	        ConstructSpecMAT();
-    break;
-	
-    default: G4cout << "UNKNOWN geometry"<<G4endl;
-             return NULL;
+  
+  //--------------------------
+  //Scattering Chamber
+  //--------------------------
+  G4Box* solidChamber = new G4Box("Chamber",         //its name
+				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
+
+  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+						    chamberMaterial,
+						    "Chamber");            //its name
+
+  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+                                  G4ThreeVector(chamberCenterX,
+						                      chamberCenterY,
+					                        chamberCenterZ),
+                                  chamberLog,            //its logical volume
+                                  "Chamber",             //its name
+                                  worldLog,              //its mother  volume
+                                  false,                 //no boolean operation
+                                  0);
+
+  //?????								    
+  if(chamberPhys){;}
+
+  //--------------------------
+  // Gas volume
+  //--------------------------
+  if(gasGeoIncludedFlag=="on")
+    gasDet->Construct(chamberLog);
+
+  //--------------------------
+  // Sil volume
+  //--------------------------
+  if(silGeoIncludedFlag=="on")
+    silDet->Construct(chamberLog);
+
+  //--------------------------
+  // Sci volume
+  //--------------------------
+  if(sciGeoIncludedFlag=="on")
+    sciDet->Construct(chamberLog);
+
+  //--------------------------
+  // Histogramming
+  //--------------------------
+  if (gActarSimROOTAnalysis)
+    gActarSimROOTAnalysis->Construct(worldPhys);
+
+  //--------------------------
+  //Connection to the analysis only for those detectors included!
+  //--------------------------
+  if (gActarSimROOTAnalysis) {
+    if (gasGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetGasAnalOn();
+    if (silGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetSilAnalOn();
+    if (sciGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetSciAnalOn();
+    gActarSimROOTAnalysis->InitAnalysisForExistingDetectors();
   }
-	
-return worldPhys;
+
+  //visibility
+  worldLog->SetVisAttributes (G4VisAttributes::Invisible);
+
+  return worldPhys;
 }
 
 //_______________________________________________________________________________________________________
-G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
-  //
-  // Geometrical definition of the world and gas volume
-  //
-  //World will be a 1 m^3 box, but in Maiko where it is a 12 m^3 box
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPCDEMO() {
+	/*!
+    *   This methods constructs the ActarTPC DEMONSTRATOR geometry
+	*
+	*   A-The World is a Box with HALF-SIZES OF 1.5m x 1.5m x 1.5m (user-settings overridden).
+    *
+	*   B-The scattering chamber is a box with HARD-CODED HALF SIZES 
+	*     its position is FIXED at the center of the World's volume  
+	*   
+	*   C-Hard-coded Sub-volumes and ancillaries:
+	*     -Beam entrance window
+	*     -Field cage support
+	*     -Al plate
+	*     -Beam diamond detector
+	*
+	*   D-Optional sub-volumes and ancillaries:
+	*     -Gas volume (see ActarSimGasDetectorConstruction)
+	*     -Sil volume (see ActarSimSilDetectorConstruction)
+	*     -Sci volume (see ActarSimSciDetectorConstruction)
+	*     
+	*   The Analysis is eventually configured according to the implemented geometry.
+	*
+	*   Returns a pointer to the world's physical volume.
+    */
+	
+  //--------------------------
+  //World Volume
+  //--------------------------
+  
+  //Geometrical definition of the world, half sizes
+  SetWorldSizeX(1.5*m);
+  SetWorldSizeY(1.5*m);
+  SetWorldSizeZ(1.5*m);
+  
+  solidWorld = new G4Box("World",                //its name
+			 worldSizeX,worldSizeY,worldSizeZ);  //its size
 
-  if( ACTARTPCDEMOGeoIncludedFlag == "on") {
-    //Definition of the ACTAR-TPC Demonstrator
-    //Chamber half-lengths are (95, 105, 120)mm,
-    //also selectable using /ActarSim/det/setXLengthGasChamber... in the macros
-    chamberSizeX = 95.*mm;
-    chamberSizeY = 105.*mm;
-    chamberSizeZ = 120.*mm;
+  worldLog = new G4LogicalVolume(solidWorld,     //its solid
+				 mediumMaterial,                 //its material
+				 "World");                       //its name
 
-    //Chamber X,Y,Z Center
-    chamberCenterX = 0.*m;
-    chamberCenterY = 0.*m; //chamberSizeY-4.54*mm;   //OLD chamberSizeY-(yGasBoxPosition+yPadSize
-    //chamberCenterY = 105.*mm-85.*mm-4.54*mm;  //So Y centered with GasBox
-    chamberCenterZ = 0.*m;                      //OLD zGasBoxPosition
-  }
+  worldPhys = new G4PVPlacement(0,     //no rotation
+				G4ThreeVector(),       //at (0,0,0)
+				worldLog,              //its logical volume
+				"World",               //its name
+				0,                     //its mother  volume
+				false,                 //no boolean operation
+				0);                    //copy number
+
+				
+
+  //--------------------------
+  //Scattering Chamber
+  //--------------------------
+  //Definition of the ACTAR-TPC Demonstrator
+  //Chamber half-lengths are (95, 105, 120)mm,
+  //also selectable using /ActarSim/det/setXLengthGasChamber... in the macros
+  //Last sentence is not true if chamberSizeX,Y,Z are reinitialized here - T.M. Feb 2016
+  chamberSizeX = 95.*mm;
+  chamberSizeY = 105.*mm;
+  chamberSizeZ = 120.*mm;
+
+  //Chamber X,Y,Z Center
+  chamberCenterX = 0.*m;
+  chamberCenterY = 0.*m; //chamberSizeY-4.54*mm;   //OLD chamberSizeY-(yGasBoxPosition+yPadSize
+  //chamberCenterY = 105.*mm-85.*mm-4.54*mm;  //So Y centered with GasBox
+  chamberCenterZ = 0.*m;                      //OLD zGasBoxPosition
+ 
 
   G4Box* solidChamber = new G4Box("Chamber",         //its name
 				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
@@ -253,19 +423,296 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
 
   if(chamberPhys){;}
 
-  if(MaikoGeoIncludedFlag == "on"){
-    //--------------------------
-    // Beam exit Window in Chamber
-    //--------------------------
-    G4double innerRadius = 0.*cm;
-    G4double outerRadius = 10.*cm;
-    G4double hz = 0.037*mm;
-    G4double startAngle = 0.*deg;
-    G4double spanningAngle = 360.*deg;
 
-    G4VPhysicalVolume* mylarWin;
+  //--------------------------
+  //Beam entrance Window in Chamber
+  //--------------------------
+  G4double window_outer_radius =  36.*mm;
+  G4double window_inner_radius =   0.*mm;
+  G4double window_half_length  =   5.*mm;
+  G4double startAngle          =   0.*deg;
+  G4double spanningAngle       = 360.*deg;
 
-    G4Tubs* mwindow= new G4Tubs("mwindow",
+  G4Tubs *window = new G4Tubs("Window",window_inner_radius,window_outer_radius,window_half_length,
+				                        startAngle,spanningAngle);
+  G4VisAttributes* windowVisAtt= new G4VisAttributes(G4Colour(1.0,0.,0.));
+  windowVisAtt->SetVisibility(true);
+
+  G4LogicalVolume* window_log = new G4LogicalVolume(window,chamberMaterial,"window_log",0,0,0);
+  window_log->SetVisAttributes(windowVisAtt);
+
+  G4double windowPosX = 0.*mm;
+  G4double windowPosY = 0.*mm;
+  G4double windowPosZ = -chamberSizeZ+window_half_length+22.*mm;//enter window is situated 22mm inside chamber
+
+  G4VPhysicalVolume* window_phys=new G4PVPlacement(0,G4ThreeVector(windowPosX,windowPosY,windowPosZ),
+                                                     window_log,"window",chamberLog,false,0);
+
+  if(window_phys){;}
+
+  //--------------------------
+  //Support of the field cage
+  //--------------------------
+  G4RotationMatrix* rotLeft = new G4RotationMatrix(pi/2,pi/2,-pi/2);//ZY planes
+  G4RotationMatrix* rotRight = new G4RotationMatrix(-pi/2,pi/2,pi/2);//ZY planes
+
+  G4double Support_x  =  8. *mm;
+  G4double Support_x2 =  6.4*mm;
+  G4double Support_y  = 85. *mm;
+  //G4double Support_y = 89.54*mm;
+  G4double Support_z  =  1.6*mm;
+
+  G4Box* SupportBox = new G4Box("SupportBox", Support_x, Support_y, Support_z);
+  G4Box* SupportBox2 = new G4Box("SupportBox2", Support_x2, Support_y, Support_z);
+
+  SupportLog=new G4LogicalVolume(SupportBox,G4Material::GetMaterial("Lead"),"SupportLog");
+
+  //TO BE IMPROVED: should take the pad x syze from a variable, will do it later
+  //SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,0,64+6.575),
+  SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,-105+85+4.54,64+6.575),
+    				SupportLog,"Support",chamberLog,false,0);
+  //SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,0,64+6.575),
+  SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,-105+85+4.54,64+6.575),
+    				SupportLog,"Support",chamberLog,false,1);
+
+  G4VisAttributes* SupportVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+  SupportVisAtt->SetVisibility(true);
+  SupportLog->SetVisAttributes(SupportVisAtt);
+
+  SupportLog=new G4LogicalVolume(SupportBox2,G4Material::GetMaterial("Lead"),"SupportLog");
+
+  //SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+  SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,-105+85+4.54,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    				SupportLog,"Support",chamberLog,false,2);
+
+  //SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+  SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,-105+85+4.54,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
+    				SupportLog,"Support",chamberLog,false,2);
+
+  SupportVisAtt->SetVisibility(true);
+  SupportLog->SetVisAttributes(SupportVisAtt);
+
+  //--------------------------
+  //A Diamond detector in front of the DSSD detectors to catch the beam
+  //--------------------------
+  G4double Diamond_x = 12.*mm;
+  G4double Diamond_y = 12.*mm;
+  G4double Diamond_z = 0.75*mm;
+
+  G4Box* DiamondBox = new G4Box("DiamondBox", Diamond_x, Diamond_y, Diamond_z);
+
+  DiamondLog=new G4LogicalVolume(DiamondBox,G4Material::GetMaterial("Lead"),"DiamondLog");
+  DiamondPhys=new G4PVPlacement(0,G4ThreeVector(0,0,64+23),//should take the pad x syze from a variable, will do it later
+    				DiamondLog,"Diamond",chamberLog,false,0);
+
+  G4VisAttributes* DiamondVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
+  DiamondVisAtt->SetVisibility(true);
+  DiamondLog->SetVisAttributes(DiamondVisAtt);
+
+  //--------------------------
+  // Gas volume
+  //--------------------------
+  if(gasGeoIncludedFlag=="on")
+    gasDet->Construct(chamberLog);
+
+  //--------------------------
+  //An Aluminium plate to see the Pads active area just below the gas volume
+  //--------------------------
+  G4double plateSizeX = 32.*mm;
+  G4double plateSizeY = 4.54/2*mm;
+  G4double plateSizeZ = 64.*mm;
+
+  G4Box *Alplate=new G4Box("Al_plate",plateSizeX,plateSizeY,plateSizeZ);
+  AlplateLog=new G4LogicalVolume(Alplate,G4Material::GetMaterial("Aluminum"),"Al_plate");
+
+  G4double platePosX = 0.*cm;
+  //G4double platePosY = -gasDet->GetGasBoxSizeY() +2* plateSizeY;
+  G4double platePosY =-chamberSizeY + plateSizeY;
+  G4double platePosZ = 0.*cm;
+
+  AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
+            AlplateLog,"Al_plate",chamberLog,false,0);
+
+  G4VisAttributes* plateVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
+  plateVisAtt->SetVisibility(true);
+  AlplateLog->SetVisAttributes(plateVisAtt);
+
+  //--------------------------
+  // Sil volume
+  //--------------------------
+  if(silGeoIncludedFlag=="on")
+    silDet->Construct(chamberLog);
+
+  //--------------------------
+  // Sci volume
+  //--------------------------
+  if(sciGeoIncludedFlag=="on")
+    sciDet->Construct(chamberLog);
+
+  //--------------------------
+  // Histogramming
+  //--------------------------
+  if (gActarSimROOTAnalysis)
+    gActarSimROOTAnalysis->Construct(worldPhys);
+
+  //--------------------------
+  //connection to the analysis only for those detectors included!
+  //--------------------------
+  if (gActarSimROOTAnalysis) {
+    if (gasGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetGasAnalOn();
+    if (silGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetSilAnalOn();
+    if (sciGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetSciAnalOn();
+    gActarSimROOTAnalysis->InitAnalysisForExistingDetectors();
+  }
+
+  //visibility
+  worldLog->SetVisAttributes (G4VisAttributes::Invisible);
+
+return worldPhys;
+}
+
+//_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructSpecMAT() {
+   /*!
+    *   This methods builds the SpecMAT geometry
+	*
+	*   A-The World Volume is a box with user-specified dimensions
+	*     (default HALF LENGTHS are 1.0m x 1.0m x 1.0m defined in the constructor)
+    *
+	*   B-The scattering chamber is .... still to be defined (tube or hexagonal prism)
+	*   
+	*   C-Hard-coded Sub-volumes and ancillaries:
+	*
+	*
+	*   D-Optional sub-volumes and ancillaries:
+	*     -Gas volume (see ActarSimGasDetectorConstruction)
+	*     -Array of scintillation detectors (see ActarSimScintillatorDetectorConstruction)
+	*     
+	*   The Analysis is eventually configured according to the implemented geometry.
+	*
+	*   Returns a pointer to the world's physical volume.
+    */
+	
+  //--------------------------
+  //World Volume
+  //--------------------------
+  
+  solidWorld = new G4Box("World",                //its name
+			 worldSizeX,worldSizeY,worldSizeZ);  //its size
+
+  worldLog = new G4LogicalVolume(solidWorld,     //its solid
+				 mediumMaterial,                 //its material
+				 "World");                       //its name
+
+  worldPhys = new G4PVPlacement(0,     //no rotation
+				G4ThreeVector(),       //at (0,0,0)
+				worldLog,              //its logical volume
+				"World",               //its name
+				0,                     //its mother  volume
+				false,                 //no boolean operation
+				0);                    //copy number
+
+  //--------------------------
+  //Scattering Chamber
+  //--------------------------
+  
+  //--------------------------
+  //Gas Volume
+  //--------------------------
+	
+  //--------------------------
+  //Array of scintillation detectors
+  //--------------------------	
+	
+	
+return worldPhys;
+}
+
+//_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructMAIKO() {
+   /*!
+    *   This methods builds the MAIKO geometry
+	*
+	*   A-The World Volume is a box with FIXED (user settings overridden)
+	*     (HALF SIZES of 6.0m x 6.0m x 6.0m)
+    *
+	*   B-The scattering chamber is a Box with user defined half-sizes
+	*   
+	*   C-Hard-coded Sub-volumes and ancillaries:
+	*     -Beam exit window
+	*     -Maiko ancillaries: silRingDet, sciRingDet, plaDet
+	*
+	*   D-Optional sub-volumes and ancillaries:
+	*     -Gas volume (see ActarSimGasDetectorConstruction)
+	*     -DO WE KEEP Sci and Sil or are they included in the "Rings" ??????????????????
+	*     
+	*   The Analysis is eventually configured according to the implemented geometry.
+	*
+	*   Returns a pointer to the world's physical volume.
+    */
+ 
+  //--------------------------
+  //World Volume
+  //--------------------------
+  
+  //Geometrical definition of the world, half sizes
+  //Hard coded geometry for the MAIKO detector (216 m^3 box!)
+  SetWorldSizeX(6.0*m);
+  SetWorldSizeY(6.0*m);
+  SetWorldSizeZ(6.0*m);
+  
+  //Build the World Volume
+  solidWorld = new G4Box("World",                //its name
+			 worldSizeX,worldSizeY,worldSizeZ);  //its size
+
+  worldLog = new G4LogicalVolume(solidWorld,     //its solid
+				 mediumMaterial,                 //its material
+				 "World");                       //its name
+
+  worldPhys = new G4PVPlacement(0,     //no rotation
+				G4ThreeVector(),       //at (0,0,0)
+				worldLog,              //its logical volume
+				"World",               //its name
+				0,                     //its mother  volume
+				false,                 //no boolean operation
+				0);                    //copy number
+
+				
+  //--------------------------
+  //Scattering Chamber
+  //--------------------------
+				
+  G4Box* solidChamber = new G4Box("Chamber",         //its name
+				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
+
+  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+						    chamberMaterial,
+						    "Chamber");            //its name
+
+  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+                                  G4ThreeVector(chamberCenterX,
+						                      chamberCenterY,
+					                        chamberCenterZ),
+                                  chamberLog,            //its logical volume
+                                  "Chamber",             //its name
+                                  worldLog,              //its mother  volume
+                                  false,                 //no boolean operation
+                                  0);
+
+  if(chamberPhys){;}
+
+  //--------------------------
+  // Beam exit Window in Chamber
+  //--------------------------
+  G4double innerRadius = 0.*cm;
+  G4double outerRadius = 10.*cm;
+  G4double hz = 0.037*mm;
+  G4double startAngle = 0.*deg;
+  G4double spanningAngle = 360.*deg;
+
+  G4VPhysicalVolume* mylarWin;
+
+  G4Tubs* mwindow= new G4Tubs("mwindow",
 		                            innerRadius,
 		                            outerRadius,
 		                            hz,
@@ -289,119 +736,12 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
     G4VisAttributes* mylarVisAtt = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
   	mylarVisAtt->SetVisibility(true);
   	mwindowLog->SetVisAttributes(mylarVisAtt);
-  }
-
-  if( ACTARTPCDEMOGeoIncludedFlag == "on") {
-    //--------------------------
-    // Beam enter Window in Chamber
-    //--------------------------
-    G4double window_outer_radius = 36*mm;
-    G4double window_inner_radius = 0*mm;
-    G4double window_half_length = 5*mm;
-    G4double startAngle = 0.*deg;
-    G4double spanningAngle = 360.*deg;
-
-    G4Tubs *window = new G4Tubs("Window",window_inner_radius,window_outer_radius,window_half_length,
-				                        startAngle,spanningAngle);
-    G4VisAttributes* windowVisAtt= new G4VisAttributes(G4Colour(1.0,0.,0.));
-    windowVisAtt->SetVisibility(true);
-
-    G4LogicalVolume* window_log = new G4LogicalVolume(window,chamberMaterial,"window_log",0,0,0);
-    window_log->SetVisAttributes(windowVisAtt);
-
-    G4double windowPosX = 0*mm;
-    G4double windowPosY = 0*mm;
-    G4double windowPosZ = -chamberSizeZ+window_half_length+22*mm;//enter window is situated 22mm inside chamber
-
-    G4VPhysicalVolume* window_phys=new G4PVPlacement(0,G4ThreeVector(windowPosX,windowPosY,windowPosZ),
-                                                     window_log,"window",chamberLog,false,0);
-
-    if(window_phys){;}
-
-    //Support of the field cage
-    G4RotationMatrix* rotLeft = new G4RotationMatrix(pi/2,pi/2,-pi/2);//ZY planes
-    G4RotationMatrix* rotRight = new G4RotationMatrix(-pi/2,pi/2,pi/2);//ZY planes
-
-    G4double Support_x = 8.*mm;
-    G4double Support_x2 = 6.4*mm;
-    G4double Support_y = 85.*mm;
-    //G4double Support_y = 89.54*mm;
-    G4double Support_z = 1.6*mm;
-
-    G4Box* SupportBox = new G4Box("SupportBox", Support_x, Support_y, Support_z);
-
-    G4Box* SupportBox2 = new G4Box("SupportBox2", Support_x2, Support_y, Support_z);
-
-    SupportLog=new G4LogicalVolume(SupportBox,G4Material::GetMaterial("Lead"),"SupportLog");
-
-    //TO BE IMPROVED: should take the pad x syze from a variable, will do it later
-    //SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,0,64+6.575),
-    SupportPhys=new G4PVPlacement(0,G4ThreeVector(32+6.175-8,-105+85+4.54,64+6.575),
-    				SupportLog,"Support",chamberLog,false,0);
-    //SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,0,64+6.575),
-    SupportPhys=new G4PVPlacement(0,G4ThreeVector(-32-6.175+8,-105+85+4.54,64+6.575),
-    				SupportLog,"Support",chamberLog,false,1);
-
-    G4VisAttributes* SupportVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
-    SupportVisAtt->SetVisibility(true);
-    SupportLog->SetVisAttributes(SupportVisAtt);
-
-    SupportLog=new G4LogicalVolume(SupportBox2,G4Material::GetMaterial("Lead"),"SupportLog");
-
-    //SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
-    SupportPhys=new G4PVPlacement(rotRight,G4ThreeVector(32+4.575,-105+85+4.54,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
-    				SupportLog,"Support",chamberLog,false,2);
-
-    //SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,0,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
-    SupportPhys=new G4PVPlacement(rotLeft,G4ThreeVector(-32-4.575,-105+85+4.54,64+4.975-6.4),//should take the pad x syze from a variable, will do it later
-    				SupportLog,"Support",chamberLog,false,2);
-
-    SupportVisAtt->SetVisibility(true);
-    SupportLog->SetVisAttributes(SupportVisAtt);
-
-    //A Diamond detector in front of the DSSD detectors to catch the beam
-    G4double Diamond_x = 12.*mm;
-    G4double Diamond_y = 12.*mm;
-    G4double Diamond_z = 0.75*mm;
-
-    G4Box* DiamondBox = new G4Box("DiamondBox", Diamond_x, Diamond_y, Diamond_z);
-
-    DiamondLog=new G4LogicalVolume(DiamondBox,G4Material::GetMaterial("Lead"),"DiamondLog");
-    DiamondPhys=new G4PVPlacement(0,G4ThreeVector(0,0,64+23),//should take the pad x syze from a variable, will do it later
-    				DiamondLog,"Diamond",chamberLog,false,0);
-
-    G4VisAttributes* DiamondVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
-    DiamondVisAtt->SetVisibility(true);
-    DiamondLog->SetVisAttributes(DiamondVisAtt);
-  }
 
   //--------------------------
   // Gas volume
   //--------------------------
   if(gasGeoIncludedFlag=="on")
     gasDet->Construct(chamberLog);
-
-  if( ACTARTPCDEMOGeoIncludedFlag == "on") {
-    //An aluminium plate to see the Pads active area just below the gas volume
-    G4double plateSizeX = 32.*mm;
-    G4double plateSizeY = 4.54/2*mm;
-    G4double plateSizeZ = 64.*mm;
-
-    G4Box *Alplate=new G4Box("Al_plate",plateSizeX,plateSizeY,plateSizeZ);
-    AlplateLog=new G4LogicalVolume(Alplate,G4Material::GetMaterial("Aluminum"),"Al_plate");
-
-    G4double platePosX = 0.*cm;
-    //G4double platePosY = -gasDet->GetGasBoxSizeY() +2* plateSizeY;
-    G4double platePosY =-chamberSizeY + plateSizeY;
-    G4double platePosZ = 0.*cm;
-
-    AlplatePhys=new G4PVPlacement(0,G4ThreeVector( platePosX,platePosY,platePosZ),
-            AlplateLog,"Al_plate",chamberLog,false,0);
-
-    G4VisAttributes* plateVisAtt= new G4VisAttributes(G4Colour(1.0,0.,1.0));
-    plateVisAtt->SetVisibility(true);
-    AlplateLog->SetVisAttributes(plateVisAtt);
-  }
 
   //--------------------------
   // Sil volume
@@ -418,11 +758,10 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
   //--------------------------
   // Maiko ancillaries
   //--------------------------
-  if(MaikoGeoIncludedFlag=="on"){
-    silRingDet->Construct(worldLog);
-    sciRingDet->Construct(worldLog);
-    plaDet->Construct(worldLog);
-  }
+  silRingDet->Construct(worldLog);
+  sciRingDet->Construct(worldLog);
+  plaDet->Construct(worldLog);
+  
 
   // Histogramming
   if (gActarSimROOTAnalysis)
@@ -439,24 +778,81 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
   //visibility
   worldLog->SetVisAttributes (G4VisAttributes::Invisible);
 
-  return worldPhys;
-}
-
-//_______________________________________________________________________________________________________
-G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructSpecMAT() {
-	
 return worldPhys;
 }
 
 //_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructOthers() {
+   /*!
+    *   This methods builds the Other geometries
+	*
+	*   A-The World Volume is a box with user defined half sizes
+	*
+	*   B-The scattering chamber is (to be defined)
+	*
+	*   
+	*   C-Hard-coded Sub-volumes and ancillaries: (none yet)
+	*
+	*
+	*   D-Optional sub-volumes and ancillaries: (none yet)
+	*	
+	*
+	*
+	*
+	*   Returns a pointer to the world's physical volume.
+    */	
+	
+  //--------------------------
+  //World Volume
+  //--------------------------
+	    
+  solidWorld = new G4Box("World",                //its name
+			 worldSizeX,worldSizeY,worldSizeZ);  //its size
+
+  worldLog = new G4LogicalVolume(solidWorld,     //its solid
+				 mediumMaterial,                 //its material
+				 "World");                       //its name
+
+  worldPhys = new G4PVPlacement(0,     //no rotation
+				G4ThreeVector(),       //at (0,0,0)
+				worldLog,              //its logical volume
+				"World",               //its name
+				0,                     //its mother  volume
+				false,                 //no boolean operation
+				0);                    //copy number
+
+return worldPhys;
+}
+
+
+
+//_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::PrintDetectorParameters() {
-  //
-  // Print the current detector parameters
-  //
+   /*!
+    *   Print current detector parameters
+	*
+	*   
+    */	
 
   G4cout << G4endl
 	 << "--------------------------------------------------------------" << G4endl
-	 << "-- ActarSimDetectorConstruction::PrintDetectorParameters() --" << G4endl
+	 << "--------------------------------------------------------------" << G4endl
+	 << "-- ActarSimDetectorConstruction::PrintDetectorParameters()  --" << G4endl
+     << "--                                                          --" << G4endl	  	 
+	 << "-- Geometry FLAGS:                                          --" << G4endl	  
+	 << "--    -ACTARTPCGeoIncludedFlag    : "<< ACTARTPCGeoIncludedFlag << "                      --" << G4endl
+	 << "--    -ACTARTPCDEMOGeoIncludedFlag: "<< ACTARTPCDEMOGeoIncludedFlag << "                      --" << G4endl
+	 << "--    -SpecMATGeoIncludedFlag     : "<< SpecMATGeoIncludedFlag << "                      --" << G4endl
+	 << "--    -MaikoGeoIncludedFlag       : "<< MaikoGeoIncludedFlag << "                      --" << G4endl
+	 << "--    -OthersGeoIncludedFlag      : "<< OthersGeoIncludedFlag << "                      --" << G4endl
+	 << "-- Ancillary FLAGS:                                          --" << G4endl	  
+	 << "--    -gasGeoIncludedFlag    : "<< gasGeoIncludedFlag << "                      --" << G4endl
+	 << "--    -silGeoIncludedFlag    : "<< silGeoIncludedFlag << "                      --" << G4endl
+	 << "--    -sciGeoIncludedFlag    : "<< sciGeoIncludedFlag << "                      --" << G4endl
+	 
+	 << "--                                                          --" << G4endl	  
+	 << "--                                                          --" << G4endl	  
+	 << "--                                                          --" << G4endl	  
 	 << " The medium material is: " << mediumMaterial << G4endl << G4endl << G4endl
 	 << " The chamber material is: " << chamberMaterial << G4endl << G4endl;
   G4cout << G4endl << " The EM field applied has the following components:"
@@ -469,6 +865,7 @@ void ActarSimDetectorConstruction::PrintDetectorParameters() {
 	 << emField->GetElectricFieldValue().y() << " "
 	 << emField->GetElectricFieldValue().z()
 	 << "--------------------------------------------------------------" << G4endl;
+	 
 
   if (gasGeoIncludedFlag=="on") gasDet->PrintDetectorParameters();
   if (silGeoIncludedFlag=="on") silDet->PrintDetectorParameters();
@@ -478,31 +875,34 @@ void ActarSimDetectorConstruction::PrintDetectorParameters() {
     sciRingDet->PrintDetectorParameters();
     plaDet->PrintDetectorParameters();
   }
+  
+  G4cout << "--------------------------------------------------------------" << G4endl;
+  G4cout << "--------------------------------------------------------------" << G4endl << G4endl << G4endl;
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetMediumMaterial(G4String mat) {
-  //
-  // Sets the material the medium is made of
-  //
+  /*!
+   * Sets the material the medium is made of
+   */
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) mediumMaterial = pttoMaterial;
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetDefaultMaterial(G4String mat) {
-  //
-  // Sets the default material
-  //
+  /*!
+   * Sets the default material
+   */
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) defaultMaterial = pttoMaterial;
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetChamberMaterial(G4String mat) {
-  //
-  // Sets the material the chamber is made of (the same as GasBox)
-  //
+  /*!
+   * Sets the material the chamber is made of (the same as GasBox)
+   */
   //DefineMaterials();
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) chamberMaterial = pttoMaterial;
@@ -511,46 +911,50 @@ void ActarSimDetectorConstruction::SetChamberMaterial(G4String mat) {
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetUpdateChamberMaterial(G4Material* mater) {
-  //
-  // Sets the material the chamber is made of (the same as GasBox)
-  // define by user (T and P)
+  /*!
+   * Sets the material the chamber is made of (the same as GasBox)
+   * define by user (T and P)
+   */
   chamberMaterial = mater;
   //G4cout << " The chamber gas material is: " << chamberMaterial  << G4endl;
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetWindowMaterial (G4String mat) {
-  //
-  // Sets the material the window is made of
-  //
+  /*!
+   * Sets the material the window is made of
+   */
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) windowMaterial = pttoMaterial;
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::UpdateGeometry() {
-  //
-  // Updates any change on the geometry of the detectors
-  //
+  /*!
+   * Updates any change on the geometry of the detectors
+   */
   G4RunManager::GetRunManager()->DefineWorldVolume(this->Construct());
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::UpdateEMField() {
-  //
-  // Setting the uniform EM field
-  //
+  /*!
+   * Setting the uniform EM field
+   */
   emField->SetFieldValue(mField,eField);
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::DefineMaterials() {
-  //
-  // Define the materials to be used
-  // (NOTE: it results impossible to define externally (via messenger)
-  // the density of the gases, because the materials table is an static element
-  // which remains constant from creation to the end of the program)
-  //
+  /*!
+   * Define the materials to be used
+   * (NOTE: it results impossible to define externally (via messenger)
+   * the density of the gases, because the materials table is an static element
+   * which remains constant from creation to the end of the program)
+   *
+   *  Do we really need those definitions here? 
+   *
+   */
 
   G4double a;  // atomic mass
   G4double z;  // atomic number
@@ -753,20 +1157,21 @@ void ActarSimDetectorConstruction::DefineMaterials() {
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetEleField(G4ThreeVector eVector){
-  //
-  // Setting the uniform electric field vector
-  //
-  //ATT to the units! There is no elec field unit defined in the program by default!!!
-  // I had problems defining the electric field units...
-  // Data is supposed to come in kV/cm from the messenger, but... what is the input unit
-  // for GEANT4 in the class G4ElectroMagneticField? Not clear to me...
+  /*!
+   * Setting the uniform electric field vector
+   *
+   * ATT to the units! There is no elec field unit defined in the program by default!!!
+   * I had problems defining the electric field units...
+   * Data is supposed to come in kV/cm from the messenger, but... what is the input unit
+   * for GEANT4 in the class G4ElectroMagneticField? Not clear to me...
+   */
   eField = eVector;
 }
 
 //_______________________________________________________________________________________________________
 void ActarSimDetectorConstruction::SetMagField(G4ThreeVector mVector){
-  //
-  // Setting the uniform magnetic field vector
-  //
+  /*!
+   * Setting the uniform magnetic field vector
+   */
   mField = mVector;
 }

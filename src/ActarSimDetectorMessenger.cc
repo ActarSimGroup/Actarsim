@@ -24,13 +24,13 @@
 #include "G4UIcmdWith3Vector.hh"
 #include "G4UIcmdWithoutParameter.hh"
 
-
 ActarSimDetectorMessenger::
 ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   :ActarSimDetector(ActarSimDet) {
-  //
-  // Constructor with fully functionality
-  //
+  /*!
+   * Constructor with full functionality
+   *
+   */
   ActarSimDir = new G4UIdirectory("/ActarSim/");
   ActarSimDir->SetGuidance("UI commands of ActarSim program");
 
@@ -60,7 +60,23 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   ACTARTPCGeoIncludedFlagCmd->SetDefaultValue("off");
   ACTARTPCGeoIncludedFlagCmd->SetCandidates("on off");
   ACTARTPCGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
+  
+  SpecMATGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/SpecMATGeoIncludedFlag",this);
+  SpecMATGeoIncludedFlagCmd->SetGuidance("Includes the SpecMAT geometry in the simulation (default off).");
+  SpecMATGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
+  SpecMATGeoIncludedFlagCmd->SetParameterName("choice",true);
+  SpecMATGeoIncludedFlagCmd->SetDefaultValue("off");
+  SpecMATGeoIncludedFlagCmd->SetCandidates("on off");
+  SpecMATGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  
+  OthersGeoIncludedFlagCmd = new G4UIcmdWithAString("/ActarSim/det/OthersGeoIncludedFlag",this);
+  OthersGeoIncludedFlagCmd->SetGuidance("Includes Other geometries in the simulation (default off).");
+  OthersGeoIncludedFlagCmd->SetGuidance("  Choice : on, off(default)");
+  OthersGeoIncludedFlagCmd->SetParameterName("choice",true);
+  OthersGeoIncludedFlagCmd->SetDefaultValue("off");
+  OthersGeoIncludedFlagCmd->SetCandidates("on off");
+  OthersGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  
   worldSizeXCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/setWorldSizeX",this);
   worldSizeXCmd->SetGuidance("Select the half-length X dimension of the World.");
   worldSizeXCmd->SetParameterName("xWorld",false);
@@ -145,14 +161,6 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   sciGeoIncludedFlagCmd->SetCandidates("on off");
   sciGeoIncludedFlagCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
   
-  AT_ProjectSwitchCmd = new G4UIcmdWithAString("/ActarSim/det/AT_ProjectSwitch",this);
-  AT_ProjectSwitchCmd->SetGuidance("Select the main geometry features according to the project (default off).");
-  AT_ProjectSwitchCmd->SetGuidance("Choice : Actar_TPC (default), SpecMAT");
-  AT_ProjectSwitchCmd->SetParameterName("AT_ProjectSwitch",false);
-  AT_ProjectSwitchCmd->SetDefaultValue("Actar_TPC");
-  AT_ProjectSwitchCmd->SetCandidates("Actar_TPC SpecMAT");
-  AT_ProjectSwitchCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
   mediumMaterialCmd = new G4UIcmdWithAString("/ActarSim/det/setMediumMat",this);
   mediumMaterialCmd->SetGuidance("Select Material outside the Chamber.");
   mediumMaterialCmd->SetParameterName("mediumMat",false);
@@ -193,16 +201,19 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
   printCmd->AvailableForStates(G4State_Idle);
 }
 
-
+//_______________________________________________________________________________________________________
 ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
-  //
-  // Destructor
-  //
+  /*!
+   *Destructor
+   */
+   
   delete ActarSimDir;
   delete detDir;
   delete MaikoGeoIncludedFlagCmd;
   delete ACTARTPCDEMOGeoIncludedFlagCmd;
   delete ACTARTPCGeoIncludedFlagCmd;
+  delete SpecMATGeoIncludedFlagCmd;
+  delete OthersGeoIncludedFlagCmd;
   delete worldSizeXCmd;
   delete worldSizeYCmd;
   delete worldSizeZCmd;
@@ -215,7 +226,6 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete gasGeoIncludedFlagCmd;
   delete silGeoIncludedFlagCmd;
   delete sciGeoIncludedFlagCmd;
-  delete AT_ProjectSwitchCmd;
   delete mediumMaterialCmd;
   delete chamberMaterialCmd;
   delete eleFieldCmd;
@@ -224,12 +234,12 @@ ActarSimDetectorMessenger::~ActarSimDetectorMessenger() {
   delete printCmd;
 }
 
-
+//_______________________________________________________________________________________________________
 void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 					    G4String newValue) {
-  //
-  // Setting the new values and connecting to detector constructor
-  //
+  /*!
+   * Setting the new values and connecting to detector constructor
+   */
 
   if( command == MaikoGeoIncludedFlagCmd )
     ActarSimDetector->SetMaikoGeoIncludedFlag(newValue);
@@ -239,6 +249,12 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == ACTARTPCGeoIncludedFlagCmd )
     ActarSimDetector->SetACTARTPCGeoIncludedFlag(newValue);
+
+  if( command == SpecMATGeoIncludedFlagCmd )
+    ActarSimDetector->SetSpecMATGeoIncludedFlag(newValue);
+
+  if( command == OthersGeoIncludedFlagCmd )
+    ActarSimDetector->SetOthersGeoIncludedFlag(newValue);
 
   if(command == worldSizeXCmd)
     ActarSimDetector->SetWorldSizeX(worldSizeXCmd->GetNewDoubleValue(newValue));
@@ -264,9 +280,6 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   //}
 
 
-
-
-
   if( command == gasGeoIncludedFlagCmd )
     ActarSimDetector->SetGasGeoIncludedFlag(newValue);
 
@@ -275,14 +288,6 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == sciGeoIncludedFlagCmd )
     ActarSimDetector->SetSciGeoIncludedFlag(newValue);
-
-  if(command == AT_ProjectSwitchCmd){
-    
-	if (newValue == "Actar_TPC") ActarSimDetector->SetAT_Project(1);
-	if (newValue == "SpecMAT") ActarSimDetector->SetAT_Project(2);
-	
-  }
-
 
   if(command == mediumMaterialCmd)
     ActarSimDetector->SetMediumMaterial(newValue);

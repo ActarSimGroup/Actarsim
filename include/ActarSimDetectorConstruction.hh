@@ -113,8 +113,8 @@ private:
   G4String gasGeoIncludedFlag;
   G4String silGeoIncludedFlag;
   G4String sciGeoIncludedFlag;
-  
-  G4int    AT_Project;                              //Main switch to select the type of detector
+  G4String SpecMATGeoIncludedFlag;
+  G4String OthersGeoIncludedFlag;
 
   //Detectors
   ActarSimGasDetectorConstruction* gasDet;          //target
@@ -128,7 +128,10 @@ private:
 
   void DefineMaterials();
   G4VPhysicalVolume* ConstructActarTPC();
+  G4VPhysicalVolume* ConstructActarTPCDEMO();
   G4VPhysicalVolume* ConstructSpecMAT();
+  G4VPhysicalVolume* ConstructMAIKO();
+  G4VPhysicalVolume* ConstructOthers();
 
 public:
 
@@ -149,7 +152,6 @@ public:
   void SetChamberCenterY(G4double val){chamberCenterY = val;}
   void SetChamberCenterZ(G4double val){chamberCenterZ = val;}
 
-  void SetAT_Project(G4int val){AT_Project=val;}
 
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
@@ -160,6 +162,10 @@ public:
   void SetMaikoGeoIncludedFlag(G4String val){MaikoGeoIncludedFlag=val;}
   void SetACTARTPCDEMOGeoIncludedFlag(G4String val){ACTARTPCDEMOGeoIncludedFlag=val;}
   void SetACTARTPCGeoIncludedFlag(G4String val){ACTARTPCGeoIncludedFlag=val;}
+  void SetSpecMATGeoIncludedFlag(G4String val){SpecMATGeoIncludedFlag=val;}
+  void SetOthersGeoIncludedFlag(G4String val){OthersGeoIncludedFlag=val;}
+
+  
   void SetGasGeoIncludedFlag(G4String val){gasGeoIncludedFlag=val;}
   void SetSilGeoIncludedFlag(G4String val){silGeoIncludedFlag=val;}
   void SetSciGeoIncludedFlag(G4String val){sciGeoIncludedFlag=val;}
@@ -190,8 +196,6 @@ public:
   G4double GetChamberCenterY(void){return chamberCenterY;}
   G4double GetChamberCenterZ(void){return chamberCenterZ;}
 
-  G4int GetAT_Project(){return AT_Project;}
-  
   G4Material* GetMediumMaterial() {return mediumMaterial;};
   G4Material* GetDefaultMaterial() {return defaultMaterial;};
   G4Material* GetChamberMaterial() {return chamberMaterial;};
@@ -206,6 +210,9 @@ public:
   G4String GetMaikoGeoIncludedFlag(void){return MaikoGeoIncludedFlag;}
   G4String GetACTARTPCDEMOGeoIncludedFlag(void){return ACTARTPCDEMOGeoIncludedFlag;}
   G4String GetACTARTPCGeoIncludedFlag(void){return ACTARTPCGeoIncludedFlag;}
+  G4String GetSpecMATGeoIncludedFlag(void){return SpecMATGeoIncludedFlag;}
+  G4String GetOthersGeoIncludedFlag(void){return OthersGeoIncludedFlag;}
+
 
   void UpdateGeometry();
   void UpdateEMField();

@@ -127,6 +127,7 @@ private:
   ActarSimDetectorMessenger* detectorMessenger;  //pointer to the Messenger
 
   void DefineMaterials();
+  G4VPhysicalVolume* ConstructEmptyWorld();  
   G4VPhysicalVolume* ConstructActarTPC();
   G4VPhysicalVolume* ConstructActarTPCDEMO();
   G4VPhysicalVolume* ConstructSpecMAT();

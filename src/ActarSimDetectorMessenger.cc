@@ -31,6 +31,7 @@ ActarSimDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet)
    * Constructor with full functionality
    *
    */
+   
   ActarSimDir = new G4UIdirectory("/ActarSim/");
   ActarSimDir->SetGuidance("UI commands of ActarSim program");
 
@@ -240,6 +241,8 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
   /*!
    * Setting the new values and connecting to detector constructor
    */
+   
+  //G4cout<<"Processing command: "<<command->GetCommandName()<<" - New value: "<<newValue<<G4endl;
 
   if( command == MaikoGeoIncludedFlagCmd )
     ActarSimDetector->SetMaikoGeoIncludedFlag(newValue);
@@ -248,7 +251,7 @@ void ActarSimDetectorMessenger::SetNewValue(G4UIcommand* command,
     ActarSimDetector->SetACTARTPCDEMOGeoIncludedFlag(newValue);
 
   if( command == ACTARTPCGeoIncludedFlagCmd )
-    ActarSimDetector->SetACTARTPCGeoIncludedFlag(newValue);
+      ActarSimDetector->SetACTARTPCGeoIncludedFlag(newValue);
 
   if( command == SpecMATGeoIncludedFlagCmd )
     ActarSimDetector->SetSpecMATGeoIncludedFlag(newValue);

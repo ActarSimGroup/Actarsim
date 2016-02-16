@@ -131,20 +131,22 @@ ActarSimDetectorConstruction::~ActarSimDetectorConstruction() {
     *  ActarSimDetectorConstruction standard destructor
 	*  
     */
-  delete emField;
-  delete gasDet;
-  delete silDet;
-  delete silRingDet;
-  delete sciDet;
-  delete sciRingDet;
-  delete plaDet;
-  delete gasSD;
-  delete silSD;
-  delete silRingSD;
-  delete sciSD;
-  delete sciRingSD;
-  delete plaSD;
-  delete detectorMessenger;
+  if (emField    != NULL) delete emField;
+  if (gasDet     != NULL) delete gasDet;
+  if (silDet     != NULL) delete silDet;
+  if (silRingDet != NULL) delete silRingDet;
+  if (sciDet     != NULL) delete sciDet;
+  if (sciRingDet != NULL) delete sciRingDet;
+  if (plaDet     != NULL) delete plaDet;
+  /*
+  if (gasSD      != NULL) delete gasSD;
+  if (silSD      != NULL) delete silSD;
+  if (silRingSD  != NULL) delete silRingSD;
+  if (sciSD      != NULL) delete sciSD;
+  if (sciRingSD  != NULL) delete sciRingSD;
+  if (plaSD      != NULL) delete plaSD;
+  */
+  if (detectorMessenger != NULL) delete detectorMessenger;
 }
 
 //_______________________________________________________________________________________________________
@@ -168,7 +170,7 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::Construct() {
 	 */
 
   G4int geo = 0;
-  G4int i_geo = 0;
+  G4int i_geo = 1;
    
   if(ACTARTPCGeoIncludedFlag == "on"){
 	 geo = 1; i_geo += 1;
@@ -190,13 +192,16 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::Construct() {
   	  geo = 5; i_geo += 1;
   }
   
-  if (i_geo !=1){
-	  G4cout<<"ERROR, none or multiple geometry definition. Verify inputfile"<<G4endl;
-	  return NULL;
+  if (i_geo > 2){
+	  G4cout<<"ERROR, multiple geometry definition. Verify inputfile. (geo="<< geo <<", i_geo="<<i_geo<<")"<<G4endl;
+	  exit (-1);
   }
 
   //Build the DETECTOR according to the specified layout		
   switch (geo){
+	  
+	case 0: G4cout << "Building empty geometry" <<G4endl;
+	        return ConstructEmptyWorld();  
 
     case 1: G4cout << "Building ACTAR_TPC geometry" <<G4endl;
 	  	    return ConstructActarTPC();  
@@ -219,6 +224,33 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::Construct() {
 	
  
 return NULL;
+}
+
+//_______________________________________________________________________________________________________
+G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructEmptyWorld() {
+   /*!
+    *   This methods constructs an empty World volume with default sizes.
+	*   
+	*   It is used if no geometry is specified when inizialization is called.
+	*
+	*/
+	
+	solidWorld = new G4Box("World",                //its name
+			 worldSizeX,worldSizeY,worldSizeZ);  //its size
+
+    worldLog = new G4LogicalVolume(solidWorld,     //its solid
+				 mediumMaterial,                 //its material
+				 "World");                       //its name
+
+    worldPhys = new G4PVPlacement(0,     //no rotation
+				G4ThreeVector(),       //at (0,0,0)
+				worldLog,              //its logical volume
+				"World",               //its name
+				0,                     //its mother  volume
+				false,                 //no boolean operation
+				0);                    //copy number
+
+return worldPhys;
 }
 
 //_______________________________________________________________________________________________________
@@ -853,8 +885,8 @@ void ActarSimDetectorConstruction::PrintDetectorParameters() {
 	 << "--                                                          --" << G4endl	  
 	 << "--                                                          --" << G4endl	  
 	 << "--                                                          --" << G4endl	  
-	 << " The medium material is: " << mediumMaterial << G4endl << G4endl << G4endl
-	 << " The chamber material is: " << chamberMaterial << G4endl << G4endl;
+	 << "-- The medium material is: "<< G4endl << mediumMaterial << G4endl << G4endl << G4endl
+	 << "-- The chamber material is: "<< G4endl << chamberMaterial << G4endl << G4endl;
   G4cout << G4endl << " The EM field applied has the following components:"
 	 << G4endl << " Magnetic component: "
 	 << emField->GetMagneticFieldValue().x() << " "
@@ -863,7 +895,7 @@ void ActarSimDetectorConstruction::PrintDetectorParameters() {
 	 << G4endl << " Electric component: "
 	 << emField->GetElectricFieldValue().x() << " "
 	 << emField->GetElectricFieldValue().y() << " "
-	 << emField->GetElectricFieldValue().z()
+	 << emField->GetElectricFieldValue().z() << G4endl
 	 << "--------------------------------------------------------------" << G4endl;
 	 
 

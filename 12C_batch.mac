@@ -272,7 +272,7 @@
 /ActarSim/event/printModulo 1000
 #
 # RUN: number of events
-/run/beamOn 200
+/run/beamOn 2000
 #
 #
 /ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
@@ -281,7 +281,7 @@
 /ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
 #
 #
-#/run/beamOn 20000
+/run/beamOn 20000
 #
 #
 /ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
@@ -290,10 +290,13 @@
 /ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
 #
 #
-#/run/beamOn 20000
+/run/beamOn 20000
 #
 #
 /ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
 /ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207
 /ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
-/ActarSim/gun/Kine/scatteredIon 6 12 6
+/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+#
+#
+/run/beamOn 20000

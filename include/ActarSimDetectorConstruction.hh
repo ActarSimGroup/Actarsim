@@ -113,6 +113,8 @@ private:
   G4String gasGeoIncludedFlag;
   G4String silGeoIncludedFlag;
   G4String sciGeoIncludedFlag;
+  G4String SpecMATGeoIncludedFlag;
+  G4String OthersGeoIncludedFlag;
 
   //Detectors
   ActarSimGasDetectorConstruction* gasDet;          //target
@@ -125,7 +127,12 @@ private:
   ActarSimDetectorMessenger* detectorMessenger;  //pointer to the Messenger
 
   void DefineMaterials();
-  G4VPhysicalVolume* ConstructActar();
+  G4VPhysicalVolume* ConstructEmptyWorld();  
+  G4VPhysicalVolume* ConstructActarTPC();
+  G4VPhysicalVolume* ConstructActarTPCDEMO();
+  G4VPhysicalVolume* ConstructSpecMAT();
+  G4VPhysicalVolume* ConstructMAIKO();
+  G4VPhysicalVolume* ConstructOthers();
 
 public:
 
@@ -146,16 +153,20 @@ public:
   void SetChamberCenterY(G4double val){chamberCenterY = val;}
   void SetChamberCenterZ(G4double val){chamberCenterZ = val;}
 
+
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
   void SetChamberMaterial(G4String);
   void SetWindowMaterial (G4String);
-
   void SetUpdateChamberMaterial(G4Material*);
 
   void SetMaikoGeoIncludedFlag(G4String val){MaikoGeoIncludedFlag=val;}
   void SetACTARTPCDEMOGeoIncludedFlag(G4String val){ACTARTPCDEMOGeoIncludedFlag=val;}
   void SetACTARTPCGeoIncludedFlag(G4String val){ACTARTPCGeoIncludedFlag=val;}
+  void SetSpecMATGeoIncludedFlag(G4String val){SpecMATGeoIncludedFlag=val;}
+  void SetOthersGeoIncludedFlag(G4String val){OthersGeoIncludedFlag=val;}
+
+  
   void SetGasGeoIncludedFlag(G4String val){gasGeoIncludedFlag=val;}
   void SetSilGeoIncludedFlag(G4String val){silGeoIncludedFlag=val;}
   void SetSciGeoIncludedFlag(G4String val){sciGeoIncludedFlag=val;}
@@ -200,6 +211,9 @@ public:
   G4String GetMaikoGeoIncludedFlag(void){return MaikoGeoIncludedFlag;}
   G4String GetACTARTPCDEMOGeoIncludedFlag(void){return ACTARTPCDEMOGeoIncludedFlag;}
   G4String GetACTARTPCGeoIncludedFlag(void){return ACTARTPCGeoIncludedFlag;}
+  G4String GetSpecMATGeoIncludedFlag(void){return SpecMATGeoIncludedFlag;}
+  G4String GetOthersGeoIncludedFlag(void){return OthersGeoIncludedFlag;}
+
 
   void UpdateGeometry();
   void UpdateEMField();

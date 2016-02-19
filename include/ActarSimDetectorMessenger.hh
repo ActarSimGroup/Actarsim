@@ -42,6 +42,8 @@ private:
   G4UIcmdWithAString* MaikoGeoIncludedFlagCmd;
   G4UIcmdWithAString* ACTARTPCDEMOGeoIncludedFlagCmd;
   G4UIcmdWithAString* ACTARTPCGeoIncludedFlagCmd;
+  G4UIcmdWithAString* SpecMATGeoIncludedFlagCmd;
+  G4UIcmdWithAString* OthersGeoIncludedFlagCmd;
   G4UIcmdWithADoubleAndUnit* chamberSizeXCmd;
   G4UIcmdWithADoubleAndUnit* chamberSizeYCmd;
   G4UIcmdWithADoubleAndUnit* chamberSizeZCmd;

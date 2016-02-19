@@ -64,6 +64,9 @@
 #
 # GENERAL COMMANDS
 #
+# SET THE MAIN GEOMTERY FLAG
+/ActarSim/det/ACTARTPCDEMOGeoIncludedFlag on
+#
 # Control of the material outside the chamber (by default Air)
 #/ActarSim/det/setMediumMat D2_STP
 #/ActarSim/det/setMediumMat Galactic
@@ -269,7 +272,7 @@
 /ActarSim/event/printModulo 1000
 #
 # RUN: number of events
-/run/beamOn 20000
+/run/beamOn 2000
 #
 #
 /ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.

@@ -85,6 +85,7 @@ ActarSimPrimaryGeneratorAction::ActarSimPrimaryGeneratorAction()
   thetaLabAngle = 45 * deg;   // 45 degrees (TH)
   randomThetaMin = 0.*deg;
   randomThetaMax = 180.*deg;
+  beamRadiusAtEntrance = 0.;
 
   beamDirectionFlag = 1; // 0 : direction given by angles, 1 : direction given by vector
 

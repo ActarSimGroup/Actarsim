@@ -18,10 +18,10 @@
 // How to run this program:
 // 1 - Run the simulation
 // 2 - Run the digitization
-// 3 - Run this macro inside root
-//      gSystem->Load("actarsim.sl");
-//      .L Analysis_reduce.C+;
-//      Analysis_reduce("inputefile","outputFile")
+// 3 - Run the Reducer
+// 4 - Run this macro inside root
+//      .L Analysis_Reduce.C;
+//      Run("inputFile","outputFile")
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -42,8 +42,7 @@ using namespace std;
 #endif
 
 
-
-void Analysis_reduce(char* inputFile, char* outputFile){
+void Run(char* inputFile, char* outputFile){
   //For the Particle Identification, choose the portion of track from which the energy deposit is calculated
   Double_t DeltaL=20.;//size of the track portion
   Double_t LOutMax=80.;//distance from the end point on the silicon
@@ -54,7 +53,7 @@ void Analysis_reduce(char* inputFile, char* outputFile){
   Bool_t TrackVisuFlag=1;
   Bool_t TrackSourcePosFlag=0;
   Bool_t TrackAngleFlag=0;
-  Bool_t TrackBragFlag=0;
+  Bool_t TrackBragFlag=1;
   Bool_t TrackRangeFlag=0;
   Bool_t MultiThetaFlag=0;
 
@@ -1248,7 +1247,7 @@ void Analysis_reduce(char* inputFile, char* outputFile){
     }
     //End of reaction analysis
 
-    if(TrackBragFlag){
+    if(TrackBragFlag){ 
       Can_brag->cd(1);
       if(h_scat_range1 && bragR1){
 	h_scat_range1->Draw();

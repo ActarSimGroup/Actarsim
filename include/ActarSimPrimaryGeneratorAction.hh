@@ -64,6 +64,7 @@ private:
   //beam parameters
   G4double emittance;
   G4double beamRadiusAtEntrance;
+
   G4ThreeVector beamPosition;
   G4ParticleMomentum beamMomentumDirection;
   G4bool  beamDirectionFlag;      // flag for a beam direction defined by angles (0) or vector (1)
@@ -89,6 +90,7 @@ private:
   // Kine data members
   G4String  reactionFromKineFlag;
   G4double  thetaCMAngle;
+  G4double  userThetaAngle;
   G4double  userPhiAngle;
   G4double  massOfProjectile;
   G4double  massOfTarget;
@@ -137,9 +139,13 @@ public:
 // ---------------------------------------------------- corresponding Kine part, dypang 080228
 
   void SetReactionFromKineFlag(G4String val) { reactionFromKineFlag = val;}
+
   void SetThetaCMAngle(G4double val){thetaCMAngle=val; beamDirectionFlag=0;}
+  void SetUserThetaAngle(G4double val){userThetaAngle=val; beamDirectionFlag=0;}
   void SetUserPhiAngle(G4double val){userPhiAngle=val; beamDirectionFlag=0;}
+
   G4double GetThetaCMAngle(){return thetaCMAngle;}
+  G4double GetUserThetaAngle(){return userThetaAngle;}
   G4double GetUserPhiAngle(){return userPhiAngle;}
 
   void SetMassOfProjectile(G4double val){massOfProjectile=val;}

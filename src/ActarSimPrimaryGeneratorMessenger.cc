@@ -92,6 +92,22 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   beamDirectionCmd->SetParameterName("Px","Py","Pz",true,true);
   beamDirectionCmd->SetRange("Px != 0 || Py != 0 || Pz != 0");
 
+  beamThetaCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/beamTheta",this);
+  beamThetaCmd->SetGuidance("Sets theta angle for beam (in degrees)");
+  beamThetaCmd->SetParameterName("beamTheta",false);
+  //beamThetaCmd->SetRange("userThetaCM>=0.");
+  beamThetaCmd->SetUnitCategory("Angle");
+  beamThetaCmd->SetDefaultValue(0.);
+  beamThetaCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  beamPhiCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/beamPhi",this);
+  beamPhiCmd->SetGuidance("Sets theta angle for beam (in degrees)");
+  beamPhiCmd->SetParameterName("beamPhi",false);
+  //beamPhiCmd->SetRange("userPhiCM>=0.");
+  beamPhiCmd->SetUnitCategory("Angle");
+  beamPhiCmd->SetDefaultValue(0.);
+  beamPhiCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
   beamPositionCmd = new G4UIcmdWith3VectorAndUnit("/ActarSim/gun/beamPosition",this);
   beamPositionCmd->SetGuidance("Set beam starting position.");
   beamPositionCmd->SetParameterName("X","Y","Z",true,true);
@@ -622,6 +638,8 @@ ActarSimPrimaryGeneratorMessenger::~ActarSimPrimaryGeneratorMessenger() {
   delete particleCmd;
   delete energyCmd;
   delete directionCmd;
+  delete beamThetaCmd;
+  delete beamPhiCmd;
   delete positionCmd;
   delete timeCmd;
   delete randomVertexZPositionCmd;
@@ -704,6 +722,14 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command==beamDirectionCmd )
     actarSimActionGun->SetBeamMomentumDirection(beamDirectionCmd->GetNew3VectorValue(newValues));
+
+  if( command == beamThetaCmd )
+    actarSimActionGun->
+      SetUserThetaAngle(beamThetaCmd->GetNewDoubleValue(newValues));
+
+  if( command == beamPhiCmd )
+    actarSimActionGun->
+      SetUserPhiAngle(beamPhiCmd->GetNewDoubleValue(newValues));
 
   if( command==beamPositionCmd )
     actarSimActionGun->SetBeamPosition(beamPositionCmd->GetNew3VectorValue(newValues));

@@ -56,6 +56,8 @@ private:
   G4UIcommand*                 CinerandomThetaValCmd;
   G4UIcmdWithADoubleAndUnit*   energyCmd;
   G4UIcmdWith3Vector*          directionCmd;
+  G4UIcmdWithADoubleAndUnit*   beamThetaCmd;
+  G4UIcmdWithADoubleAndUnit*   beamPhiCmd;
   G4UIcmdWith3VectorAndUnit*   positionCmd;
   G4UIcmdWithADoubleAndUnit*   timeCmd;
   G4UIcmdWithAString*          randomVertexZPositionCmd;

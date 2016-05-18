@@ -300,6 +300,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     else{
       //vertex_z0 = G4UniformRand()*(2.* lengthParameter);
       vertex_z0 = -lengthParameter + G4UniformRand()*lengthParameter;//If Z origin is at the center of GasBox
+
     }
 
     if(verboseLevel>0){
@@ -1011,34 +1012,34 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
 
     //Random distribution for polar and azimuthal angles
-    G4double cosTheta, sinTheta;
+
+    G4double theta;
+
     if(randomThetaFlag == "on") {
 
       G4double CosRandomThetaMin=cos(randomThetaMin);
       G4double CosRandomThetaMax=cos(randomThetaMax);
 
       if(CosRandomThetaMin==1. && CosRandomThetaMax==0. ) {
-        cosTheta = -1.0 + 2.0*G4UniformRand();
-        sinTheta = sqrt(1 - cosTheta*cosTheta);
+	theta=2*pi*G4UniformRand();
       }
       else{
-        //Theta = (randomThetaMin + (randomThetaMax-randomThetaMin) * G4UniformRand()) * rad;
-        cosTheta = cos(randomThetaMin*rad)+(cos(randomThetaMax*rad)- cos(randomThetaMin*rad))*G4UniformRand();
-        //cosTheta = cos(Theta);
-        sinTheta = sqrt(1 - cosTheta*cosTheta);
+	theta=randomThetaMin + ((randomThetaMax-randomThetaMin) * G4UniformRand()) * rad;
       }
     }
     else{
-      sinTheta=sin(GetThetaCMAngle());
-      cosTheta=cos(GetThetaCMAngle());
+      theta=GetUserThetaAngle();
     }
-    if(sinTheta){;}
+
+    if(theta){;}
 
     G4double phi;
 
     if(randomPhiFlag == "on"){
+
       G4double CosRandomPhiMin=cos(randomPhiMin);
       G4double CosRandomPhiMax=cos(randomPhiMax);
+
       if(CosRandomPhiMin==1. && CosRandomPhiMax==1.)
         phi=2*pi*G4UniformRand();
       else
@@ -1052,17 +1053,27 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       G4ParticleDefinition* pd = particleTable->FindParticle("alpha");
       if(pd != 0) particleGun->SetParticleDefinition(pd);
       G4int i=rand() % 3;
-      G4double alpha_energy[3]={5.16,5.49,5.81};
+      G4double alpha_energy[3]={5.15,5.48,5.8};
       particleGun->SetParticleEnergy(alpha_energy[i]*MeV);
     }
     else{
       particleGun->SetParticleEnergy(GetIncidentEnergy());
     }
 
-    particleGun->SetParticlePosition(beamPosition);
+    G4double radiusAtEntrance = beamRadiusAtEntrance * G4UniformRand(); //from 0 to beamRadiusAtEntrance
+
+    G4double phi2AtEntrance = G4UniformRand() * twopi; //angle for defining the entrance point
+
+    //Entrance coordinates (x0,y0,0) 
+    G4double x0 = beamPosition.x() + radiusAtEntrance*cos(phi2AtEntrance);
+    G4double y0 = beamPosition.y() + radiusAtEntrance*sin(phi2AtEntrance);
+    G4double z0 = beamPosition.z();
+
+    //particleGun->SetParticlePosition(beamPosition);
+    particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
     //Particle momentum
-    if(randomThetaFlag == "on" || randomPhiFlag == "on" || !beamDirectionFlag) particleGun->SetParticleMomentumDirection(G4ThreeVector(sinTheta*cos(phi),sin(phi),cosTheta*cos(phi) ) );
+    if(randomThetaFlag == "on" || randomPhiFlag == "on" || !beamDirectionFlag) particleGun->SetParticleMomentumDirection(G4ThreeVector(sin(theta)*cos(phi),sin(phi),cos(theta)*cos(phi) ) );
     else if(beamDirectionFlag) particleGun->SetParticleMomentumDirection(beamMomentumDirection);
 
     particleGun->GeneratePrimaryVertex(anEvent);

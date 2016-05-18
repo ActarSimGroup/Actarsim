@@ -156,7 +156,7 @@
 /ActarSim/gun/beamDirection 0 0 1
 #
 #/ActarSim/gun/emittance 200.0                   #Selects the value of the emittance [in mm mrad]
-/ActarSim/gun/beamRadiusAtEntrance 18. mm       #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
+/ActarSim/gun/beamRadiusAtEntrance 1. mm       #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
 #
 # Realistic Event-Generator on
 /ActarSim/gun/reactionFromEvGen off 

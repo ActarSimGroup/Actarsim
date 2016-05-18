@@ -158,7 +158,9 @@ digitizationMacro.C
 digit.h
 MTrack.h
 Reducer.C
-Analysis_reduce.C
+Analysis_Reduce.C
+Analysis_Angle.C
+Analysis_Profile.C
  )
 
 foreach(_script ${ACTARSIM_SCRIPTS})

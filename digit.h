@@ -1238,14 +1238,11 @@ Int_t driftManager::CalculatePositionAfterDrift(projectionOnPadPlane* pro) {
 
   if(padsGeo->GetEndCapMode()==1) ;
   else{
-    //if(pro->GetTrack()->GetZPre() <= 0 ||
-    //   pro->GetTrack()->GetZPre() >= 2 * padsGeo->GetZLength() ||
-    //   pro->GetTrack()->GetZPost() <= 0 ||
-    //   pro->GetTrack()->GetZPost() >= 2 * padsGeo->GetZLength()) pro->SetPosition(5); // out of range
-    if(pro->GetTrack()->GetZPre() <= -padsGeo->GetZLength() ||
-       pro->GetTrack()->GetZPre() >=  padsGeo->GetZLength() ||
-       pro->GetTrack()->GetZPost() <= -padsGeo->GetZLength() ||
-       pro->GetTrack()->GetZPost() >=  padsGeo->GetZLength()) pro->SetPosition(5); // out of range
+    // steps on the border (ie Transportation) are taken into account
+    if(pro->GetTrack()->GetZPre() < -padsGeo->GetZLength() ||
+       pro->GetTrack()->GetZPre() >  padsGeo->GetZLength() ||
+       pro->GetTrack()->GetZPost() < -padsGeo->GetZLength() ||
+       pro->GetTrack()->GetZPost() >  padsGeo->GetZLength()) pro->SetPosition(5); // out of range
     else if(rhoPre  < padsGeo->GetDeltaProximityBeam() ||
             rhoPost < padsGeo->GetDeltaProximityBeam()) pro->SetPosition(1); //if any point is closer to the (0,0,z) than a delta
     else if(rhoPre  < padsGeo->GetSizeBeamShielding() &&

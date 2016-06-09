@@ -82,7 +82,7 @@ void ActarSimKinePrimGenerator::KineKinematics() {
 
   //Arguments:
   // masses: m1, m2, m3, m4 (for incident, target, scattered and recoil masses)
-  // exciatation energies: ex1, ex2, ex3, ex4
+  // excitation energies: ex1, ex2, ex3, ex4
   // energies: Tb (lab energy in MeV)
   // angles: thetacmsInput   (theta CM angle of the scattered particle in degree)
   //

@@ -5,7 +5,8 @@
 #
 # File :
 /gui/addMenu g4file G4File
-/gui/addButton g4file vis_actar "/control/execute vis_actar.mac"
+/gui/addButton g4file vis_actarTPCDEMO "/control/execute vis_actarTPCDEMO.mac"
+/gui/addButton g4file vis_actarTPC "/control/execute vis_actarTPC.mac"
 /gui/addButton g4file vis_alpha "/control/execute vis_alpha.mac"
 /gui/addButton g4file vis_maiko "/control/execute vis_maiko.mac"
 /gui/addButton g4file vis_kine "/control/execute vis_kine.mac"

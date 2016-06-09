@@ -615,10 +615,10 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
 
   //calling the actions defined for each detector
   //DPL jun2012 only silicon hits stored in ROOT file
-  // G4int hitsCollectionID =G4SDManager::GetSDMpointer()->GetCollectionID("SilCollection");
-  // G4HCofThisEvent* HCofEvent = anEvent->GetHCofThisEvent();
-  // ActarSimSilGeantHitsCollection* hitsCollection =
-  //   (ActarSimSilGeantHitsCollection*) HCofEvent->GetHC(hitsCollectionID);
+  //G4int hitsCollectionID =G4SDManager::GetSDMpointer()->GetCollectionID("SilCollection");
+  //G4HCofThisEvent* HCofEvent = anEvent->GetHCofThisEvent();
+  //ActarSimSilGeantHitsCollection* hitsCollection =
+  // (ActarSimSilGeantHitsCollection*) HCofEvent->GetHC(hitsCollectionID);
   //Number of ActarSimSilGeantHit (or steps) in the hitsCollection
   //G4int NbHits = hitsCollection->entries(); 
   //G4cout<<"Hits in the silicon "<< NbHits <<G4endl;
@@ -703,7 +703,6 @@ void ActarSimROOTAnalysis::PostUserTrackingAction(const G4Track *aTrack,
 }
 
 
-// void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){ // original
 void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
   //
   //

@@ -57,6 +57,10 @@ private:
   G4double radiusGasTub;
   G4double lengthGasTub;
 
+  // Field Cage Parameters
+  G4LogicalVolume* wireFoilLog;
+  G4VPhysicalVolume* wireFoilPhys;
+
   // beamShieldTub Size Parameters
   G4double innerRadiusBeamShieldTub;
   G4double outerRadiusBeamShieldTub;

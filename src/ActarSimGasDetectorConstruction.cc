@@ -116,25 +116,38 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
  	    << " mm,  gasBoxCenterZ = " <<  gasBoxCenterZ << " mm" << G4endl
 	    << " gasMaterial: " <<  gasMaterial << G4endl;
     G4cout << "##################################################################"<< G4endl;
+ 
 
-    if(detConstruction->GetACTARTPCDEMOGeoIncludedFlag() == "on"){
+    if(detConstruction->GetACTARTPCGeoIncludedFlag() == "on"){
+      //gas Box size: (266*170*266)mm
+      gasBoxSizeX = 133.*mm;
+      gasBoxSizeY = 85.*mm;
+      gasBoxSizeZ = 133.*mm;
+      //Pad Size : GasBox height from chamber floor = 4.54mm
+      gasBoxCenterX = 0.*mm;
+      gasBoxCenterY = -105.0+gasBoxSizeY+4.54*mm; // gasBox shifted to be at the bottom of chamber and above the pads
+      gasBoxCenterZ = 0.*mm;
+    }
+    else if(detConstruction->GetACTARTPCDEMOGeoIncludedFlag() == "on"){
       //gas Box size: (74*170*138)mm
       gasBoxSizeX = 37.*mm;
       gasBoxSizeY = 85.*mm;
       gasBoxSizeZ = 69.*mm;
-      //centered in (0,0,gasBoxSizeZ) to have origin in the detector entrance
       //Pad Size : GasBox height from chamber floor = 4.54mm
       gasBoxCenterX = 0.*mm;
-      //gasBoxCenterY = 0.*mm; //-105.0+gasBoxSizeY+4.54*mm; //OLD -chamberSizeY+yGasBox+padSizeY
-      gasBoxCenterY = -105.0+gasBoxSizeY+4.54*mm; //Piotr : gasBox shifted to be at the bottom of chamber and above the pads
+      gasBoxCenterY = -105.0+gasBoxSizeY+4.54*mm; // gasBox shifted to be at the bottom of chamber and above the pads
       gasBoxCenterZ = 0.*mm;
     }
     else {
-      gasBoxCenterX = 0.;
-      gasBoxCenterY = 0.;
-      gasBoxCenterZ = 0.;
-    //gasBoxCenterZ = gasBoxSizeZ; //WHY?? NO!!!!
+      gasBoxSizeX = GetGasBoxSizeX();
+      gasBoxSizeY = GetGasBoxSizeY();
+      gasBoxSizeZ = GetGasBoxSizeZ();
+
+      gasBoxCenterX = GetGasBoxCenterX();
+      gasBoxCenterY = GetGasBoxCenterY();
+      gasBoxCenterZ = GetGasBoxCenterZ();
     }
+
     G4Box* gasBox;
     gasBox = new G4Box("gasBox",gasBoxSizeX,gasBoxSizeY,gasBoxSizeZ);
 
@@ -143,7 +156,29 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
     gasPhys = new G4PVPlacement(0,
       G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
       gasLog,"gasPhys",chamberLog,false,0);
-//HAPOL NOTE CHECK!!! gasVolumeCenterPosZ is zero in working version (ACTARTPCDEMO). How it can be!??
+
+    // //--------------------------
+    // // Field Cage wire replaced by a copper foil around the GasBox
+    // //--------------------------
+    // G4double wireFoilSizeX = gasBoxSizeX;
+    // G4double wireFoilSizeY = gasBoxSizeY;
+    // G4double wireFoilSizeZ = 0.00125/2*mm;//That's for 20 um wire with a pitch of 1 mm
+
+    // G4Box *wireFoil=new G4Box("wireFoilBox",wireFoilSizeX,wireFoilSizeY,wireFoilSizeZ);
+    // wireFoilLog=new G4LogicalVolume(wireFoil,G4Material::GetMaterial("Copper"),"wireFoilBox");
+
+    // G4double wireFoilPosX = 0.*mm;
+    // G4double wireFoilPosY =  -105.0+gasBoxSizeY+4.54*mm;
+    // G4double wireFoilPosZ = gasBoxSizeZ+wireFoilSizeZ;
+
+    // wireFoilPhys=new G4PVPlacement(0,G4ThreeVector(wireFoilPosX,wireFoilPosY,wireFoilPosZ),
+    // 				   wireFoilLog,"wireFoilBox",chamberLog,false,0);
+
+    // G4VisAttributes* wireFoilVisAtt= new G4VisAttributes(G4Colour(1.0,0.5,0.));
+    // wireFoilVisAtt->SetVisibility(true);
+    // wireFoilLog->SetVisAttributes(wireFoilVisAtt);
+
+
   }
   else if(detectorGeometry == "tube"){
     G4cout << "##################################################################" << G4endl
@@ -177,7 +212,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   G4LogicalVolume* beamShieldLog(0);                //pointer to logic
   G4VPhysicalVolume* beamShieldPhys;                //pointer to physic
 
-  //if( beamShieldPhys){;}
+  if( beamShieldPhys){;}
 
   if( beamShieldGeometry == "tube"){
     G4cout << "##################################################################" << G4endl

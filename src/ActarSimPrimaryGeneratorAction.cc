@@ -862,12 +862,12 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
 
     G4double thetaBeam1, thetaBeam2;
-
+    
     thetaBeam1 = KINE->GetANGAs(0);    // unit: rad
     thetaBeam2 = KINE->GetANGAr(0);    // unit: rad
     energy1    = KINE->GetANGAs(1);    // unit: MeV
     energy2    = KINE->GetANGAr(1);    // unit: MeV
-
+    
     if(verboseLevel>1){
       G4cout << "Kine: Scattered energy:" << KINE->GetANGAs(1) << " MeV" << G4endl;
       G4cout << "Kine: Recoiled energy:" << KINE->GetANGAr(1) << " MeV" << G4endl;
@@ -1060,6 +1060,10 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     else{
       particleGun->SetParticleEnergy(GetIncidentEnergy());
     }
+
+    //Piotr: for the p/alpha discrimination test
+    //G4double ParticleEnergy = GetIncidentEnergy() * G4UniformRand();
+    //particleGun->SetParticleEnergy(ParticleEnergy);
 
     G4double radiusAtEntrance = beamRadiusAtEntrance * G4UniformRand(); //from 0 to beamRadiusAtEntrance
 

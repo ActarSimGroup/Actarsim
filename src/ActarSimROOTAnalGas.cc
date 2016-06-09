@@ -389,13 +389,13 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
       //G4cout << (*hitsCollection)[i]->GetDetName() << G4endl;
       for(G4int j=0;j<2;j++) { //that is, for 2 primaries
         if((*hitsCollection)[i]->GetTrackID()==(j+1) &&
-	         (*hitsCollection)[i]->GetParentID()==0){ //this step comes from a primary
-           //New algorithm to reduce the number of GEANT4 steps to a few strides...
+	   (*hitsCollection)[i]->GetParentID()==0){ //this step comes from a primary
+	  //New algorithm to reduce the number of GEANT4 steps to a few strides...
           if(simpleTrack[j]->GetNumberSteps() == 0) {
             //the first step in the stride!
             simpleTrack[j]->SetXPre((*hitsCollection)[i]->GetPrePos().x());
             simpleTrack[j]->SetYPre((*hitsCollection)[i]->GetPrePos().y());
-	          simpleTrack[j]->SetZPre((*hitsCollection)[i]->GetPrePos().z());
+	    simpleTrack[j]->SetZPre((*hitsCollection)[i]->GetPrePos().z());
             simpleTrack[j]->SetXPost((*hitsCollection)[i]->GetPostPos().x());
             simpleTrack[j]->SetYPost((*hitsCollection)[i]->GetPostPos().y());
             simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
@@ -404,8 +404,8 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
             simpleTrack[j]->SetParticleMass((*hitsCollection)[i]->GetParticleMass());
             simpleTrack[j]->SetParticleID((*hitsCollection)[i]->GetParticleID());
             simpleTrack[j]->SetStrideLength((*hitsCollection)[i]->GetStepLength());
-	          //G4cout << "Step lenth: " << (*hitsCollection)[i]->GetStepLength() << G4endl;
-	          simpleTrack[j]->SetParticleEnergy((*hitsCollection)[i]->GetStepEnergy());
+	    //G4cout << "Step lenth: " << (*hitsCollection)[i]->GetStepLength() << G4endl;
+	    simpleTrack[j]->SetParticleEnergy((*hitsCollection)[i]->GetStepEnergy());
             simpleTrack[j]->SetTimePre((*hitsCollection)[i]->GetPreToF());
             simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
             simpleTrack[j]->SetNumberSteps(1);
@@ -427,12 +427,12 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
             simpleTrack[j]->SetZPost((*hitsCollection)[i]->GetPostPos().z());
             simpleTrack[j]->SetTimePost((*hitsCollection)[i]->GetPostToF());
             simpleTrack[j]->SetEnergyStride(simpleTrack[j]->GetEnergyStride() +
-					                                 (*hitsCollection)[i]->GetEdep());
-	          simpleTrack[j]->SetStrideLength(simpleTrack[j]->GetStrideLength() +
-					                                 (*hitsCollection)[i]->GetStepLength());
-	          simpleTrack[j]->SetNumberSteps(simpleTrack[j]->GetNumberSteps()+1);
+					    (*hitsCollection)[i]->GetEdep());
+	    simpleTrack[j]->SetStrideLength(simpleTrack[j]->GetStrideLength() +
+					    (*hitsCollection)[i]->GetStepLength());
+	    simpleTrack[j]->SetNumberSteps(simpleTrack[j]->GetNumberSteps()+1);
 
-	          //G4cout << "next step of type "  << j << G4endl
+	    //G4cout << "next step of type "  << j << G4endl
             // << " postTime" << (*hitsCollection)[i]->GetPostToF()
             // << "length up to now: " << simpleTrack[j]->GetStrideLength()<< G4endl;
           }

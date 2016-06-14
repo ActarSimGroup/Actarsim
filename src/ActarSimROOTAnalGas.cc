@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 05/2005
-//*-- Last Update: 23/12/14 by Hector Alvarez Pol
+//*-- Last Update: 14/06/16 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   The gas detector part of the ROOT Analysis
@@ -51,21 +51,9 @@
 //for calculating the optical photon wavelenght for a given enegy
 //static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
 
-ActarSimROOTAnalGas::ActarSimROOTAnalGas():
-  storeTracksFlag("off"), storeTrackHistosFlag("off"),
-  storeEventsFlag("off"), storeSimpleTracksFlag("on") {
+ActarSimROOTAnalGas::ActarSimROOTAnalGas(){
   //
   // Default constructor... Simply inits
-  //
-  init();
-}
-
-ActarSimROOTAnalGas::ActarSimROOTAnalGas(G4String sTFlag, G4String sTHFlag,
-                                         G4String sEFlag, G4String sSTFlag ):
-  storeTracksFlag(sTFlag), storeTrackHistosFlag(sTHFlag),
-  storeEventsFlag(sEFlag), storeSimpleTracksFlag(sSTFlag) {
-  //
-  // Constructor
   //
   init();
 }
@@ -76,11 +64,6 @@ void ActarSimROOTAnalGas::init(){
   //
   G4cout << "##################################################################" << G4endl
 	       << "###########    ActarSimROOTAnalGas::init()    ####################" << G4endl;
-  G4cout << "########  Flags: storeTracksFlag=" << storeTracksFlag
-	       << ", storeTrackHistosFlag=" << storeTrackHistosFlag << "  ######" << G4endl
-	       << "######## storeEventsFlag=" << storeEventsFlag
-	       << ", storeSimpleTracksFlag=" << storeSimpleTracksFlag << "  ######" << G4endl;
-  G4cout << "################################################################## " << G4endl;
 
   //The simulation file
   simFile = ((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetSimFile();
@@ -203,7 +186,8 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
     hStepSumLengthOnGas2 = new TH1D("hStepSumLengthOnGas2","Step Sum Length On Gas for second primary", 1000, 0.0, 1000.0);// in [cm]
     if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->SetXTitle("[mm]");
   }
-  if(storeTrackHistosFlag == "on") {
+
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag()== "on") {
     htrackInPads =
       (TH2D *)gROOT->FindObject("htrackInPads");
     if(htrackInPads) htrackInPads->Reset();
@@ -318,7 +302,7 @@ void ActarSimROOTAnalGas::EndOfRunAction(const G4Run *aRun) {
 
   G4int nbofEvents = aRun->GetNumberOfEvent();
 
-  if(storeTrackHistosFlag == "on") {
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag() == "on") {
     //G4double binWidth = hEdepInGas->GetBinWidth();
     hEdepInGas->Scale(1./nbofEvents);
     //G4cout << "Number of events: "<< nbofEvents << G4endl;
@@ -345,7 +329,7 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
   Double_t aTLInGas1 =0;// (TLGas1 / mm); // in [mm]
   Double_t aTLInGas2 =0;// (TLGas2 / mm); // in [mm]
 
-  if(storeSimpleTracksFlag=="on"){  // added flag dypang 080301
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreSimpleTracksFlag()=="on"){  // added flag dypang 080301
     //moving here the recollection of the steps info into strides
     //which was previously made in the UserSteppingAction() function
     //Now we will use the GeantHits to recover the steps from the gas
@@ -480,17 +464,16 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
       }
     }
   }
-  //David Perez Loureiro ----------------------------//
-  if(storeEventsFlag=="on"){  // added flag dypang 080301
+ if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreEventsFlag()=="on"){
     theData->SetEnergyOnGasPrim1(aEnergyInGas1);
     theData->SetEnergyOnGasPrim2(aEnergyInGas2);
     theData->SetStepSumLengthOnGasPrim1(aTLInGas1);
-    //G4cout << "SetStepSumLengthOnGasPrim1=" << aTLInGas1 << ", dypang, 080820" << G4endl;
     theData->SetStepSumLengthOnGasPrim2(aTLInGas2);
     theData->SetEventID(anEvent->GetEventID());
     theData->SetRunID(GetTheRunID());
   }
-  if(storeTrackHistosFlag=="on"){  // added flag dypang 080301
+
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag()=="on"){
     if (hStepSumLengthOnGas1) hStepSumLengthOnGas1->Fill(aTLInGas1);
     if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->Fill(aTLInGas2);
     if (hTotELossOnGas1) hTotELossOnGas1->Fill(aEnergyInGas1);
@@ -535,7 +518,7 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
   G4double edep = aStep->GetTotalEnergyDeposit();
   if (edep <= 0.) return;
 
-  if(storeTrackHistosFlag == "on") {
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag() == "on") {
     if(hEdepInGas && z2<300) hEdepInGas->Fill(z,edep);
     if(htrack) htrack->Fill(postPoint.x(),
 		                        postPoint.y(),
@@ -556,7 +539,7 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
 			                                      aStep->GetTotalEnergyDeposit());
   }
 
-  if(storeTracksFlag == "on") {
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTracksFlag() == "on") {
     theTracks->SetXCoord(postPoint.x());
     theTracks->SetYCoord(postPoint.y());
     theTracks->SetZCoord(postPoint.z());

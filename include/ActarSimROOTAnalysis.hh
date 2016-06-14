@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 03/2005
-//*-- Last Update: 07/01/15 by hapol
+//*-- Last Update: 14/06/16 by hapol
 // --------------------------------------------------------------
 // Description:
 //   ROOT-based analysis functionality
@@ -173,6 +173,13 @@ public:
   void SetStoreSimpleTracksFlag(G4String val) {storeSimpleTracksFlag=val;};
   void SetStoreHistogramsFlag(G4String val) {storeHistogramsFlag=val;};
   void SetBeamInteractionFlag(G4String val){beamInteractionFlag=val;}
+
+  G4String GetStoreTracksFlag() {return storeTracksFlag;}
+  G4String GetStoreTrackHistosFlag() {return storeTrackHistosFlag;}
+  G4String GetStoreEventsFlag() {return storeEventsFlag;}
+  G4String GetStoreSimpleTracksFlag() {return storeSimpleTracksFlag;}
+  G4String GetStoreHistogramsFlag() {return storeHistogramsFlag;}
+  G4String GetBeamInteractionFlag(){return beamInteractionFlag;}
 
   G4int GetGasAnalStatus(){return gasAnalIncludedFlag;}
   G4int GetSilAnalStatus(){return silAnalIncludedFlag;}

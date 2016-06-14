@@ -1,14 +1,14 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol 
+//*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update: 23/12/14 by Hector Alvarez Pol
+//*-- Last Update: 14/06/16 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
-//   The ACTAR gas detector part of the ROOT Analysis   
+//   The ACTAR gas detector part of the ROOT Analysis
 //
 // --------------------------------------------------------------
 // Comments:
-// 
+//
 // --------------------------------------------------------------
 /////////////////////////////////////////////////////////////////
 
@@ -57,7 +57,7 @@ private:
   TFile* simFile;               //Local pointer to simFile
   TTree* eventTree; //Tree
   TTree* tracksTree; //Tree
-  
+
   TBranch* dataBranch; //Local branch
   TBranch* simpleTrackBranch; //Local branch
   TBranch* trackBranch; //Local branch
@@ -72,15 +72,15 @@ private:
   TH2D *htrackInPads;
   TH2D *htrack1InPads;
   TH2D *htrack2InPads;
- 
+
   TH1D *hEdepInGas;// Energy deposit in Gas over the distance
- 
+
   ///// The accumulated energy loss and track length of each step, dypang 080225
   TProfile *hbeamEnergyAtRange;
   ///// end of dypang part 080225
-  
+
   TH2D *htrackFromBeam;
-  
+
   TH3D *htrack;
 
   //Control of minimum simpleTrack stride length
@@ -92,19 +92,12 @@ private:
   G4double primTheta;
   G4double primPhi;
 
-  //Flags for control
-  G4String  storeTracksFlag;
-  G4String  storeTrackHistosFlag;
-  G4String  storeEventsFlag;
-  G4String  storeSimpleTracksFlag;
-
   G4int theRunID; //To keep some numbers on the Tree
   G4int theEventID; //To keep some numbers on the Tree
 
 public:
 
   ActarSimROOTAnalGas();
-  ActarSimROOTAnalGas(G4String, G4String, G4String, G4String);
   ~ActarSimROOTAnalGas();
 
   void init();
@@ -137,21 +130,9 @@ public:
   void SetTrackBranch(TBranch* aBranch) {trackBranch= aBranch;}
   TBranch* GetSimpleTrackBranch(){return simpleTrackBranch;}
   void SetSimpleTrackBranch(TBranch* aBranch) {simpleTrackBranch= aBranch;}
-  
-  TClonesArray* getSimpleTrackCA(void){return simpleTrackCA;} 
-  void SetSimpleTrackCA(TClonesArray* CA) {simpleTrackCA = CA;}
 
-  //Messenger actions
-  void SetStoreTracksFlag(G4String val) {storeTracksFlag = val;};
-  void SetStoreTrackHistosFlag(G4String val) {storeTrackHistosFlag = val;};
-  void SetStoreEventsFlag(G4String val) {storeEventsFlag = val;};
-  void SetStoreSimpleTracksFlag(G4String val) {storeSimpleTracksFlag=val;};
-  void SetStoreFlags(G4String TF,G4String THF,G4String EF,G4String STF){
-	storeTracksFlag=TF;
-	storeTrackHistosFlag=THF;
-	storeEventsFlag=EF;
-	storeSimpleTracksFlag=STF;
-	}
+  TClonesArray* getSimpleTrackCA(void){return simpleTrackCA;}
+  void SetSimpleTrackCA(TClonesArray* CA) {simpleTrackCA = CA;}
 
   // G4VUserPrimaryGeneratorAction
   void GeneratePrimaries(const G4Event*);
@@ -169,4 +150,3 @@ public:
 
 };
 #endif
-

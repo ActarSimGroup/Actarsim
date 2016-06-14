@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 03/2005
-//*-- Last Update: 07/01/15
+//*-- Last Update: 14/06/16
 // --------------------------------------------------------------
 // Description:
 //   ROOT-based analysis functionality
@@ -105,11 +105,11 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   silRingAnal = 0;
   sciAnal = 0;
   sciRingAnal = 0;
-  plaAnal = 0;	  
+  plaAnal = 0;
 
   gasAnalIncludedFlag = 0;
   silAnalIncludedFlag = 0;
-  silRingAnalIncludedFlag = 0;	
+  silRingAnalIncludedFlag = 0;
   sciAnalIncludedFlag = 0;
   sciRingAnalIncludedFlag = 0;
   plaAnalIncludedFlag = 0;
@@ -166,28 +166,24 @@ void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
   //set before (then, should be null as they are defined in the constructor)
 
   if(gasAnalIncludedFlag && !gasAnal)
-    gasAnal = new ActarSimROOTAnalGas(storeTracksFlag, storeTrackHistosFlag,
-                                      storeEventsFlag, storeSimpleTracksFlag);
-  else if(gasAnalIncludedFlag)
-    gasAnal->SetStoreFlags(storeTracksFlag, storeTrackHistosFlag,
-                           storeEventsFlag, storeSimpleTracksFlag);
+    gasAnal = new ActarSimROOTAnalGas();
 
   if(silAnalIncludedFlag && !silAnal)
     silAnal = new ActarSimROOTAnalSil();
-	
+
 	if(silRingAnalIncludedFlag && !silRingAnal)
 		silRingAnal = new ActarSimROOTAnalSilRing();
 
   if(sciAnalIncludedFlag && !sciAnal)
     sciAnal = new ActarSimROOTAnalSci();
-    
+
     if(sciRingAnalIncludedFlag && !sciRingAnal)
         sciRingAnal = new ActarSimROOTAnalSciRing();
-  
-	
+
+
   if(plaAnalIncludedFlag && !plaAnal)
     plaAnal = new ActarSimROOTAnalPla();
- 
+
 
   //OTHER DETECTORS ANALYSIS SHOULD BE INCLUDED HERE
 
@@ -244,20 +240,20 @@ void ActarSimROOTAnalysis::GenerateBeam(const G4Event *anEvent){
 //
 // Defining any beam related histogram or information in the output file
 //
-
   if(anEvent) {;} //silent the compiler.
 }
 
 
 //TODO Change from this to a GeneratePrimaries(anEvent, beamInfo)
+//DEPRECATED!!!!! DO NOT USE
 void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
 						G4double Theta1,
 						G4double Theta2,
 						G4double Energy1,
 						G4double Energy2) {
-
-
+//DEPRECATED!!!!! DO NOT USE
   if (gSystem) gSystem->ProcessEvents();
+  SetTheEventID(anEvent->GetEventID());
 
   //TODO->Remove this assymetry!!! There should be only one GeneratePrimaries
   //and all information should come in objects, nor arguments!!!!
@@ -282,9 +278,6 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
 
   //Let us create and fill as many ActarSimPrimaryInfo as primaries in the event
   thePrimaryInfo = new ActarSimPrimaryInfo*[totalPrimaries];
-
-  //Let us create and fill as many ActarSimPrimaryInfo as primaries in the event
-  //thePrimaryInfo = new ActarSimPrimaryInfo*[totalPrimaries];
 
   for(G4int i=0;i<nbOfPrimaryVertex;i++) {
     for(G4int j=0;j<nbOfPrimaries[i];j++) {
@@ -319,7 +312,7 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
 
   if(gasAnal) gasAnal->GeneratePrimaries(anEvent);
   if(silAnal) silAnal->GeneratePrimaries(anEvent);
-  if(silRingAnal) silRingAnal->GeneratePrimaries(anEvent); 
+  if(silRingAnal) silRingAnal->GeneratePrimaries(anEvent);
   if(sciAnal) sciAnal->GeneratePrimaries(anEvent);
   if(sciRingAnal) sciRingAnal->GeneratePrimaries(anEvent);
   if(plaAnal) plaAnal->GeneratePrimaries(anEvent);
@@ -330,10 +323,9 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
 
 void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBeamInfo *beamInfo) {
 
-
   if (gSystem) gSystem->ProcessEvents();
+  SetTheEventID(anEvent->GetEventID());
 
-  //DPLoureiro
   Double_t aTheta1 = beamInfo->GetThetaEntrance() / deg;   // in [deg]
   Double_t aTheta2 = beamInfo->GetThetaVertex() / deg;   // in [deg]
   Double_t aEnergy1 = beamInfo->GetEnergyEntrance() / MeV; // in [MeV]
@@ -345,7 +337,6 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
   G4int totalPrimaries = 0;
 
   for(G4int nbVertexes = 0 ; nbVertexes < nbOfPrimaryVertex ; nbVertexes++){
-
     nbOfPrimaries[nbVertexes] = anEvent->GetPrimaryVertex(nbVertexes)->GetNumberOfParticle();
     totalPrimaries += nbOfPrimaries[nbVertexes];
   }
@@ -395,7 +386,7 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
 
   if(gasAnal) gasAnal->GeneratePrimaries(anEvent);
   if(silAnal) silAnal->GeneratePrimaries(anEvent);
-  if(silRingAnal) silRingAnal->GeneratePrimaries(anEvent); 
+  if(silRingAnal) silRingAnal->GeneratePrimaries(anEvent);
   if(sciAnal) sciAnal->GeneratePrimaries(anEvent);
   if(sciRingAnal) sciRingAnal->GeneratePrimaries(anEvent);
   if(plaAnal) plaAnal->GeneratePrimaries(anEvent);
@@ -509,10 +500,10 @@ void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
   //calling the actions defined for each detector
   if(gasAnal) gasAnal->BeginOfRunAction(aRun);
   if(silAnal) silAnal->BeginOfRunAction(aRun);
-  if(silRingAnal) silRingAnal->BeginOfRunAction(aRun);	
+  if(silRingAnal) silRingAnal->BeginOfRunAction(aRun);
   if(sciAnal) sciAnal->BeginOfRunAction(aRun);
   if(sciRingAnal) sciRingAnal->BeginOfRunAction(aRun);
-  if(plaAnal) plaAnal->BeginOfRunAction(aRun);	
+  if(plaAnal) plaAnal->BeginOfRunAction(aRun);
 
   simFile->cd();
 
@@ -552,7 +543,7 @@ void ActarSimROOTAnalysis::BeginOfEventAction(const G4Event *anEvent){
   //calling the actions defined for each detector
   if(gasAnal) gasAnal->BeginOfEventAction(anEvent);
   if(silAnal) silAnal->BeginOfEventAction(anEvent);
-  if(silRingAnal) silRingAnal->BeginOfEventAction(anEvent);	
+  if(silRingAnal) silRingAnal->BeginOfEventAction(anEvent);
   if(sciAnal) sciAnal->BeginOfEventAction(anEvent);
   if(sciAnal) sciAnal->BeginOfEventAction(anEvent);
   if(plaAnal) plaAnal->BeginOfEventAction(anEvent);
@@ -620,9 +611,9 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
   //ActarSimSilGeantHitsCollection* hitsCollection =
   // (ActarSimSilGeantHitsCollection*) HCofEvent->GetHC(hitsCollectionID);
   //Number of ActarSimSilGeantHit (or steps) in the hitsCollection
-  //G4int NbHits = hitsCollection->entries(); 
+  //G4int NbHits = hitsCollection->entries();
   //G4cout<<"Hits in the silicon "<< NbHits <<G4endl;
-  //if(NbHits){ 
+  //if(NbHits){
   //G4cout<<"ActarSimROOTAnalysis----> EndOfEventAction() "<<gasAnal<<G4endl;
   if(gasAnal) gasAnal->EndOfEventAction(anEvent);
   if(silAnal) silAnal->EndOfEventAction(anEvent);
@@ -632,6 +623,7 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
   if(plaAnal) plaAnal->EndOfEventAction(anEvent);
 
   eventTree->Fill();
+  primaryInfoCA->Clear(); //needed to avoid duplication of the CA contents in odd events
   //}
   OnceAWhileDoIt();
 
@@ -714,7 +706,7 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
   if(silRingAnal) silRingAnal->UserSteppingAction(aStep);
   if(sciAnal) sciAnal->UserSteppingAction(aStep);
   if(sciRingAnal) sciRingAnal->UserSteppingAction(aStep);
-  if(plaAnal) plaAnal->UserSteppingAction(aStep);	
+  if(plaAnal) plaAnal->UserSteppingAction(aStep);
 
   // Processing the beam, in case of beamInteractionFlag on
   // If a beam ion is being tracked with status 1 (ion beam being tracked) and if the present
@@ -774,7 +766,7 @@ void ActarSimROOTAnalysis::OnceAWhileDoIt(const G4bool DoItNow) {
 }
 
 //DPL 29NOV2012
-void ActarSimROOTAnalysis::SetMinStrideLength(Double_t value){ 
+void ActarSimROOTAnalysis::SetMinStrideLength(Double_t value){
   if(gasAnal)
     gasAnal->SetMinStrideLength(value);
 }

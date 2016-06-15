@@ -14,10 +14,10 @@
 #
 # VERBOSITY AND HISTORY CONTROL
 # verbosity levels and saveHistory (commands that do not belong to ACTARSIM)
-/control/verbose 2
-/run/verbose 2
-/event/verbose 2
-/tracking/verbose 2
+/control/verbose 1
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
 /control/saveHistory
 #
 # MODULAR PHYSICS CONTROL
@@ -32,9 +32,9 @@
 #/ActarSim/phys/addPhysics standard               #Add modula physics list
 #/ActarSim/phys/addPhysics emstandard_opt0        #Add modula physics list
 /ActarSim/phys/addPhysics emstandard_opt3        #Add modula physics list
-/ActarSim/phys/addPhysics ionGasModels           #Add modula physics list
+#/ActarSim/phys/addPhysics ionGasModels           #Add modula physics list
 #/ActarSim/phys/RemovePhysics                     #Remove all modula physics list
-#/ActarSim/phys/verbose 2                         #Set verbose level for processes
+#/ActarSim/phys/verbose 0                         #Set verbose level for processes
 # Cuts for the particles  (incomplete list, see README)
 #/ActarSim/phys/setGCut 0.1 mm                    #Set gamma cut
 #/ActarSim/phys/setECut 0.1 mm                    #Set electron cut
@@ -49,10 +49,13 @@
 /ActarSim/det/MaikoGeoIncludedFlag off           #Includes the Maiko geometry in the simulation
 /ActarSim/det/ACTARTPCDEMOGeoIncludedFlag off    #Includes the ACTARTPC Demonstrator geometry in the simulation
 /ActarSim/det/ACTARTPCGeoIncludedFlag off        #Includes the ACTARTPC geometry in the simulation
+/ActarSim/det/OthersGeoIncludedFlag on		 #Geometry is defined by user
+
 # World size (not valid if any pre-defined detector is on)
 /ActarSim/det/setWorldSizeX 2 m                  #Selects the half-length X dimension of the World.
 /ActarSim/det/setWorldSizeY 2 m                  #Selects the half-length Y dimension of the World.
 /ActarSim/det/setWorldSizeZ 2 m                  #Selects the half-length Z dimension of the World.
+
 # Gas Chamber and position (not valid if any pre-defined detector is on)
 /ActarSim/det/setXLengthGasChamber 60 cm         #Selects the half-length X dimension of the Gas Chamber
 /ActarSim/det/setYLengthGasChamber 40 cm         #Selects the half-length Y dimension of the Gas Chamber
@@ -60,6 +63,7 @@
 /ActarSim/det/setXCenterChamber 0 cm             #Selects the X offset of the Chamber center.
 /ActarSim/det/setYCenterChamber 0 cm             #Selects the Y offset of the Chamber center.
 /ActarSim/det/setZCenterChamber 0 cm             #Selects the Z offset of the Chamber center.
+
 # Detector components
 /ActarSim/det/gasGeoIncludedFlag on              #Includes the geometry of the gas volume in the simulation
 /ActarSim/det/silGeoIncludedFlag off             #Includes the geometry of the silicons in the simulation
@@ -73,7 +77,7 @@
 # Gas material (options are H2, D2, He, Ar, CF4, iC4H10, ...) and characteristics
 /ActarSim/det/gas/setGasMat iC4H10               #Select Material of the Gas for the Gas box
 /ActarSim/det/gas/setGasPressure 1.01325         #Select the Gas Pressure for the Gas box
-/ActarSim/det/gas/setGasTemperature 293.15       #Select the Gas Temperature for the Gas box
+/ActarSim/det/gas/setGasTemperature 288.15       #Select the Gas Temperature for the Gas box
 # Make a gas mixture: first select number of elements (up to 10) and then set all gases with their ratio
 #/ActarSim/det/gas/mixture/GasMixture 2           #Set a Gas Mixture with N number of elements (default 0)
 #/ActarSim/det/gas/mixture/setGasMix 1 He 0.90    #Set a Gas Mixture for the Gas box
@@ -90,7 +94,7 @@
 /ActarSim/det/gas/setYLengthGasBox 30 cm         #Select the half-length Y dimension of the Gas Box
 /ActarSim/det/gas/setZLengthGasBox 70 cm         #Select the half-length Z dimension of the Gas Box
 /ActarSim/det/gas/setXCenterGasBox 0 cm          #Select the X offset of the Gas Box center
-/ActarSim/det/gas/setYCenterGasBox 5 cm          #Select the Y offset of the Gas Box center
+/ActarSim/det/gas/setYCenterGasBox 0 cm          #Select the Y offset of the Gas Box center
 /ActarSim/det/gas/setZCenterGasBox 0 cm          #Select the Z offset of the Gas Box center
 # if tube, uncomment (and if box comment)
 #/ActarSim/det/gas/setDetectorGeometry tube       #Select the geometry of the detector

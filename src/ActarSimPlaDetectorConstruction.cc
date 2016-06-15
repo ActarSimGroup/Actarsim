@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez
 //*-- Date: 04/2008
-//*-- Last Update: 16/12/14 by Hector Alvarez
+//*-- Last Update: 15/06/16 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   Scintillator plastic detector description
@@ -45,12 +45,8 @@ ActarSimPlaDetectorConstruction(ActarSimDetectorConstruction* det)
   // Constructor. Sets the material and the pointer to the Messenger
   //
 
-
   SetPlaBulkMaterial("BC408");
-
-
   SetSideCoverage(1);
-
   SetXBoxPlaHalfLength(100*cm);
   SetYBoxPlaHalfLength(100*cm);
   SetZBoxPlaHalfLength(100*cm);
@@ -59,14 +55,12 @@ ActarSimPlaDetectorConstruction(ActarSimDetectorConstruction* det)
   //plaMessenger = new ActarSimPlaDetectorMessenger(this);
 }
 
-
 ActarSimPlaDetectorConstruction::~ActarSimPlaDetectorConstruction(){
   //
   // Destructor
   //
  // delete plaMessenger;
 }
-
 
 G4VPhysicalVolume* ActarSimPlaDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
   //
@@ -79,12 +73,8 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::Construct(G4LogicalVolume* w
   return ConstructPla(worldLog);
 }
 
-
-
 G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume* worldLog) {
-
   //
-
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
   G4double chamberSizeZ=detConstruction->GetChamberSizeZ();
@@ -93,22 +83,19 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
   ActarSimGasDetectorConstruction* gasDet = detConstruction->GetGasDetector();
   G4double zGasBoxPosition=gasDet->GetGasBoxCenterZ();
 
-
     //Hodo Box
 	G4double hodo_x=105*cm;
 	G4double hodo_y=105*cm;
 	G4double hodo_z=60.0*cm;
 
-
   G4double plaBulk_x = 9.95*mm;   //half length=12.5mm
   G4double plaBulk_y = 100*mm;   //half length=12.5mm
   G4double plaBulk_z = 5.0*mm;   //half length=15.0mm
 
-
 	//the numbers
 	G4double nDE=13; //number of Scint in dE
 	G4double nE1=16; //number of Scint in E1
-	G4double nE2=13;//number of Scint in E2
+	G4double nE2=13; //number of Scint in E2
 	//G4double nTarget=1;//number of Targets
 
 	//G4double yHodo=chamberSizeY/2-1*mm;
@@ -135,7 +122,6 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
 	 << G4endl;
   G4cout << "##################################################################"
 	 << G4endl;*/
-
 
   G4LogicalVolume* plaLog(0);
   G4VPhysicalVolume* plaPhys(0);
@@ -179,11 +165,6 @@ G4VPhysicalVolume* ActarSimPlaDetectorConstruction::ConstructPla(G4LogicalVolume
 
 	G4VisAttributes* logicBar_VisAtt = new G4VisAttributes(G4Colour(0.7,1.0,0.0));
 	plaLog->SetVisAttributes(logicBar_VisAtt);
-
-
-
-
-
 
   //------------------------------------------------
   // Sensitive detectors

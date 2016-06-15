@@ -52,7 +52,6 @@ ActarSimSilGeantHit::ActarSimSilGeantHit(const ActarSimSilGeantHit& right) : G4V
   postDetName = right.postDetName;
   preDetName = right.preDetName;
   detID = right.detID;
-  detCenterCoordinate = right.detCenterCoordinate; // center of the present silicon, dypang 090130
   toF = right.toF;
   trackID = right.trackID;
   parentID = right.parentID;
@@ -77,7 +76,6 @@ const ActarSimSilGeantHit& ActarSimSilGeantHit::operator=(const ActarSimSilGeant
   postDetName = right.postDetName;
   preDetName = right.preDetName;
   detID = right.detID;
-  detCenterCoordinate = right.detCenterCoordinate; // center of the present silicon, dypang 090130
   toF = right.toF;
   trackID = right.trackID;
   parentID = right.parentID;
@@ -140,7 +138,3 @@ void ActarSimSilGeantHit::Print(){
 	       << G4endl;
 
 }
-
-
-
-

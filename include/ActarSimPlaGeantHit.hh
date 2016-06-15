@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update: 16/12/14 by Hector Alvarez
+//*-- Last Update: 15/06/16 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
-//   A Geant Hit in the plastic (scintillator) volume. It 
+//   A Geant Hit in the plastic (scintillator) volume. It
 //  represents the information of each step with energy deposited.
 //
 // --------------------------------------------------------------
@@ -42,8 +42,7 @@ class ActarSimPlaGeantHit : public G4VHit
   G4String      postDetName;  //name of the volume at the previous step
   G4String      preDetName; //name of the volume at the following step
   G4int         detID;      //ID (copy) of the detector where the interaction takes place
-  G4ThreeVector detCenterCoordinate; // center of the present plastic, dypang 090130
-	
+
   G4double      toF;        //ToF of the interaction (postStep)
 
   G4int         trackID;    //trackID
@@ -70,8 +69,7 @@ public:
 
   void SetEdep(G4double de){ edep = de; }
 	void SetEBeforeSil(G4double eb){eBeforePla = eb;}
-	void SetEAfterSil(G4double ea){eAfterPla = ea;}	
-	
+	void SetEAfterSil(G4double ea){eAfterPla = ea;}
 
   void SetPos(G4ThreeVector xyz){ pos = xyz; }
   void SetPrePos(G4ThreeVector xyz){ prePos = xyz; }
@@ -82,7 +80,6 @@ public:
   void SetPreDetName(G4String Name){ preDetName = Name; }
   void SetPostDetName(G4String Name){ postDetName = Name; }
   void SetDetID(G4int id){ detID = id; }
-  void SetDetCenterCoordinate(G4ThreeVector center){detCenterCoordinate=center; } // center of the present plastic, dypang 090130
 
   void SetToF(G4double Time){ toF = Time; }
 
@@ -106,7 +103,6 @@ public:
   G4String      GetPreDetName(){ return preDetName; }
   G4String      GetPostDetName(){ return postDetName; }
   G4int         GetDetID(){ return detID; }
-  G4ThreeVector GetDetCenterCoordinate(){return detCenterCoordinate; } // center of the present plastic, dypang 090130
 
   G4double      GetToF(){ return toF; }
 
@@ -135,4 +131,3 @@ inline void ActarSimPlaGeantHit::operator delete(void *aHit)
   ActarSimPlaGeantHitAllocator.FreeSingle((ActarSimPlaGeantHit*) aHit);
 }
 #endif
-

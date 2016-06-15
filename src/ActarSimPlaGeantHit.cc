@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez Pol
 //*-- Date: 04/2008
-//*-- Last Update: 16/12/14 by Hector Alvarez
+//*-- Last Update: 15/06/16 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
-//   A Geant Hit in the plastic (scintillator) volume. It 
+//   A Geant Hit in the plastic (scintillator) volume. It
 //  represents the information of each step with energy deposited.
 //
 // --------------------------------------------------------------
@@ -23,20 +23,17 @@
 
 G4Allocator<ActarSimPlaGeantHit> ActarSimPlaGeantHitAllocator;
 
-
 ActarSimPlaGeantHit::ActarSimPlaGeantHit() {
   //
   // Constructor
   //
 }
 
-
 ActarSimPlaGeantHit::~ActarSimPlaGeantHit() {
   //
   // Destructor
   //
 }
-
 
 ActarSimPlaGeantHit::ActarSimPlaGeantHit(const ActarSimPlaGeantHit& right) : G4VHit() {
   //
@@ -53,16 +50,13 @@ ActarSimPlaGeantHit::ActarSimPlaGeantHit(const ActarSimPlaGeantHit& right) : G4V
 	postDetName = right.postDetName;
 	preDetName = right.preDetName;
 	detID = right.detID;
-	detCenterCoordinate = right.detCenterCoordinate; // center of the present silicon, dypang 090130
 	toF = right.toF;
 	trackID = right.trackID;
 	parentID = right.parentID;
 	particleID = right.particleID;
 	particleCharge = right.particleCharge;
 	particleMass = right.particleMass;
-	
 }
-
 
 const ActarSimPlaGeantHit& ActarSimPlaGeantHit::operator=(const ActarSimPlaGeantHit& right){
   //
@@ -79,18 +73,14 @@ const ActarSimPlaGeantHit& ActarSimPlaGeantHit::operator=(const ActarSimPlaGeant
 	postDetName = right.postDetName;
 	preDetName = right.preDetName;
 	detID = right.detID;
-	detCenterCoordinate = right.detCenterCoordinate; // center of the present silicon, dypang 090130
 	toF = right.toF;
 	trackID = right.trackID;
 	parentID = right.parentID;
 	particleID = right.particleID;
 	particleCharge = right.particleCharge;
 	particleMass = right.particleMass;
-	
 	return *this;
-	
 }
-
 
 G4int ActarSimPlaGeantHit::operator==(const ActarSimPlaGeantHit& right) const{
   //
@@ -98,7 +88,6 @@ G4int ActarSimPlaGeantHit::operator==(const ActarSimPlaGeantHit& right) const{
   //
   return (this==&right) ? 1 : 0;
 }
-
 
 void ActarSimPlaGeantHit::Draw(){
   //
@@ -116,7 +105,6 @@ void ActarSimPlaGeantHit::Draw(){
     pVVisManager->Draw(circle);
   }
 }
-
 
 void ActarSimPlaGeantHit::Print(){
   //
@@ -143,7 +131,3 @@ void ActarSimPlaGeantHit::Print(){
 	 << G4endl;
 
 }
-
-
-
-

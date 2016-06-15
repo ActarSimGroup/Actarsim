@@ -24,11 +24,7 @@ ActarSimSilRingHit::ActarSimSilRingHit(){
   //
 
   detectorID = 0;
-
-  detCenterCoordinateX=0.; // center of the present silicon, dypang 090130
-  detCenterCoordinateY=0.; // center of the present silicon, dypang 090130
-  detCenterCoordinateZ=0.; // center of the present silicon, dypang 090130
-
+  
   xpos=0;
   ypos=0;
   zpos=0;
@@ -61,5 +57,3 @@ void ActarSimSilRingHit::print(void){
 
 
 }
-
-

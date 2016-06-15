@@ -25,10 +25,6 @@ ActarSimSilHit::ActarSimSilHit(){
 
   detectorID = 0;
 
-  detCenterCoordinateX=0.; // center of the present silicon, dypang 090130
-  detCenterCoordinateY=0.; // center of the present silicon, dypang 090130
-  detCenterCoordinateZ=0.; // center of the present silicon, dypang 090130
-
   xpos=0;
   ypos=0;
   zpos=0;
@@ -45,7 +41,7 @@ ActarSimSilHit::ActarSimSilHit(){
   particleMass=0;
 
   stepsContributing = 0;
-  
+
 }
 
 ActarSimSilHit::~ActarSimSilHit(){
@@ -62,5 +58,3 @@ void ActarSimSilHit::print(void){
 
 
 }
-
-

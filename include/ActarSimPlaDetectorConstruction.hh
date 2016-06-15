@@ -26,20 +26,20 @@ class G4Material;
 //class ActarSimPlaDetectorMessenger;
 class ActarSimDetectorConstruction;
 
-class ActarSimPlaDetectorConstruction {  
+class ActarSimPlaDetectorConstruction {
 private:
-  
+
   // Materials
   G4Material* plaBulkMaterial;
- 
+
 //  ActarSimPlaDetectorMessenger* plaMessenger;   //pointer to the Messenger
   ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
-  
+
   G4VPhysicalVolume* ConstructPla(G4LogicalVolume*);
 
   G4int sideCoverage;   // 6 bits to indicate which sci wall is present (1) or absent (0)
 			// order is:
-			// bit1 (lsb) beam output wall 
+			// bit1 (lsb) beam output wall
 			// bit2 lower (gravity based) wall
 			// bit3 upper (gravity based) wall
 			// bit4 left (from beam point of view) wall
@@ -52,10 +52,10 @@ private:
   G4double zBoxPlaHalfLength;   // Remember: z is along beam
 
 public:
-  
+
   ActarSimPlaDetectorConstruction(ActarSimDetectorConstruction*);
   ~ActarSimPlaDetectorConstruction();
-  
+
   G4VPhysicalVolume* Construct(G4LogicalVolume*);
 
   void SetPlaBulkMaterial (G4String);
@@ -76,4 +76,3 @@ public:
 
 };
 #endif
-

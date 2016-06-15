@@ -25,9 +25,6 @@ private:
 
   //Basic Hit information
   Int_t detectorID;    // Tracker model (depends on tracker geo)
-  Double_t detCenterCoordinateX; // center of the present silicon, dypang 090130
-  Double_t detCenterCoordinateY; // center of the present silicon, dypang 090130
-  Double_t detCenterCoordinateZ; // center of the present silicon, dypang 090130
 
   //Basic Hit information
   Double_t xpos;
@@ -56,10 +53,6 @@ public:
 
   void SetDetectorID(Int_t det){detectorID = det;}
 
-  void SetDetCenterCoordinateX(Double_t x){detCenterCoordinateX=x;} // center of the present silicon, dypang 090130
-  void SetDetCenterCoordinateY(Double_t y){detCenterCoordinateY=y;} // center of the present silicon, dypang 090130
-  void SetDetCenterCoordinateZ(Double_t z){detCenterCoordinateZ=z;} // center of the present silicon, dypang 090130
-
   void SetXPos(Double_t x){xpos = x;}
   void SetYPos(Double_t y){ypos = y;}
   void SetZPos(Double_t z){zpos = z;}
@@ -80,10 +73,6 @@ public:
   void SetStepsContributing(UInt_t step){stepsContributing = step;}
 
   Int_t GetDetectorID(){return detectorID;}
-
-  Double_t GetDetCenterCoordinateX(){return detCenterCoordinateX;} // center of the present silicon, dypang 090130
-  Double_t GetDetCenterCoordinateY(){return detCenterCoordinateY;} // center of the present silicon, dypang 090130
-  Double_t GetDetCenterCoordinateZ(){return detCenterCoordinateZ;} // center of the present silicon, dypang 090130
 
   Double_t GetXPos(){return xpos;}
   Double_t GetYPos(){return ypos;}

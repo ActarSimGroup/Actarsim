@@ -438,10 +438,6 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
 
 	  cHit->SetDetectorID(gHit->GetDetID());
 
-	  //cHit->SetDetCenterCoordinateX(gHit->GetDetCenterCoordinate().x()/mm); // center of the present silicon, dypang 090130
-	  //cHit->SetDetCenterCoordinateY(gHit->GetDetCenterCoordinate().y()/mm); // center of the present silicon, dypang 090130
-	  //cHit->SetDetCenterCoordinateZ(gHit->GetDetCenterCoordinate().z()/mm); // center of the present silicon, dypang 090130
-
 	  cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
 	  cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
 	  cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
@@ -510,6 +506,10 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
   }
   else if(mode==1){ //addition
     cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ MeV);
+    //taking the smaller outgoing energy of the geantHits
+    if(cHit->GetEAfterPla()>gHit->GetEAfterPla()) cHit->SetEAfterPla(gHit->GetEAfterPla()/MeV);
+    //taking the larger incoming energy of the geantHits
+    if(cHit->GetEBeforePla()<gHit->GetEBeforePla()) cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
 
 	  cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
 	  // The mean value of a distribution {x_i} can also be computed iteratively
@@ -522,10 +522,8 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
 	  cHit->SetZPos(cHit->GetZPos() +
 					(gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
 
-
-
-
-    if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ ns);
+    //taking the shorter time of the geantHits
+    if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ns);
 
     //TODO-> Recover here the simhit/hit duality if needed!!
 /*

@@ -226,10 +226,6 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
   if(mode == 0) { //creation
     cHit->SetDetectorID(gHit->GetDetID());
 
-    cHit->SetDetCenterCoordinateX(gHit->GetDetCenterCoordinate().x()/mm); // center of the present silicon, dypang 090130
-    cHit->SetDetCenterCoordinateY(gHit->GetDetCenterCoordinate().y()/mm); // center of the present silicon, dypang 090130
-    cHit->SetDetCenterCoordinateZ(gHit->GetDetCenterCoordinate().z()/mm); // center of the present silicon, dypang 090130
-
     cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
     cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
     cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
@@ -253,6 +249,10 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
 
   else if(mode==1){ //addition
     cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep());
+    //taking the smaller outgoing energy of the geantHits
+    if(cHit->GetEAfterSil()>gHit->GetEAfterSil()) cHit->SetEAfterSil(gHit->GetEAfterSil()/MeV);
+    //taking the larger incoming energy of the geantHits
+    if(cHit->GetEBeforeSil()<gHit->GetEBeforeSil()) cHit->SetEBeforeSil(gHit->GetEBeforeSil()/MeV);
 
     cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
     // The mean value of a distribution {x_i} can also be computed iteratively
@@ -266,7 +266,7 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
 		  (gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
 
     //taking the shorter time of the geantHits
-    if(cHit->GetTime()>gHit->GetToF()) cHit->SetTime(gHit->GetToF());
+    if(cHit->GetTime()>gHit->GetToF()) cHit->SetTime(gHit->GetToF()/ns);
   }
 }
 

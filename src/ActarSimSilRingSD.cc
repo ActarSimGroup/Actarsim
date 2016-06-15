@@ -95,7 +95,6 @@ G4bool ActarSimSilRingSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
   newHit->SetPreDetName(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName());
   newHit->SetPostDetName(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName());
   newHit->SetDetID(aStep->GetTrack()->GetVolume()->GetCopyNo());
-  newHit->SetDetCenterCoordinate(aStep->GetTrack()->GetVolume()->GetObjectTranslation()); // center of the present silicon, dypang 090130
 
   newHit->SetToF(aStep->GetPostStepPoint()->GetGlobalTime());
 

@@ -478,11 +478,20 @@ void ActarSimSilDetectorConstruction::PrintDetectorParameters() {
   //
   // Prints Silicon detector parameters. To be filled
   //
-
   G4cout << "##################################################################"
 	       << G4endl
 	       << "####  ActarSimSilDetectorConstruction::PrintDetectorParameters() ####"
-	       << G4endl;
+	       << G4endl
+         << " The silicon coverage is " <<  sideCoverage << G4endl
+         << "Reminder: 6 bits to indicate which sil wall is present (1) or absent (0)" << G4endl
+         << "bit1 (lsb) beam output wall, bit2 lower (gravity based) wall" << G4endl
+         << "bit3 upper (gravity based) wall, bit4 left (from beam point of view) wall" << G4endl
+         << "bit5 right (from beam point of view) wall, bit6 (msb) beam entrance wall" << G4endl << G4endl;
+         G4cout << " The silicon material is: " << silBulkMaterial  << G4endl;
+        G4cout << " The silicon parameters are: " << G4endl
+           << " xBoxSilHalfLength = " <<  xBoxSilHalfLength/mm
+           << "mm,  yBoxSilHalfLength = " <<  yBoxSilHalfLength/mm
+           << "mm,  zBoxSilHalfLength = " <<  zBoxSilHalfLength/mm << " mm" << G4endl ;
   G4cout << "##################################################################"
 	       << G4endl;
 }

@@ -29,9 +29,6 @@
 #include "ActarSimSimpleTrack.hh"
 #include "ActarSimData.hh"
 
-#include "ActarSimBeamInfo.hh"
-
-
 //ROOT INCLUDES
 #include "TROOT.h"
 #include "TApplication.h"
@@ -173,20 +170,21 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
 
 
   // Step Sum Length
-  hStepSumLengthOnGas1 = (TH1D *)gROOT->FindObject("hStepSumLengthOnGas1");
-  if (hStepSumLengthOnGas1) hStepSumLengthOnGas1->Reset();
-  else {
-    hStepSumLengthOnGas1 = new TH1D("hStepSumLengthOnGas1","Step Sum Length On Gas for first primary", 1000, 0.0, 1000.0);// in [cm]
-    if (hStepSumLengthOnGas1) hStepSumLengthOnGas1->SetXTitle("[mm]");
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreHistogramsFlag()== "on") {
+    hStepSumLengthOnGas1 = (TH1D *)gROOT->FindObject("hStepSumLengthOnGas1");
+    if (hStepSumLengthOnGas1) hStepSumLengthOnGas1->Reset();
+    else {
+      hStepSumLengthOnGas1 = new TH1D("hStepSumLengthOnGas1","Step Sum Length On Gas for first primary", 1000, 0.0, 1000.0);// in [cm]
+      if (hStepSumLengthOnGas1) hStepSumLengthOnGas1->SetXTitle("[mm]");
+    }
+    // Step Sum Length
+    hStepSumLengthOnGas2 = (TH1D *)gROOT->FindObject("hStepSumLengthOnGas2");
+    if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->Reset();
+    else {
+      hStepSumLengthOnGas2 = new TH1D("hStepSumLengthOnGas2","Step Sum Length On Gas for second primary", 1000, 0.0, 1000.0);// in [cm]
+      if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->SetXTitle("[mm]");
+    }
   }
-  // Step Sum Length
-  hStepSumLengthOnGas2 = (TH1D *)gROOT->FindObject("hStepSumLengthOnGas2");
-  if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->Reset();
-  else {
-    hStepSumLengthOnGas2 = new TH1D("hStepSumLengthOnGas2","Step Sum Length On Gas for second primary", 1000, 0.0, 1000.0);// in [cm]
-    if (hStepSumLengthOnGas2) hStepSumLengthOnGas2->SetXTitle("[mm]");
-  }
-
   if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag()== "on") {
     htrackInPads =
       (TH2D *)gROOT->FindObject("htrackInPads");

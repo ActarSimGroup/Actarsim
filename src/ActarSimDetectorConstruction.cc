@@ -887,6 +887,67 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructOthers() {
 				false,                 //no boolean operation
 				0);                    //copy number
 
+  //--------------------------
+  //Scattering Chamber
+  //--------------------------
+  // Chamber dimensions set by user
+
+  G4Box* solidChamber = new G4Box("Chamber",         //its name
+				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
+
+  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+						    chamberMaterial,
+						    "Chamber");            //its name
+
+  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+						     G4ThreeVector(chamberCenterX,
+								   chamberCenterY,
+								   chamberCenterZ),
+						     chamberLog,            //its logical volume
+						     "Chamber",             //its name
+						     worldLog,              //its mother  volume
+						     false,                 //no boolean operation
+						     0);
+								    
+  if(chamberPhys){;}
+
+  //--------------------------
+  // Gas volume
+  //--------------------------
+  if(gasGeoIncludedFlag=="on")
+    gasDet->Construct(chamberLog);
+
+  //--------------------------
+  // Sil volume
+  //--------------------------
+  if(silGeoIncludedFlag=="on")
+    silDet->Construct(chamberLog);
+
+  //--------------------------
+  // Sci volume
+  //--------------------------
+  if(sciGeoIncludedFlag=="on")
+    sciDet->Construct(chamberLog);
+
+  //--------------------------
+  // Histogramming
+  //--------------------------
+  if(gActarSimROOTAnalysis)
+    gActarSimROOTAnalysis->Construct(worldPhys);
+
+  //--------------------------
+  //Connection to the analysis only for those detectors included!
+  //--------------------------
+  if (gActarSimROOTAnalysis) {
+    if (gasGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetGasAnalOn();
+    if (silGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetSilAnalOn();
+    if (sciGeoIncludedFlag=="on") gActarSimROOTAnalysis->SetSciAnalOn();
+    gActarSimROOTAnalysis->InitAnalysisForExistingDetectors();
+  }
+
+  //visibility
+  worldLog->SetVisAttributes (G4VisAttributes::Invisible);
+
   return worldPhys;
 }
 

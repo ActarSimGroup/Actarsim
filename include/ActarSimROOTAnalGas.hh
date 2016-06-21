@@ -34,7 +34,7 @@ class TH1D;
 class TH2D;
 class TH3D;
 class TTree;
-class TBranch;
+//class TBranch;
 class TFile;
 class TClonesArray;
 class TProfile; // for hbeamEnergyAtRange, to get the energy loss as a function of the path length
@@ -58,9 +58,9 @@ private:
   TTree* eventTree; //Tree
   TTree* tracksTree; //Tree
 
-  TBranch* dataBranch; //Local branch
-  TBranch* simpleTrackBranch; //Local branch
-  TBranch* trackBranch; //Local branch
+  //TBranch* dataBranch; //Local branch
+  //TBranch* simpleTrackBranch; //Local branch
+  //TBranch* trackBranch; //Local branch
 
   TH1D *hStepSumLengthOnGas1;   // Step Length
   TH1D *hStepSumLengthOnGas2;   // Step Length
@@ -124,12 +124,12 @@ public:
 
   void SetMinStrideLength(G4double val) {minStrideLength = val;};
 
-  TBranch* GetDataBranch(){return dataBranch;}
-  void SetDataBranch(TBranch* aBranch) {dataBranch= aBranch;}
-  TBranch* GetTrackBranch(){return trackBranch;}
-  void SetTrackBranch(TBranch* aBranch) {trackBranch= aBranch;}
-  TBranch* GetSimpleTrackBranch(){return simpleTrackBranch;}
-  void SetSimpleTrackBranch(TBranch* aBranch) {simpleTrackBranch= aBranch;}
+  //TBranch* GetDataBranch(){return dataBranch;}
+  //void SetDataBranch(TBranch* aBranch) {dataBranch= aBranch;}
+  //TBranch* GetTrackBranch(){return trackBranch;}
+  //void SetTrackBranch(TBranch* aBranch) {trackBranch= aBranch;}
+  //TBranch* GetSimpleTrackBranch(){return simpleTrackBranch;}
+  //void SetSimpleTrackBranch(TBranch* aBranch) {simpleTrackBranch= aBranch;}
 
   TClonesArray* getSimpleTrackCA(void){return simpleTrackCA;}
   void SetSimpleTrackCA(TClonesArray* CA) {simpleTrackCA = CA;}

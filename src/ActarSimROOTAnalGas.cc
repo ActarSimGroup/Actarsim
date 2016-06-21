@@ -107,7 +107,7 @@ void ActarSimROOTAnalGas::init(){
   for (G4int i=0;i<2;i++)
     simpleTrack[i] = new ActarSimSimpleTrack();
 
-  eventTree->Branch("theData","ActarSimData",&theData,128000,99);
+  //eventTree->Branch("theData","ActarSimData",&theData,128000,99);
   tracksTree->Branch("trackData","ActarSimTrack",&theTracks,128000,99);
   //Now, simple track as a TClonesArray
   eventTree->Branch("simpleTrackData",&simpleTrackCA);
@@ -327,7 +327,7 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
   Double_t aTLInGas1 =0;// (TLGas1 / mm); // in [mm]
   Double_t aTLInGas2 =0;// (TLGas2 / mm); // in [mm]
 
-  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreSimpleTracksFlag()=="on"){  // added flag dypang 080301
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreSimpleTracksFlag()=="on"){
     //moving here the recollection of the steps info into strides
     //which was previously made in the UserSteppingAction() function
     //Now we will use the GeantHits to recover the steps from the gas

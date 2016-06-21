@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 03/2005
-//*-- Last Update: 14/06/16 by hapol
+//*-- Last Update: 20/06/16 by hapol
 // --------------------------------------------------------------
 // Description:
 //   ROOT-based analysis functionality
@@ -87,8 +87,9 @@ private:
   //G4PrimaryParticle* primary;      //Storing the primary for accesing during UserStep //NOT USED
   ActarSimAnalysisMessenger* analMessenger; // pointer to messenger
 
-  TBranch* primaryInfoBranch; //Local primaries branch
-  TBranch* beamInfoBranch;    //Beam Info branch
+  //TBranch* primaryInfoBranch; // Local primaries branch
+  //TBranch* beamInfoBranch;    // Beam Info branch
+  //TBranch* theDataBranch;    // theData branch
 
   //TClonesArray*  simpleTrackCA; //NOT USED
 
@@ -111,6 +112,8 @@ private:
 
   ActarSimPrimaryInfo** thePrimaryInfo; //Primary particles data
   TClonesArray* primaryInfoCA;
+  TClonesArray* beamInfoCA;
+  TClonesArray* theDataCA;
 
   G4int theRunID; //To keep some numbers on the Tree
   G4int theEventID; //To keep some numbers on the Tree

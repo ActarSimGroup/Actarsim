@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 05/2005
-//*-- Last Update:  1/12/2015
+//*-- Last Update:  21/06/2016
 // --------------------------------------------------------------
 // Description:
 //   Data definition
@@ -16,8 +16,9 @@
 #define ActarSimData_h 1
 
 #include "TROOT.h"  //for including Rtypes.h
+#include "TObject.h"
 
-class ActarSimData{
+class ActarSimData: public TObject {
 
 private:
 

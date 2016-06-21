@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 01/2006
-//*-- Last Update: 1/12/14 by Hector Alvarez
+//*-- Last Update: 20/06/16 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   The information from the beam parameters used for the reaction
@@ -36,7 +36,11 @@ ActarSimBeamInfo::ActarSimBeamInfo() {
   yVertex = 0.;
   zVertex = 0.;
   timeVertex = 0.;         // time at vertex formation
-  status = 0;
+  mass = 0.0;              // mass
+  charge = 0.0;            // charge
+  eventID = 0;             // eventID
+  runID = 0;               // runID
+  status = 0;              // status
 }
 
 
@@ -69,6 +73,8 @@ void ActarSimBeamInfo::print(void){
   G4cout << " thetaVertex: " << thetaVertex / rad << " rad"
 	 << " phiVertex: " << phiVertex / rad << " rad"<< G4endl;
   G4cout << " Time at the reaction vertex:  " << timeVertex/ns << " ns" << G4endl;
+  G4cout << " Mass: " << mass
+         << ", charge: " << charge / eplus << " eplus" << G4endl;
   G4cout << " Status : " << status << G4endl;
   G4cout << "-------------------------------------------" << G4endl;
 }

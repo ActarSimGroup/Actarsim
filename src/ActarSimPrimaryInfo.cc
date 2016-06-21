@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol 
+//*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 04/2008
-//*-- Last Update: 22/12/2014
+//*-- Last Update: 20/06/2016
 // --------------------------------------------------------------
 // Description:
 //   The information from the primaries generated in the reaction
@@ -19,21 +19,20 @@
 #include "G4ThreeVector.hh"
 
 ClassImp(ActarSimPrimaryInfo)
-  
+
 ActarSimPrimaryInfo::ActarSimPrimaryInfo() {
   //
   // Init values
   //
   nbPrimariesInEvent = 0;
   kineticEnergy = 0;
-  theta = 0;        
-  phi =0;          
-  
-  PDGcode = 0;         
+  theta = 0;
+  phi =0;
+  PDGcode = 0;
   Px = 0;
   Py = 0;
   Pz = 0;
-  trackID = 0; 
+  trackID = 0;
   mass = 0;
   charge = 0;
   polX = 0;
@@ -41,11 +40,9 @@ ActarSimPrimaryInfo::ActarSimPrimaryInfo() {
   polZ = 0;
   Weight0 = 0;
   properTime = 0;
-
   x0 = 0.;
   y0 = 0.;
   z0 = 0.;
-
   eventID = 0;
   runID = 0;
 }
@@ -54,22 +51,22 @@ ActarSimPrimaryInfo::ActarSimPrimaryInfo(G4PrimaryParticle* prim) {
   //
   // Values from a primary
   //
-  theta = prim->GetMomentum().theta() / rad;        
-  phi = prim->GetMomentum().phi() / rad;          
-  
-  PDGcode = prim->GetPDGcode();         
+  theta = prim->GetMomentum().theta() / rad;
+  phi = prim->GetMomentum().phi() / rad;
+
+  PDGcode = prim->GetPDGcode();
   Px = prim->GetPx();
   Py = prim->GetPy();
   Pz = prim->GetPz();
-  trackID = prim->GetTrackID(); 
+  trackID = prim->GetTrackID();
   mass = prim->GetMass();
   charge = prim->GetCharge() / eplus;
   polX = prim->GetPolX();
   polY = prim->GetPolY();
   polZ = prim->GetPolZ();
   Weight0 = prim->GetWeight();
-  properTime = prim->GetProperTime() / ns;  
-  
+  properTime = prim->GetProperTime() / ns;
+
   //calculating the kinetic energy
   Double_t energysquared = (prim->GetMass()*prim->GetMass()) +
     (prim->GetPx()*prim->GetPx()+
@@ -91,32 +88,29 @@ void ActarSimPrimaryInfo::print(void){
   //
   // Prints info
   //
-  /*    G4cout << "-------------------------------------------" << G4endl;
+  G4cout << "-------------------------------------------" << G4endl;
   G4cout << "------- ActarSimPrimaryInfo::print() ---------" << G4endl;
+  G4cout << " eventID: " << eventID <<  ", runID: " << runID	 << G4endl;
   G4cout << " PDGcode: " << PDGcode
          << ", trackID: " << trackID
          << ", mass: " << mass
-         << ", charge: " << charge / eplus << " eplus"
-	 << G4endl;
+         << ", charge: " << charge / eplus << " eplus" << G4endl;
   G4cout << " Px: " << Px
          << " Py: " << Py
          << " Pz: " << Pz
-         << ", properTime: " << properTime / ns << " ns"
-         << G4endl;
+         << ", properTime: " << properTime / ns << " ns" << G4endl;
   G4cout << " polX: " << polX
          << " polY: " << polY
          << " polZ: " << polZ
-         << ", Weight0: " << Weight0
-         << G4endl;
+         << ", Weight0: " << Weight0 << G4endl;
   G4cout << " x0: " << x0 / mm << " mm"
          << " y0: " << y0 / mm << " mm"
-         << " z0: " << z0 / mm << " mm"<< G4endl;
+         << " z0: " << z0 / mm << " mm" << G4endl;
   G4cout << " nbPrimariesInEvent: " << nbPrimariesInEvent
          << ", kineticEnergy: " << kineticEnergy
          << ", theta: " << theta / rad << " rad"
-         << ", phi: " << phi / rad << " rad"<< G4endl;
+         << ", phi: " << phi / rad << " rad" << G4endl;
   G4cout << "-------------------------------------------" << G4endl;
-  */
 }
 
 
@@ -138,8 +132,8 @@ void ActarSimPrimaryInfo::SetMomentum(Double_t px, Double_t py, Double_t pz) {
   Py = py;
   Pz = pz;
   G4ThreeVector mom(Px,Py,Pz);
-  theta = mom.theta();        
-  phi = mom.phi();          
+  theta = mom.theta();
+  phi = mom.phi();
 
 }
 

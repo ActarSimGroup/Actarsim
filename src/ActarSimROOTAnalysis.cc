@@ -91,13 +91,13 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
 
   newDirName = new char[255];
 
-  theData = new ActarSimData();
 
   simFile = 0;
   eventTree=0;
   tracksTree=0;
   primaryInfoCA = 0;
-  primaryInfoBranch = 0;
+  beamInfoCA = 0;
+  theDataCA = 0;
 
   //null initialization to check that is null before their instantiation
   gasAnal = 0;
@@ -114,6 +114,7 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   sciRingAnalIncludedFlag = 0;
   plaAnalIncludedFlag = 0;
 
+  theData = new ActarSimData();
   pBeamInfo = new ActarSimBeamInfo();
 
   //TODO -> Implement SimpleHit versions in Sil and Sci
@@ -158,8 +159,11 @@ void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
     tracksTree = new TTree("The_ACTAR_Tracks_Tree","Tracks_Tree");
 
     primaryInfoCA = new TClonesArray("ActarSimPrimaryInfo",2);
-    primaryInfoBranch = eventTree->Branch("primaryInfo",&primaryInfoCA);
-    beamInfoBranch = eventTree->Branch("beamInfo",&pBeamInfo);
+    eventTree->Branch("primaryInfo",&primaryInfoCA);
+    beamInfoCA = new TClonesArray("ActarSimBeamInfo",1);
+    eventTree->Branch("beamInfo",&beamInfoCA);
+    theDataCA = new TClonesArray("ActarSimData",1);
+    eventTree->Branch("theData",&theDataCA);
   }
 
   //Create the detector analysis only if the flag is set and is not already
@@ -240,7 +244,14 @@ void ActarSimROOTAnalysis::GenerateBeam(const G4Event *anEvent){
 //
 // Defining any beam related histogram or information in the output file
 //
-  if(anEvent) {;} //silent the compiler.
+  SetTheEventID(anEvent->GetEventID());
+
+  //Clear the ClonesArray before filling it
+  pBeamInfo->SetEventID(theEventID);
+  pBeamInfo->SetRunID(theRunID);
+  //There is only one clone of beamInfo..
+  new((*beamInfoCA)[0])ActarSimBeamInfo(*pBeamInfo);
+  //do not delete pBeamInfo, as the same pointer is used for all events
 }
 
 
@@ -595,7 +606,7 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
       hPrimEnergyVsTheta->Fill(momentumPrim1.theta(),energyPrim1);
   }
 
-  if(storeEventsFlag=="on"){  // added flag dypang 080301
+  if(storeEventsFlag=="on"){
     theData->SetThetaPrim1(momentumPrim1.theta());
     theData->SetThetaPrim2(momentumPrim2.theta());
     theData->SetPhiPrim1(momentumPrim1.phi());
@@ -622,8 +633,16 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
   if(sciRingAnal) sciRingAnal->EndOfEventAction(anEvent);
   if(plaAnal) plaAnal->EndOfEventAction(anEvent);
 
+  if(pBeamInfo->GetStatus()==0){  // pBeamInfo==0 at end of the event in the "fragments event" (pBeamInfo==2 in beam events )
+    //There is only one clone of theData..
+   new((*theDataCA)[0])ActarSimData(*theData);
+    //do not delete theData, as the same pointer is used for all events
+  }
+
   eventTree->Fill();
-  primaryInfoCA->Clear(); //needed to avoid duplication of the CA contents in odd events
+  primaryInfoCA->Clear(); //needed to avoid duplication of the CA contents in even/odd events
+  beamInfoCA->Clear(); //needed to avoid duplication of the CA contents in even/odd events
+  theDataCA->Clear(); //needed to avoid duplication of the CA contents in even/odd events
   //}
   OnceAWhileDoIt();
 

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 06/2008
-//*-- Last Update: 1/12/14 by Hector Alvarez
+//*-- Last Update: 20/06/16 by Hector Alvarez
 // --------------------------------------------------------------
 // Description:
 //   The information from the beam parameters used for the reaction
@@ -43,6 +43,12 @@ private:
 
   Double_t timeVertex;        // time at vertex
 
+  Double_t mass;              // mass
+  Double_t charge;            // charge
+
+  Int_t eventID;             // eventID
+  Int_t runID;               // runID
+
   Int_t status;	//! (Does not move to file!)
                 // Informs of ion beam status. Used for the dynamical vertex generation
 			          // in ActarSimPrimaryGeneratorAction.
@@ -74,6 +80,11 @@ public:
 
   inline Double_t GetTimeVertex() const { return timeVertex; }
 
+  inline Double_t GetMass() const { return mass; }
+  inline Double_t GetCharge() const { return charge; }
+  inline Double_t GetEventID() const { return eventID; }
+  inline Double_t GetRunID() const { return runID; }
+
   inline Int_t GetStatus() const { return status; }
 
   inline void SetEnergyEntrance(Double_t e) { energyEntrance = e; }
@@ -94,6 +105,11 @@ public:
   inline void SetZVertex(Double_t z) { zVertex = z; }
 
   inline void SetTimeVertex(Double_t t) { timeVertex = t; }
+
+  inline void SetMass(Double_t m) { mass = m; }
+  inline void SetCharge(Double_t c) { charge = c; }
+  inline void SetEventID(UInt_t eID) { eventID = eID; }
+  inline void SetRunID(UInt_t rID) { runID = rID; }
 
   inline void SetStatus(Int_t s) { status = s; }
 

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 //*-- AUTHOR : Hector Alvarez-Pol
 //*-- Date: 11/2004
-//*-- Last Update: 04/12/15 by Hector Alvarez Pol
+//*-- Last Update: 21/06/16 by Hector Alvarez Pol
 // --------------------------------------------------------------
 // Description:
 //   Actions to perform to generate a primary vertex
@@ -208,6 +208,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       // should be transformed accordingly. Fine tuning, anyway (check if needed)
       particleGun->SetParticleDefinition(incidentIon);
       particleGun->SetParticleCharge(incidentIonCharge);
+      pBeamInfo->SetCharge(incidentIonCharge);
+      pBeamInfo->SetMass(incidentIon->GetAtomicMass());
 
       // vertex_z0 decides the z position of the vertex. The beam is tracked till z0 is reached ...
       G4double vertex_z0 = 0;
@@ -862,12 +864,12 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
 
     G4double thetaBeam1, thetaBeam2;
-    
+
     thetaBeam1 = KINE->GetANGAs(0);    // unit: rad
     thetaBeam2 = KINE->GetANGAr(0);    // unit: rad
     energy1    = KINE->GetANGAs(1);    // unit: MeV
     energy2    = KINE->GetANGAr(1);    // unit: MeV
-    
+
     if(verboseLevel>1){
       G4cout << "Kine: Scattered energy:" << KINE->GetANGAs(1) << " MeV" << G4endl;
       G4cout << "Kine: Recoiled energy:" << KINE->GetANGAr(1) << " MeV" << G4endl;
@@ -1069,7 +1071,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     G4double phi2AtEntrance = G4UniformRand() * twopi; //angle for defining the entrance point
 
-    //Entrance coordinates (x0,y0,0) 
+    //Entrance coordinates (x0,y0,0)
     G4double x0 = beamPosition.x() + radiusAtEntrance*cos(phi2AtEntrance);
     G4double y0 = beamPosition.y() + radiusAtEntrance*sin(phi2AtEntrance);
     G4double z0 = beamPosition.z();

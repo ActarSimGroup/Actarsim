@@ -209,7 +209,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       particleGun->SetParticleDefinition(incidentIon);
       particleGun->SetParticleCharge(incidentIonCharge);
       pBeamInfo->SetCharge(incidentIonCharge);
-      pBeamInfo->SetMass(incidentIon->GetAtomicMass());
+      pBeamInfo->SetMass(incidentIon->GetMass());
 
       // vertex_z0 decides the z position of the vertex. The beam is tracked till z0 is reached ...
       G4double vertex_z0 = 0;
@@ -612,10 +612,10 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
              << " *************************************************** " << G4endl
              << " * ActarSimPrimaryGeneratorAction::GeneratePrimaries() " << G4endl
              << " * CINE: Setting masses to the following values: " << G4endl
-	           << " * incident ion mass: " << GetIncidentIon()->GetAtomicMass() << G4endl
-	           << " * target ion mass: " << GetTargetIon()->GetAtomicMass() << G4endl
-	           << " * scattered ion mass: " << GetScatteredIon()->GetAtomicMass() << G4endl
-	           << " * recoil ion mass: " << GetRecoilIon()->GetAtomicMass() << G4endl;
+	           << " * incident ion (atomic) mass: " << GetIncidentIon()->GetAtomicMass() << G4endl
+	           << " * target ion (atomic) mass: " << GetTargetIon()->GetAtomicMass() << G4endl
+	           << " * scattered ion (atomic) mass: " << GetScatteredIon()->GetAtomicMass() << G4endl
+	           << " * recoil ion (atomic) mass: " << GetRecoilIon()->GetAtomicMass() << G4endl;
       G4cout << " * Setting reaction Q to:" << GetReactionQ() << G4endl;
       G4cout << " * Setting labEnergy to:" << GetLabEnergy() << G4endl;
       G4cout << " * Setting targetExcitationEnergy to:"
@@ -839,7 +839,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       KINE->SetThetaCMAngle(GetThetaCMAngle()/deg);  // units: degree
     }
     if(verboseLevel>1){
-      G4cout << " KINE: Setting masses to :" << GetIncidentIon()->GetAtomicMass()
+      G4cout << " KINE: Setting (atomic) masses to :" << GetIncidentIon()->GetAtomicMass()
 	           << " " << GetTargetIon()->GetAtomicMass()
 	           << " " << GetScatteredIon()->GetAtomicMass()
 	           << " " << GetRecoilIon()->GetAtomicMass()<< " "<< endl;

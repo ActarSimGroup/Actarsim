@@ -1,16 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   SD for the Silicons
-//SimSilRing
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSilRingSD
+/// SD for the Silicon Ring
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSilRingSD.hh"
@@ -27,29 +25,23 @@
 #include "G4TouchableHistory.hh"
 #include "G4VTouchable.hh"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor, just naming the Hit collection
 ActarSimSilRingSD::ActarSimSilRingSD(G4String name)
   :G4VSensitiveDetector(name){
-  //
-  // Constructor,
-  // just naming the Hit collection
-  //
   G4String HCname;
   collectionName.insert(HCname="SilRingCollection");
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor, nothing to do
 ActarSimSilRingSD::~ActarSimSilRingSD(){
-  //
-  // Destructor, nothing to do
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Initializing the ActarSimSilRingGeantHitsCollection object
+/// Invoked automatically at the beggining of each event
 void ActarSimSilRingSD::Initialize(G4HCofThisEvent* HCE){
-  //
-  // Initializing the ActarSimSilRingGeantHitsCollection object
-  // Invoked automatically at the beggining of each event
-  //
   hitsCollection = new ActarSimSilRingGeantHitsCollection
     (SensitiveDetectorName,collectionName[0]);
   static G4int HCID = -1;
@@ -59,12 +51,10 @@ void ActarSimSilRingSD::Initialize(G4HCofThisEvent* HCE){
   HCE->AddHitsCollection( HCID, hitsCollection );
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Filling the ActarSimSilRingGeantHit information with the step info
+/// Invoked by G4SteppingManager for each step
 G4bool ActarSimSilRingSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
-  //
-  // Filling the ActarSimSilRingGeantHit information with the step info
-  // Invoked by G4SteppingManager for each step
-  //
   G4double edep = aStep->GetTotalEnergyDeposit();
 
   if(edep==0.) return false;
@@ -112,13 +102,11 @@ G4bool ActarSimSilRingSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
   return true;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Just prints and draws the event hits (class ActarSimSilRingGeantHit)
+/// The recollection of the hits energy deposition in the plastic
+/// is done in the ActarSimROOTAnalysis::EndOfEventAction()
 void ActarSimSilRingSD::EndOfEvent(G4HCofThisEvent*){
-  //
-  // Just prints and draws the event hits (class ActarSimSilRingGeantHit)
-  // The recollection of the hits energy deposition in the plastic
-  // is done in the ActarSimROOTAnalysis::EndOfEventAction()
-  //
   G4int NbHits = hitsCollection->entries();
   if (verboseLevel>0) {
     G4cout << "Hits Collection: in this event they are " << NbHits

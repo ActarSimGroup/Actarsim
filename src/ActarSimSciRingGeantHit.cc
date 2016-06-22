@@ -1,17 +1,15 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Geant Hit in the Scintillator volume. It represents
-//   the information of each step with energy deposited.
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSciRingGeantHit
+/// A Geant Hit in the Scintillator volume. It represents
+/// the information of each step with energy deposited.
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSciRingGeantHit.hh"
@@ -23,25 +21,19 @@
 
 G4Allocator<ActarSimSciRingGeantHit> ActarSimSciRingGeantHitAllocator;
 
-
+//////////////////////////////////////////////////////////////////
+/// Constructor. Makes nothing.
 ActarSimSciRingGeantHit::ActarSimSciRingGeantHit() {
-  //
-  // Constructor
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing.
 ActarSimSciRingGeantHit::~ActarSimSciRingGeantHit() {
-  //
-  // Destructor
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Copy constructor
 ActarSimSciRingGeantHit::ActarSimSciRingGeantHit(const ActarSimSciRingGeantHit& right) : G4VHit() {
-  //
-  // Copy constructor
-  //
   edep = right.edep;
   pos = right.pos;
   prePos = right.prePos;
@@ -59,11 +51,9 @@ ActarSimSciRingGeantHit::ActarSimSciRingGeantHit(const ActarSimSciRingGeantHit& 
   particleMass = right.particleMass;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Operator =
 const ActarSimSciRingGeantHit& ActarSimSciRingGeantHit::operator=(const ActarSimSciRingGeantHit& right){
-  //
-  // Operator =
-  //
   edep = right.edep;
   pos = right.pos;
   prePos = right.prePos;
@@ -83,22 +73,17 @@ const ActarSimSciRingGeantHit& ActarSimSciRingGeantHit::operator=(const ActarSim
   return *this;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Operator ==
 G4int ActarSimSciRingGeantHit::operator==(const ActarSimSciRingGeantHit& right) const{
-  //
-  // Operator ==
-  //
   return (this==&right) ? 1 : 0;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Draws the Hit. A clear red point on the Hit position
 void ActarSimSciRingGeantHit::Draw(){
-  //
-  // Draws the Hit. A clear red point on the Hit position
-  //
   G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  if(pVVisManager)
-  {
+  if(pVVisManager) {
     G4Circle circle(pos);
     circle.SetScreenSize(4);
     circle.SetFillStyle(G4Circle::filled);
@@ -109,32 +94,26 @@ void ActarSimSciRingGeantHit::Draw(){
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Prints full information about the calGeantHit
 void ActarSimSciRingGeantHit::Print(){
-  //
-  // Prints full information about the calGeantHit
-  //
   G4cout << "##################################################################"
-	       << G4endl
-	       << "###############     ActarSimSciRingGeantHit::Print()    ###################" << G4endl
-	       << "trackID: " << trackID
-	       << ", parentID: " << parentID
-	       << ", particleID: " << particleID
-	       << ", particleCharge: " << particleCharge << G4endl;
+	 << G4endl
+	 << "###############     ActarSimSciRingGeantHit::Print()    ###################" << G4endl
+	 << "trackID: " << trackID
+	 << ", parentID: " << parentID
+	 << ", particleID: " << particleID
+	 << ", particleCharge: " << particleCharge << G4endl;
   G4cout << "detID: " << detID
-	       << ", detName: " << detName
-	       << ", postDetName: " << postDetName
-	       << ", preDetName: " << preDetName
-	       << G4endl;
+	 << ", detName: " << detName
+	 << ", postDetName: " << postDetName
+	 << ", preDetName: " << preDetName
+	 << G4endl;
   G4cout << "edep: " << edep  / MeV << " MeV"
-	       << ", pos: " << pos << " mm" << G4endl
-	       << ", prePos: " << prePos << " mm" << G4endl;
+	 << ", pos: " << pos << " mm" << G4endl
+	 << ", prePos: " << prePos << " mm" << G4endl;
   G4cout << "toF: " << toF  / ns << " ns" << ", localPos: " << localPos << " mm"
-	       << ", localPrePos: " << localPrePos << " mm" << G4endl;
+	 << ", localPrePos: " << localPrePos << " mm" << G4endl;
   G4cout << "##################################################################"
-	       << G4endl;
+	 << G4endl;
 }
-
-
-
-

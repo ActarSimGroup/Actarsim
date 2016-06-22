@@ -1,16 +1,14 @@
- ///////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol 
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   Messenger of the Scintillator detector
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSciDetectorMessenger
+/// Messenger of the Scintillator detector
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSciDetectorMessenger.hh"
@@ -27,18 +25,15 @@
 #include "G4UIcmdWith3VectorAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Constructor with complete functionality
 ActarSimSciDetectorMessenger::
 ActarSimSciDetectorMessenger(ActarSimSciDetectorConstruction* ActarSimSciDet)
-  :ActarSimSciDetector(ActarSimSciDet) { 
-  //
-  // Constructor with fully functionality
-  //
-  
+  :ActarSimSciDetector(ActarSimSciDet) {
+
   detDir = new G4UIdirectory("/ActarSim/det/sci/");
   detDir->SetGuidance("scintillator detector control");
- 
+
   printCmd = new G4UIcmdWithoutParameter("/ActarSim/det/sci/print",this);
   printCmd->SetGuidance("Prints geometry.");
   printCmd->AvailableForStates(G4State_Idle);
@@ -81,11 +76,9 @@ ActarSimSciDetectorMessenger(ActarSimSciDetectorConstruction* ActarSimSciDet)
   zBoxHalfLengthCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimSciDetectorMessenger::~ActarSimSciDetectorMessenger() {
-  //
-  // Destructor
-  //
   delete detDir;
   delete printCmd;
   delete sideCoverageCmd;
@@ -94,15 +87,12 @@ ActarSimSciDetectorMessenger::~ActarSimSciDetectorMessenger() {
   delete zBoxHalfLengthCmd;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Setting the new values and connecting to actions
 void ActarSimSciDetectorMessenger::SetNewValue(G4UIcommand* command,
 					       G4String newValue) {
-  //
-  // Setting the new values and connecting to actions
-  //
-
   if( command == printCmd )
-    ActarSimSciDetector->PrintDetectorParameters(); 
+    ActarSimSciDetector->PrintDetectorParameters();
 
   if( command == sideCoverageCmd)
     ActarSimSciDetector->SetSideCoverage(sideCoverageCmd->GetNewIntValue(newValue));
@@ -115,6 +105,4 @@ void ActarSimSciDetectorMessenger::SetNewValue(G4UIcommand* command,
 
   if( command == zBoxHalfLengthCmd)
     ActarSimSciDetector->SetZBoxSciHalfLength(zBoxHalfLengthCmd->GetNewDoubleValue(newValue));
-
 }
-

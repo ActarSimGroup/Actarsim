@@ -1,19 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR (translation to C++): Hector Alvarez-Pol
-//*-- AUTHOR:  Wolfgang Mittig
-//*-- Date: 11/2005
-//*-- Last Update: 1/12/14
-// --------------------------------------------------------------
-// Description:
-//   PROGRAM CINE CINEMATIQUE RELATIVISTIQUE
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 02/11/05 translation from the original FORTRAN 
-//      to Geant4-like C++
-// 
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Wolfgang Mittig (translated to C++: Hector Alvarez-Pol 11/2005)
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimCinePrimGenerator_h
 #define ActarSimCinePrimGenerator_h 1
@@ -23,22 +15,21 @@
 
 class ActarSimCinePrimGenerator {
 private:
+  G4double S1; ///< Mass of the incident particle
+  G4double S2; ///< Mass of the target
+  G4double S3; ///< Mass of the scattered particle
+  G4double S4; ///< Mass of the recoil
 
-  G4double S1; //mass of the incident particle
-  G4double S2; //mass of the target
-  G4double S3; //mass of the scattered particle
-  G4double S4; //mass of the recoil
+  G4double QM; ///< Reaction Q
 
-  G4double QM; // Reaction Q
+  G4double TH; ///< Theta Lab angle
 
-  G4double TH; // Theta Lab angle
+  G4double EI; ///< LAB energy (total Lab energy in MeV)
+  G4double EN; ///< Target excitation energy (positive)
+  G4double ENI; ///< Projectile excitation energy (positive)
 
-  G4double EI; // LAB energy (total Lab energy in MeV)
-  G4double EN; // Target excitation energy (positive)
-  G4double ENI; // Projectile excitation energy (positive)
-
-  G4double* ANGAV; // First solution vector
-  G4double* ANGAR; // Second solution vector
+  G4double* ANGAV; ///< First solution vector
+  G4double* ANGAR; ///< Second solution vector
 
 public:
   ActarSimCinePrimGenerator();
@@ -76,12 +67,10 @@ public:
   G4double GetANGAR(G4int place){return ANGAR[place];}
   G4double GetThetaLabAngle(void){return TH;}
 
-  void RelativisticKinematics();  
+  void RelativisticKinematics();
 
-  void Dump();  
+  void Dump();
 
-  void printResults(G4int sel);  
-
+  void printResults(G4int sel);
 };
-
 #endif

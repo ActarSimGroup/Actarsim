@@ -1,17 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 1/12/14
-// --------------------------------------------------------------
-// Description:
-//   Actions to be performed before or after each event
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 30/11/04 Created based on example/novice/N03 structure
-//   - 1/12/14 Cleaning old data structure
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimEventAction
+/// Actions to be performed before or after each event
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimEventAction.hh"
@@ -32,28 +29,23 @@
 #include "Randomize.hh"
 #include <iomanip>
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimEventAction::ActarSimEventAction()
   :drawFlag("all"), printModulo(1) {
-  //
-  // Constructor
-  //
   eventMessenger = new ActarSimEventActionMessenger(this);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimEventAction::~ActarSimEventAction() {
-  //
-  // Destructor
-  //
   delete eventMessenger;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions performed at the beginning of each event
 void ActarSimEventAction::BeginOfEventAction(const G4Event* evt){
-  //
-  // At the beginning...
-  //
-  G4int evtNb = evt->GetEventID(); 
+  G4int evtNb = evt->GetEventID();
 
   const G4int verboseLevel = G4RunManager::GetRunManager()->GetVerboseLevel();
   if(verboseLevel>0){
@@ -69,15 +61,14 @@ void ActarSimEventAction::BeginOfEventAction(const G4Event* evt){
     }
   }
 
- // Histogramming and other ROOT related actions
+  // Histogramming and other ROOT related actions
   if (gActarSimROOTAnalysis) gActarSimROOTAnalysis->BeginOfEventAction(evt);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions performed at the end of each event (some information
+/// of the trajectories display is included)
 void ActarSimEventAction::EndOfEventAction(const G4Event* evt) {
-  //
-  //  After the end of the event...
-  //
   G4int evtNb = evt->GetEventID();
 
   if (evtNb%printModulo == 0){
@@ -94,7 +85,6 @@ void ActarSimEventAction::EndOfEventAction(const G4Event* evt) {
   if(gActarSimROOTAnalysis)
     gActarSimROOTAnalysis->EndOfEventAction(evt);
 
-
   // extract the trajectories and draw them
 
   // You can get a default drawing without this code by using, e.g.,
@@ -104,23 +94,19 @@ void ActarSimEventAction::EndOfEventAction(const G4Event* evt) {
   // See comments in G4VTrajectory::DrawTrajectory for the
   // interpretation of the argument, 1000.
 
-  //DPLoureiro Drawing track updated for GEANT 4.9 i_mode supressed. No more warnings
   G4VVisManager* pVisManager = G4VVisManager::GetConcreteInstance();
-  if (pVisManager)
-    {
-      G4TrajectoryContainer* trajectoryContainer = evt->GetTrajectoryContainer();
-      G4int n_trajectories = 0;
-      if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
-      
-      for (G4int i=0; i<n_trajectories; i++)
-        { G4VTrajectory* trj = (G4Trajectory*)((*(evt->GetTrajectoryContainer()))[i]);
-	  if (drawFlag == "all") trj->DrawTrajectory();
-	  else if ((drawFlag == "charged")&&(trj->GetCharge() != 0.))
-	    trj->DrawTrajectory();
-	  else if ((drawFlag == "neutral")&&(trj->GetCharge() == 0.))
-	    trj->DrawTrajectory();
-        }
-    }
-  
-}
+  if (pVisManager) {
+    G4TrajectoryContainer* trajectoryContainer = evt->GetTrajectoryContainer();
+    G4int n_trajectories = 0;
+    if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
 
+    for (G4int i=0; i<n_trajectories; i++) {
+      G4VTrajectory* trj = (G4Trajectory*)((*(evt->GetTrajectoryContainer()))[i]);
+      if (drawFlag == "all") trj->DrawTrajectory();
+      else if ((drawFlag == "charged")&&(trj->GetCharge() != 0.))
+	trj->DrawTrajectory();
+      else if ((drawFlag == "neutral")&&(trj->GetCharge() == 0.))
+	trj->DrawTrajectory();
+    }
+  }
+}

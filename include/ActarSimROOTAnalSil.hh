@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol     hapol@fpddux.usc.es
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   The ACTAR Silicon detector part of the ROOT Analysis
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimROOTAnalSil_h
 #define ActarSimROOTAnalSil_h 1
@@ -40,22 +35,20 @@ class TClonesArray;
 
 class ActarSimROOTAnalSil{
 private:
-
   char* dirName;
 
-  ActarSimSilHit** theSilHit;
-  TClonesArray* silHitCA;
+  ActarSimSilHit** theSilHit;          ///< Pointer to the hits in the silicons
+  TClonesArray* silHitCA;              ///< ClonesArray of the hits in the silicons
 
-  TFile* simFile;               //Local pointer to simFile
-  TTree* eventTree; //Tree
+  TFile* simFile;                      ///< Local pointer to simFile
+  TTree* eventTree;                    ///< Local pointer to the event tree
 
-  TBranch* silHitsBranch; //Local branch
+  TBranch* silHitsBranch;              ///< Local branch for the silicon hits
 
-  G4int theRunID; //To keep some numbers on the Tree
-  G4int theEventID; //To keep some numbers on the Tree
+  G4int theRunID;                     ///< Run ID
+  G4int theEventID;                   ///< Event ID
 
 public:
-
   ActarSimROOTAnalSil();
   ~ActarSimROOTAnalSil();
 
@@ -70,14 +63,11 @@ public:
   TClonesArray* getSilHitsCA(void){return silHitCA;}
   void SetSilHitsCA(TClonesArray* CA) {silHitCA = CA;}
 
-  // G4VUserPrimaryGeneratorAction
   void GeneratePrimaries(const G4Event*);
 
-  // G4UserRunAction
   void BeginOfRunAction(const G4Run*);
   //void EndOfRunAction(const G4Run*);
 
-  // G4UserEventAction
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
 
@@ -87,9 +77,6 @@ public:
 		 ActarSimSilGeantHit* gHit,
 		 G4int mode);
 
-  // G4UserSteppingAction
   void UserSteppingAction(const G4Step*);
-
 };
 #endif
-

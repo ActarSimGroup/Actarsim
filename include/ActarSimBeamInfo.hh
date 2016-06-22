@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 06/2008
-//*-- Last Update: 20/06/16 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   The information from the beam parameters used for the reaction
-//   vertex. Information to be accessed in the ROOT file per event
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//     - 12/06/08 Data structure for beam parameters
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 01/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimBeamInfo_h
 #define ActarSimBeamInfo_h 1
@@ -22,42 +15,39 @@
 #include "TObject.h"
 
 class ActarSimBeamInfo : public TObject {
-
 private:
+  Double_t energyEntrance;     ///< Energy at the gas chamber entrance
+  Double_t energyVertex;       ///< Energy at the reaction vertex
 
-  Double_t energyEntrance;     // Energy at the entrance
-  Double_t energyVertex;       // Energy at the vertex
+  Double_t thetaEntrance;      ///< Theta emission angle at entrance
+  Double_t phiEntrance;        ///< Phi emission angle at entrance
+  Double_t thetaVertex;        ///< Theta vertex angle at the reaction vertex
+  Double_t phiVertex;          ///< Phi vertex angle at the reaction vertex
 
-  Double_t thetaEntrance;      // theta emission angle
-  Double_t phiEntrance;        // phi emission angle
-  Double_t thetaVertex;        // theta vertex angle
-  Double_t phiVertex;          // phi vertex angle
+  Double_t xEntrance;          ///< X beam at entrance position
+  Double_t yEntrance;          ///< Y beam at entrance position
+  Double_t zEntrance;          ///< Z beam at entrance position
 
-  Double_t xEntrance;          // beam entrance position
-  Double_t yEntrance;
-  Double_t zEntrance;
+  Double_t xVertex;            ///< X beam at reaction vertex position
+  Double_t yVertex;            ///< Y beam at reaction vertex position
+  Double_t zVertex;            ///< Z beam at reaction vertex position
 
-  Double_t xVertex;            // reaction vertex position
-  Double_t yVertex;
-  Double_t zVertex;
+  Double_t timeVertex;         ///< Time at reaction vertex postion
 
-  Double_t timeVertex;        // time at vertex
+  Double_t mass;               ///< Mass of beam
+  Double_t charge;             ///< Charge of beam
 
-  Double_t mass;              // mass
-  Double_t charge;            // charge
+  Int_t eventID;               ///< EventID
+  Int_t runID;                 ///< RunID
 
-  Int_t eventID;             // eventID
-  Int_t runID;               // runID
-
-  Int_t status;	//! (Does not move to file!)
-                // Informs of ion beam status. Used for the dynamical vertex generation
-			          // in ActarSimPrimaryGeneratorAction.
-			          // Values: 0 ion ready for being tracked. Default value after object creation
-			          //         1 ion under tracking
-			          //         2 ion reached Z0, the vertex position
+  /// Informs of ion beam status. Used for the dynamical vertex generation
+  /// in ActarSimPrimaryGeneratorAction.
+  /// Values are 0: ion ready for being tracked. Default value after object creation.
+  ///         1: ion under tracking.
+  ///        2: ion reached Z0, the vertex position.
+  Int_t status;	  //!
 
 public:
-
   ActarSimBeamInfo();
   ~ActarSimBeamInfo();
 

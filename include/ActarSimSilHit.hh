@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Silicon hit:
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimSilHit_h
 #define ActarSimSilHit_h 1
@@ -19,33 +14,28 @@
 
 #include "TObject.h"
 
-class ActarSimSilHit : public TObject{
-
+class ActarSimSilHit : public TObject {
 private:
+  Int_t detectorID;    ///< Tracker model (depends on tracker geo)
 
-  //Basic Hit information
-  Int_t detectorID;    // Tracker model (depends on tracker geo)
+  Double_t xpos;       ///< Hit X position in the silicon
+  Double_t ypos;       ///< Hit Y position in the silicon
+  Double_t zpos;       ///< Hit > position in the silicon
 
-  //Basic Hit information
-  Double_t xpos;
-  Double_t ypos;
-  Double_t zpos;
+  Double_t time;       ///< Pulse time (w.r.t. vertex emission)
+  Double_t energy;     ///< Total energy deposited
+  Double_t eBeforeSil; ///< Energy before entering silicon
+  Double_t eAfterSil;  ///< Energy left after silicon
 
-  Double_t time;    // pulse time (w.r.t. vertex emission)
-  Double_t energy;  // total energy deposited
-  Double_t eBeforeSil; // energy before entering silicon
-  Double_t eAfterSil;  // energy left after silicon
+  UInt_t trackID;      ///< Track ID
+  UInt_t eventID;      ///< Event ID
+  UInt_t runID;        ///< Run ID
 
-  //Event identification
-  UInt_t trackID;     // track ID
-  UInt_t eventID;     // event ID
-  UInt_t runID;       // run ID
+  UInt_t particleID;       ///< Particle ID
+  Double_t particleCharge; ///< Particle charge
+  Double_t particleMass;   ///< Particle mass
 
-  UInt_t particleID;
-  Double_t particleCharge;
-  Double_t particleMass;
-
-  UInt_t stepsContributing; //neccessary for iterative means
+  UInt_t stepsContributing; ///< Steps included in the hit. Neccessary for iterative means
 
 public:
   ActarSimSilHit();

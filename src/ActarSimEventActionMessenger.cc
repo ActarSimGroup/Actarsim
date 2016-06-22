@@ -1,16 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 28/10/05
-// --------------------------------------------------------------
-// Description:
-//   Messenger for the event actions
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 03/12/04: based on example/novice/N03 structure
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimEventActionMessenger
+/// Messenger for the event actions
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimEventActionMessenger.hh"
@@ -21,12 +19,13 @@
 #include "G4UIcmdWithAnInteger.hh"
 #include "globals.hh"
 
-
+//////////////////////////////////////////////////////////////////
+/// Constructor
+/// command included in this AnalysisMessenger:
+/// - /ActarSim/event/drawTracks
+/// - /ActarSim/event/printModulo
 ActarSimEventActionMessenger::ActarSimEventActionMessenger(ActarSimEventAction* EvAct)
-:eventAction(EvAct) {
-  //
-  // Constructor
-  //
+  :eventAction(EvAct) {
   eventDir = new G4UIdirectory("/ActarSim/event/");
   eventDir->SetGuidance("event control");
 
@@ -45,26 +44,23 @@ ActarSimEventActionMessenger::ActarSimEventActionMessenger(ActarSimEventAction* 
   PrintCmd->AvailableForStates(G4State_Idle);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimEventActionMessenger::~ActarSimEventActionMessenger() {
-  //
-  // Destructor
-  //
   delete DrawCmd;
   delete PrintCmd;
   delete eventDir;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Setting the values using the ActarSimEventAction interface
 void ActarSimEventActionMessenger::SetNewValue(G4UIcommand* command,G4String newValue) {
   //
   // Setting the values from the interfaces
   //
   if(command == DrawCmd)
-    {eventAction->SetDrawFlag(newValue);}
+    eventAction->SetDrawFlag(newValue);
 
   if(command == PrintCmd)
-    {eventAction->SetPrintModulo(PrintCmd->GetNewIntValue(newValue));}
-
+    eventAction->SetPrintModulo(PrintCmd->GetNewIntValue(newValue));
 }
-

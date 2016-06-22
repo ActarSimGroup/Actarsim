@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 04/2006
-//*-- Last Update: 16/12/014 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   A Geant Hit in the calorimeter volume. It represents the
-//   information of each step with energy deposited in the
-//   calorimeter volume.
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimGasGeantHit_h
 #define ActarSimGasGeantHit_h 1
@@ -23,28 +16,25 @@
 #include "G4ThreeVector.hh"
 #include "G4Step.hh"
 
-class ActarSimGasGeantHit : public G4VHit
-{
-  private:
-
-  G4int         trackID;
-  G4int         parentID;
+class ActarSimGasGeantHit : public G4VHit {
+private:
+  G4int         trackID;          ///< ID for each track
+  G4int         parentID;         ///< ID for the parent track
   //G4Step        *bstep;
-  G4double      edep;             //energy deposited
-  G4double      particleCharge;   // charge of the particle
-  G4double      particleMass;     // mass of the particle
-  G4int         particleID;       // particle ID according to the GDP-coding
-  G4ThreeVector postPos;          //position after step
-  G4ThreeVector prePos;           //position before step
-  G4String      detName;          //detector where energy is deposited
-  G4int         detID;            //
-  G4double      preToF;           //time before step
-  G4double      postToF;          //time after step
-  G4double      stepLength;       //length of the step
-  G4double      stepEnergy;        //particle energy before step
+  G4double      edep;             ///< Energy deposited
+  G4double      particleCharge;   ///< Charge of the particle
+  G4double      particleMass;     ///< Mass of the particle
+  G4int         particleID;       ///< Particle ID according to the GDP-coding
+  G4ThreeVector postPos;          ///< Position after step
+  G4ThreeVector prePos;           ///< Position before step
+  G4String      detName;          ///< Detector name where energy is deposited
+  G4int         detID;            ///< Detector ID
+  G4double      preToF;           ///< Time before step
+  G4double      postToF;          ///< Time after step
+  G4double      stepLength;       ///< Length of the step
+  G4double      stepEnergy;       ///< Particle energy before step
 
-  public:
-
+public:
   ActarSimGasGeantHit();
   ~ActarSimGasGeantHit();
   ActarSimGasGeantHit(const ActarSimGasGeantHit&);
@@ -80,7 +70,7 @@ class ActarSimGasGeantHit : public G4VHit
   G4double      GetEdep(){ return edep; }
   G4double      GetParticleCharge(){return particleCharge;}
   G4double      GetParticleMass(){return particleMass;}
-  G4int         GetParticleID(){return particleID;} 
+  G4int         GetParticleID(){return particleID;}
   G4ThreeVector GetPrePos(){ return prePos; }
   G4ThreeVector GetPostPos(){ return postPos; }
   G4String      GetDetName(){ return detName; }
@@ -89,23 +79,19 @@ class ActarSimGasGeantHit : public G4VHit
   G4double      GetPostToF(){ return postToF; }
   G4double      GetStepLength(){ return stepLength; }
   G4double      GetStepEnergy(){ return stepEnergy; }
-
 };
 
 typedef G4THitsCollection<ActarSimGasGeantHit> ActarSimGasGeantHitsCollection;
 
 extern G4Allocator<ActarSimGasGeantHit> ActarSimGasGeantHitAllocator;
 
-inline void* ActarSimGasGeantHit::operator new(size_t)
-{
+inline void* ActarSimGasGeantHit::operator new(size_t) {
   void *aHit;
   aHit = (void *) ActarSimGasGeantHitAllocator.MallocSingle();
   return aHit;
 }
 
-inline void ActarSimGasGeantHit::operator delete(void *aHit)
-{
+inline void ActarSimGasGeantHit::operator delete(void *aHit) {
   ActarSimGasGeantHitAllocator.FreeSingle((ActarSimGasGeantHit*) aHit);
 }
 #endif
-

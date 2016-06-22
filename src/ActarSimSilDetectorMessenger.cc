@@ -1,16 +1,14 @@
- ///////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   Messenger of the Silicon detector
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSilDetectorMessenger
+/// Messenger of the Silicon detector
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSilDetectorMessenger.hh"
@@ -27,15 +25,17 @@
 #include "G4UIcmdWith3VectorAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Constructor
+/// command included in this AnalysisMessenger:
+/// - ActarSim/det/sil/print
+/// - /ActarSim/det/sil/sideCoverage
+/// - /ActarSim/det/sil/xBoxHalfLength
+/// - /ActarSim/det/sil/yBoxHalfLength
+/// - /ActarSim/det/sil/zBoxHalfLength
 ActarSimSilDetectorMessenger::
 ActarSimSilDetectorMessenger(ActarSimSilDetectorConstruction* ActarSimSilDet)
   :ActarSimSilDetector(ActarSimSilDet) {
-  //
-  // Constructor with fully functionality
-  //
-
   detDir = new G4UIdirectory("/ActarSim/det/sil/");
   detDir->SetGuidance("silicon detector control");
 
@@ -81,11 +81,9 @@ ActarSimSilDetectorMessenger(ActarSimSilDetectorConstruction* ActarSimSilDet)
   zBoxHalfLengthCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimSilDetectorMessenger::~ActarSimSilDetectorMessenger() {
-  //
-  // Destructor
-  //
   delete detDir;
   delete printCmd;
   delete sideCoverageCmd;
@@ -94,13 +92,10 @@ ActarSimSilDetectorMessenger::~ActarSimSilDetectorMessenger() {
   delete zBoxHalfLengthCmd;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Setting the values using the ActarSimROOTAnalysis interface
 void ActarSimSilDetectorMessenger::SetNewValue(G4UIcommand* command,
-					    G4String newValue) {
-  //
-  // Setting the new values and connecting to actions
-  //
-
+					       G4String newValue) {
   if( command == printCmd )
     ActarSimSilDetector->PrintDetectorParameters();
 

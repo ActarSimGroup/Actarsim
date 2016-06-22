@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Silicon detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimSilDetectorConstruction_h
 #define ActarSimSilDetectorConstruction_h 1
@@ -26,36 +19,32 @@ class G4Material;
 class ActarSimSilDetectorMessenger;
 class ActarSimDetectorConstruction;
 
-class ActarSimSilDetectorConstruction {  
+class ActarSimSilDetectorConstruction {
 private:
+  G4Material* silBulkMaterial; ///< Pointer to the material the Silicon is made of
 
-  // Materials
-  G4Material* silBulkMaterial;
+  ActarSimSilDetectorMessenger* silMessenger;   ///< Pointer to the Messenger
+  ActarSimDetectorConstruction* detConstruction;///< Pointer to the global detector
 
-  ActarSimSilDetectorMessenger* silMessenger;   //pointer to the Messenger
-  ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
+  /// 6 bits to indicate which Silicon wall is present (1) or absent (0)
+  /// order is:
+  /// - bit1 (lsb) beam output wall
+  /// - bit2 lower (gravity based) wall
+  /// - bit3 upper (gravity based) wall
+  /// - bit4 left (from beam point of view) wall
+  /// - bit5 right (from beam point of view) wall
+  /// - bit6 (msb) beam entrance wall
+  G4int sideCoverage;
+
+  G4double xBoxSilHalfLength;  ///< Silicon box half length along X (X is horizontal)
+  G4double yBoxSilHalfLength;  ///< Silicon box half length along Y (Y is vertical)
+  G4double zBoxSilHalfLength;  ///< Silicon box half length along Z (Z is along beam)
 
   G4VPhysicalVolume* ConstructSil(G4LogicalVolume*);
   G4VPhysicalVolume* DSSD_Al_LayerPhys;
   //G4VPhysicalVolume* MAYA_Al_LayerPhys;
 
-  G4int sideCoverage;   // 6 bits to indicate which sil wall is present (1) or absent (0)
-			// order is:
-			// bit1 (lsb) beam output wall 
-			// bit2 lower (gravity based) wall
-			// bit3 upper (gravity based) wall
-			// bit4 left (from beam point of view) wall
-			// bit5 right (from beam point of view) wall
-			// bit6 (msb) beam entrance wall
-
-                       //all the following are half length of a box!!
-  G4double xBoxSilHalfLength;   // Remember: x is horizontal
-  G4double yBoxSilHalfLength;   // Remember: y is vertical
-  G4double zBoxSilHalfLength;   // Remember: z is along beam
-
-
 public:
-
   ActarSimSilDetectorConstruction(ActarSimDetectorConstruction*);
   ~ActarSimSilDetectorConstruction();
 
@@ -76,7 +65,5 @@ public:
 
   void UpdateGeometry();
   void PrintDetectorParameters();
-
 };
 #endif
-

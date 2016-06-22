@@ -1,16 +1,15 @@
-/////////////////////////////////////////////////////////////////
-// Euler transformation, converted from Fortran subroutine
-// author: M.S. Golovkov
-// date: 02/18/08
-// --------------------------------------------------------------
-// Description:
-//   Euler transformation between beam system and lab system
-// --------------------------------------------------------------
-// Comments:
-//   - 02/18/08 translation from the original FORTRAN
-//      to Geant4-like C++
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: M.S. Golovkov 02/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimEulerTransformation
+/// Euler transformation between beam system and lab system
+//////////////////////////////////////////////////////////////////
 
 #include "ActarSimEulerTransformation.hh"
 
@@ -19,25 +18,23 @@
 
 using namespace std;
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
+/// *** Transformation  coordinate system (Euler angles) :  ***
+///
+/// DEFINITIONS:
+///  - from beam to lab system
+///     (alpha = phi,
+///     beta  = theta,
+///     gamma = 0)
+/// *** inputs: theta_beam, phi_beam, alpha, beta, gamma
+/// *** calculate: theta_lab, phi_lab (from beam to lab)
+///
+///  - or from lab to beam system
+///     (alpha = pi,
+///     beta  = theta_beam,
+///     gamma = pi - phi_beam)
 ActarSimEulerTransformation::ActarSimEulerTransformation(){
-  //
-  // Constructor
-  //
-
-  // ***  Transformation  coordinate system (Euler angles) :  ***
-  // DEFINITIONS:
-  //  --from beam to lab system
-  //     alpha = phi
-  //     beta  = theta
-  //     gamma = 0
-  // *** inputs: theta_beam, phi_beam, alpha, beta, gamma
-  // *** calculate: theta_lab, phi_lab (from beam to lab)
-  //
-  //  --or from lab to beam system
-  //     alpha = pi
-  //     beta  = theta_beam
-  //     gamma = pi - phi_beam
-
   ThetaInBeamSystem= 0.0;
   PhiInBeamSystem  = 0.0;
   BeamDirectionAtVertexTheta=0.0;
@@ -46,28 +43,29 @@ ActarSimEulerTransformation::ActarSimEulerTransformation(){
   PhiInLabSystem   = 0.0;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimEulerTransformation::~ActarSimEulerTransformation(){
-  // destructor
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// ***  Transformation  coordinate system (Euler angles) :  ***
+///
+/// DEFINITIONS:
+///  - from beam to lab system
+///     (alpha = phi,
+///     beta  = theta,
+///     gamma = 0)
+/// *** inputs: theta_beam, phi_beam, alpha, beta, gamma
+/// *** calculate: theta_lab, phi_lab (from beam to lab)
+///
+///  - or from lab to beam system
+///     (alpha = pi,
+///     beta  = theta_beam,
+///     gamma = pi - phi_beam)
+///
+/// BE CAREFUL of the units! Here the angles are not in degrees!
 void ActarSimEulerTransformation::DoTheEulerTransformationBeam2Lab(){
-
-  // ***  Transformation  coordinate system (Euler angles) :  ***
-  // DEFINITIONS:
-  //  --from beam to lab system
-  //     alpha = phi
-  //     beta  = theta
-  //     gamma = 0
-  // *** inputs: theta_beam, phi_beam, alpha, beta, gamma
-  // *** calculate: theta_lab, phi_lab (from beam to lab)
-  //
-  //  --or from lab to beam system
-  //     alpha = pi
-  //     beta  = theta_beam
-  //     gamma = pi - phi_beam
-
-  // BE CAREFUL of the units! Here the angles are not in degrees!
 
   const G4double PI=3.14159265358979323846;
   //         const G4double rad=180.0/PI;
@@ -115,16 +113,19 @@ void ActarSimEulerTransformation::DoTheEulerTransformationBeam2Lab(){
   }
 
   if(sithe1 == 0.0){
-      phi_1 = 0.0;
+    phi_1 = 0.0;
   }
 
   PhiInLabSystem = phi_1;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Dump (empty function)
 void ActarSimEulerTransformation::Dump(){
-
 }
 
+//////////////////////////////////////////////////////////////////
+/// Prints results
 void ActarSimEulerTransformation::PrintResults(){
   G4cout << "Beam direction in the Lab frame:" << G4endl
          << "  theta=" << BeamDirectionAtVertexTheta << ", phi=" << BeamDirectionAtVertexPhi << G4endl;
@@ -133,4 +134,3 @@ void ActarSimEulerTransformation::PrintResults(){
   G4cout << "Particle direction in the Lab system:" << G4endl
          << "  theta=" << ThetaInLabSystem << ", phi=" << PhiInLabSystem << G4endl;
 }
-

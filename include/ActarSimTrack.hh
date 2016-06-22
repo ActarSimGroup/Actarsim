@@ -1,15 +1,11 @@
-//*-- AUTHOR : Hector Alvarez-Pol 
-//*-- Date: 05/2005
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   Track structure
-//
-// --------------------------------------------------------------
-// Comments: 
-//     - 31/05/05 Track structure for analysis in ACTAR
-//
-///////////////////////////////////////////////////////////////// 
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimTrack_h
 #define ActarSimTrack_h 1
@@ -25,22 +21,20 @@
 //struct G4String;
 //#endif
 
-class ActarSimTrack{  
-  
+class ActarSimTrack{
 private:
-  
-  Double_t xCoord;
-  Double_t yCoord;
-  Double_t zCoord;
-  Double_t xPreCoord;
-  Double_t yPreCoord;
-  Double_t zPreCoord;
-  Double_t energyStep;
-  Int_t parentTrackID;
-  Int_t trackID;
-  Int_t eventID;
-  Int_t runID;
-  
+  Double_t xCoord;      ///< X coordinate
+  Double_t yCoord;      ///< Y coordinate
+  Double_t zCoord;      ///< Z coordinate
+  Double_t xPreCoord;   ///< X coordinate at the start of step
+  Double_t yPreCoord;   ///< Y coordinate at the start of step
+  Double_t zPreCoord;   ///< Z coordinate at the start of step
+  Double_t energyStep;  ///< Energy step
+  Int_t parentTrackID;  ///< Parent Track ID
+  Int_t trackID;        ///< Track ID
+  Int_t eventID;        ///< Event ID
+  Int_t runID;          ///< Run ID
+
 public:
   ActarSimTrack();
   virtual ~ActarSimTrack();
@@ -71,5 +65,4 @@ public:
 
   ClassDef(ActarSimTrack,1) //ROOT CINT
 };
-
 #endif

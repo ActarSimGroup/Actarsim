@@ -1,18 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 01/12/15 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Gas volume detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 01/12/15 Recovering old functionality and correcting
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimGasDetectorConstruction
+/// Gas volume detector description
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimGasDetectorConstruction.hh"
@@ -36,12 +32,13 @@
 
 #include "globals.hh"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
+/// Sets the material and the pointer to the Messenger
 ActarSimGasDetectorConstruction::
 ActarSimGasDetectorConstruction(ActarSimDetectorConstruction* det)
   :	detConstruction(det){
-  //
-  // Constructor. Sets the material and the pointer to the Messenger
-  //
+
   SetGasPressure(1.01325*bar);
   SetGasTemperature(293.15*kelvin);
   //DefineGas();
@@ -74,26 +71,21 @@ ActarSimGasDetectorConstruction(ActarSimDetectorConstruction* det)
   gasMessenger = new ActarSimGasDetectorMessenger(det,this);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimGasDetectorConstruction::~ActarSimGasDetectorConstruction(){
-  //
-  // Destructor
-  //
   delete gasMessenger;
 }
 
-//G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
+//////////////////////////////////////////////////////////////////
+/// Wrap for the construction functions within the TOF
 G4VPhysicalVolume* ActarSimGasDetectorConstruction::Construct(G4LogicalVolume* chamberLog) {
-  //
-  // Wrap for the construction functions within the TOF
-  //
   return ConstructGas(chamberLog);
 }
 
+//////////////////////////////////////////////////////////////////
+/// Constructs the Gas volume detector elements
 G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume* chamberLog) {
-  //
-  //  Constructs the Gas volume detector elements
-  //
   //////////////////////////////////////////////////////////////////////
   //      GAS VOLUME
   // Several geometries are possible. Select the different options using
@@ -105,18 +97,18 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 
   if(detectorGeometry == "box"){
     G4cout << "##################################################################" << G4endl
-	    << "######  ActarSimGasDetectorConstruction::ConstructActarTPC()  #######" << G4endl
-	    << " Box-like gas geometry." << G4endl;
+	   << "######  ActarSimGasDetectorConstruction::ConstructActarTPC()  #######" << G4endl
+	   << " Box-like gas geometry." << G4endl;
     G4cout << " Box Parameters: " << G4endl
- 	    << " gasBoxSizeX = " <<  gasBoxSizeX/mm
- 	    << " mm,  gasBoxSizeY = " <<  gasBoxSizeY/mm
- 	    << " mm,  gasBoxSizeZ = " <<  gasBoxSizeZ/mm << " mm" << G4endl
- 	    << " gasBoxCenterX = " <<  gasBoxCenterX/mm
- 	    << " mm,  gasBoxCenterY = " <<  gasBoxCenterY/mm
- 	    << " mm,  gasBoxCenterZ = " <<  gasBoxCenterZ << " mm" << G4endl
-	    << " gasMaterial: " <<  gasMaterial << G4endl;
+	   << " gasBoxSizeX = " <<  gasBoxSizeX/mm
+	   << " mm,  gasBoxSizeY = " <<  gasBoxSizeY/mm
+	   << " mm,  gasBoxSizeZ = " <<  gasBoxSizeZ/mm << " mm" << G4endl
+	   << " gasBoxCenterX = " <<  gasBoxCenterX/mm
+	   << " mm,  gasBoxCenterY = " <<  gasBoxCenterY/mm
+	   << " mm,  gasBoxCenterZ = " <<  gasBoxCenterZ << " mm" << G4endl
+	   << " gasMaterial: " <<  gasMaterial << G4endl;
     G4cout << "##################################################################"<< G4endl;
- 
+
 
     if(detConstruction->GetACTARTPCGeoIncludedFlag() == "on"){
       //gas Box size: (266*170*266)mm
@@ -154,8 +146,8 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
     gasLog = new G4LogicalVolume(gasBox,gasMaterial,"gasLog");
 
     gasPhys = new G4PVPlacement(0,
-      G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
-      gasLog,"gasPhys",chamberLog,false,0);
+				G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
+				gasLog,"gasPhys",chamberLog,false,0);
 
     // //--------------------------
     // // Field Cage wire replaced by a copper foil around the GasBox
@@ -177,8 +169,6 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
     // G4VisAttributes* wireFoilVisAtt= new G4VisAttributes(G4Colour(1.0,0.5,0.));
     // wireFoilVisAtt->SetVisibility(true);
     // wireFoilLog->SetVisAttributes(wireFoilVisAtt);
-
-
   }
   else if(detectorGeometry == "tube"){
     G4cout << "##################################################################" << G4endl
@@ -200,8 +190,8 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
     gasLog = new G4LogicalVolume(gasTub,gasMaterial,"gasLog");
 
     gasPhys = new G4PVPlacement(0,
-      G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
-      gasLog,"gasPhys",chamberLog,false,0);
+				G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
+				gasLog,"gasPhys",chamberLog,false,0);
   }
   else {
     G4cout << G4endl
@@ -227,13 +217,13 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
 
     G4Tubs* beamShieldTub;
     beamShieldTub = new G4Tubs("beamShieldTub",innerRadiusBeamShieldTub,
-      outerRadiusBeamShieldTub,lengthBeamShieldTub,0,twopi);
+			       outerRadiusBeamShieldTub,lengthBeamShieldTub,0,twopi);
 
     beamShieldLog = new G4LogicalVolume(beamShieldTub,beamShieldMaterial,"beamShieldLog");
 
     beamShieldPhys = new G4PVPlacement(0,
-      G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
-      beamShieldLog,"beamShieldPhys",gasLog,false,0);
+				       G4ThreeVector(gasBoxCenterX,gasBoxCenterY,gasBoxCenterZ),
+				       beamShieldLog,"beamShieldPhys",gasLog,false,0);
   }
 
   //------------------------------------------------
@@ -254,13 +244,11 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   return gasPhys;
 }
 
-//void ActarSimGasDetectorConstruction::DefineGas() {
+//////////////////////////////////////////////////////////////////
+/// Sets the material the gas is made of
+///
+/// STP used are P = 1atm and T = 20ºC
 void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
-  //
-  // Sets the material the gas is made of
-  //
-  // STP used are P = 1atm and T = 20ºC
-  //
   //Gas Pressure & Temperature
   G4double pressure=GetGasPressure();
   G4double temperature=GetGasTemperature();
@@ -273,7 +261,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   //Gas Mix
   //const G4int NGasMix=NumberOfGasMix;
 
-//HAPOL NOTE: REMOVE REPETITIONS
+  //HAPOL NOTE: REMOVE REPETITIONS
   G4Element* ele_H  = new G4Element("Hydrogen" ,"H" , z= 1., a=   1.00794*g/mole);
   //G4Element* ele_D  = new G4Element("Deuterium","D" , z= 1., a=    2.0140*g/mole);
   //G4Element* ele_He = new G4Element("Helium"   ,"He", z= 2., a=    4.0026*g/mole);
@@ -284,7 +272,8 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   //G4Element* ele_Na = new G4Element("Sodium"   ,"Na", z=11., a=  22.98977*g/mole);
   //G4Element* ele_S  = new G4Element("Sulphur"  ,"S",  z=16., a=    32.066*g/mole);
   //G4Element* ele_Ar = new G4Element("Argon"    ,"Ar", z=18., a=   39.9481*g/mole);
-  /*G4Element* ele_Zn = new G4Element("Zinc",     "Zn", z=30., a=     65.39*g/mole);
+  /*
+  G4Element* ele_Zn = new G4Element("Zinc",     "Zn", z=30., a=     65.39*g/mole);
   G4Element* ele_Ge = new G4Element("Germanium","Ge", z=32., a=     72.61*g/mole);
   G4Element* ele_Br = new G4Element("Bromine"  ,"Br", z=35., a=    79.904*g/mole);
   G4Element* ele_Cd = new G4Element("Cadmium"  ,"Cd", z=48., a=   112.411*g/mole);
@@ -297,7 +286,8 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   G4Element* ele_Lu = new G4Element("Lutecium" ,"Lu", z=71., a=   174.967*g/mole);
   G4Element* ele_W  = new G4Element("Tungsten" ,"W" , z=74., a=    183.84*g/mole);
   G4Element* ele_Pb = new G4Element("Lead"     ,"Pb", z=82., a=    207.20*g/mole);
-  G4Element* ele_Bi = new G4Element("Bismuth"  ,"Bi", z=83., a= 208.98038*g/mole);*/
+  G4Element* ele_Bi = new G4Element("Bismuth"  ,"Bi", z=83., a= 208.98038*g/mole);
+  */
 
   G4int ncomponents, natoms;
   G4double fractionmass, abundance;
@@ -383,7 +373,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
     detConstruction->SetUpdateChamberMaterial(CF4);
   }
   else if(mat=="CH4"){
-    gasMaterial = CH4; 
+    gasMaterial = CH4;
     detConstruction->SetUpdateChamberMaterial(CH4);
   }
   else if(mat=="iC4H10"){
@@ -427,43 +417,31 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
 
     gasMaterial = GasMix;
     detConstruction->SetUpdateChamberMaterial(GasMix);
-
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Sets the material the medium is made of
 void ActarSimGasDetectorConstruction::SetBeamShieldMaterial(G4String mat) {
-  //
-  // Sets the material the medium is made of
-  //
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) beamShieldMaterial = pttoMaterial;
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Sets the geometry of the detector (box or tube)
 void ActarSimGasDetectorConstruction::SetDetectorGeometry(G4String type) {
-  //
-  // Sets the geometry of the detector (box or tube)
-  //
   detectorGeometry = type;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Sets the geometry of the detector (box or tube)
 void ActarSimGasDetectorConstruction::SetBeamShieldGeometry(G4String type) {
-  //
-  // Sets the geometry of the detector (box or tube)
-  //
   beamShieldGeometry = type;
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+///  Updates Gas detector
 void ActarSimGasDetectorConstruction::UpdateGeometry() {
-  //
-  // Updates Gas detector
-  //
-
   // Construct(detConstruction->GetWorldLogicalVolume());
   // G4RunManager::GetRunManager()->
   //   DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());
@@ -472,12 +450,9 @@ void ActarSimGasDetectorConstruction::UpdateGeometry() {
     DefineWorldVolume(detConstruction->GetChamberPhysicalVolume());
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Prints Gas volume detector parameters
 void ActarSimGasDetectorConstruction::PrintDetectorParameters() {
-  //
-  // Prints Gas volume detector parameters. To be filled
-  //
-
   G4cout << "##################################################################" << G4endl
 	 << "##  ActarSimGasDetectorConstruction::PrintDetectorParameters() ###" << G4endl
 	 << " The gas volume is a " ;

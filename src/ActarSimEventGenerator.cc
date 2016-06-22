@@ -1,53 +1,47 @@
-/////////////////////////////////////////////////////////////////
-//
-//*-- Created by: 10/05/06 B. Fernandez-Dominguez for Actar
-// --------------------------------------------------------------
-// Description:
-//   Event generator kinematics reader
-//
-// --------------------------------------------------------------
-// Comments: Based on R3B read kinematics
-//
-// --------------------------------------------------------------
-//
+// - AUTHOR: B. Fernandez-Dominguez 10/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimEventGenerator
+/// Event generator kinematics reader
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimEventGenerator.hh"
 
 using namespace std;
 
+//////////////////////////////////////////////////////////////////
+/// Constructor, all job here
 ActarSimEventGenerator::ActarSimEventGenerator(){
-  //
-  // Constructor, all job here
-  //
 
-// G4double a,b,c,d,e,f;
-// G4double Integral = 0.;
-int i;
-// int nbins;
-// const G4int MAX = 140;
-// char buffer[MAX];
+  // G4double a,b,c,d,e,f;
+  // G4double Integral = 0.;
+  int i;
+  // int nbins;
+  // const G4int MAX = 140;
+  // char buffer[MAX];
 
+  //Initial values
+  for(i=0;i<1000;i++) {
+    LabAngle_scatt[i]  = 0.;
+    LabEnergy_scatt[i] = 0.;
+    LabAngle_recoil[i]  = 0.;
+    LabEnergy_recoil[i] = 0.;
+  }
 
-//Initial values
-    for(i=0;i<1000;i++)
-      {
-	LabAngle_scatt[i]  = 0.;
-	LabEnergy_scatt[i] = 0.;
-	LabAngle_recoil[i]  = 0.;
-	LabEnergy_recoil[i] = 0.;
-      }
+  for(i=0;i<5000;i++) {
+    theta_xsec[i] = 0.;
+    CrossSection_t[i] = 0.;
+    Icross_section[i] = 0.;
+  }
 
-    for(i=0;i<5000;i++)
-      {
-	theta_xsec[i] = 0.;
-	CrossSection_t[i] = 0.;
-	Icross_section[i] = 0.;
-      }
-
-    //Read Kinematics File
-
-    /*
+  //Read Kinematics File
+  /*
     ifstream infile("data/kine/kinematics_77nidp.dat");
 
     for(i=0;i<24;i++)
@@ -69,10 +63,11 @@ int i;
 
       }
 
-    */
-//Read cross section file
+  */
 
-/*
+  //Read cross section file
+
+  /*
 
  ifstream infile_xsec("data/kine/xs_77ni_dp_0MeV_p.dat");
 
@@ -112,13 +107,11 @@ int i;
 
    }
 
-*/
+  */
 
 }
 
-ActarSimEventGenerator::~ActarSimEventGenerator()
-{
-  //
-  // Destructor
-  //
+//////////////////////////////////////////////////////////////////
+/// Destructor
+ActarSimEventGenerator::~ActarSimEventGenerator() {
 }

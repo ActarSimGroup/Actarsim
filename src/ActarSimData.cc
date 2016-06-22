@@ -1,25 +1,25 @@
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimData
+/// The information from the track of the primaries generated at
+/// the reaction vertex. All data members are accesible in the
+/// branch theData of The_Event_Tree.
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 05/2005
-//*-- Last Update: 1/12/14
-// --------------------------------------------------------------
-// Description:
-//   Data definition 
-//
-// --------------------------------------------------------------
-// Comments: 
-//     - 31/05/05 Data structure for analysis in ACTAR
-//
-///////////////////////////////////////////////////////////////// 
 
 #include "ActarSimData.hh"
 
 ClassImp(ActarSimData)
 
-ActarSimData::ActarSimData(){
-  //
-  // Constructor with initial values
-  //
+//////////////////////////////////////////////////////////////////
+/// Constructor with initial values
+ActarSimData::ActarSimData() {
   thetaPrim1 = 0;
   thetaPrim2 = 0;
   phiPrim1 = 0;
@@ -34,9 +34,7 @@ ActarSimData::ActarSimData(){
   runID = 0;
 }
 
-ActarSimData::~ActarSimData(){
-  //
-  //
-  //
+//////////////////////////////////////////////////////////////////
+/// Destructor
+ActarSimData::~ActarSimData() {
 }
-

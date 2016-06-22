@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol 
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Scintillator hit:
-//
-// --------------------------------------------------------------
-// Comments:
-// Added information about particleCharge, particleMass, and particleID -- dypang 090305
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimSciRingHit_h
 #define ActarSimSciRingHit_h 1
@@ -20,24 +15,20 @@
 #include "TObject.h"
 
 class ActarSimSciRingHit : public TObject{
-
 private:
+  UInt_t type;           ///< Scintillator type
+  UInt_t copy;           ///< Scintillator copy
 
-  //Crystal identification
-  UInt_t type;           //crystal type
-  UInt_t copy;           //crystal copy
+  Double_t time;         ///< Pulse time (w.r.t. vertex emission)
+  Double_t energy;       ///< Total energy deposited
 
-  Double_t time;    // pulse time (w.r.t. vertex emission)
-  Double_t energy;  // total energy deposited
+  UInt_t eventID;        ///< Event ID
+  UInt_t runID;          ///< Run ID
+  UInt_t trackID;        ///< Track ID
 
-  //Event identification
-  UInt_t eventID;     // event ID
-  UInt_t runID;       // run ID
-  UInt_t trackID;       // run ID
-
-  UInt_t particleID;
-  Double_t particleCharge;
-  Double_t particleMass;
+  UInt_t particleID;       ///< Particle ID
+  Double_t particleCharge; ///< Particle charge
+  Double_t particleMass;   ///< Particle charge
 
 public:
   ActarSimSciRingHit();

@@ -1,16 +1,15 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 04/2008
-//*-- Last Update: 20/06/2016
-// --------------------------------------------------------------
-// Description:
-//   The information from the primaries generated in the reaction
-//   vertex. Information to be accessed in the ROOT file per event
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimPrimaryInfo
+/// The information from the primaries generated in the reaction
+/// vertex. Information to be accessed in the ROOT file per event
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimPrimaryInfo.hh"
@@ -20,10 +19,9 @@
 
 ClassImp(ActarSimPrimaryInfo)
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimPrimaryInfo::ActarSimPrimaryInfo() {
-  //
-  // Init values
-  //
   nbPrimariesInEvent = 0;
   kineticEnergy = 0;
   theta = 0;
@@ -47,10 +45,9 @@ ActarSimPrimaryInfo::ActarSimPrimaryInfo() {
   runID = 0;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Constructor from a primary
 ActarSimPrimaryInfo::ActarSimPrimaryInfo(G4PrimaryParticle* prim) {
-  //
-  // Values from a primary
-  //
   theta = prim->GetMomentum().theta() / rad;
   phi = prim->GetMomentum().phi() / rad;
 
@@ -75,19 +72,14 @@ ActarSimPrimaryInfo::ActarSimPrimaryInfo(G4PrimaryParticle* prim) {
   kineticEnergy = sqrt(energysquared) - prim->GetMass();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing
 ActarSimPrimaryInfo::~ActarSimPrimaryInfo(){
-  //
-  // Destructor. Makes nothing
-  //
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Prints info
 void ActarSimPrimaryInfo::print(void){
-  //
-  // Prints info
-  //
   G4cout << "-------------------------------------------" << G4endl;
   G4cout << "------- ActarSimPrimaryInfo::print() ---------" << G4endl;
   G4cout << " eventID: " << eventID <<  ", runID: " << runID	 << G4endl;
@@ -113,48 +105,43 @@ void ActarSimPrimaryInfo::print(void){
   G4cout << "-------------------------------------------" << G4endl;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Sets the position of the vertex (origin of the primary particle)
 void ActarSimPrimaryInfo::SetVertexPosition(Double_t x, Double_t y, Double_t z) {
-  //
-  // Sets the position of the vertex (origin of the primary particle)
-  //
   x0 = x;
   y0 = y;
   z0 = z;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Sets the momentum
 void ActarSimPrimaryInfo::SetMomentum(Double_t px, Double_t py, Double_t pz) {
-  //
-  // Sets the momentum
-  //
   Px = px;
   Py = py;
   Pz = pz;
   G4ThreeVector mom(Px,Py,Pz);
   theta = mom.theta();
   phi = mom.phi();
-
 }
 
+//////////////////////////////////////////////////////////////////
+/// Sets the 4momentum
 void ActarSimPrimaryInfo::Set4Momentum(Double_t px, Double_t py, Double_t pz, Double_t E){
-  //
-  // Sets the 4momentum
-  //
   Px = px;
   Py = py;
   Pz = pz;
   Double_t mas2 = E*E - px*px - py*py - pz*pz;
-  if(mas2>=0.)
-    { mass = std::sqrt(mas2); }
-  else
-    { mass = -1.0; }
+  if(mas2>=0.) {
+    mass = std::sqrt(mas2);
+  }
+  else {
+    mass = -1.0;
+  }
 }
 
+//////////////////////////////////////////////////////////////////
+/// Sets the polarization
 void ActarSimPrimaryInfo::SetPolarization(Double_t px,Double_t py,Double_t pz) {
-  //
-  // Sets the polarization
-  //
   polX = px;
   polY = py;
   polZ = pz;

@@ -1,26 +1,23 @@
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimTrack
+///  Track structure
 /////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol 
-//*-- Date: 05/2005
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   Track structure
-//
-// --------------------------------------------------------------
-// Comments: 
-//     - 31/05/05 Track structure for analysis in ACTAR
-//
-///////////////////////////////////////////////////////////////// 
 
 #include "ActarSimTrack.hh"
 
 ClassImp(ActarSimTrack)
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimTrack::ActarSimTrack(){
-  //
-  //
-  //
-
   xCoord = 0.;
   yCoord = 0.;
   zCoord = 0.;
@@ -34,9 +31,7 @@ ActarSimTrack::ActarSimTrack(){
   runID = 0;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimTrack::~ActarSimTrack(){
-  //
-  //
-  //
 }
-

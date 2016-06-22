@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 16/12/14 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Plastic (scintillator) detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimPlaDetectorConstruction_h
 #define ActarSimPlaDetectorConstruction_h 1
@@ -28,31 +21,26 @@ class ActarSimDetectorConstruction;
 
 class ActarSimPlaDetectorConstruction {
 private:
-
-  // Materials
-  G4Material* plaBulkMaterial;
-
-//  ActarSimPlaDetectorMessenger* plaMessenger;   //pointer to the Messenger
-  ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
+  G4Material* plaBulkMaterial;                   ///< Materials
+  //ActarSimPlaDetectorMessenger* plaMessenger;    //pointer to the Messenger
+  ActarSimDetectorConstruction* detConstruction; ///< pointer to the global detector
 
   G4VPhysicalVolume* ConstructPla(G4LogicalVolume*);
 
-  G4int sideCoverage;   // 6 bits to indicate which sci wall is present (1) or absent (0)
-			// order is:
-			// bit1 (lsb) beam output wall
-			// bit2 lower (gravity based) wall
-			// bit3 upper (gravity based) wall
-			// bit4 left (from beam point of view) wall
-			// bit5 right (from beam point of view) wall
-			// bit6 (msb) beam entrance wall
+  /// 6 bits to indicate which sci wall is present (1) or absent (0) order is:
+  /// - bit1 (lsb) beam output wall
+  /// - bit2 lower (gravity based) wall
+  /// - bit3 upper (gravity based) wall
+  /// - bit4 left (from beam point of view) wall
+  /// - bit5 right (from beam point of view) wall
+  /// - bit6 (msb) beam entrance wall
+  G4int sideCoverage;
 
-                       //all the following are half length of a box!!
-  G4double xBoxPlaHalfLength;   // Remember: x is horizontal
-  G4double yBoxPlaHalfLength;   // Remember: y is vertical
-  G4double zBoxPlaHalfLength;   // Remember: z is along beam
+  G4double xBoxPlaHalfLength;   ///< X Half-length of the sci (x is horizontal)
+  G4double yBoxPlaHalfLength;   ///< Y Half-length of the sci (y is vertical)
+  G4double zBoxPlaHalfLength;   ///< Z Half-length of the sci (z is along beam)
 
 public:
-
   ActarSimPlaDetectorConstruction(ActarSimDetectorConstruction*);
   ~ActarSimPlaDetectorConstruction();
 
@@ -73,6 +61,5 @@ public:
 
   void UpdateGeometry();
   void PrintDetectorParameters();
-
 };
 #endif

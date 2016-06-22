@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 05/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   The ACTAR Scintillator detectorpart of the ROOT Analysis
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 05/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimROOTAnalSciRing
+/// The ACTAR Scintillator detectorpart of the ROOT Analysis
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimROOTAnalSciRing.hh"
@@ -39,14 +38,9 @@
 #include "TFile.h"
 #include "TClonesArray.h"
 
-//for calculating the optical photon wavelenght for a given enegy
-//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
-
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimROOTAnalSciRing::ActarSimROOTAnalSciRing() {
-  //
-  // Constructor
-  //
-
   //The simulation file
   simFile = ((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetSimFile();
   simFile->cd();
@@ -60,33 +54,22 @@ ActarSimROOTAnalSciRing::ActarSimROOTAnalSciRing() {
   sciRingHitCA = new TClonesArray("ActarSimSciRingHit",2);
 
   sciRingHitsBranch = eventTree->Branch("sciRingHits",&sciRingHitCA);
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing.
 ActarSimROOTAnalSciRing::~ActarSimROOTAnalSciRing() {
-  //
-  // Destructor
-  //
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the SciRingntillator anal when generating the primaries
 void ActarSimROOTAnalSciRing::GeneratePrimaries(const G4Event *anEvent){
-  //
-  // Actions to perform in the SciRingntillator anal when generating the primaries
-  //
   if(anEvent){;} // to quiet the compiler
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the SciRingntillator anal at the begining of the run
 void ActarSimROOTAnalSciRing::BeginOfRunAction(const G4Run *aRun) {
-  //
-  // Actions to perform in the SciRingntillator anal at the begining of the run
-  //
-  if (aRun){;} /* keep the compiler "quiet" */
-
   //Storing the runID
   SetTheRunID(aRun->GetRunID());
 
@@ -103,40 +86,27 @@ void ActarSimROOTAnalSciRing::BeginOfRunAction(const G4Run *aRun) {
   simFile->cd();
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator anal at the begining of the event
 void ActarSimROOTAnalSciRing::BeginOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the scintillator anal at the begining of the event
-  //
-
   SetTheEventID(anEvent->GetEventID());
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator anal at the beginning of the run
 void ActarSimROOTAnalSciRing::EndOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the scintillator anal at the beginning of the run
-  //
-
   FillingHits(anEvent);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator detector analysis after each step
 void ActarSimROOTAnalSciRing::UserSteppingAction(const G4Step *aStep){
-  //
-  // Actions to perform in the scintillator detector analysis after each step
-  //
   if(aStep){;} // to quiet the compiler
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Defining the ActarSimSciHits from the ActarSimSciGeantHits
 void ActarSimROOTAnalSciRing::FillingHits(const G4Event *anEvent) {
-  //
-  // Defining the ActarSimSciHits from the ActarSimSciGeantHits
-  //
-
   //Hit Container ID for ActarSimSciGeantHit
   G4int hitsCollectionID =
     G4SDManager::GetSDMpointer()->GetCollectionID("SciRingCollection");
@@ -236,9 +206,9 @@ void ActarSimROOTAnalSciRing::FillingHits(const G4Event *anEvent) {
   //Let us create as many R3BCalCrystalHit as NbCrystalsWithHit
   //TODO->Recover here the simhit/hit duality if needed!!
   //if(((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetUseCrystalHitSim()==0){
-    theSciRingHit = new ActarSimSciRingHit*[NbCrystalsWithHit];
-    for (G4int i=0;i<NbCrystalsWithHit;i++)
-      theSciRingHit[i] = new ActarSimSciRingHit();
+  theSciRingHit = new ActarSimSciRingHit*[NbCrystalsWithHit];
+  for (G4int i=0;i<NbCrystalsWithHit;i++)
+    theSciRingHit[i] = new ActarSimSciRingHit();
   //}
   //else{  //In case that the simulated hits were used!
   //  theSciHit = new ActarSimSciHit*[NbCrystalsWithHit];
@@ -311,8 +281,8 @@ void ActarSimROOTAnalSciRing::FillingHits(const G4Event *anEvent) {
   //at the end, fill the ClonesArray
   //TODO-> Recover here the simhit/hit duality if needed!!
   //if(((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetUseCrystalHitSim()==0){
-    for (G4int i=0;i<NbCrystalsWithHit;i++)
-      new((*sciRingHitCA)[i])ActarSimSciRingHit(*theSciRingHit[i]);
+  for (G4int i=0;i<NbCrystalsWithHit;i++)
+    new((*sciRingHitCA)[i])ActarSimSciRingHit(*theSciRingHit[i]);
   //}
   //else{  //In case that the simulated hits were used!
   //  ActarSimSciHitSim* testSim;
@@ -336,19 +306,18 @@ void ActarSimROOTAnalSciRing::FillingHits(const G4Event *anEvent) {
   delete [] theSciRingHit;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Function to move the information from the ActarSimSciGeantHit (a step hit)
+/// to ActarSimSciHit (an event hit) for the Darmstadt-Heidelberg Crystall Ball.
+///
+/// Two modes are possible:
+/// - mode == 0 : creation; the ActarSimSciHit is void and is
+///             filled by the data from the ActarSimSciGeantHit
+/// - mode == 1 : addition; the ActarSimSciHit was already created
+///             by other ActarSimSciGeantHit and some data members are updated
 void ActarSimROOTAnalSciRing::AddCalCrystalHit(ActarSimSciRingHit* cHit,
-				      ActarSimSciRingGeantHit* gHit,
-				      G4int mode) {
-  //
-  // Function to move the information from the ActarSimSciGeantHit (a step hit)
-  // to ActarSimSciHit (an event hit) for the Darmstadt-Heidelberg Crystall Ball.
-  // Two modes are possible:
-  // mode == 0 : creation; the ActarSimSciHit is void and is
-  //             filled by the data from the ActarSimSciGeantHit
-  // mode == 1 : addition; the ActarSimSciHit was already created
-  //             by other ActarSimSciGeantHit and some data members are updated
-
+					       ActarSimSciRingGeantHit* gHit,
+					       G4int mode) {
   if(mode == 0) { //creation
     if( gHit->GetDetName() == "CsISector" )   cHit->SetType(1);
     else G4cout << "ERROR in R3BROOTAnalCal::AddCalCrystalHit()." << G4endl
@@ -359,7 +328,7 @@ void ActarSimROOTAnalSciRing::AddCalCrystalHit(ActarSimSciRingHit* cHit,
     cHit->SetEnergy(gHit->GetEdep()/ MeV);
     cHit->SetTime(gHit->GetToF() / ns);
 
-	cHit->SetTrackID(gHit->GetTrackID());
+    cHit->SetTrackID(gHit->GetTrackID());
     cHit->SetEventID(GetTheEventID());
     cHit->SetRunID(GetTheRunID());
 
@@ -367,8 +336,8 @@ void ActarSimROOTAnalSciRing::AddCalCrystalHit(ActarSimSciRingHit* cHit,
     cHit->SetParticleCharge(gHit->GetParticleCharge());
     cHit->SetParticleMass(gHit->GetParticleMass());
 
-  //TODO-> Recover here the simhit/hit duality if needed!!
-/*
+    //TODO-> Recover here the simhit/hit duality if needed!!
+    /*
     if(((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetUseCrystalHitSim()!=0){
       if( fabs(gHit->GetLocalPos().z())> 120 )
 	((ActarSimSciHitSim*)cHit)->SetEnergyPerZone(24,gHit->GetEdep()/ MeV);
@@ -396,15 +365,15 @@ void ActarSimROOTAnalSciRing::AddCalCrystalHit(ActarSimSciRingHit* cHit,
       ((ActarSimSciHitSim*)cHit)->SetFirstInteractionX(gHit->GetLocalPos().x());
       ((ActarSimSciHitSim*)cHit)->SetFirstInteractionY(gHit->GetLocalPos().y());
       ((ActarSimSciHitSim*)cHit)->SetFirstInteractionZ(gHit->GetLocalPos().z());
-    }
-*/
+      }
+    */
   }
   else if(mode==1){ //addition
     cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ MeV);
     if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ ns);
 
     //TODO-> Recover here the simhit/hit duality if needed!!
-/*
+    /*
     if(((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetUseCrystalHitSim()!=0){
       if( fabs(gHit->GetLocalPos().z())> 120 )
 	((R3BCalCrystalHitSim*)cHit)->SetEnergyPerZone(24,

@@ -1,17 +1,16 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2006
-//*-- Last Update: 16/12/14 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   A Geant Hit in the calorimeter volume. It represents the
-//   information of each step with energy deposited in the
-//   calorimeter volume.
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimGasGeantHit
+/// A Geant Hit in the calorimeter volume. It represents the
+/// information of each step with energy deposited in the
+/// calorimeter volume.
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimGasGeantHit.hh"
@@ -23,25 +22,19 @@
 
 G4Allocator<ActarSimGasGeantHit> ActarSimGasGeantHitAllocator;
 
-
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimGasGeantHit::ActarSimGasGeantHit() {
-  //
-  // Constructor
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimGasGeantHit::~ActarSimGasGeantHit() {
-  //
-  // Destructor
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Copy constructor
 ActarSimGasGeantHit::ActarSimGasGeantHit(const ActarSimGasGeantHit& right) : G4VHit() {
-  //
-  // Copy constructor
-  //
   trackID = right.trackID;
   parentID = right.parentID;
   edep = right.edep;
@@ -58,11 +51,9 @@ ActarSimGasGeantHit::ActarSimGasGeantHit(const ActarSimGasGeantHit& right) : G4V
   stepEnergy = right.stepEnergy;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Operator =
 const ActarSimGasGeantHit& ActarSimGasGeantHit::operator=(const ActarSimGasGeantHit& right){
-  //
-  // Operator =
-  //
   trackID = right.trackID;
   parentID = right.parentID;
   edep = right.edep;
@@ -81,22 +72,17 @@ const ActarSimGasGeantHit& ActarSimGasGeantHit::operator=(const ActarSimGasGeant
   return *this;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Operator ==
 G4int ActarSimGasGeantHit::operator==(const ActarSimGasGeantHit& right) const{
-  //
-  // Operator ==
-  //
   return (this==&right) ? 1 : 0;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Draws the Hit. A clear red point on the Hit position
 void ActarSimGasGeantHit::Draw(){
-  //
-  // Draws the Hit. A clear red point on the Hit position
-  //
   G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  if(pVVisManager)
-  {
+  if(pVVisManager) {
     G4Circle circle(prePos);
     circle.SetScreenSize(4);
     circle.SetFillStyle(G4Circle::filled);
@@ -107,11 +93,9 @@ void ActarSimGasGeantHit::Draw(){
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Prints full information about the calGeantHit
 void ActarSimGasGeantHit::Print(){
-  //
-  // Prints full information about the calGeantHit
-  //
   G4cout << "##################################################################"
 	 << G4endl
 	 << "############     ActarSimGasGeantHit::Print()     ################" << G4endl
@@ -128,9 +112,4 @@ void ActarSimGasGeantHit::Print(){
 	 << ", posToF: " << postToF  / ns << " ns" 	 << G4endl;
   G4cout << "##################################################################"
 	 << G4endl;
-
 }
-
-
-
-

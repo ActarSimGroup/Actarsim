@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Geant Hit in the Sil volume. It represents
-//   the information of each step with energy deposited.
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimSilGeantHit_h
 #define ActarSimSilGeantHit_h 1
@@ -23,37 +16,31 @@
 #include "G4ThreeVector.hh"
 #include "G4Step.hh"
 
-class ActarSimSilGeantHit : public G4VHit
-{
-  private:
+class ActarSimSilGeantHit : public G4VHit {
+private:
+  G4double      edep;       ///< Energy deposited in the step
+  G4double      eBeforeSil; ///< Energy before entering silicon
+  G4double      eAfterSil;  ///< Energy when exiting silicon
 
-  G4double      edep;    //energy deposited in the step
-  G4double      eBeforeSil; // energy before entering silicon
-  G4double      eAfterSil;  // energy when exiting silicon
+  G4ThreeVector pos;         ///< PostStep position of the step
+  G4ThreeVector prePos;      ///< PreStep position of the step
+  G4ThreeVector localPos;    ///< Local (for the given detName and detID) coordinates of interaction (postStep)
+  G4ThreeVector localPrePos; ///< Local (for the given detName and detID) coordinates of interaction (postStep)
 
-  G4ThreeVector pos;     //(postStep) position of the step
-  G4ThreeVector prePos;     //(preStep) position of the step
-  G4ThreeVector localPos;  //local (for the given detName and detID)
-                           //coordinates of interaction (postStep)
-  G4ThreeVector localPrePos;  //local (for the given detName and detID)
-                           //coordinates of interaction (postStep)
+  G4String      detName;     ///< Name of the volume where the interaction takes place
+  G4String      postDetName; ///< Name of the volume at the previous step
+  G4String      preDetName;  ///< Name of the volume at the following step
+  G4int         detID;       ///< ID (copy) of the detector where the interaction takes place
 
-  G4String      detName; //name of the volume where the interaction takes place
-  G4String      postDetName;  //name of the volume at the previous step
-  G4String      preDetName;    //name of the volume at the following step
-  G4int         detID;   //ID (copy) of the detector where the interaction takes place
+  G4double      toF;         ///< ToF of the interaction (postStep)
 
-  G4double      toF;     //ToF of the interaction (postStep)
-
-  G4int         trackID; //trackID
-  G4int         parentID;
-  G4int         particleID;
-  G4double      particleCharge;
-  G4double      particleMass;
-
+  G4int         trackID;     ///< TrackID
+  G4int         parentID;    ///< Parent ID
+  G4int         particleID;  ///< Particle ID
+  G4double      particleCharge; ///< Particle charge
+  G4double      particleMass;  ///< Particle mass
 
 public:
-
   ActarSimSilGeantHit();
   ~ActarSimSilGeantHit();
   ActarSimSilGeantHit(const ActarSimSilGeantHit&);
@@ -110,22 +97,19 @@ public:
   G4int      GetParticleID(){ return particleID; }
   G4double   GetParticleCharge(){ return particleCharge; }
   G4double   GetParticleMass(){return particleMass;}
-
 };
 
 typedef G4THitsCollection<ActarSimSilGeantHit> ActarSimSilGeantHitsCollection;
 
 extern G4Allocator<ActarSimSilGeantHit> ActarSimSilGeantHitAllocator;
 
-inline void* ActarSimSilGeantHit::operator new(size_t)
-{
+inline void* ActarSimSilGeantHit::operator new(size_t) {
   void *aHit;
   aHit = (void *) ActarSimSilGeantHitAllocator.MallocSingle();
   return aHit;
 }
 
-inline void ActarSimSilGeantHit::operator delete(void *aHit)
-{
+inline void ActarSimSilGeantHit::operator delete(void *aHit) {
   ActarSimSilGeantHitAllocator.FreeSingle((ActarSimSilGeantHit*) aHit);
 }
 #endif

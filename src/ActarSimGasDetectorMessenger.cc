@@ -1,16 +1,14 @@
- ///////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 15/12/14
-// --------------------------------------------------------------
-// Description:
-//   Messenger of the Gas ACTAR detector
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimGasDetectorMessenger
+/// Messenger of the Gas ACTAR detector
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimGasDetectorMessenger.hh"
@@ -31,12 +29,33 @@
 #include "G4Tokenizer.hh"
 
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
+/// command included in this AnalysisMessenger:
+/// - /ActarSim/det/gas/setGasMat
+/// - /ActarSim/det/gas/setGasPressure
+/// - /ActarSim/det/gas/setGasTemperature
+/// - /ActarSim/det/gas/setBeamShieldMat
+/// - /ActarSim/det/gas/setDetectorGeometry
+/// - /ActarSim/det/gas/setBeamShield
+/// - /ActarSim/det/gas/setXLengthGasBox
+/// - /ActarSim/det/gas/setYLengthGasBox
+/// - /ActarSim/det/gas/setZLengthGasBox
+/// - /ActarSim/det/gas/setXCenterGasBox
+/// - /ActarSim/det/gas/setYCenterGasBox
+/// - /ActarSim/det/gas/setZCenterGasBox
+/// - /ActarSim/det/gas/setRadiusGasTub
+/// - /ActarSim/det/gas/setLengthGasTub
+/// - /ActarSim/det/gas/setInnerRadiusBeamShieldTub
+/// - /ActarSim/det/gas/setRadiusBeamShieldTub
+/// - /ActarSim/det/gas/setLengthBeamShieldTub
+/// - /ActarSim/det/gas/print
+/// - /ActarSim/det/gas/mixture/
+/// - /ActarSim/det/gas/mixture/GasMixture
+/// - /ActarSim/det/gas/mixture/setGasMix
 ActarSimGasDetectorMessenger::
 ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimGasDetectorConstruction* ActarSimGasDet)
   :ActarSimDetector(ActarSimDet), ActarSimGasDetector(ActarSimGasDet){
-  //
-  // Constructor with fully functionality
-  //
 
   detDir = new G4UIdirectory("/ActarSim/det/gas/");
   detDir->SetGuidance("gas detector control");
@@ -139,14 +158,14 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   lengthGasTubCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   innerRadiusBeamShieldTubCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setInnerRadiusBeamShieldTub",this);
-  innerRadiusBeamShieldTubCmd->SetGuidance("Select the external radius of the Gas Tube.");
+  innerRadiusBeamShieldTubCmd->SetGuidance("Select the internal radius of the Gas Tube.");
   innerRadiusBeamShieldTubCmd->SetParameterName("innerRadiusBeamShieldTub",false);
   innerRadiusBeamShieldTubCmd->SetRange("innerRadiusBeamShieldTub>=0.");
   innerRadiusBeamShieldTubCmd->SetUnitCategory("Length");
   innerRadiusBeamShieldTubCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   outerRadiusBeamShieldTubCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/det/gas/setRadiusBeamShieldTub",this);
-  outerRadiusBeamShieldTubCmd->SetGuidance("Select the internal radius of the Gas Tube.");
+  outerRadiusBeamShieldTubCmd->SetGuidance("Select the external radius of the Gas Tube.");
   outerRadiusBeamShieldTubCmd->SetParameterName("outerRadiusBeamShieldTub",false);
   outerRadiusBeamShieldTubCmd->SetRange("outerRadiusBeamShieldTub>=0.");
   outerRadiusBeamShieldTubCmd->SetUnitCategory("Length");
@@ -200,11 +219,9 @@ ActarSimGasDetectorMessenger(ActarSimDetectorConstruction* ActarSimDet,ActarSimG
   gasMixtureCmd->SetParameter(gasMixtureParam);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimGasDetectorMessenger::~ActarSimGasDetectorMessenger() {
-  //
-  // Destructor
-  //
   delete detDir;
   delete detDirMix;
   delete gasMaterCmd;
@@ -229,114 +246,80 @@ ActarSimGasDetectorMessenger::~ActarSimGasDetectorMessenger() {
   delete printCmd;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Setting the new values and connecting to actions
 void ActarSimGasDetectorMessenger::SetNewValue(G4UIcommand* command,
-					    G4String newValue) {
-  //
-  // Setting the new values and connecting to actions
-  //
+					       G4String newValue) {
 
-  if(command == gasMaterCmd)
-    {
-      //ActarSimGasDetector->DefineGas();
-      ActarSimGasDetector->SetGasMaterial(newValue);
-      //ActarSimDetector->SetChamberMaterial(newValue);
-      //ActarSimDetector->UpdateGeometry();
-      //ActarSimDetector->PrintDetectorParameters();
-    }
+  if(command == gasMaterCmd) {
+    //ActarSimGasDetector->DefineGas();
+    ActarSimGasDetector->SetGasMaterial(newValue);
+    //ActarSimDetector->SetChamberMaterial(newValue);
+    //ActarSimDetector->UpdateGeometry();
+    //ActarSimDetector->PrintDetectorParameters();
+  }
 
   if(command == gasMixtureFlagCmd)
-    {
-      ActarSimGasDetector->SetGasMixture(gasMixtureFlagCmd->GetNewIntValue(newValue));
-    }
+    ActarSimGasDetector->SetGasMixture(gasMixtureFlagCmd->GetNewIntValue(newValue));
 
   if(command == gasMixtureCmd)
-    {
-      GasMixtureCommand(newValue);
-    }
+    GasMixtureCommand(newValue);
 
   if(command == gasTempCmd)
-  {
     ActarSimGasDetector->SetGasTemperature(gasTempCmd->GetNewDoubleValue(newValue));
-  }
 
   if(command == gasPresCmd)
-  {
     ActarSimGasDetector->SetGasPressure(gasPresCmd->GetNewDoubleValue(newValue));
-  }
 
   if(command == beamShieldMaterCmd)
-  {
     ActarSimGasDetector->SetBeamShieldMaterial(newValue);
-  }
 
   if(command == detectorGeometryCmd)
-  {
     ActarSimGasDetector->SetDetectorGeometry(newValue);
-  }
 
   if(command == setBeamShieldCmd)
-  {
     ActarSimGasDetector->SetBeamShieldGeometry(newValue);
-  }
 
-  if(command == gasBoxSizeXCmd) {
+  if(command == gasBoxSizeXCmd)
     ActarSimGasDetector->SetGasBoxSizeX(gasBoxSizeXCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == gasBoxSizeYCmd) {
+  if(command == gasBoxSizeYCmd)
     ActarSimGasDetector->SetGasBoxSizeY(gasBoxSizeYCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == gasBoxSizeZCmd)  {
+  if(command == gasBoxSizeZCmd)
     ActarSimGasDetector->SetGasBoxSizeZ(gasBoxSizeZCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == gasBoxCenterXCmd) {
+  if(command == gasBoxCenterXCmd)
     ActarSimGasDetector->SetGasBoxCenterY(gasBoxCenterXCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == gasBoxCenterYCmd) {
+  if(command == gasBoxCenterYCmd)
     ActarSimGasDetector->SetGasBoxCenterY(gasBoxCenterYCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == gasBoxCenterZCmd) {
+  if(command == gasBoxCenterZCmd)
     ActarSimGasDetector->SetGasBoxCenterZ(gasBoxCenterZCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == radiusGasTubCmd) {
+  if(command == radiusGasTubCmd)
     ActarSimGasDetector->SetRadiusGasTub(radiusGasTubCmd->GetNewDoubleValue(newValue));
-  }
 
-  if(command == lengthGasTubCmd) {
+  if(command == lengthGasTubCmd)
     ActarSimGasDetector->SetLengthGasTub(lengthGasTubCmd->GetNewDoubleValue(newValue));
-  }
 
   if(command == innerRadiusBeamShieldTubCmd)
-  {
     ActarSimGasDetector->SetInnerRadiusBeamShieldTub(innerRadiusBeamShieldTubCmd->GetNewDoubleValue(newValue));
-  }
 
   if(command == outerRadiusBeamShieldTubCmd)
-  {
     ActarSimGasDetector->SetOuterRadiusBeamShieldTub(outerRadiusBeamShieldTubCmd->GetNewDoubleValue(newValue));
-  }
 
   if(command == lengthBeamShieldTubCmd)
-  {
     ActarSimGasDetector->SetLengthBeamShieldTub(lengthBeamShieldTubCmd->GetNewDoubleValue(newValue));
-  }
-
 
   if( command == printCmd )
-    { ActarSimGasDetector->PrintDetectorParameters(); }
-
+    ActarSimGasDetector->PrintDetectorParameters();
 }
 
+//////////////////////////////////////////////////////////////////
+/// Selection of the mixture gases.
 void ActarSimGasDetectorMessenger::GasMixtureCommand(G4String newValues){
-  //
-  // Selection of the mixture gases.
-  //
 
   G4Tokenizer next( newValues );
   // check argument
@@ -347,5 +330,4 @@ void ActarSimGasDetectorMessenger::GasMixtureCommand(G4String newValues){
   //G4cout << " fGasNumber "<<fGasNumber<< " fGasMaterial "<<fGasMaterial<< " fGasRatio "<<fGasRatio<< G4endl;
 
   ActarSimGasDetector->SetGasMixMaterial(fGasNumber,fGasMaterial,fGasRatio);
-
 }

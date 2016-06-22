@@ -1,17 +1,15 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 15/06/16 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   A Geant Hit in the plastic (scintillator) volume. It
-//  represents the information of each step with energy deposited.
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimPlaGeantHit
+/// A Geant Hit in the plastic (scintillator) volume. It
+/// represents the information of each step with energy deposited.
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimPlaGeantHit.hh"
@@ -23,79 +21,72 @@
 
 G4Allocator<ActarSimPlaGeantHit> ActarSimPlaGeantHitAllocator;
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimPlaGeantHit::ActarSimPlaGeantHit() {
-  //
-  // Constructor
-  //
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimPlaGeantHit::~ActarSimPlaGeantHit() {
-  //
-  // Destructor
-  //
 }
 
+//////////////////////////////////////////////////////////////////
+/// Copy constructor
 ActarSimPlaGeantHit::ActarSimPlaGeantHit(const ActarSimPlaGeantHit& right) : G4VHit() {
-  //
-  // Copy constructor
-	//
-	edep = right.edep;
-	eBeforePla = right.eBeforePla;
-	eAfterPla = right.eAfterPla;
-	pos = right.pos;
-	prePos = right.prePos;
-	localPos = right.localPos;
-	localPrePos = right.localPrePos;
-	detName = right.detName;
-	postDetName = right.postDetName;
-	preDetName = right.preDetName;
-	detID = right.detID;
-	toF = right.toF;
-	trackID = right.trackID;
-	parentID = right.parentID;
-	particleID = right.particleID;
-	particleCharge = right.particleCharge;
-	particleMass = right.particleMass;
+  edep = right.edep;
+  eBeforePla = right.eBeforePla;
+  eAfterPla = right.eAfterPla;
+  pos = right.pos;
+  prePos = right.prePos;
+  localPos = right.localPos;
+  localPrePos = right.localPrePos;
+  detName = right.detName;
+  postDetName = right.postDetName;
+  preDetName = right.preDetName;
+  detID = right.detID;
+  toF = right.toF;
+  trackID = right.trackID;
+  parentID = right.parentID;
+  particleID = right.particleID;
+  particleCharge = right.particleCharge;
+  particleMass = right.particleMass;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Operator =
 const ActarSimPlaGeantHit& ActarSimPlaGeantHit::operator=(const ActarSimPlaGeantHit& right){
-  //
-  // operator=
-  //
-	edep = right.edep;
-	eBeforePla = right.eBeforePla;
-	eAfterPla = right.eAfterPla;
-	pos = right.pos;
-	prePos = right.prePos;
-	localPos = right.localPos;
-	localPrePos = right.localPrePos;
-	detName = right.detName;
-	postDetName = right.postDetName;
-	preDetName = right.preDetName;
-	detID = right.detID;
-	toF = right.toF;
-	trackID = right.trackID;
-	parentID = right.parentID;
-	particleID = right.particleID;
-	particleCharge = right.particleCharge;
-	particleMass = right.particleMass;
-	return *this;
+  edep = right.edep;
+  eBeforePla = right.eBeforePla;
+  eAfterPla = right.eAfterPla;
+  pos = right.pos;
+  prePos = right.prePos;
+  localPos = right.localPos;
+  localPrePos = right.localPrePos;
+  detName = right.detName;
+  postDetName = right.postDetName;
+  preDetName = right.preDetName;
+  detID = right.detID;
+  toF = right.toF;
+  trackID = right.trackID;
+  parentID = right.parentID;
+  particleID = right.particleID;
+  particleCharge = right.particleCharge;
+  particleMass = right.particleMass;
+  return *this;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Operator ==
 G4int ActarSimPlaGeantHit::operator==(const ActarSimPlaGeantHit& right) const{
-  //
-  // Operator ==
-  //
   return (this==&right) ? 1 : 0;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Draws the Hit. A clear red point on the Hit position
 void ActarSimPlaGeantHit::Draw(){
-  //
-  // Draws the Hit. A clear red point on the Hit position
-  //
   G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  if(pVVisManager)
-  {
+  if(pVVisManager) {
     G4Circle circle(pos);
     circle.SetScreenSize(4);
     circle.SetFillStyle(G4Circle::filled);
@@ -106,10 +97,9 @@ void ActarSimPlaGeantHit::Draw(){
   }
 }
 
+//////////////////////////////////////////////////////////////////
+/// Prints full information about the calGeantHit
 void ActarSimPlaGeantHit::Print(){
-  //
-  // Prints full information about the calGeantHit
-  //
   G4cout << "##################################################################"
 	 << G4endl
 	 << "###############     ActarSimSciGeantHit::Print()    ###################" << G4endl
@@ -129,5 +119,4 @@ void ActarSimPlaGeantHit::Print(){
 	 << ", localPrePos: " << localPrePos << " mm" << G4endl;
   G4cout << "##################################################################"
 	 << G4endl;
-
 }

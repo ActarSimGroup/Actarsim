@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Scintillator detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimSciDetectorConstruction_h
 #define ActarSimSciDetectorConstruction_h 1
@@ -28,34 +21,28 @@ class ActarSimDetectorConstruction;
 
 class ActarSimSciDetectorConstruction {
 private:
+  G4Material* sciBulkMaterial;     ///< Pointer to the material the scintillator is made of
 
-  //Position of the GasBox
-  //G4double zGasBoxPosition; //NOT USED HERE
+  ActarSimSciDetectorMessenger* sciMessenger;    ///< Pointer to the Messenger
+  ActarSimDetectorConstruction* detConstruction; ///< Pointer to the global detector
 
-  // Materials
-  G4Material* sciBulkMaterial;
+  /// 6 bits to indicate which sci wall is present (1) or absent (0)
+  /// order is:
+  /// - bit1 (lsb) beam output wall
+  /// - bit2 lower (gravity based) wall
+  /// - bit3 upper (gravity based) wall
+  /// - bit4 left (from beam point of view) wall
+  /// - bit5 right (from beam point of view) wall
+  /// - bit6 (msb) beam entrance wall
+  G4int sideCoverage;
 
-  ActarSimSciDetectorMessenger* sciMessenger;   //pointer to the Messenger
-  ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
+  G4double xBoxSciHalfLength;   ///< Scintillator box half length along X (X is horizontal)
+  G4double yBoxSciHalfLength;   ///< Scintillator box half length along Y (Y is vertical)
+  G4double zBoxSciHalfLength;   ///< Scintillator box half length along Z (Z is along beam)
 
   G4VPhysicalVolume* ConstructSci(G4LogicalVolume*);
 
-  G4int sideCoverage;   // 6 bits to indicate which sci wall is present (1) or absent (0)
-			// order is:
-			// bit1 (lsb) beam output wall
-			// bit2 lower (gravity based) wall
-			// bit3 upper (gravity based) wall
-			// bit4 left (from beam point of view) wall
-			// bit5 right (from beam point of view) wall
-			// bit6 (msb) beam entrance wall
-
-                       //all the following are half length of a box!!
-  G4double xBoxSciHalfLength;   // Remember: x is horizontal
-  G4double yBoxSciHalfLength;   // Remember: y is vertical
-  G4double zBoxSciHalfLength;   // Remember: z is along beam
-
 public:
-
   ActarSimSciDetectorConstruction(ActarSimDetectorConstruction*);
   ~ActarSimSciDetectorConstruction();
 
@@ -76,6 +63,5 @@ public:
 
   void UpdateGeometry();
   void PrintDetectorParameters();
-
 };
 #endif

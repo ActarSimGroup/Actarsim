@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 05/2005
-//*-- Last Update: 14/06/16 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   The gas detector part of the ROOT Analysis
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 25/10/06 Adding the CrystalHitSim functionality
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimROOTAnalGas
+/// The gas detector part of the ROOT Analysis
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimROOTAnalGas.hh"
@@ -45,22 +44,17 @@
 
 #include "Randomize.hh"
 
-//for calculating the optical photon wavelenght for a given enegy
-//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
-
+//////////////////////////////////////////////////////////////////
+/// Default constructor... Simply inits
 ActarSimROOTAnalGas::ActarSimROOTAnalGas(){
-  //
-  // Default constructor... Simply inits
-  //
   init();
 }
 
+//////////////////////////////////////////////////////////////////
+/// Makes most of the work of a constructor...
 void ActarSimROOTAnalGas::init(){
-  //
-  // Makes most of the work of the constructor...
-  //
   G4cout << "##################################################################" << G4endl
-	       << "###########    ActarSimROOTAnalGas::init()    ####################" << G4endl;
+	 << "###########    ActarSimROOTAnalGas::init()    ####################" << G4endl;
 
   //The simulation file
   simFile = ((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetSimFile();
@@ -78,9 +72,8 @@ void ActarSimROOTAnalGas::init(){
 
   hEdepInGas = (TH1D *)0;
 
-  /////  The accumulated energy loss and track length of each step, dypang 080225
+  // The accumulated energy loss and track length of each step
   hbeamEnergyAtRange=(TProfile *)0;
-  ///// end of dypang part 080225
 
   //energy loss on the Gas
   hTotELossOnGas1 = (TH1D *)0;      //Energy Loss
@@ -116,21 +109,15 @@ void ActarSimROOTAnalGas::init(){
   minStrideLength = 1.0 * mm; //default value for the minimum stride length
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing
 ActarSimROOTAnalGas::~ActarSimROOTAnalGas() {
-  //
-  // Destructor
-  //
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis when generating the primaries
 void ActarSimROOTAnalGas::GeneratePrimaries(const G4Event *anEvent){
-  //
-  // Actions to perform in the analysis when generating the primaries
-  // NOT VALID !!! ONLY GAMMAS ALLOWED, MODIFY FOR OTHER PARTICLES!!!
-  //
-
+  /// NOT VALID !!! ONLY GAMMAS ALLOWED, MODIFY FOR OTHER PARTICLES!!!
   //Filling the primary accessing on other functions
   //(in particular during UserSteppingAction()
   G4PrimaryVertex* myPVertex = anEvent->GetPrimaryVertex();
@@ -146,15 +133,9 @@ void ActarSimROOTAnalGas::GeneratePrimaries(const G4Event *anEvent){
   primEnergy = momentumPrim.mag(); //in case the mass is not zero, NOT VALID
 }
 
-
-
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the begining of the run
 void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
-  //
-  // Actions to perform in the analysis at the begining of the run
-  //
-  if (aRun){;} /* keep the compiler "quiet" */
-
   //Storing the runID
   SetTheRunID(aRun->GetRunID());
 
@@ -167,7 +148,6 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
   sprintf(dirName,"%s","gas");
   gDirectory->mkdir(dirName,dirName);
   gDirectory->cd(dirName);
-
 
   // Step Sum Length
   if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreHistogramsFlag()== "on") {
@@ -209,7 +189,7 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
       htrack1InPads->SetXTitle("X [mm]");
     }
 
-    ///// The accumulated energy loss and track length of each step, dypang 080225
+    // The accumulated energy loss and track length of each step
     hbeamEnergyAtRange =
       (TProfile *)gROOT->FindObject("hbeamEnergyAtRange");
     if(hbeamEnergyAtRange) hbeamEnergyAtRange->Reset();
@@ -220,7 +200,6 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
       hbeamEnergyAtRange->SetYTitle("Accumulated energy loss [MeV]");
       hbeamEnergyAtRange->SetXTitle("trajectory length [mm]");
     }
-    ///// endof dypang part 080225
 
     //
     htrack2InPads =
@@ -263,8 +242,8 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
     if(hEdepInGas) hEdepInGas->Reset();
     else {
       hEdepInGas = new TH1D("hEdepInGas",
-			"Edep along Gas chamber (normalized!)",
-			300, 0, 300);
+			    "Edep along Gas chamber (normalized!)",
+			    300, 0, 300);
       hEdepInGas->SetXTitle("Z [mm]");
     }
 
@@ -294,10 +273,9 @@ void ActarSimROOTAnalGas::BeginOfRunAction(const G4Run *aRun) {
   simFile->cd();
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the end of the run
 void ActarSimROOTAnalGas::EndOfRunAction(const G4Run *aRun) {
-
   G4int nbofEvents = aRun->GetNumberOfEvent();
 
   if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag() == "on") {
@@ -305,23 +283,17 @@ void ActarSimROOTAnalGas::EndOfRunAction(const G4Run *aRun) {
     hEdepInGas->Scale(1./nbofEvents);
     //G4cout << "Number of events: "<< nbofEvents << G4endl;
   }
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the begining of the event
 void ActarSimROOTAnalGas::BeginOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the analysis at the begining of the event
-  //
-
   SetTheEventID(anEvent->GetEventID());
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the end of the event
 void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the analysis at the end of the event
-  //
   Double_t aEnergyInGas1 =0;// (EnerGas1 / MeV); // in [MeV]
   Double_t aEnergyInGas2 =0;// (EnerGas2 / MeV); // in [MeV]
   Double_t aTLInGas1 =0;// (TLGas1 / mm); // in [mm]
@@ -350,9 +322,9 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
 
     simpleTrackCA->Clear();
 
-     //  G4cout << "Information on the collection..." << G4endl
-     // << "Number of GasGeantHits in the collection: " <<  NbHits
-     // << G4endl;
+    //  G4cout << "Information on the collection..." << G4endl
+    // << "Number of GasGeantHits in the collection: " <<  NbHits
+    // << G4endl;
 
     //  for (G4int i=0;i<NbHits;i++) {
     //if((*hitsCollection)[i]->GetStepLength()>1)
@@ -443,26 +415,25 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
       }//end of loop in primaries
     }//end of loop on hits
 
-
     for(G4int j=0;j<2;j++) {
       if(simpleTrack[j]->GetNumberSteps() > 0){
       	if(simpleTrack[j]->GetStrideLength() > minStrideLength)
           G4cout << "ERROR in ActarSimRootAnalysis::EndOfEventAction: "
-		             << "Something does not match !? Consult an expert :-)" << G4endl;
-	      //even if the sum of steps is not larger that the given parameter...
-	      //the stride goes to the Tree (last steps of the track...)
-	      //G4cout<<"End of loop  (type "<< j  << ")  "   <<  NbStrides << "  "
-	      //<<  strideOrdinal[j] << "  "<< simpleTrack[j]->GetTimePre()
-	      //<< "  "<<simpleTrack[j]->GetTimePost()<< G4endl;
-	      //<<" with length " << simpleTrack[j]->GetStrideLength() << G4endl;
-	      new((*simpleTrackCA)[NbStrides])ActarSimSimpleTrack(*simpleTrack[j]);
+		 << "Something does not match !? Consult an expert :-)" << G4endl;
+	//even if the sum of steps is not larger that the given parameter...
+	//the stride goes to the Tree (last steps of the track...)
+	//G4cout<<"End of loop  (type "<< j  << ")  "   <<  NbStrides << "  "
+	//<<  strideOrdinal[j] << "  "<< simpleTrack[j]->GetTimePre()
+	//<< "  "<<simpleTrack[j]->GetTimePost()<< G4endl;
+	//<<" with length " << simpleTrack[j]->GetStrideLength() << G4endl;
+	new((*simpleTrackCA)[NbStrides])ActarSimSimpleTrack(*simpleTrack[j]);
         NbStrides++;
         strideOrdinal[j]++;
         simpleTrack[j]->Reset();
       }
     }
   }
- if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreEventsFlag()=="on"){
+  if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreEventsFlag()=="on"){
     theData->SetEnergyOnGasPrim1(aEnergyInGas1);
     theData->SetEnergyOnGasPrim2(aEnergyInGas2);
     theData->SetStepSumLengthOnGasPrim1(aTLInGas1);
@@ -498,13 +469,12 @@ void ActarSimROOTAnalGas::EndOfEventAction(const G4Event *anEvent) {
     //	 << "  : " <<  traje->Get()
     //	 << "  : " <<  traje->Get()
   }
-*/
+  */
 }
 
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the ACTAR gas detector analysis after each step
 void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
-  //
-  // Actions to perform in the ACTAR gas detector analysis after each step
-  //
   G4Track* myTrack = aStep->GetTrack();
   G4ThreeVector prePoint = aStep->GetPreStepPoint()->GetPosition();
   G4ThreeVector postPoint = aStep->GetPostStepPoint()->GetPosition();
@@ -519,22 +489,22 @@ void ActarSimROOTAnalGas::UserSteppingAction(const G4Step *aStep){
   if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTrackHistosFlag() == "on") {
     if(hEdepInGas && z2<300) hEdepInGas->Fill(z,edep);
     if(htrack) htrack->Fill(postPoint.x(),
-		                        postPoint.y(),
-	                          postPoint.z());
+			    postPoint.y(),
+			    postPoint.z());
     if(htrackFromBeam) htrackFromBeam->Fill(postPoint.x(),
-			                                      postPoint.y(),
-			                                      aStep->GetTotalEnergyDeposit());
+					    postPoint.y(),
+					    aStep->GetTotalEnergyDeposit());
     if(htrackInPads) htrackInPads->Fill(postPoint.x(),
-			                                  postPoint.z(),
-			                                  aStep->GetTotalEnergyDeposit());
+					postPoint.z(),
+					aStep->GetTotalEnergyDeposit());
     if(myTrack->GetTrackID()==1 && myTrack->GetParentID()==0)
       if(htrack1InPads) htrack1InPads->Fill(postPoint.x(),
-			                                      postPoint.z(),
-			                                      aStep->GetTotalEnergyDeposit());
+					    postPoint.z(),
+					    aStep->GetTotalEnergyDeposit());
     if(myTrack->GetTrackID()==2 && myTrack->GetParentID()==0)
       if(htrack2InPads) htrack2InPads->Fill(postPoint.x(),
-			                                      postPoint.z(),
-			                                      aStep->GetTotalEnergyDeposit());
+					    postPoint.z(),
+					    aStep->GetTotalEnergyDeposit());
   }
 
   if(((ActarSimROOTAnalysis*) gActarSimROOTAnalysis)->GetStoreTracksFlag() == "on") {

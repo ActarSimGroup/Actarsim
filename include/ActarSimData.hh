@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 05/2005
-//*-- Last Update:  21/06/2016
-// --------------------------------------------------------------
-// Description:
-//   Data definition
-//
-// --------------------------------------------------------------
-// Comments:
-//     - 31/05/05 Data structure for analysis in ACTAR
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimData_h
 #define ActarSimData_h 1
@@ -19,21 +14,19 @@
 #include "TObject.h"
 
 class ActarSimData: public TObject {
-
 private:
-
-  Double_t thetaPrim1;                //polar angle for first primary
-  Double_t thetaPrim2;                //polar angle for second primary
-  Double_t phiPrim1;                  //azimuthal angle for first primary
-  Double_t phiPrim2;                  //azimuthal angle for second primary
-  Double_t energyPrim1;               //energy for first primary
-  Double_t energyPrim2;               //energy for second primary
-  Double_t energyOnGasPrim1;          //energy deposited in the gas for first primary
-  Double_t energyOnGasPrim2;          //energy deposited in the gas for second primary
-  Double_t stepSumLengthOnGasPrim1;   //sum of steps length in the gas for first primary
-  Double_t stepSumLengthOnGasPrim2;   //sum of steps length in the gas for second primary
-  Int_t    eventID;                   //event number
-  Int_t    runID;                     //run number
+  Double_t thetaPrim1;                ///< Polar angle for first primary
+  Double_t thetaPrim2;                ///< Polar angle for second primary
+  Double_t phiPrim1;                  ///< Azimuthal angle for first primary
+  Double_t phiPrim2;                  ///< Azimuthal angle for second primary
+  Double_t energyPrim1;               ///< Energy for first primary
+  Double_t energyPrim2;               ///< Energy for second primary
+  Double_t energyOnGasPrim1;          ///< Energy deposited in the gas for first primary
+  Double_t energyOnGasPrim2;          ///< Energy deposited in the gas for second primary
+  Double_t stepSumLengthOnGasPrim1;   ///< Sum of steps length in the gas for first primary
+  Double_t stepSumLengthOnGasPrim2;   ///< Sum of steps length in the gas for second primary
+  Int_t    eventID;                   ///< Event number
+  Int_t    runID;                     ///< Run number
 
 public:
   ActarSimData();
@@ -67,5 +60,4 @@ public:
 
   ClassDef(ActarSimData,1) //ROOT CINT
 };
-
 #endif

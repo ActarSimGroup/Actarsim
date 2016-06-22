@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR (translation to C++): Pang Danyang (pang@ganil.fr)
-//*-- AUTHOR: M.S. Golovkov
-//*-- Date: 02/2008
-// --------------------------------------------------------------
-// Description:
-//   program to calculate relativistic kinematics of binary reaction
-// --------------------------------------------------------------
-// Comments:
-//   - 27/02/08 translation from the original FORTRAN
-//      to Geant4-like C++
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: M.S. Golovkov/Pang Danyang 02/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimKinePrimGenerator_h
 #define ActarSimKinePrimGenerator_h 1
@@ -20,23 +15,22 @@
 
 class ActarSimKinePrimGenerator {
 private:
+  G4double m1;  ///< Mass0 of the incident particle
+  G4double m2;  ///< Mass0 of the target
+  G4double m3;  ///< Mass0 of the scattered particle
+  G4double m4;  ///< Mass0 of the recoil
+  G4double ex1; ///< Excitation energy of the incident particle
+  G4double ex2; ///< Excitation energy of the target
+  G4double ex3; ///< Excitation energy of the scattered particle
+  G4double ex4; ///< Excitation energy of the recoil
 
-  G4double m1; //mass0 of the incident particle
-  G4double m2; //mass0 of the target
-  G4double m3; //mass0 of the scattered particle
-  G4double m4; //mass0 of the recoil
-  G4double ex1; //excitation energy of the incident particle
-  G4double ex2; //excitation energy of the target
-  G4double ex3; //excitation energy of the scattered particle
-  G4double ex4; //excitation energy of the recoil
+  G4double tb;  ///< Incident energy (total Lab energy in MeV)
 
-  G4double tb; // incident energy (total Lab energy in MeV)
+  G4double thetacmsInput; ///< Theta CM angle of the scattered particle, in degrees
 
-  G4double thetacmsInput; // Theta CM angle of the scattered particle, in degrees
-
-  G4double* ANGAs; // lab angle and energy of scattered particle
-  G4double* ANGAr; // lab angle and energy of recoiled particle
-  G4bool    NoSolution;
+  G4double* ANGAs;  ///< Lab angle and energy of scattered particle
+  G4double* ANGAr;  ///< Lab angle and energy of recoiled particle
+  G4bool    NoSolution; ///< Flag
 
 public:
   ActarSimKinePrimGenerator();
@@ -83,7 +77,5 @@ public:
   void Dump();
 
   void PrintResults();
-
 };
-
 #endif

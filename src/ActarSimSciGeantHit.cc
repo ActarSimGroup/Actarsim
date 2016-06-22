@@ -1,17 +1,15 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol 
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Geant Hit in the Scintillator volume. It represents
-//   the information of each step with energy deposited.
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSciGeantHit
+/// A Geant Hit in the Scintillator volume. It represents
+///   the information of each step with energy deposited.
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSciGeantHit.hh"
@@ -23,25 +21,19 @@
 
 G4Allocator<ActarSimSciGeantHit> ActarSimSciGeantHitAllocator;
 
-
+//////////////////////////////////////////////////////////////////
+/// Constructor. Makes nothing.
 ActarSimSciGeantHit::ActarSimSciGeantHit() {
-  //
-  // Constructor
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing.
 ActarSimSciGeantHit::~ActarSimSciGeantHit() {
-  //
-  // Destructor
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Copy constructor
 ActarSimSciGeantHit::ActarSimSciGeantHit(const ActarSimSciGeantHit& right) : G4VHit() {
-  //
-  // Copy constructor
-  //
   edep = right.edep;
   pos = right.pos;
   prePos = right.prePos;
@@ -59,11 +51,9 @@ ActarSimSciGeantHit::ActarSimSciGeantHit(const ActarSimSciGeantHit& right) : G4V
   particleMass = right.particleMass;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Operator =
 const ActarSimSciGeantHit& ActarSimSciGeantHit::operator=(const ActarSimSciGeantHit& right){
-  //
-  // Operator =
-  //
   edep = right.edep;
   pos = right.pos;
   prePos = right.prePos;
@@ -83,22 +73,17 @@ const ActarSimSciGeantHit& ActarSimSciGeantHit::operator=(const ActarSimSciGeant
   return *this;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Operator ==
 G4int ActarSimSciGeantHit::operator==(const ActarSimSciGeantHit& right) const{
-  //
-  // Operator ==
-  //
   return (this==&right) ? 1 : 0;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Draws the Hit. A clear red point on the Hit position
 void ActarSimSciGeantHit::Draw(){
-  //
-  // Draws the Hit. A clear red point on the Hit position
-  //
   G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  if(pVVisManager)
-  {
+  if(pVVisManager) {
     G4Circle circle(pos);
     circle.SetScreenSize(4);
     circle.SetFillStyle(G4Circle::filled);
@@ -109,11 +94,9 @@ void ActarSimSciGeantHit::Draw(){
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Prints full information about the calGeantHit
 void ActarSimSciGeantHit::Print(){
-  //
-  // Prints full information about the calGeantHit
-  //
   G4cout << "##################################################################"
 	 << G4endl
 	 << "###############     ActarSimSciGeantHit::Print()    ###################" << G4endl
@@ -133,9 +116,4 @@ void ActarSimSciGeantHit::Print(){
 	 << ", localPrePos: " << localPrePos << " mm" << G4endl;
   G4cout << "##################################################################"
 	 << G4endl;
-
 }
-
-
-
-

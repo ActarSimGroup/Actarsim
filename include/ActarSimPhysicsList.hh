@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 16/12/14
-// --------------------------------------------------------------
-// Description:
-//   General physics package
-//
-// --------------------------------------------------------------
-// Comments:
-//   
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimPhysicsList_h
 #define ActarSimPhysicsList_h 1
@@ -20,40 +15,35 @@
 
 class ActarSimPhysicsListMessenger;
 class ActarSimStepLimiterBuilder;
-
-//DPL
 class G4VPhysicsConstructor;
 
 class ActarSimPhysicsList: public G4VModularPhysicsList {
-
 private:
-
   void AddIonGasModels();
 
-  G4double cutForGamma;
-  G4double cutForElectron;
-  G4double cutForPositron;
-  G4int    verbose;
-  G4bool   emBuilderIsRegisted;
-  G4bool   stepLimiterIsRegisted;
-  G4bool   helIsRegisted;
-  G4bool   bicIsRegisted;
-  G4bool   ionIsRegisted;
-  G4bool   gnucIsRegisted;
-  G4bool   gasIsRegisted;
-  G4bool   stopIsRegisted;
-  
-  ActarSimPhysicsListMessenger* pMessenger;
-  ActarSimStepLimiterBuilder* steplimiter;
-  
-  //DPL
-  G4VPhysicsConstructor*  emPhysicsList;
- 
+  G4double cutForGamma;            ///< Cut energy parameter for gammas
+  G4double cutForElectron;         ///< Cut energy parameter for gammas
+  G4double cutForPositron;         ///< Cut energy parameter for gammas
+  G4int    verbose;                ///< Verbose control
+  G4bool   emBuilderIsRegisted;    ///< Register control parameter for library
+  G4bool   stepLimiterIsRegisted;  ///< Register control parameter for library
+  G4bool   helIsRegisted;          ///< Register control parameter for library
+  G4bool   bicIsRegisted;          ///< Register control parameter for library
+  G4bool   ionIsRegisted;          ///< Register control parameter for library
+  G4bool   gnucIsRegisted;         ///< Register control parameter for library
+  G4bool   gasIsRegisted;          ///< Register control parameter for library
+  G4bool   stopIsRegisted;         ///< Register control parameter for library
+
+  ActarSimPhysicsListMessenger* pMessenger;  ///< Pointer to messenger
+  ActarSimStepLimiterBuilder* steplimiter;   ///< Pointer to step limiter
+
+  G4VPhysicsConstructor*  emPhysicsList;     ///< Pointer to Physics list
+
 public:
   ActarSimPhysicsList();
   ~ActarSimPhysicsList();
-  
-  // SetCuts()   
+
+  // SetCuts()
   void ConstructParticle();
   void ConstructProcess();
   void SetCuts();
@@ -65,8 +55,4 @@ public:
   void AddPhysicsList(const G4String&);
   void SetVerbose(G4int val);
 };
-
 #endif
-
-
-

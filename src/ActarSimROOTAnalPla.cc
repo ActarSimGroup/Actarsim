@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 05/2008
-//*-- Last Update: 23/12/14 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   The Plastic Scintillator detector part of the ROOT Analysis
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 05/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimROOTAnalPla
+/// The Plastic Scintillator detector part of the ROOT Analysis
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimROOTAnalPla.hh"
@@ -27,7 +26,6 @@
 #include "G4Step.hh"
 #include "G4Types.hh"
 
-//ROOT INCLUDES
 #include "TROOT.h"
 #include "TApplication.h"
 #include "TSystem.h"
@@ -39,14 +37,9 @@
 #include "TFile.h"
 #include "TClonesArray.h"
 
-//for calculating the optical photon wavelenght for a given enegy
-//static const G4double LambdaE = twopi * 1.973269602e-16 * m * GeV;
-
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimROOTAnalPla::ActarSimROOTAnalPla() {
-  //
-  // Constructor
-  //
-
   //The simulation file
   simFile = ((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetSimFile();
   simFile->cd();
@@ -60,31 +53,23 @@ ActarSimROOTAnalPla::ActarSimROOTAnalPla() {
   plaHitCA = new TClonesArray("ActarSimPlaHit",2);
 
   plaHitsBranch = eventTree->Branch("plaHits",&plaHitCA);
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing
 ActarSimROOTAnalPla::~ActarSimROOTAnalPla() {
-  //
-  // Destructor
-  //
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator anal when generating the primaries
 void ActarSimROOTAnalPla::GeneratePrimaries(const G4Event *anEvent){
-  //
-  // Actions to perform in the scintillator anal when generating the primaries
-  //
   if(anEvent){;} // to quiet the compiler
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator anal at the begining of the run
 void ActarSimROOTAnalPla::BeginOfRunAction(const G4Run *aRun) {
-  //
-  // Actions to perform in the scintillator anal at the begining of the run
-  //
+
   if (aRun){;} /* keep the compiler "quiet" */
 
   //Storing the runID
@@ -103,40 +88,27 @@ void ActarSimROOTAnalPla::BeginOfRunAction(const G4Run *aRun) {
   simFile->cd();
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator anal at the begining of the event
 void ActarSimROOTAnalPla::BeginOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the scintillator anal at the begining of the event
-  //
-
   SetTheEventID(anEvent->GetEventID());
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator anal at the beginning of the run
 void ActarSimROOTAnalPla::EndOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the scintillator anal at the beginning of the run
-  //
-
   FillingHits(anEvent);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the scintillator detector analysis after each step
 void ActarSimROOTAnalPla::UserSteppingAction(const G4Step *aStep){
-  //
-  // Actions to perform in the scintillator detector analysis after each step
-  //
   if(aStep){;} // to quiet the compiler
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Defining the ActarSimSciHits from the ActarSimSciGeantHits
 void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
-  //
-  // Defining the ActarSimSciHits from the ActarSimSciGeantHits
-  //
-
   //Hit Container ID for ActarSimSciGeantHit
   G4int hitsCollectionID =
     G4SDManager::GetSDMpointer()->GetCollectionID("PlaCollection");
@@ -151,83 +123,81 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
   //G4int NbHitsWithSomeEnergy = NbHits;
   //G4cout << " NbHits: " << NbHits << G4endl;
 
-	G4int indepHits = 0; //number of Hits
-	G4int* trackIDtable; //stores the trackID of primary particles for each (valid) GeantHit
-	trackIDtable = new G4int[NbHits];
-	G4int* detIDtable;   //stores the detIDs for each (valid) GeantHit
-	detIDtable = new G4int[NbHits];
-	G4int* IDtable;         //stores the order in previous array for each (valid) GeantHit
-	IDtable = new G4int[NbHits];
+  G4int indepHits = 0; //number of Hits
+  G4int* trackIDtable; //stores the trackID of primary particles for each (valid) GeantHit
+  trackIDtable = new G4int[NbHits];
+  G4int* detIDtable;   //stores the detIDs for each (valid) GeantHit
+  detIDtable = new G4int[NbHits];
+  G4int* IDtable;         //stores the order in previous array for each (valid) GeantHit
+  IDtable = new G4int[NbHits];
 
 
-	for (G4int i=0;i<NbHits;i++) {
-		if((*hitsCollection)[i]->GetParentID()==0) { //step from primary
-			if(indepHits==0) { //only for the first Hit
-				trackIDtable[indepHits] = (*hitsCollection)[i]->GetTrackID();
-				detIDtable[indepHits] = (*hitsCollection)[i]->GetDetID();
-				IDtable[i] = indepHits;
-				indepHits++;
-			}
-			else { // this part is never reached. Maybe because there is always only one indepHits that has parentID equals to 0.
-				for(G4int j=0; j<indepHits;j++) {
-					if( (*hitsCollection)[i]->GetTrackID() == trackIDtable[j] &&
-					   (*hitsCollection)[i]->GetDetID() == detIDtable[j]) { //checking trackID and detID
-						IDtable[i] = j;
-						break; //not a new Hit
-					}
-					if(j==indepHits-1){ //we got the last hit and there was no match!
-						trackIDtable[indepHits] = (*hitsCollection)[i]->GetTrackID();
-						detIDtable[indepHits] = (*hitsCollection)[i]->GetDetID();
-						IDtable[i] = indepHits;
-						indepHits++;
-					}
-				}
-			}
-		}
+  for (G4int i=0;i<NbHits;i++) {
+    if((*hitsCollection)[i]->GetParentID()==0) { //step from primary
+      if(indepHits==0) { //only for the first Hit
+	trackIDtable[indepHits] = (*hitsCollection)[i]->GetTrackID();
+	detIDtable[indepHits] = (*hitsCollection)[i]->GetDetID();
+	IDtable[i] = indepHits;
+	indepHits++;
+      }
+      else { // this part is never reached. Maybe because there is always only one indepHits that has parentID equals to 0.
+	for(G4int j=0; j<indepHits;j++) {
+	  if( (*hitsCollection)[i]->GetTrackID() == trackIDtable[j] &&
+	      (*hitsCollection)[i]->GetDetID() == detIDtable[j]) { //checking trackID and detID
+	    IDtable[i] = j;
+	    break; //not a new Hit
+	  }
+	  if(j==indepHits-1){ //we got the last hit and there was no match!
+	    trackIDtable[indepHits] = (*hitsCollection)[i]->GetTrackID();
+	    detIDtable[indepHits] = (*hitsCollection)[i]->GetDetID();
+	    IDtable[i] = indepHits;
+	    indepHits++;
+	  }
 	}
+      }
+    }
+  }
 
-	//Let us create as many ActarSimSilHit as independent primary particles
-	thePlaHit = new ActarSimPlaHit*[indepHits];
-	for (G4int i=0;i<indepHits;i++)
-		thePlaHit[i] = new ActarSimPlaHit();
+  //Let us create as many ActarSimSilHit as independent primary particles
+  thePlaHit = new ActarSimPlaHit*[indepHits];
+  for (G4int i=0;i<indepHits;i++)
+    thePlaHit[i] = new ActarSimPlaHit();
 
-	//Clear the ClonesArray before filling it
-	plaHitCA->Clear();
+  //Clear the ClonesArray before filling it
+  plaHitCA->Clear();
 
-	//a variable to check if the Hit was already created
-	G4int* existing;
-	existing = new G4int[indepHits];
-	for(G4int i=0;i<indepHits;i++) existing[i] = 0;
+  //a variable to check if the Hit was already created
+  G4int* existing;
+  existing = new G4int[indepHits];
+  for(G4int i=0;i<indepHits;i++) existing[i] = 0;
 
-	for(G4int i=0;i<NbHits;i++) {
-		if( (*hitsCollection)[i]->GetParentID()==0 ) { //step from primary
-			//the IDtable[i] contains the order in the indepHits list
-			if( existing[IDtable[i]]==0) { //if the indepHits does not exist
-				AddCalPlaHit(thePlaHit[IDtable[i]],(*hitsCollection)[i],0);
-				existing[IDtable[i]] = 1;
-			}
-			else
-				AddCalPlaHit(thePlaHit[IDtable[i]],(*hitsCollection)[i],1);
-		}
-	}
+  for(G4int i=0;i<NbHits;i++) {
+    if( (*hitsCollection)[i]->GetParentID()==0 ) { //step from primary
+      //the IDtable[i] contains the order in the indepHits list
+      if( existing[IDtable[i]]==0) { //if the indepHits does not exist
+	AddCalPlaHit(thePlaHit[IDtable[i]],(*hitsCollection)[i],0);
+	existing[IDtable[i]] = 1;
+      }
+      else
+	AddCalPlaHit(thePlaHit[IDtable[i]],(*hitsCollection)[i],1);
+    }
+  }
 
-	//at the end, fill the ClonesArray
-	for (G4int i=0;i<indepHits;i++)
-		new((*plaHitCA)[i])ActarSimPlaHit(*thePlaHit[i]);
+  //at the end, fill the ClonesArray
+  for (G4int i=0;i<indepHits;i++)
+    new((*plaHitCA)[i])ActarSimPlaHit(*thePlaHit[i]);
 
-	delete [] trackIDtable;
-	delete [] IDtable;
-	delete [] existing;
-	delete [] detIDtable;
-	for (G4int i=0;i<indepHits;i++) delete thePlaHit[i];
-	delete [] thePlaHit;
+  delete [] trackIDtable;
+  delete [] IDtable;
+  delete [] existing;
+  delete [] detIDtable;
+  for (G4int i=0;i<indepHits;i++) delete thePlaHit[i];
+  delete [] thePlaHit;
 }
 
-
-
-	//CsI-like hit pattern
+//CsI-like hit pattern
 /*
-	//We accept edep=0 GeantHits, we have to remove them
+  //We accept edep=0 GeantHits, we have to remove them
   //from the total number of GeantHits accepted for creating a real CrystalHit
   for (G4int i=0;i<NbHits;i++)
     if((*hitsCollection)[i]->GetEdep()==0.)
@@ -414,51 +384,48 @@ void ActarSimROOTAnalPla::FillingHits(const G4Event *anEvent) {
  }
 
  */
-	//End of CsI Like hit
+//End of CsI Like hit
 
-
-
-
+//////////////////////////////////////////////////////////////////
+///  Function to move the information from the ActarSimSciGeantHit (a step hit)
+/// to ActarSimSciHit (an event hit) for the Darmstadt-Heidelberg Crystall Ball.
+/// Two modes are possible:
+/// - mode == 0 : creation; the ActarSimSciHit is void and is
+///             filled by the data from the ActarSimSciGeantHit
+/// - mode == 1 : addition; the ActarSimSciHit was already created
+///             by other ActarSimSciGeantHit and some data members are updated
 void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
-				      ActarSimPlaGeantHit* gHit,
-				      G4int mode) {
-  //
-  // Function to move the information from the ActarSimSciGeantHit (a step hit)
-  // to ActarSimSciHit (an event hit) for the Darmstadt-Heidelberg Crystall Ball.
-  // Two modes are possible:
-  // mode == 0 : creation; the ActarSimSciHit is void and is
-  //             filled by the data from the ActarSimSciGeantHit
-  // mode == 1 : addition; the ActarSimSciHit was already created
-  //             by other ActarSimSciGeantHit and some data members are updated
+				       ActarSimPlaGeantHit* gHit,
+				       G4int mode) {
 
   if(mode == 0) { //creation
     if( gHit->GetDetName() == "plaPhys" )   ; //cHit->SetType(1);
     else G4cout << "ERROR in R3BROOTAnalCal::AddCalCrystalHit()." << G4endl
                 << "Unknown Detector Name: "<< gHit->GetDetName() << G4endl << G4endl;
 
-	  cHit->SetDetectorID(gHit->GetDetID());
+    cHit->SetDetectorID(gHit->GetDetID());
 
-	  cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
-	  cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
-	  cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
+    cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
+    cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
+    cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
 
-	  cHit->SetTime(gHit->GetToF()/ns);
-	  cHit->SetEnergy(gHit->GetEdep()/MeV);
-	  cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
-	  cHit->SetEAfterPla(gHit->GetEAfterPla()/MeV);
+    cHit->SetTime(gHit->GetToF()/ns);
+    cHit->SetEnergy(gHit->GetEdep()/MeV);
+    cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
+    cHit->SetEAfterPla(gHit->GetEAfterPla()/MeV);
 
-	  cHit->SetTrackID(gHit->GetTrackID());
-	  cHit->SetEventID(GetTheEventID());
-	  cHit->SetRunID(GetTheRunID());
+    cHit->SetTrackID(gHit->GetTrackID());
+    cHit->SetEventID(GetTheEventID());
+    cHit->SetRunID(GetTheRunID());
 
-	  cHit->SetParticleID(gHit->GetParticleID());
-	  cHit->SetParticleCharge(gHit->GetParticleCharge());
-	  cHit->SetParticleMass(gHit->GetParticleMass());
+    cHit->SetParticleID(gHit->GetParticleID());
+    cHit->SetParticleCharge(gHit->GetParticleCharge());
+    cHit->SetParticleMass(gHit->GetParticleMass());
 
-	  cHit->SetStepsContributing(1);
+    cHit->SetStepsContributing(1);
 
 
-	   //CsI Like
+    //CsI Like
    /* cHit->SetCopy(gHit->GetDetID());
 
     cHit->SetEnergy(gHit->GetEdep()/ MeV);
@@ -473,7 +440,7 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
     cHit->SetParticleMass(gHit->GetParticleMass());*/ //CsI-like
 
   //TODO-> Recover here the simhit/hit duality if needed!!
-/*
+    /*
     if(((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetUseCrystalHitSim()!=0){
       if( fabs(gHit->GetLocalPos().z())> 120 )
 	((ActarSimSciHitSim*)cHit)->SetEnergyPerZone(24,gHit->GetEdep()/ MeV);
@@ -502,7 +469,7 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
       ((ActarSimSciHitSim*)cHit)->SetFirstInteractionY(gHit->GetLocalPos().y());
       ((ActarSimSciHitSim*)cHit)->SetFirstInteractionZ(gHit->GetLocalPos().z());
     }
-*/
+    */
   }
   else if(mode==1){ //addition
     cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ MeV);
@@ -511,22 +478,22 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
     //taking the larger incoming energy of the geantHits
     if(cHit->GetEBeforePla()<gHit->GetEBeforePla()) cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
 
-	  cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
-	  // The mean value of a distribution {x_i} can also be computed iteratively
-	  // if the values x_i are drawn one-by-one. After a new value x, the new mean is:
-	  // mean(t) = mean(t-1) + (1/t)(x-mean(t-1))
-	  cHit->SetXPos(cHit->GetXPos() +
-					(gHit->GetLocalPrePos().x()-cHit->GetXPos())/((G4double)cHit->GetStepsContributing()));
-	  cHit->SetYPos(cHit->GetYPos() +
-					(gHit->GetLocalPrePos().y()-cHit->GetYPos())/((G4double)cHit->GetStepsContributing()));
-	  cHit->SetZPos(cHit->GetZPos() +
-					(gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
+    cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
+    // The mean value of a distribution {x_i} can also be computed iteratively
+    // if the values x_i are drawn one-by-one. After a new value x, the new mean is:
+    // mean(t) = mean(t-1) + (1/t)(x-mean(t-1))
+    cHit->SetXPos(cHit->GetXPos() +
+		  (gHit->GetLocalPrePos().x()-cHit->GetXPos())/((G4double)cHit->GetStepsContributing()));
+    cHit->SetYPos(cHit->GetYPos() +
+		  (gHit->GetLocalPrePos().y()-cHit->GetYPos())/((G4double)cHit->GetStepsContributing()));
+    cHit->SetZPos(cHit->GetZPos() +
+		  (gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
 
     //taking the shorter time of the geantHits
     if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ns);
 
     //TODO-> Recover here the simhit/hit duality if needed!!
-/*
+    /*
     if(((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetUseCrystalHitSim()!=0){
       if( fabs(gHit->GetLocalPos().z())> 120 )
 	((R3BCalCrystalHitSim*)cHit)->SetEnergyPerZone(24,

@@ -1,63 +1,54 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 04/2008
-//*-- Last Update: 22/12/2014
-// --------------------------------------------------------------
-// Description:
-//   The information from the primaries generated in the reaction
-//   vertex. Information to be accessed in the ROOT file per event
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimPrimaryInfo_h
 #define ActarSimPrimaryInfo_h 1
 
 #include "TROOT.h"  //for including Rtypes.h
 
-#include "TObject.h" 
+#include "TObject.h"
 
 class G4PrimaryParticle;
 
 class ActarSimPrimaryInfo : public TObject {
-  
 private:
+  UInt_t nbPrimariesInEvent;   ///< Number of primaries in the event
+  Double_t kineticEnergy;      ///< Kinetic energy
+  Double_t theta;              ///< Theta emission angle
+  Double_t phi;                ///< Phi emission angle
 
-  UInt_t nbPrimariesInEvent;   // number of primaries in the event
-  Double_t kineticEnergy;      // kinetic energy 
-  Double_t theta;              // theta emission angle
-  Double_t phi;                // phi emission angle
-  
-  Int_t PDGcode;               // datamembers copied from G4PrimaryParticle
-  Double_t Px;
-  Double_t Py;
-  Double_t Pz;
-  Int_t trackID; 
-  Double_t mass;
-  Double_t charge;
-  Double_t polX;
-  Double_t polY;
-  Double_t polZ;
-  Double_t Weight0;
-  Double_t properTime;
+  Int_t PDGcode;               ///< PDG code. Datamembers copied from G4PrimaryParticle
+  Double_t Px;                 ///< X component of the momentum
+  Double_t Py;                 ///< Y component of the momentum
+  Double_t Pz;                 ///< Z component of the momentum
+  Int_t trackID;               ///< Rrack ID
+  Double_t mass;               ///< Particle mass
+  Double_t charge;             ///< Partcile charge
+  Double_t polX;               ///< Particle polarization along X
+  Double_t polY;               ///< Particle polarization along Y
+  Double_t polZ;               ///< Particle polarization along Z
+  Double_t Weight0;            ///< Particle weight
+  Double_t properTime;         ///< Partice proper time
 
-  Double_t x0;         //vertex position
-  Double_t y0;
-  Double_t z0;
+  Double_t x0;                 ///< Vertex position in X
+  Double_t y0;                 ///< Vertex position in X
+  Double_t z0;                 ///< Vertex position in X
 
-  //Event identification  
-  UInt_t eventID;     // event ID
-  UInt_t runID;       // run ID
-  
+  //Event identification
+  UInt_t eventID;     ///< Event ID
+  UInt_t runID;       ///< Run ID
+
 public:
-  
   ActarSimPrimaryInfo();
   ActarSimPrimaryInfo(G4PrimaryParticle*);
   ~ActarSimPrimaryInfo();
-  
+
   inline Int_t GetNbPrimariesInEvent() const { return nbPrimariesInEvent; }
   inline Double_t GetKineticEnergy() const { return kineticEnergy; }
   inline Double_t GetTheta() const { return theta; }
@@ -79,7 +70,6 @@ public:
   inline Double_t GetX0() const { return x0; }
   inline Double_t GetY0() const { return y0; }
   inline Double_t GetZ0() const { return z0; }
-
 
   inline void SetNbPrimariesInEvent(Int_t nb) { nbPrimariesInEvent = nb; }
   inline void SetKineticEnergy(Double_t kin) { kineticEnergy = kin; }
@@ -110,6 +100,6 @@ public:
 
   void print(void);
 
-  ClassDef(ActarSimPrimaryInfo,1) //ROOT CINT    
+  ClassDef(ActarSimPrimaryInfo,1) //ROOT CINT
 };
 #endif

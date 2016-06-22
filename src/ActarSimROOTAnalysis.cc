@@ -1,18 +1,14 @@
-////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 03/2005
-//*-- Last Update: 14/06/16
-// --------------------------------------------------------------
-// Description:
-//   ROOT-based analysis functionality
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 14/04/08 Changing the structure for individual
-//              detector analysis, similar to R3BSim
-//   - 16/03/05 Created based on Ica4 example structure
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 03/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimROOTAnalysis
+/// ROOT-based analysis functionality
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimROOTAnalysis.hh"
@@ -54,7 +50,6 @@
 
 #include <time.h>
 
-//ROOT INCLUDES
 #include "TROOT.h"
 #include "TApplication.h"
 #include "TSystem.h"
@@ -70,14 +65,12 @@
 //global pointer to the ROOT analysis manager
 ActarSimROOTAnalysis *gActarSimROOTAnalysis = (ActarSimROOTAnalysis *)0;
 
-
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   storeTracksFlag("off"), storeTrackHistosFlag("off"),
   storeEventsFlag("off"), storeSimpleTracksFlag("on"),
   storeHistogramsFlag("off"), beamInteractionFlag("off") {
-  //
-  // Constructor
-  //
 
   LastDoItTime = (time_t)0;
   if(gSystem) gSystem->ProcessEvents();
@@ -90,7 +83,6 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   analMessenger = new ActarSimAnalysisMessenger(this);
 
   newDirName = new char[255];
-
 
   simFile = 0;
   eventTree=0;
@@ -123,12 +115,9 @@ ActarSimROOTAnalysis::ActarSimROOTAnalysis():
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Constructor. Save and close Files.
 ActarSimROOTAnalysis::~ActarSimROOTAnalysis() {
-  //
-  // Destructor. Save and close Files.
-  //
-
   delete analMessenger;
 
   simFile->Write();
@@ -142,12 +131,10 @@ ActarSimROOTAnalysis::~ActarSimROOTAnalysis() {
   if (gSystem) gSystem->ProcessEvents();
 }
 
+//////////////////////////////////////////////////////////////////
+/// Initialization of the detector analysis after the
+/// class constructor, to allow the selection valid detectors
 void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
-  //
-  // Initialization of the detector analysis after the
-  // class constructor, to allow the selection valid detectors
-  //
-
   //TFile for storing the info
   if(!simFile){
     //simFile = new TFile("simFile.root","RECREATE");
@@ -168,82 +155,64 @@ void ActarSimROOTAnalysis::InitAnalysisForExistingDetectors() {
 
   //Create the detector analysis only if the flag is set and is not already
   //set before (then, should be null as they are defined in the constructor)
-
   if(gasAnalIncludedFlag && !gasAnal)
     gasAnal = new ActarSimROOTAnalGas();
 
   if(silAnalIncludedFlag && !silAnal)
     silAnal = new ActarSimROOTAnalSil();
 
-	if(silRingAnalIncludedFlag && !silRingAnal)
-		silRingAnal = new ActarSimROOTAnalSilRing();
+  if(silRingAnalIncludedFlag && !silRingAnal)
+    silRingAnal = new ActarSimROOTAnalSilRing();
 
   if(sciAnalIncludedFlag && !sciAnal)
     sciAnal = new ActarSimROOTAnalSci();
 
-    if(sciRingAnalIncludedFlag && !sciRingAnal)
-        sciRingAnal = new ActarSimROOTAnalSciRing();
-
+  if(sciRingAnalIncludedFlag && !sciRingAnal)
+    sciRingAnal = new ActarSimROOTAnalSciRing();
 
   if(plaAnalIncludedFlag && !plaAnal)
     plaAnal = new ActarSimROOTAnalPla();
 
-
   //OTHER DETECTORS ANALYSIS SHOULD BE INCLUDED HERE
-
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Things to do while contructing...
 void ActarSimROOTAnalysis::Construct(const G4VPhysicalVolume *theWorldVolume) {
-  //
-  // Things to do while contructing...
-  //
-
   if (theWorldVolume) {;} /* keep the compiler "quiet" */
   if (gSystem) gSystem->ProcessEvents();
 
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Actions to perform in the analysis during the particle construction
 void ActarSimROOTAnalysis::ConstructParticle(){
-  //
-  // Actions to perform in the analysis during the particle construction
-  //
-
   if (gSystem) gSystem->ProcessEvents();
 
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis during the processes construction
 void ActarSimROOTAnalysis::ConstructProcess(){
-  //
-  // Actions to perform in the analysis during the processes construction
-  //
-
   if (gSystem) gSystem->ProcessEvents();
 
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis during the cut setting
 void ActarSimROOTAnalysis::SetCuts() {
-  //
-  // Actions to perform in the analysis during the cut setting
-  //
-
   if (gSystem) gSystem->ProcessEvents();
 
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Defining any beam related histogram or information in the output file
 void ActarSimROOTAnalysis::GenerateBeam(const G4Event *anEvent){
-//
-// Defining any beam related histogram or information in the output file
-//
   SetTheEventID(anEvent->GetEventID());
 
   //Clear the ClonesArray before filling it
@@ -254,15 +223,16 @@ void ActarSimROOTAnalysis::GenerateBeam(const G4Event *anEvent){
   //do not delete pBeamInfo, as the same pointer is used for all events
 }
 
-
-//TODO Change from this to a GeneratePrimaries(anEvent, beamInfo)
-//DEPRECATED!!!!! DO NOT USE
+//////////////////////////////////////////////////////////////////
+/// DEPRECATED!!!!! DO NOT USE
+/// TODO Change from this to a GeneratePrimaries(anEvent, beamInfo).
+/// DEPRECATED!!!!! DO NOT USE
 void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
-						G4double Theta1,
-						G4double Theta2,
-						G4double Energy1,
-						G4double Energy2) {
-//DEPRECATED!!!!! DO NOT USE
+					     G4double Theta1,
+					     G4double Theta2,
+					     G4double Energy1,
+					     G4double Energy2) {
+  //DEPRECATED!!!!! DO NOT USE
   if (gSystem) gSystem->ProcessEvents();
   SetTheEventID(anEvent->GetEventID());
 
@@ -331,7 +301,8 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis during the cut setting
 void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBeamInfo *beamInfo) {
 
   if (gSystem) gSystem->ProcessEvents();
@@ -376,7 +347,6 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
     }
   }
 
-
   //at the end, fill the ClonesArray
   //G4cout<<"ActarSimROOTAnalysis----> GeneratePrimaries() "<<totalPrimaries<<G4endl;
 
@@ -384,13 +354,10 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
     //G4cout<<"PrimaryInfoCA[i]"<<primaryInfoCA<<G4endl;
     new((*primaryInfoCA)[i])ActarSimPrimaryInfo(*thePrimaryInfo[i]);
     //G4cout<<" in LOOP ActarSimROOTAnalysis----> GeneratePrimaries() "<<i<<G4endl;
-
   }
   for (G4int i=0;i<totalPrimaries;i++) delete thePrimaryInfo[i];
   delete thePrimaryInfo;
-
   delete nbOfPrimaries;
-
 
   if (hScatteredIonKinematic) hScatteredIonKinematic->Fill(aTheta1,aEnergy1);
   if (hRecoilIonKinematic) hRecoilIonKinematic->Fill(aTheta2,aEnergy2);
@@ -405,12 +372,9 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the beginning of the run
 void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
-  //
-  // Actions to perform in the analysis at the beginning of the run
-  //
-
   if (gSystem) gSystem->ProcessEvents();
 
   //Storing the runID
@@ -429,7 +393,6 @@ void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
   simFile->cd(newDirName);
 
   if(storeHistogramsFlag=="on"){
-    //
     // Step Sum Length
     // histogram for the Cine Kinematic Results for the Scattered Ion
     //if(reactionFromCineFlag == "on")
@@ -462,7 +425,6 @@ void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
       if (hRecoilIonKinematic) hRecoilIonKinematic->SetMarkerSize(0.8);
     }
   }
-
 
   if(storeHistogramsFlag=="on"){
     // Primary
@@ -521,11 +483,9 @@ void ActarSimROOTAnalysis::BeginOfRunAction(const G4Run *aRun) {
   OnceAWhileDoIt(true); // do it now
 }
 
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the end of the run
 void ActarSimROOTAnalysis::EndOfRunAction(const G4Run *aRun) {
-  //
-  // Actions to perform in the analysis at the end of the run
-  //
-
   if(gasAnal) gasAnal->EndOfRunAction(aRun);
 
   if (aRun) {;} /* keep the compiler "quiet" */
@@ -539,14 +499,9 @@ void ActarSimROOTAnalysis::EndOfRunAction(const G4Run *aRun) {
   OnceAWhileDoIt(true); // do it now
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the beginning of the event
 void ActarSimROOTAnalysis::BeginOfEventAction(const G4Event *anEvent){
-  //
-  // Actions to perform in the analysis at the beginning of the event
-  //
-
-  //if (anEvent); /* keep the compiler "quiet" */
-
   SetTheEventID(anEvent->GetEventID());
 
   if (gSystem) gSystem->ProcessEvents();
@@ -562,13 +517,9 @@ void ActarSimROOTAnalysis::BeginOfEventAction(const G4Event *anEvent){
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis at the end of the event
 void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the analysis at the end of the event
-  //
-
-
   if (gSystem) gSystem->ProcessEvents();
 
   G4PrimaryVertex* myPVertex1 = anEvent->GetPrimaryVertex(0);
@@ -635,7 +586,7 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
 
   if(pBeamInfo->GetStatus()==0){  // pBeamInfo==0 at end of the event in the "fragments event" (pBeamInfo==2 in beam events )
     //There is only one clone of theData..
-   new((*theDataCA)[0])ActarSimData(*theData);
+    new((*theDataCA)[0])ActarSimData(*theData);
     //do not delete theData, as the same pointer is used for all events
   }
 
@@ -648,13 +599,10 @@ void ActarSimROOTAnalysis::EndOfEventAction(const G4Event *anEvent) {
 
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the analysis when classifying new tracks
 void ActarSimROOTAnalysis::ClassifyNewTrack(const G4Track *aTrack,
-					       G4ClassificationOfNewTrack *classification_ptr) {
-  //
-  // Actions to perform in the analysis when classifying new tracks
-  //
-
+					    G4ClassificationOfNewTrack *classification_ptr) {
   if (aTrack){;} /* keep the compiler "quiet" */
   if (classification_ptr){;} /* keep the compiler "quiet" */
   // G4ClassificationOfNewTrack &classification = (*classification_ptr);
@@ -664,33 +612,9 @@ void ActarSimROOTAnalysis::ClassifyNewTrack(const G4Track *aTrack,
   OnceAWhileDoIt();
 }
 
-
-void ActarSimROOTAnalysis::NewStage(){
-  //
-  //
-  //
-
-  if (gSystem) gSystem->ProcessEvents();
-
-  OnceAWhileDoIt();
-}
-
-
-void ActarSimROOTAnalysis::PrepareNewEvent() {
-  //
-  //
-  //
-
-  if (gSystem) gSystem->ProcessEvents();
-
-  OnceAWhileDoIt();
-}
-
-
+//////////////////////////////////////////////////////////////////
+///  Actions to perform in the analysis before the user tracking
 void ActarSimROOTAnalysis::PreUserTrackingAction(const G4Track *aTrack){
-  //
-  //
-  //
 
   if (aTrack){;} /* keep the compiler "quiet" */
   if (gSystem) gSystem->ProcessEvents();
@@ -698,13 +622,10 @@ void ActarSimROOTAnalysis::PreUserTrackingAction(const G4Track *aTrack){
   OnceAWhileDoIt();
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Actions to perform in the analysis after the user tracking
 void ActarSimROOTAnalysis::PostUserTrackingAction(const G4Track *aTrack,
-						G4TrackStatus *status_ptr) {
-  //
-  //
-  //
-
+						  G4TrackStatus *status_ptr) {
   // G4TrackStatus &status = (*status_ptr);
   if (aTrack){;} /* keep the compiler "quiet" */
   if (status_ptr){;} /* keep the compiler "quiet" */
@@ -714,11 +635,9 @@ void ActarSimROOTAnalysis::PostUserTrackingAction(const G4Track *aTrack,
 }
 
 
+//////////////////////////////////////////////////////////////////
+///  Actions to perform in the analysis after each step
 void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
-  //
-  //
-  //
-
   //calling the actions defined for each detector
   if(gasAnal) gasAnal->UserSteppingAction(aStep);
   if(silAnal) silAnal->UserSteppingAction(aStep);
@@ -737,15 +656,15 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
     G4double zVertex = pBeamInfo->GetZVertex();
     if(aStep->GetTrack()->GetParentID()==0){
       if(aStep->GetPreStepPoint()->GetPosition().z() < zVertex &&
-        aStep->GetPostStepPoint()->GetPosition().z() > zVertex){
+	 aStep->GetPostStepPoint()->GetPosition().z() > zVertex){
         const G4int verboseLevel = G4RunManager::GetRunManager()->GetVerboseLevel();
         if(verboseLevel>0){
           G4cout << G4endl
-                << " *************************************************** " << G4endl
-                << " * ActarSimROOTAnalysis::UserSteppingAction() " << G4endl
-                << " * beamInteractionFlag=on, beam.Status=1, primary particle (ion beam) " << G4endl
-                << " * zVertex at " << aStep->GetPreStepPoint()->GetPosition().z() << G4endl
-                << " * aborting the present event and moving to "<< G4endl;
+		 << " *************************************************** " << G4endl
+		 << " * ActarSimROOTAnalysis::UserSteppingAction() " << G4endl
+		 << " * beamInteractionFlag=on, beam.Status=1, primary particle (ion beam) " << G4endl
+		 << " * zVertex at " << aStep->GetPreStepPoint()->GetPosition().z() << G4endl
+		 << " * aborting the present event and moving to "<< G4endl;
           G4cout << " *************************************************** "<< G4endl;
         }
 	pBeamInfo->SetXVertex(aStep->GetPreStepPoint()->GetPosition().x()/mm);
@@ -755,8 +674,7 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
 	pBeamInfo->SetTimeVertex(aStep->GetTrack()->GetGlobalTime()/ns);
 
         // beam direction calculated by beam position at entrance and at vertex, needed for Euler transformation
-        G4ThreeVector beamDirection(
-                                    pBeamInfo->GetXVertex()-pBeamInfo->GetXEntrance(),
+        G4ThreeVector beamDirection(pBeamInfo->GetXVertex()-pBeamInfo->GetXEntrance(),
                                     pBeamInfo->GetYVertex()-pBeamInfo->GetYEntrance(),
                                     pBeamInfo->GetZVertex()-pBeamInfo->GetZEntrance());
 
@@ -765,26 +683,24 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
 
         pBeamInfo->SetStatus(2);
         G4RunManager::GetRunManager()->AbortEvent();
-     }
-   }
- }
-
+      }
+    }
+  }
   OnceAWhileDoIt();
 }
 
+//////////////////////////////////////////////////////////////////
+///  Recursive controller
 void ActarSimROOTAnalysis::OnceAWhileDoIt(const G4bool DoItNow) {
-  //
-  //
-  //
   time_t Now = time(0); // get the current time (measured in seconds)
   if ( (!DoItNow) && (LastDoItTime > (Now - 10)) ) return; // every 10 seconds
   LastDoItTime = Now;
 
   if (gSystem) gSystem->ProcessEvents();
-
 }
 
-//DPL 29NOV2012
+//////////////////////////////////////////////////////////////////
+/// Setter of the minimum stride length in the gas
 void ActarSimROOTAnalysis::SetMinStrideLength(Double_t value){
   if(gasAnal)
     gasAnal->SetMinStrideLength(value);

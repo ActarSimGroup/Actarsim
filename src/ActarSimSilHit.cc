@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Silicon hit
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSilHit
+/// A Silicon hit
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSilHit.hh"
@@ -18,11 +17,9 @@
 
 ClassImp(ActarSimSilHit)
 
+//////////////////////////////////////////////////////////////////
+/// Constructor with initialization to zero
 ActarSimSilHit::ActarSimSilHit(){
-  //
-  // Constructor with initialization to zero
-  //
-
   detectorID = 0;
 
   xpos=0;
@@ -41,20 +38,14 @@ ActarSimSilHit::ActarSimSilHit(){
   particleMass=0;
 
   stepsContributing = 0;
-
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor, nothing to do
 ActarSimSilHit::~ActarSimSilHit(){
-  //
-  // Destructor, nothing to do
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Printing data information. Not implemented yet.
 void ActarSimSilHit::print(void){
-  //
-  // Printing data information
-  //
-
-
 }

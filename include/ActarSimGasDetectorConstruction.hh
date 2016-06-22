@@ -1,19 +1,11 @@
-////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 01/12/15 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Gas volume detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 01/12/15 Recovering old functionality and correcting
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimGasDetectorConstruction_h
 #define ActarSimGasDetectorConstruction_h 1
@@ -29,55 +21,44 @@ class ActarSimDetectorConstruction;
 
 class ActarSimGasDetectorConstruction {
 private:
+  G4Material* gasMaterial;            ///< Pointer to the gas material
+  G4Material* beamShieldMaterial;     ///< Pointer to the beam shield material
 
-  // Materials
-  G4Material* gasMaterial;
-  G4Material* beamShieldMaterial;
+  G4int NumberOfGasMix;               ///< Number of gases in the gas mix (maximum 10)
+  G4String gasMixMaterial[10];        ///< List of gas materials
+  G4double gasMixRatio[10];           ///< List of gas ratios in the mix
 
-  // Gas Mixture
-  G4int NumberOfGasMix;
-  G4String gasMixMaterial[10];
-  G4double gasMixRatio[10];
+  G4double gasPressure;               ///< Gas pressure
+  G4double gasTemperature;            ///< Gas temperature
 
-  // Gas
-  G4double gasPressure;
-  G4double gasTemperature;
+  G4double gasBoxSizeX;               ///< Gas Box X half-lengths
+  G4double gasBoxSizeY;               ///< Gas Box Y half-lengths
+  G4double gasBoxSizeZ;               ///< Gas Box Z half-lengths
 
-  // GasBox X,Y,Z half-lengths
-  G4double gasBoxSizeX;
-  G4double gasBoxSizeY;
-  G4double gasBoxSizeZ;
+  G4double gasBoxCenterX;             ///< Gas Box X center
+  G4double gasBoxCenterY;             ///< Gas Box Y center
+  G4double gasBoxCenterZ;             ///< Gas Box Z center
 
-  //GasBox X,Y,Z Center
-  G4double gasBoxCenterX;
-  G4double gasBoxCenterY;
-  G4double gasBoxCenterZ;
+  G4double radiusGasTub;             ///< Radius of the Gas Tube
+  G4double lengthGasTub;             ///< Length of the Gas Tube
 
-  // GasTub Size Parameters
-  G4double radiusGasTub;
-  G4double lengthGasTub;
+  G4LogicalVolume* wireFoilLog;      ///< Pointer to the wire foil logical volume
+  G4VPhysicalVolume* wireFoilPhys;   ///< Pointer to the wire foil physical volume
 
-  // Field Cage Parameters
-  G4LogicalVolume* wireFoilLog;
-  G4VPhysicalVolume* wireFoilPhys;
+  G4double innerRadiusBeamShieldTub; ///< Inner radius of the beam shielding tube
+  G4double outerRadiusBeamShieldTub; ///< Outer radius of the beam shielding tube
+  G4double lengthBeamShieldTub;      ///< Length of the beam shielding tube
 
-  // beamShieldTub Size Parameters
-  G4double innerRadiusBeamShieldTub;
-  G4double outerRadiusBeamShieldTub;
-  G4double lengthBeamShieldTub;
+  G4String detectorGeometry;        ///< Type of the detector geometry (box or tube)
+  G4String beamShieldGeometry;      ///< Type of the detector geometry (tube)
 
-  //Select type of volume
-  G4String detectorGeometry;
-  G4String beamShieldGeometry;
-
-  ActarSimGasDetectorMessenger* gasMessenger;   //pointer to the Messenger
+  ActarSimGasDetectorMessenger* gasMessenger;    ///< Pointer to the Messenger
   //ActarSimDetectorMessenger* detectorMessenger;   //pointer to the Messenger
-  ActarSimDetectorConstruction* detConstruction;//pointer to the global detector
+  ActarSimDetectorConstruction* detConstruction; ///< Pointer to the global detector construction
 
   G4VPhysicalVolume* ConstructGas(G4LogicalVolume*);
 
 public:
-
   ActarSimGasDetectorConstruction(ActarSimDetectorConstruction*);
   ~ActarSimGasDetectorConstruction();
 
@@ -135,6 +116,5 @@ public:
 
   void UpdateGeometry();
   void PrintDetectorParameters();
-
 };
 #endif

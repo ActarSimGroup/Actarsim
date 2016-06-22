@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   The ACTAR Scintillator detector part of the ROOT Analysis
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 01/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimROOTAnalSci_h
 #define ActarSimROOTAnalSci_h 1
@@ -38,26 +33,24 @@ class TBranch;
 class TFile;
 class TClonesArray;
 
-class ActarSimROOTAnalSci{
+class ActarSimROOTAnalSci {
 private:
-
   char* dirName;
 
-  TFile* simFile;               //Local pointer to simFile
-  TTree* eventTree; //Tree
+  TFile* simFile;             ///< Local pointer to simFile
+  TTree* eventTree;           ///< Local pointer to the event tree
 
-  TBranch* sciHitsBranch; //Local branch
+  TBranch* sciHitsBranch;     ///< Local branch for scintillators
 
-  ActarSimSciHit** theSciHit; //Data
-  TClonesArray* sciHitCA;
+  ActarSimSciHit** theSciHit; ///< Pointer to the hits in the scintillators
+  TClonesArray* sciHitCA;     ///< ClonesArray of the hits in the scintillators
 
   //G4PrimaryParticle* primary;//Storing the primary for accesing during UserStep NOT USED
 
-  G4int theRunID; //To keep some numbers on the Tree
-  G4int theEventID; //To keep some numbers on the Tree
+  G4int theRunID;            ///< Run ID
+  G4int theEventID;          ///< Event ID
 
 public:
-
   ActarSimROOTAnalSci();
   ~ActarSimROOTAnalSci();
 
@@ -75,19 +68,14 @@ public:
   void FillingHits(const G4Event *anEvent);
   void AddCalCrystalHit(ActarSimSciHit*,ActarSimSciGeantHit*,G4int);
 
-  // G4VUserPrimaryGeneratorAction
   void GeneratePrimaries(const G4Event*);
 
-  // G4UserRunAction
   void BeginOfRunAction(const G4Run*);
   //void EndOfRunAction(const G4Run*);
 
-  // G4UserEventAction
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
 
-  // G4UserSteppingAction
   void UserSteppingAction(const G4Step*);
-
 };
 #endif

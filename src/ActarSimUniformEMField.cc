@@ -1,19 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol 
-//*-- Date: 05/2005
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//  Uniform electric and magnetic fields definition
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 29/11/05 Updated to include electric fields. The new
-//          implementation allows the definition of arbitrary uniform
-//          electric or magnetic fields working simultaneously
-//   - 24/05/05 Created based on ExN02
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimUniformEMField
+/// Uniform electric and magnetic fields definition
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimUniformEMField.hh"
@@ -25,10 +20,9 @@
 #include "G4ChordFinder.hh"
 #include "G4TransportationManager.hh"
 
+//////////////////////////////////////////////////////////////////
+///  Default zero field constructor
 ActarSimUniformEMField::ActarSimUniformEMField() {
-  //
-  //  Default zero field constructor
-  //
   fieldComponents[0] = fieldComponents[1] = fieldComponents[2] = 0.;
   fieldComponents[3] = fieldComponents[4] = fieldComponents[5] = 0.;
 
@@ -40,13 +34,10 @@ ActarSimUniformEMField::ActarSimUniformEMField() {
   //DefineUnits();
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Constructor with initial values for the electric an magnetic fields
 ActarSimUniformEMField::ActarSimUniformEMField(const G4ThreeVector magFieldVector,
 					       const G4ThreeVector elecFieldVector) {
-  //
-  //  Constructor with initial values for the electric an magnetic fields
-  //
-
   equation = new G4EqMagElectricField(this);
   stepper = new G4ClassicalRK4(equation);
   GetGlobalFieldManager()->SetDetectorField(this);
@@ -57,12 +48,10 @@ ActarSimUniformEMField::ActarSimUniformEMField(const G4ThreeVector magFieldVecto
   //DefineUnits();
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Copy constructor
 ActarSimUniformEMField::ActarSimUniformEMField(const  ActarSimUniformEMField &p)
-: G4ElectroMagneticField(p) {
-  //
-  //  Copy constructor
-  //
+  : G4ElectroMagneticField(p) {
   for(G4int i=0;i<6;i++)
     fieldComponents[i] = p.fieldComponents[i];
 
@@ -73,7 +62,8 @@ ActarSimUniformEMField::ActarSimUniformEMField(const  ActarSimUniformEMField &p)
   GetGlobalFieldManager()->SetChordFinder(theChordFinder);
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Operator =
 ActarSimUniformEMField ActarSimUniformEMField::operator = (const ActarSimUniformEMField &p) {
   if (&p == this) return *this;
   for (G4int i=0; i<6; i++)
@@ -81,21 +71,16 @@ ActarSimUniformEMField ActarSimUniformEMField::operator = (const ActarSimUniform
   return *this;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Destructor
 ActarSimUniformEMField::~ActarSimUniformEMField() {
-  //
-  // Destructor
-  //
-
   GetGlobalFieldManager()->SetDetectorField(0);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Set the value of the Global Field to fieldVector along Y
 void ActarSimUniformEMField::SetFieldValue(const G4ThreeVector magFieldVector,
 					   const G4ThreeVector elecFieldVector) {
-  //
-  // Set the value of the Global Field to fieldVector along Y
-  //
   if(elecFieldVector!=G4ThreeVector(0.,0.,0.) ||
      magFieldVector!=G4ThreeVector(0.,0.,0.) ) {
     fieldComponents[0] = magFieldVector.x();
@@ -112,11 +97,9 @@ void ActarSimUniformEMField::SetFieldValue(const G4ThreeVector magFieldVector,
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Set the value of the Electric Field to fieldVector
 void ActarSimUniformEMField::SetPureElectricFieldValue(G4ThreeVector fieldVector) {
-  //
-  // Set the value of the Electric Field to fieldVector
-  //
   if(fieldVector!=G4ThreeVector(0.,0.,0.) ) {
     fieldComponents[0] = 0.;
     fieldComponents[1] = 0.;
@@ -132,10 +115,9 @@ void ActarSimUniformEMField::SetPureElectricFieldValue(G4ThreeVector fieldVector
   }
 }
 
+//////////////////////////////////////////////////////////////////
+/// Set the value of the Magnetic Field to fieldVector
 void ActarSimUniformEMField::SetPureMagneticFieldValue(G4ThreeVector fieldVector) {
-  //
-  // Set the value of the Magnetic Field to fieldVector
-  //
   if(fieldVector!=G4ThreeVector(0.,0.,0.) ) {
     fieldComponents[0] = fieldVector.x();
     fieldComponents[1] = fieldVector.y();
@@ -151,14 +133,12 @@ void ActarSimUniformEMField::SetPureMagneticFieldValue(G4ThreeVector fieldVector
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// This is a virtual function in G4ElectroMagneticField to be instanciated here:
+///   Return as Bfield[0], [1], [2] the magnetic field x, y & z components
+///   and   as Bfield[3], [4], [5] G4the electric field x, y & z components
 void ActarSimUniformEMField::GetFieldValue(const G4double thePoint[4],
 					   G4double* theField) const {
-  //
-  //  This is a virtual function in G4ElectroMagneticField to be instanciated here:
-  //   Return as Bfield[0], [1], [2] the magnetic field x, y & z components
-  //    and   as Bfield[3], [4], [5] G4the electric field x, y & z components
-  //
   if(thePoint) {;} //avoid the warning message
 
   theField[0] = fieldComponents[0];
@@ -168,28 +148,22 @@ void ActarSimUniformEMField::GetFieldValue(const G4double thePoint[4],
   theField[4] = fieldComponents[4];
   theField[5] = fieldComponents[5];
   /*
- G4cout  << " GGGGGGGGG  "
-       << thePoint[0] << " " << thePoint[1] << " "<< thePoint[2] << " " << thePoint[3] << "      "
-       << theField[0] << " "<< theField[1] << " "<< theField[2] << " "<< theField[3] << " "
-       << theField[4] << " "<< theField[5] << G4endl;
+    G4cout  << " GGGGGGGGG  "
+    << thePoint[0] << " " << thePoint[1] << " "<< thePoint[2] << " " << thePoint[3] << "      "
+    << theField[0] << " "<< theField[1] << " "<< theField[2] << " "<< theField[3] << " "
+    << theField[4] << " "<< theField[5] << G4endl;
   */
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Returns the uniform magnetic field value
 G4ThreeVector ActarSimUniformEMField::GetMagneticFieldValue() {
-  //
-  // Returns the uniform magnetic field value
-  //
-
   return G4ThreeVector(fieldComponents[0], fieldComponents[1], fieldComponents[2]);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Returns the uniform electric field value
 G4ThreeVector ActarSimUniformEMField::GetElectricFieldValue() {
-  //
-  // Returns the uniform electric field value
-  //
-
   return G4ThreeVector(fieldComponents[3],
 		       fieldComponents[4],
 		       fieldComponents[5]);
@@ -211,11 +185,9 @@ G4bool DoesFieldChangeEnergy(){
 }
 */
 
+//////////////////////////////////////////////////////////////////
+/// Getting a local pointer to the global field manager
 G4FieldManager*  ActarSimUniformEMField::GetGlobalFieldManager() {
-  //
-  // Getting a local pointer to the global field manager
-  //
-
   return G4TransportationManager::GetTransportationManager()->GetFieldManager();
 }
 

@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 1/12/14
-// --------------------------------------------------------------
-// Description:
-//   Messenger for the event actions
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 03/12/04 Created based on example/novice/N03 structure
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimEventActionMessenger_h
 #define ActarSimEventActionMessenger_h 1
@@ -23,19 +18,17 @@ class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
-class ActarSimEventActionMessenger: public G4UImessenger
-{
-  public:
-    ActarSimEventActionMessenger(ActarSimEventAction*);
-   ~ActarSimEventActionMessenger();
-    
-    void SetNewValue(G4UIcommand*, G4String);
-    
-  private:
-    ActarSimEventAction*  eventAction;
-    G4UIdirectory*        eventDir;   
-    G4UIcmdWithAString*   DrawCmd;
-    G4UIcmdWithAnInteger* PrintCmd;
-};
+class ActarSimEventActionMessenger: public G4UImessenger {
+private:
+  ActarSimEventAction*  eventAction;        ///< Pointer to event action class
+  G4UIdirectory*        eventDir;           ///< Directory for the commands
+  G4UIcmdWithAString*   DrawCmd;            ///< Draw the tracks in the event
+  G4UIcmdWithAnInteger* PrintCmd;           ///< Print events modulo n
 
+public:
+  ActarSimEventActionMessenger(ActarSimEventAction*);
+  ~ActarSimEventActionMessenger();
+
+  void SetNewValue(G4UIcommand*, G4String);
+};
 #endif

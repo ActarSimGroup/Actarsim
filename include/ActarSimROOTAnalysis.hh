@@ -1,19 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 03/2005
-//*-- Last Update: 20/06/16 by hapol
-// --------------------------------------------------------------
-// Description:
-//   ROOT-based analysis functionality
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 14/04/08 Changing the structure for individual
-//              detector analysis, similar to R3BSim
-//   - 16/03/05 Created based on Ica4 example structure
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 03/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimROOTAnalysis_h
 #define ActarSimROOTAnalysis_h 1
@@ -61,80 +53,61 @@ class ActarSimTrack;
 class ActarSimSimpleTrack;
 
 class ActarSimROOTAnalysis;
-extern ActarSimROOTAnalysis *gActarSimROOTAnalysis; // global
+extern ActarSimROOTAnalysis *gActarSimROOTAnalysis; ///< Global pointer to this soliton
 
 class ActarSimROOTAnalysis {
-
 private:
+  time_t LastDoItTime;   ///< Used in OnceAWhileDoIt method for recursivity
+  TFile* simFile;        ///< The ROOT file
+  char* newDirName;      ///< Directory name within ROOT file
 
-  time_t LastDoItTime; // used in OnceAWhileDoIt method
+  TTree* eventTree;      ///< Events tree
+  TTree* tracksTree;     ///< Tracks tree
 
-  TFile* simFile;     // The ROOT File
-  char* newDirName;
+  ActarSimROOTAnalGas* gasAnal;         ///< Pointer to detector specific (gas chamber) analysis class
+  ActarSimROOTAnalSil* silAnal;         ///< Pointer to detector specific (silicon) analysis class
+  ActarSimROOTAnalSilRing* silRingAnal; ///< Pointer to detector specific (silicon ring) analysis class
+  ActarSimROOTAnalSci* sciAnal;         ///< Pointer to detector specific (scintillator) analysis class
+  ActarSimROOTAnalSciRing* sciRingAnal; ///< Pointer to detector specific (scintillator ring) analysis class
+  ActarSimROOTAnalPla* plaAnal;         ///< Pointer to detector specific (plastic) analysis class
 
-  TTree* eventTree; //Tree
-  TTree* tracksTree; //Tree
+  ActarSimBeamInfo* pBeamInfo;          ///< Pointer to beam information object
 
-  ActarSimROOTAnalGas* gasAnal;     // detector specific
-  ActarSimROOTAnalSil* silAnal;
-  ActarSimROOTAnalSilRing* silRingAnal;
-  ActarSimROOTAnalSci* sciAnal;
-  ActarSimROOTAnalSciRing* sciRingAnal;
-  ActarSimROOTAnalPla* plaAnal;
+  ActarSimAnalysisMessenger* analMessenger;  ///< Pointer to the corresponding messenger
 
-  ActarSimBeamInfo* pBeamInfo;
+  ActarSimData* theData;             ///< Pointer to data object
 
-  //G4PrimaryParticle* primary;      //Storing the primary for accesing during UserStep //NOT USED
-  ActarSimAnalysisMessenger* analMessenger; // pointer to messenger
+  TH1D *hPrimTheta;              ///< Histogram of primary Theta angle
+  TH1D *hPrimPhi;                ///< Histogram of primary Phi angle
+  TH1D *hPrimEnergy;             ///< Histogram of primary energy
+  TH2D *hPrimEnergyVsTheta;      ///< Histogram of primary Energy vs Theta angle
 
-  //TBranch* primaryInfoBranch; // Local primaries branch
-  //TBranch* beamInfoBranch;    // Beam Info branch
-  //TBranch* theDataBranch;    // theData branch
+  TH2F *hScatteredIonKinematic;  ///< Histogram with Cine Kinematic results for scattered ions
+  TH2F *hRecoilIonKinematic;     ///< Histogram with Cine Kinematic results for recoil ions
 
-  //TClonesArray*  simpleTrackCA; //NOT USED
+  ActarSimPrimaryInfo** thePrimaryInfo; ///< Primary particles data
+  TClonesArray* primaryInfoCA;          ///< ClonesArray of primaries info objects
+  TClonesArray* beamInfoCA;             ///< ClonesArray of the beam info objects
+  TClonesArray* theDataCA;              ///< ClonesArray of the data objects
 
-  ActarSimData* theData; //Data
-  //ActarSimTrack* theTracks; //Data tracks
-  //ActarSimSimpleTrack** simpleTrack; //the two simple data track NOT USED
+  G4int theRunID;      ///< Particle Run ID
+  G4int theEventID;    ///< Particle Event ID
 
-  //G4double primTheta; //NOT USED
-  //G4double primPhi; //NOT USED
+  G4String  storeTracksFlag;       ///< Flag to turn "on"/"off" the storage of complete tracks
+  G4String  storeTrackHistosFlag;  ///< Flag to turn "on"/"off" the storage of histograms related to the tracks
+  G4String  storeEventsFlag;       ///< Flag to turn "on"/"off" the storage fo events
+  G4String  storeSimpleTracksFlag; ///< Flag to turn "on"/"off" the storage of simple tracks
+  G4String  storeHistogramsFlag;   ///< Flag to turn "on"/"off" the storage of general histograms
+  G4String  beamInteractionFlag;   ///< Flag to turn "on"/"off" the beam interaction analysis
 
-  //primary physics (momentum and mass are given by the pointer)
-  TH1D *hPrimTheta;              // Primary Theta angle
-  TH1D *hPrimPhi;                // Primary Phi angle
-  TH1D *hPrimEnergy;             // Primary energy
-  TH2D *hPrimEnergyVsTheta;      // Primary Energy vs Theta angle
-
-  //histograms for the Cine Kinematic Results
-  TH2F *hScatteredIonKinematic;
-  TH2F *hRecoilIonKinematic;
-
-  ActarSimPrimaryInfo** thePrimaryInfo; //Primary particles data
-  TClonesArray* primaryInfoCA;
-  TClonesArray* beamInfoCA;
-  TClonesArray* theDataCA;
-
-  G4int theRunID; //To keep some numbers on the Tree
-  G4int theEventID; //To keep some numbers on the Tree
-
-  //Flags for control of gas tracks...
-  G4String  storeTracksFlag;
-  G4String  storeTrackHistosFlag;
-  G4String  storeEventsFlag;
-  G4String  storeSimpleTracksFlag;
-  G4String  storeHistogramsFlag;
-  G4String  beamInteractionFlag;  //flag to turn "on"/"off" the beam interaction analysis
-
-  G4int gasAnalIncludedFlag; //flag to turn on(1)/off(0) the calorim. analysis
-  G4int silAnalIncludedFlag; //flag to turn on(1)/off(0) the tracker analysis
-  G4int silRingAnalIncludedFlag;
-  G4int sciAnalIncludedFlag; //flag to turn on(1)/off(0) the DCH analysis
-  G4int sciRingAnalIncludedFlag;
-  G4int plaAnalIncludedFlag;
+  G4int gasAnalIncludedFlag;     ///< Flag to turn on(1)/off(0) the gas chamber analysis
+  G4int silAnalIncludedFlag;     ///< Flag to turn on(1)/off(0) the silicon analysis
+  G4int silRingAnalIncludedFlag; ///<Flag to turn on(1)/off(0) the silicon ring analysis
+  G4int sciAnalIncludedFlag;     ///< Flag to turn on(1)/off(0) the scintillator analysis
+  G4int sciRingAnalIncludedFlag; ///< Flag to turn on(1)/off(0) the scintillator ring analysis
+  G4int plaAnalIncludedFlag;     ///< Flag to turn on(1)/off(0) the plastic analysis
 
 public:
-
   ActarSimROOTAnalysis();
   ~ActarSimROOTAnalysis();
 
@@ -192,48 +165,33 @@ public:
   G4int GetPlaAnalStatus(){return plaAnalIncludedFlag;}
 
   void InitAnalysisForExistingDetectors();
-
-  //DPL 29NOV2012
   void SetMinStrideLength(Double_t value);
 
- // G4VUserDetectorConstruction
   void Construct(const G4VPhysicalVolume*);
 
-  // G4VUserPhysicsList
   void ConstructParticle();
   void ConstructProcess();
   void SetCuts();
 
-  // G4VUserPrimaryGeneratorAction
   //TODO->Solve this assymetry!
   //void GeneratePrimaries(const G4Event*);
   void GeneratePrimaries(const G4Event*,G4double,G4double,G4double,G4double);
   void GeneratePrimaries(const G4Event *anEvent, ActarSimBeamInfo *beamInfo);
   void GenerateBeam(const G4Event*);
 
-  // G4UserRunAction
   void BeginOfRunAction(const G4Run*);
   void EndOfRunAction(const G4Run*);
 
-  // G4UserEventAction
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
 
-  // G4UserStackingAction
   void ClassifyNewTrack(const G4Track*, G4ClassificationOfNewTrack*);
-  void NewStage();
-  void PrepareNewEvent();
 
-  // G4UserTrackingAction
   void PreUserTrackingAction(const G4Track*);
   void PostUserTrackingAction(const G4Track*, G4TrackStatus*);
 
-  // G4UserSteppingAction
   void UserSteppingAction(const G4Step*); // original
 
-  // once a while do "something"
   void OnceAWhileDoIt(const G4bool DoItNow = false);
-
 };
-
 #endif

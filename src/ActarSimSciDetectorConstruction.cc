@@ -1,17 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Scintillator detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSciDetectorConstruction
+/// Scintillator detector description
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSciDetectorConstruction.hh"
@@ -35,14 +32,11 @@
 
 #include "globals.hh"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor. Sets the material and the pointer to the Messenger
 ActarSimSciDetectorConstruction::
 ActarSimSciDetectorConstruction(ActarSimDetectorConstruction* det)
   :	sciBulkMaterial(0),detConstruction(det) {
-  //
-  // Constructor. Sets the material and the pointer to the Messenger
-  //
-
-
   SetSciBulkMaterial("CsI");
 
   //Options for Silicon and scintillator coverage:
@@ -64,51 +58,38 @@ ActarSimSciDetectorConstruction(ActarSimDetectorConstruction* det)
   sciMessenger = new ActarSimSciDetectorMessenger(this);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor.
 ActarSimSciDetectorConstruction::~ActarSimSciDetectorConstruction(){
-  //
-  // Destructor
-  //
   delete sciMessenger;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Wrap for the construction function
 G4VPhysicalVolume* ActarSimSciDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
-  //
-  // Wrap for the construction functions within the TOF
-  //
-
-  //Introduce here other constructors for materials around the TOF (windows, frames...)
-  //which can be controlled by the calMessenger
-  //ConstructTOFWorld(worldLog);
   return ConstructSci(worldLog);
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Constructs the scintillator detector elements
+///
+/// -  Introduce Silicon and CsI(Tl) detectors all around. Use MUST style:
+///        Si: 300 microns thick, 100x100mm2, with 128 strides per side
+///        (horizontal on one side and vertical in the opposite).
+///        CsI(Tl): 25x25mm2, 30mm thick, so 16 per Silicon detector.
+/// <pre>
+///                   < -- 50mm -- >
+///        ------ -- |             x
+///        |    | || |             x wires shaping the field
+///        |    | || |             x
+///        |CsI | || |             x
+///        |    | || |             x
+///        ------ -- |     Gas     x              Gas
+///               Si |             x
+///                  |             x
+///             Al layer (~1 microm)
+/// </pre>
 G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume* worldLog) {
-  //
-  //  Constructs the scintillator detector elements
-  //
-  //talk with Patricia, Pang and Herve, May 08
-  //1) Introduce Silicon and CsI(Tl) detectors all around. Use MUST style:
-  //        Si: 300 microns thick, 100x100mm2, with 128 strides per side
-  //(horizontal on one
-  //        side and vertical in the opposite).
-  //        CsI(Tl): 25x25mm2, 30mm thick, so 16 per Silicon detector.
-  //
-  //                   <-- 50mm   -->
-  //        ------ -- |             x
-  //        |    | || |             x wires shaping the field
-  //        |    | || |             x
-  //        |CsI | || |             x
-  //        |    | || |             x
-  //        ------ -- |     Gas     x              Gas
-  //               Si |             x
-  //                  |             x
-  //             Al layer (~1 microm)
-  //
-
   //MUST-like scintillator detectors (half-sides)
   //I left some "air" in between crystals. Half-length are 0,1 shorter.
   G4double sciBulk_x = 12.0*mm;   //half length=12.5mm
@@ -140,12 +121,11 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   G4cout << "##################################################################"
 	 << G4endl;
 
-
   G4LogicalVolume* sciLog(0);
   G4VPhysicalVolume* sciPhys(0);
 
-//  G4Trd* sciBox = //testing the direction after rotation...
-//    new G4Trd("sciBox", 5, 12, 5, 12, 30);
+  //  G4Trd* sciBox = //testing the direction after rotation...
+  //    new G4Trd("sciBox", 5, 12, 5, 12, 30);
   G4Box* sciBox =
     new G4Box("sciBox", sciBulk_x, sciBulk_y, sciBulk_z);
 
@@ -189,7 +169,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   G4RotationMatrix* rotRight = //ZY planes
     new G4RotationMatrix(-pi/2,pi/2,pi/2);
 
-//   G4int	checker = sideCoverage;
+  //   G4int	checker = sideCoverage;
   if(sideCoverage & 0x0001){ // bit1 (lsb) beam output wall
     //iteration on Scintillator elements
     /*
@@ -221,24 +201,24 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   if((sideCoverage >> 1) & 0x0001){ // bit2 lower [bottom] (gravity based) wall
     for(G4int rowZ=0;rowZ<numberOfRowsZ;rowZ++){
       for(G4int rowX=0;rowX<numberOfRowsX;rowX++){
-          iterationNumber++;
-          sciPhys =
-            new G4PVPlacement(rotBottom,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
-	 				         -(yBoxSciHalfLength + separationFromBox + sciBulk_z),
-					         ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
-					         sciLog, "sciPhys", worldLog, false, iterationNumber);
+	iterationNumber++;
+	sciPhys =
+	  new G4PVPlacement(rotBottom,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
+						    -(yBoxSciHalfLength + separationFromBox + sciBulk_z),
+						    ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
+			    sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
   }
   if((sideCoverage >> 2) & 0x0001){ // bit3 upper [top] (gravity based) wall
     for(G4int rowZ=0;rowZ<numberOfRowsZ;rowZ++){
       for(G4int rowX=0;rowX<numberOfRowsX;rowX++){
-          iterationNumber++;
-          sciPhys =
-            new G4PVPlacement(rotTop,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
+	iterationNumber++;
+	sciPhys =
+	  new G4PVPlacement(rotTop,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
 	 				         yBoxSciHalfLength + separationFromBox + sciBulk_z,
 					         ((rowZ+1)*2-1)*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
-					         sciLog, "sciPhys", worldLog, false, iterationNumber);
+			    sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
   }
@@ -264,10 +244,9 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
           new G4PVPlacement(rotLeft,G4ThreeVector(xBoxSciHalfLength + separationFromBox + sciBulk_z,
 						  (rowY-1.5)*2*(sciBulk_x+defectHalfLength),
 						  zBoxSciHalfLength+(rowZ-2.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
-                                               sciLog, "sciPhys", worldLog, false, iterationNumber);
+			    sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
-
   }
 
   if((sideCoverage >> 4) & 0x0001){ // bit5 right (from beam point of view) wall
@@ -286,17 +265,15 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
 
     for(G4int rowZ=0;rowZ<2;rowZ++){
       for(G4int rowY=0;rowY<2;rowY++){
-	      iterationNumber++;
+	iterationNumber++;
         sciPhys =
           new G4PVPlacement(rotRight,G4ThreeVector(-(xBoxSciHalfLength + separationFromBox + sciBulk_z),
 						   (rowY-0.5)*2*(sciBulk_y+defectHalfLength),
 						   zBoxSciHalfLength+(rowZ-0.5)*2*(sciBulk_x+defectHalfLength) - zGasBoxPosition),
-						   sciLog, "sciPhys", worldLog, false, iterationNumber);
+			    sciLog, "sciPhys", worldLog, false, iterationNumber);
 
       }
     }
-
-
   }
 
   if((sideCoverage >> 5) & 0x0001){ // bit6 (msb) beam entrance wall
@@ -307,7 +284,7 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
           new G4PVPlacement(rotBack,G4ThreeVector(-xBoxSciHalfLength + ((rowX+1)*2-1)*(sciBulk_x+defectHalfLength),
 	 				          -yBoxSciHalfLength + ((rowY+1)*2-1)*(sciBulk_x+defectHalfLength),
 					          -separationFromBox - sciBulk_z - zGasBoxPosition),
-			                          sciLog, "sciPhys", worldLog, false, iterationNumber);
+			    sciLog, "sciPhys", worldLog, false, iterationNumber);
       }
     }
   }
@@ -327,36 +304,28 @@ G4VPhysicalVolume* ActarSimSciDetectorConstruction::ConstructSci(G4LogicalVolume
   return sciPhys;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Set the material the scintillator bulk is made of
 void ActarSimSciDetectorConstruction::SetSciBulkMaterial (G4String mat) {
-  //
-  // Set the material the scintillator bulk is made of
-  //
-
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) sciBulkMaterial = pttoMaterial;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Updates Scintillator detector
 void ActarSimSciDetectorConstruction::UpdateGeometry() {
-  //
-  // Updates Scintillator detector
-  //
-
   Construct(detConstruction->GetWorldLogicalVolume());
   G4RunManager::GetRunManager()->
     DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Prints Scintillator detector parameters. TODO: To be filled
 void ActarSimSciDetectorConstruction::PrintDetectorParameters() {
-  //
-  // Prints Scintillator detector parameters. To be filled
-  //
-
   G4cout << "##################################################################"
 	 << G4endl
 	 << "####  ActarSimSciDetectorConstruction::PrintDetectorParameters() ####"
 	 << G4endl;
-    G4cout << "##################################################################"
+  G4cout << "##################################################################"
 	 << G4endl;
 }

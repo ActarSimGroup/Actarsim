@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 15/06/16 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   A plastic (scintillator) hit:
-//
-// --------------------------------------------------------------
-// Comments:
-// Added information about particleCharge, particleMass, and particleID -- dypang 090305
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimPlaHit_h
 #define ActarSimPlaHit_h 1
@@ -19,34 +14,28 @@
 
 #include "TObject.h"
 
-class ActarSimPlaHit : public TObject{
-
+class ActarSimPlaHit : public TObject {
 private:
+  Int_t detectorID;    ///< Tracker model (depends on tracker geo)
 
-  // Y. Ayyad We just add the same information as Silicon to identify the scintillator bar
-  //Basic Hit information
-  Int_t detectorID;    // Tracker model (depends on tracker geo)
+  Double_t xpos;      ///< X position in plastic
+  Double_t ypos;      ///< Y position in plastic
+  Double_t zpos;      ///< Z position in plastic
 
-  //Basic Hit information
-  Double_t xpos;
-  Double_t ypos;
-  Double_t zpos;
+  Double_t time;       ///< Pulse time (w.r.t. vertex emission)
+  Double_t energy;     ///< Total energy deposited
+  Double_t eBeforePla; ///< Energy before entering plastic
+  Double_t eAfterPla;  ///< Energy left after plastic
 
-  Double_t time;    // pulse time (w.r.t. vertex emission)
-  Double_t energy;  // total energy deposited
-  Double_t eBeforePla; // energy before entering plastic
-  Double_t eAfterPla;  // energy left after plastic
+  UInt_t eventID;     ///< Event ID
+  UInt_t runID;       ///< Run ID
+  UInt_t trackID;     ///< Track ID
 
-  //Event identification
-  UInt_t eventID;     // event ID
-  UInt_t runID;       // run ID
-  UInt_t trackID;       // run ID
+  UInt_t particleID;       ///< Particle ID
+  Double_t particleCharge; ///< Particle charge
+  Double_t particleMass;   ///< Particle mass
 
-  UInt_t particleID;
-  Double_t particleCharge;
-  Double_t particleMass;
-
-  UInt_t stepsContributing; //neccessary for iterative means
+  UInt_t stepsContributing; ///< Steps contributing to the stride, neccesary for iterative mean values
 
 public:
   ActarSimPlaHit();

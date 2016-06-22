@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A Scintillator hit
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSciRingHit
+///  A Scintillator hit
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSciRingHit.hh"
@@ -18,11 +17,9 @@
 
 ClassImp(ActarSimSciRingHit)
 
+//////////////////////////////////////////////////////////////////
+/// Constructor with initialization to zero
 ActarSimSciRingHit::ActarSimSciRingHit(){
-  //
-  // Constructor with initialization to zero
-  //
-
   type = 0;
   copy = 0;
 
@@ -31,26 +28,22 @@ ActarSimSciRingHit::ActarSimSciRingHit(){
 
   eventID = 0;
   runID = 0;
-	trackID=0;
+  trackID=0;
 
   particleID=0;
   particleCharge=0.;
   particleMass=0.;
-
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor, nothing to do
 ActarSimSciRingHit::~ActarSimSciRingHit(){
-  //
-  // Destructor, nothing to do
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Printing data information. Not implemented.
 void ActarSimSciRingHit::print(void){
-  //
-  // Printing data information
-  //
-    /*
+  /*
     G4cout << "-------------------------------------------" << G4endl;
     G4cout << "------- ActarSimSciRingHit::print() ---------" << G4endl;
     G4cout << " type: " << type
@@ -62,5 +55,3 @@ void ActarSimSciRingHit::print(void){
     G4cout << "-------------------------------------------" << G4endl;
   */
 }
-
-

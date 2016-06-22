@@ -1,30 +1,25 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 05/2006
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A track simplified structure to reduce the space consumption
-//   while keeping most of the information. The (huge amount of)
-//   GEANT steps are here reduced to few "strides"
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//     - 13/06/06 Derive class from TObject to introduce in TClonesArray
-//     - 16/05/06 Simplified track structure for analysis in ACTAR
-//
+// - AUTHOR: Hector Alvarez-Pol 05/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSimpleTrack
+/// A track simplified structure to reduce the space consumption
+///  while keeping most of the information. The (huge amount of)
+///  GEANT steps are here reduced to few "strides"
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSimpleTrack.hh"
 
 ClassImp(ActarSimSimpleTrack)
 
+//////////////////////////////////////////////////////////////////
+/// Constructor initializing to defaults
 ActarSimSimpleTrack::ActarSimSimpleTrack(){
-  //
-  // Constructor initializing to defaults
-  //
-
   xPre = 0.;
   yPre = 0.;
   zPre = 0.;
@@ -43,16 +38,14 @@ ActarSimSimpleTrack::ActarSimSimpleTrack(){
   runID = -999;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing
 ActarSimSimpleTrack::~ActarSimSimpleTrack(){
-  //
-  // Destructor. Makes nothing
-  //
 }
 
+//////////////////////////////////////////////////////////////////
+/// Clearing to defaults
 void ActarSimSimpleTrack::Reset(void){
-  //
-  // Clearing to defaults
-  //
   xPre = 0.;
   yPre = 0.;
   zPre = 0.;
@@ -75,11 +68,9 @@ void ActarSimSimpleTrack::Reset(void){
   runID = -999;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Overloading the copy operator...
 ActarSimSimpleTrack & ActarSimSimpleTrack::operator=(const ActarSimSimpleTrack &right){
-  //
-  // overloading the copy operator...
-  //
-
   if (this != &right){
     xPre = right.xPre;
     yPre = right.yPre;

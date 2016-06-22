@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/2015
-// --------------------------------------------------------------
-// Description:
-//   A Silicon hit
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSilRingHit
+/// A Silicon Ring hit
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSilRingHit.hh"
@@ -18,13 +17,11 @@
 
 ClassImp(ActarSimSilRingHit)
 
+//////////////////////////////////////////////////////////////////
+/// Constructor with initialization to zero
 ActarSimSilRingHit::ActarSimSilRingHit(){
-  //
-  // Constructor with initialization to zero
-  //
-
   detectorID = 0;
-  
+
   xpos=0;
   ypos=0;
   zpos=0;
@@ -43,17 +40,12 @@ ActarSimSilRingHit::ActarSimSilRingHit(){
   stepsContributing = 0;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor, nothing to do
 ActarSimSilRingHit::~ActarSimSilRingHit(){
-  //
-  // Destructor, nothing to do
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+///  Printing data information. Not implemented yet.
 void ActarSimSilRingHit::print(void){
-  //
-  // Printing data information
-  //
-
-
 }

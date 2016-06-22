@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 05/2005
-//*-- Last Update: 07/01/15 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   The ACTAR SilRingicon detectorpart of the ROOT Analysis
-//
-// --------------------------------------------------------------
-// Comments:
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 05/2005
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimROOTAnalSilRing
+/// The ACTAR SilRingicon detectorpart of the ROOT Analysis
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimROOTAnalSilRing.hh"
@@ -37,11 +36,9 @@
 #include "TFile.h"
 #include "TClonesArray.h"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
 ActarSimROOTAnalSilRing::ActarSimROOTAnalSilRing() {
-  //
-  // Constructor
-  //
-
   //The simulation file
   simFile = ((ActarSimROOTAnalysis*)gActarSimROOTAnalysis)->GetSimFile();
   simFile->cd();
@@ -55,31 +52,22 @@ ActarSimROOTAnalSilRing::ActarSimROOTAnalSilRing() {
 
   silRingHitsBranch = eventTree->Branch("silRingHits",&silRingHitCA);
   silRingHitsBranch->SetAutoDelete(kTRUE);
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor. Makes nothing.
 ActarSimROOTAnalSilRing::~ActarSimROOTAnalSilRing() {
-  //
-  // Destructor
-  //
-
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the silicon anal when generating the primaries
 void ActarSimROOTAnalSilRing::GeneratePrimaries(const G4Event *anEvent){
-  //
-  // Actions to perform in the silicon anal when generating the primaries
-  //
-
   if(anEvent){;} /* keep the compiler "quiet" */
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the silicon anal at the begining of the run
 void ActarSimROOTAnalSilRing::BeginOfRunAction(const G4Run *aRun) {
-  //
-  // Actions to perform in the silicon anal at the begining of the run
-  //
   if (aRun){;} /* keep the compiler "quiet" */
 
   //Storing the runID
@@ -98,36 +86,27 @@ void ActarSimROOTAnalSilRing::BeginOfRunAction(const G4Run *aRun) {
   simFile->cd();
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the silicon anal at the begining of the event
 void ActarSimROOTAnalSilRing::BeginOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the silicon anal at the begining of the event
-  //
-
   SetTheEventID(anEvent->GetEventID());
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the silicon anal at the beginning of the run
+/// Defining the ActarSimSilHit from the ActarSimSilGeantHits
 void ActarSimROOTAnalSilRing::EndOfEventAction(const G4Event *anEvent) {
-  //
-  // Actions to perform in the silicon anal at the beginning of the run
-  // Defining the ActarSimSilHit from the ActarSimSilGeantHits
-  //
-
   FillingHits(anEvent);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Defining the ActarSimSilHits from the ActarSimSilGeantHits
+///
+/// A simple algorithm checking the number of primaries
+/// reaching the Sil and calculating their mean parameters
+/// taking into account their energy deposition on the silicons
+/// NOTE that only primaries can produce Hits following this scheme
 void ActarSimROOTAnalSilRing::FillingHits(const G4Event *anEvent) {
-  //
-  // Defining the ActarSimSilHits from the ActarSimSilGeantHits
-  //
-  // A simple algorithm checking the number of primaries
-  // reaching the Sil and calculating their mean parameters
-  // taking into account their energy deposition on the silicons
-  // NOTE that only primaries can produce Hits following this scheme
-  //
   //Hit Container ID for ActarSimSilGeantHit
   G4int hitsCollectionID =
     G4SDManager::GetSDMpointer()->GetCollectionID("SilRingCollection");
@@ -211,18 +190,17 @@ void ActarSimROOTAnalSilRing::FillingHits(const G4Event *anEvent) {
   delete [] theSilRingHit;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Function to move the information from the ActarSimSilGeantHit (a step hit)
+/// to ActarSimSilHit (a simple primary representation in the silicon)
+/// Two modes are possible:
+/// mode == 0 : creation; the ActarSimSilHit is void and is
+///             filled by the data from the ActarSimSilGeantHit
+/// mode == 1 : addition; the ActarSimSilHit was already created
+///             by other ActarSimSilGeantHit and some data members are updated
 void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
-			       ActarSimSilRingGeantHit* gHit,
-			       G4int mode) {
-  //
-  // Function to move the information from the ActarSimSilGeantHit (a step hit)
-  // to ActarSimSilHit (a simple primary representation in the silicon)
-  // Two modes are possible:
-  // mode == 0 : creation; the ActarSimSilHit is void and is
-  //             filled by the data from the ActarSimSilGeantHit
-  // mode == 1 : addition; the ActarSimSilHit was already created
-  //             by other ActarSimSilGeantHit and some data members are updated
-
+					    ActarSimSilRingGeantHit* gHit,
+					    G4int mode) {
   if(mode == 0) { //creation
     cHit->SetDetectorID(gHit->GetDetID());
 
@@ -244,7 +222,6 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
     cHit->SetParticleMass(gHit->GetParticleMass());
 
     cHit->SetStepsContributing(1);
-
   }
 
   else if(mode==1){ //addition
@@ -270,12 +247,8 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
   }
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Actions to perform in the ACTAR gas detector analysis after each step
 void ActarSimROOTAnalSilRing::UserSteppingAction(const G4Step *aStep){
-  //
-  // Actions to perform in the ACTAR gas detector analysis after each step
-  //
-
   if(aStep){;} /* keep the compiler "quiet" */
-
 }

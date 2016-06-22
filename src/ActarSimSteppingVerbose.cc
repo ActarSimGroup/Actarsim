@@ -1,16 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   Controls the verbosity during the step (please, not too much:-)
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 30/11/04: based on example/novice/N03 structure
-// 
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSteppingVerbose
+/// Controls the verbosity during the step (please, not too much:-)
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSteppingVerbose.hh"
@@ -18,34 +16,37 @@
 #include "G4SteppingManager.hh"
 #include "G4UnitsTable.hh"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor. Nothing to do.
 ActarSimSteppingVerbose::ActarSimSteppingVerbose(){
-  //
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor. Nothing to do.
 ActarSimSteppingVerbose::~ActarSimSteppingVerbose(){
-  //
 }
 
-void ActarSimSteppingVerbose::StepInfo()
-{
+//////////////////////////////////////////////////////////////////
+/// A complete info dump for each step
+void ActarSimSteppingVerbose::StepInfo() {
   CopyState();
-  
+
   G4int prec = G4cout.precision(3);
 
   if( verboseLevel >= 1 ){
     if( verboseLevel >= 4 ) VerboseTrack();
     if( verboseLevel >= 3 ){
-      G4cout << G4endl;    
+      G4cout << G4endl;
       G4cout << std::setw( 5) << "#Step#"     << " "
-	           << std::setw( 6) << "X"          << "    "
-	           << std::setw( 6) << "Y"          << "    "  
-	           << std::setw( 6) << "Z"          << "    "
-	           << std::setw( 9) << "KineE"      << " "
-	           << std::setw( 9) << "dEStep"     << " "  
-	           << std::setw(10) << "StepLeng"     
-	           << std::setw(10) << "TrakLeng" 
-	           << std::setw(10) << "Volume"    << "  "
-	           << std::setw(10) << "Process"   << G4endl;	          
+	     << std::setw( 6) << "X"          << "    "
+	     << std::setw( 6) << "Y"          << "    "
+	     << std::setw( 6) << "Z"          << "    "
+	     << std::setw( 9) << "KineE"      << " "
+	     << std::setw( 9) << "dEStep"     << " "
+	     << std::setw(10) << "StepLeng"
+	     << std::setw(10) << "TrakLeng"
+	     << std::setw(10) << "Volume"    << "  "
+	     << std::setw(10) << "Process"   << G4endl;
     }
 
     G4cout << std::setw(5) << fTrack->GetCurrentStepNumber() << " "
@@ -58,8 +59,8 @@ void ActarSimSteppingVerbose::StepInfo()
            << std::setw(6) << G4BestUnit(fTrack->GetTrackLength(),"Length")
            << "  ";
 
-    // if( fStepStatus != fWorldBoundary){ 
-    if( fTrack->GetNextVolume() != 0 ) { 
+    // if( fStepStatus != fWorldBoundary){
+    if( fTrack->GetNextVolume() != 0 ) {
       G4cout << std::setw(10) << fTrack->GetVolume()->GetName();
     } else {
       G4cout << std::setw(10) << "OutOfWorld";
@@ -68,8 +69,8 @@ void ActarSimSteppingVerbose::StepInfo()
     if(fStep->GetPostStepPoint()->GetProcessDefinedStep() != 0){
       G4cout << "  "
              << std::setw(10)
-	           << fStep->GetPostStepPoint()->GetProcessDefinedStep()
-	                           ->GetProcessName();
+	     << fStep->GetPostStepPoint()->GetProcessDefinedStep()
+	->GetProcessName();
     } else {
       G4cout << "   UserLimit";
     }
@@ -78,23 +79,23 @@ void ActarSimSteppingVerbose::StepInfo()
 
     if( verboseLevel == 2 ){
       G4int tN2ndariesTot = fN2ndariesAtRestDoIt +
-	                         fN2ndariesAlongStepDoIt +
-	                         fN2ndariesPostStepDoIt;
+	fN2ndariesAlongStepDoIt +
+	fN2ndariesPostStepDoIt;
       if(tN2ndariesTot>0){
         G4cout << "    :----- List of 2ndaries - "
-	             << "#SpawnInStep=" << std::setw(3) << tN2ndariesTot 
-	             << "(Rest="  << std::setw(2) << fN2ndariesAtRestDoIt
-	             << ",Along=" << std::setw(2) << fN2ndariesAlongStepDoIt
-	             << ",Post="  << std::setw(2) << fN2ndariesPostStepDoIt
-	             << "), "
-	             << "#SpawnTotal=" << std::setw(3) << (*fSecondary).size()
-	             << " ---------------"
-	             << G4endl;
+	       << "#SpawnInStep=" << std::setw(3) << tN2ndariesTot
+	       << "(Rest="  << std::setw(2) << fN2ndariesAtRestDoIt
+	       << ",Along=" << std::setw(2) << fN2ndariesAlongStepDoIt
+	       << ",Post="  << std::setw(2) << fN2ndariesPostStepDoIt
+	       << "), "
+	       << "#SpawnTotal=" << std::setw(3) << (*fSecondary).size()
+	       << " ---------------"
+	       << G4endl;
 
-        for(size_t lp1=(*fSecondary).size()-tN2ndariesTot; 
-                        lp1<(*fSecondary).size(); lp1++){
+        for(size_t lp1=(*fSecondary).size()-tN2ndariesTot;
+	    lp1<(*fSecondary).size(); lp1++){
           G4cout << "    : "
-		             << std::setw(6)
+		 << std::setw(6)
                  << G4BestUnit((*fSecondary)[lp1]->GetPosition().x(),"Length")
                  << std::setw(6)
                  << G4BestUnit((*fSecondary)[lp1]->GetPosition().y(),"Length")
@@ -104,13 +105,13 @@ void ActarSimSteppingVerbose::StepInfo()
                  << G4BestUnit((*fSecondary)[lp1]->GetKineticEnergy(),"Energy")
                  << std::setw(10)
                  << (*fSecondary)[lp1]->GetDefinition()->GetParticleName();
-	        G4cout << G4endl;
+	  G4cout << G4endl;
         }
-              
-	      G4cout << "    :-----------------------------"
-	             << "----------------------------------"
-	             << "-- EndOf2ndaries Info ---------------"
-	             << G4endl;
+
+	G4cout << "    :-----------------------------"
+	       << "----------------------------------"
+	       << "-- EndOf2ndaries Info ---------------"
+	       << G4endl;
       }
     }
   }
@@ -123,14 +124,14 @@ void ActarSimSteppingVerbose::TrackingStarted(){
   if( verboseLevel > 0 ){
     G4cout << std::setw( 5) << "Step#"      << " "
            << std::setw( 6) << "X"          << "    "
-	         << std::setw( 6) << "Y"          << "    "  
-	         << std::setw( 6) << "Z"          << "    "
-	         << std::setw( 9) << "KineE"      << " "
-	         << std::setw( 9) << "dEStep"     << " "  
-	         << std::setw(10) << "StepLeng"  
-	         << std::setw(10) << "TrakLeng"
-	         << std::setw(10) << "Volume"     << "  "
-	         << std::setw(10) << "Process"    << G4endl;	     
+	   << std::setw( 6) << "Y"          << "    "
+	   << std::setw( 6) << "Z"          << "    "
+	   << std::setw( 9) << "KineE"      << " "
+	   << std::setw( 9) << "dEStep"     << " "
+	   << std::setw(10) << "StepLeng"
+	   << std::setw(10) << "TrakLeng"
+	   << std::setw(10) << "Volume"     << "  "
+	   << std::setw(10) << "Process"    << G4endl;
 
     G4cout << std::setw( 5) << fTrack->GetCurrentStepNumber() << " "
            << std::setw( 6) << G4BestUnit(fTrack->GetPosition().x(),"Length")

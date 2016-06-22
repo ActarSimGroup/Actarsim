@@ -1,16 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez Pol
-//*-- Date: 04/2008
-//*-- Last Update: 16/12/14 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   SD for the plastic scintillators
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimPlaSD
+/// SD for the plastic scintillators
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimPlaSD.hh"
@@ -27,29 +25,22 @@
 #include "G4TouchableHistory.hh"
 #include "G4VTouchable.hh"
 
-ActarSimPlaSD::ActarSimPlaSD(G4String name)
-  :G4VSensitiveDetector(name){
-  //
-  // Constructor,
-  // just naming the Hit collection
-  //
+//////////////////////////////////////////////////////////////////
+/// Constructor, just naming the Hit collection
+ActarSimPlaSD::ActarSimPlaSD(G4String name):G4VSensitiveDetector(name) {
   G4String HCname;
   collectionName.insert(HCname="PlaCollection");
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor, nothing to do
 ActarSimPlaSD::~ActarSimPlaSD(){
-  //
-  // Destructor, nothing to do
-  //
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Initializing the ActarSimSciGeantHitsCollection object
+/// Invoked automatically at the beggining of each event
 void ActarSimPlaSD::Initialize(G4HCofThisEvent* HCE){
-  //
-  // Initializing the ActarSimSciGeantHitsCollection object
-  // Invoked automatically at the beggining of each event
-  //
   hitsCollection = new ActarSimPlaGeantHitsCollection
     (SensitiveDetectorName,collectionName[0]);
   static G4int HCID = -1;
@@ -59,12 +50,10 @@ void ActarSimPlaSD::Initialize(G4HCofThisEvent* HCE){
   HCE->AddHitsCollection( HCID, hitsCollection );
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Filling the ActarSimSciGeantHit information with the step info.
+/// Invoked by G4SteppingManager for each step.
 G4bool ActarSimPlaSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
-  //
-  // Filling the ActarSimSciGeantHit information with the step info
-  // Invoked by G4SteppingManager for each step
-  //
   G4double edep = aStep->GetTotalEnergyDeposit();
 
   if(edep==0.) return false;
@@ -106,17 +95,14 @@ G4bool ActarSimPlaSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
 
   // newHit cannot be deleted here !
   // It should be deleted after the end of the event
-
   return true;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Just prints and draws the event hits (class ActarSimSciGeantHit).
+/// The recollection of the hits energy deposition in the plastic
+/// is done in the ActarSimROOTAnalysis::EndOfEventAction()
 void ActarSimPlaSD::EndOfEvent(G4HCofThisEvent*){
-  //
-  // Just prints and draws the event hits (class ActarSimSciGeantHit)
-  // The recollection of the hits energy deposition in the plastic
-  // is done in the ActarSimROOTAnalysis::EndOfEventAction()
-  //
   G4int NbHits = hitsCollection->entries();
   if (verboseLevel>0) {
     G4cout << "Hits Collection: in this event they are " << NbHits

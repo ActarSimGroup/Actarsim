@@ -1,15 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR:  (Original FORTRAN code) M.S. Golovkov
-//*-- AUTHOR (translation to C++): Pang Danyang (pang@ganil.fr)
-//*-- Date: 02/2008
-// --------------------------------------------------------------
-// Description:
-//   program to calculate relativistic kinematics of binary reaction
-// --------------------------------------------------------------
-// Comments:
-//   - 27/02/08 translation from the original FORTRAN
-//      to Geant4-like C++
-// --------------------------------------------------------------
+// - AUTHOR: M.S. Golovkov/Pang Danyang 02/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimKinePrimGenerator
+/// Program to calculate relativistic kinematics of binary reaction
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimKinePrimGenerator.hh"
@@ -19,27 +18,24 @@
 
 using namespace std;
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
+///
+///  Original program needs the following data:
+///  - wm(4) -> masses in MeV (here we use Atomic mass unit u)
+///  -    1  -> beam
+///  -    2  -> target
+///  -    3  -> scattered particle
+///  -    4  -> recoil
+///  - tb    -> incident energy in MeV (lab)
+///  - tetacmp -> angle of the scattered particle in cms (rad)
+///
+///  output:
+///  - ANGAs[0] -> angle  of scattered particle (3) in lab (rad)
+///  - ANGAs[1] -> energy of scattered particle (3) in lab (MeV)
+///  - ANGAr[0] -> angle  of recoiled particle (4) in lab (rad)
+///  - ANGAr[1] -> energy of recoiled particle (4) in lab (MeV)
 ActarSimKinePrimGenerator::ActarSimKinePrimGenerator() {
-  //
-  // Constructor
-  //
-
-  //
-  //  Original program needs the following data:
-  //  wm(4) -> masses in MeV (here we use Atomic mass unit u)
-  //     1  -> beam
-  //     2  -> target
-  //     3  -> scattered particle
-  //     4  -> recoil
-  //  tb    -> incident energy in MeV (lab)
-  //  tetacmp -> angle of the scattered particle in cms (rad)
-  //
-  //  output:
-  //  ANGAs[0] -> angle  of scattered particle (3) in lab (rad)
-  //  ANGAs[1] -> energy of scattered particle (3) in lab (MeV)
-  //  ANGAr[0] -> angle  of recoiled particle (4) in lab (rad)
-  //  ANGAr[1] -> energy of recoiled particle (4) in lab (MeV)
-
   //Default masses (just an elastic 8He on 12C)
   m1 = 8.;  // 8He mass
   m2 = 12.; // C12 mass
@@ -66,34 +62,31 @@ ActarSimKinePrimGenerator::ActarSimKinePrimGenerator() {
   NoSolution=FALSE;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimKinePrimGenerator::~ActarSimKinePrimGenerator() {
-  //
-  // Destructor
-  //
   delete ANGAs;
   delete ANGAr;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Reproduces the relativistic kinematics calculations from
+/// kin_cmlabf.f of M.S. Golovkov
+///
+/// Arguments:
+/// - masses: m1, m2, m3, m4 (for incident, target, scattered and recoil masses)
+/// - excitation energies: ex1, ex2, ex3, ex4
+/// - energies: Tb (lab energy in MeV)
+/// - angles: thetacmsInput   (theta CM angle of the scattered particle in degree)
+///
+/// Output:
+/// - given in two vectors called ANGAs and ANGAr (scattered and recoiled particle)
+/// the elements are:
+/// - 0:  Theta lab (in rad)
+/// - 1:  ELAB (in MeV)
 void ActarSimKinePrimGenerator::KineKinematics() {
-  //
-  // Reproduces the relativistic kinematics calculations from
-  // kin_cmlabf.f of M.S. Golovkov
-  //
-
-  //Arguments:
-  // masses: m1, m2, m3, m4 (for incident, target, scattered and recoil masses)
-  // excitation energies: ex1, ex2, ex3, ex4
-  // energies: Tb (lab energy in MeV)
-  // angles: thetacmsInput   (theta CM angle of the scattered particle in degree)
-  //
-  //Output:
-  // given in two vectors called ANGAs and ANGAr (scattered and recoiled particle)
-  // the elements are:
-  // 0:  Theta lab (in rad)
-  // 1:  ELAB (in MeV)
-
   //Initial constants
-  const G4double U = 931.49401; // dypang 080227
+  const G4double U = 931.49401;
   const G4double rad2deg = 0.0174532925;
   const G4double PI=3.14159265358979323846;
 
@@ -151,8 +144,7 @@ void ActarSimKinePrimGenerator::KineKinematics() {
 
   if(ANGAr[0]<0.0) ANGAr[0]=PI+ANGAr[0];
 
-// Lorentz transformations to lab -----
-
+  // Lorentz transformations to lab -----
   G4double p3_cmx = p3_cm*sin(thetacms);
   G4double p3_cmz = p3_cm*cos(thetacms);
   G4double p3_labx = p3_cmx;
@@ -167,26 +159,25 @@ void ActarSimKinePrimGenerator::KineKinematics() {
   G4double p4_lab = sqrt(p4_labx*p4_labx+p4_labz*p4_labz);
   ANGAr[1] = sqrt(p4_lab*p4_lab+wm4*wm4)-wm4;
 
-//  PrintResults();
+  //  PrintResults();
 
   return;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Dump
 void ActarSimKinePrimGenerator::Dump() {
-  //
-  // Dump
-  //
 
   G4double rad2deg= 0.0174532925;
 
   G4cout << G4endl << " ActarSimKinePrimGenerator::printResult()" << G4endl;
 
   G4cout << "Incident Mass: "  << m1  << "  "
-	     << "Target Mass: "    << m2  << G4endl;
+	 << "Target Mass: "    << m2  << G4endl;
   G4cout << "Scattered Mass: " << m3 << "  "
-	     << "Recoil Mass: "    << m4  << G4endl;
+	 << "Recoil Mass: "    << m4  << G4endl;
   G4cout << "Theta CM Angle: " << thetacmsInput << "  "
-	     << "LAB energy :" << tb << G4endl;
+	 << "LAB energy :" << tb << G4endl;
   G4cout << "Scattered excitation energy: " << ex3 << G4endl;
 
   G4cout << "Lab Scattering angle:" << ANGAs[0]/rad2deg << ", Scattering energy=" << ANGAs[1] << endl;
@@ -194,23 +185,22 @@ void ActarSimKinePrimGenerator::Dump() {
 
 }
 
+//////////////////////////////////////////////////////////////////
+/// Print the results for each solution
 void ActarSimKinePrimGenerator::PrintResults() {
-  //
-  // print the results for each solution
-  //
 
-	G4double rad2deg= 0.0174532925;
+  G4double rad2deg= 0.0174532925;
 
   G4int prec = G4cout.precision(6);
 
   G4cout << G4endl << " ActarSimKinePrimGenerator::printResult()" << G4endl;
 
   G4cout << "Incident Mass: "  << m1  << "  "
-	     << "Target Mass: "    << m2  << G4endl;
+	 << "Target Mass: "    << m2  << G4endl;
   G4cout << "Scattered Mass: " << m3 << "  "
-	     << "Recoil Mass: "    << m4  << G4endl;
+	 << "Recoil Mass: "    << m4  << G4endl;
   G4cout << "Theta CM Angle: " << thetacmsInput << "  "
-	     << "LAB energy :" << tb << G4endl;
+	 << "LAB energy :" << tb << G4endl;
   G4cout << "Scattered excitation energy: " << ex3 << G4endl;
 
   G4cout << "Lab Scattering angle:" << ANGAs[0]/rad2deg << ", Scattering energy=" << ANGAs[1] << endl;

@@ -1,20 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 05/2006
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   A track simplified structure to reduce the space consumption
-//   while keeping most of the information. The (huge amount of)
-//   GEANT steps are here reduced to few "strides"
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//     - 13/06/06 Derive class from TObject to introduce in TClonesArray
-//     - 16/05/06 Simplified track structure for analysis in ACTAR
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 05/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimSimpleTrack_h
 #define ActarSimSimpleTrack_h 1
@@ -22,33 +13,32 @@
 #include "TROOT.h"  //for including Rtypes.h
 #include "TObject.h"
 
-class ActarSimSimpleTrack : public TObject{
-
+class ActarSimSimpleTrack : public TObject {
 private:
+  Double_t xPre;            ///< Coordinate X of the preStepPoint for the first step in the stride
+  Double_t yPre;            ///< Coordinate Y of the preStepPoint for the first step in the stride
+  Double_t zPre;            ///< Coordinate Z of the preStepPoint for the first step in the stride
+  Double_t xPost;           ///< Coordinate X of the postStepPoint for the last step in the stride
+  Double_t yPost;           ///< Coordinate Y of the postStepPoint for the last step in the stride
+  Double_t zPost;           ///< Coordinate Z of the postStepPoint for the last step in the stride
+  Double_t energyStride;    ///< Total energy on the stride (sum over all steps)
+  Double_t particleCharge;  ///< Particle charge
+  Double_t particleMass;    ///< Particle mass
+  Int_t particleID;         ///< Particle ID
+  Double_t strideLength;    ///< Stride length (sum over all steps length)
+  Double_t particleEnergy;  ///< Particle energy before the step and thus before the stride
+  Double_t timePre;         ///< Time of preStepPoint for the first step in the stride
+  Double_t timePost;        ///< Time of postStepPoint for the last step in the stride
+  Int_t numberSteps;        ///< Number of steps in the stride
+  Int_t strideOrdinal;      ///< Stride order
+  Int_t parentTrackID;      ///< Parent Track ID
 
-  Double_t xPre;          //coordinates of the preStepPoint for the first step in the stride
-  Double_t yPre;
-  Double_t zPre;
-  Double_t xPost;         //coordinates of the postStepPoint for the last step in the stride
-  Double_t yPost;
-  Double_t zPost;
-  Double_t energyStride;  //total energy on the stride (sum over all steps)
-  Double_t particleCharge;
-  Double_t particleMass;
-  Int_t particleID;
-  Double_t strideLength;  //stride length (sum over all steps length)
-  Double_t particleEnergy;  //particle energy before the step and thus before the stride
-  Double_t timePre;       //time of preStepPoint for the first step in the stride
-  Double_t timePost;      //time of postStepPoint for the last step in the stride
-  Int_t numberSteps;      //number of steps in the stride
-  Int_t strideOrdinal;    //stride order
-  Int_t parentTrackID;
+  //Note that with the new TClonesArray access this data is not neccesary,
+  //as they are in the event tree and very well structured. TODO REMOVE!!!
 
-//Note that with the new TClonesArray access this data is not neccesary,
-//as they are in the event tree and very well structured. TODO REMOVE!!!
-  Int_t trackID;
-  Int_t eventID;
-  Int_t runID;
+  Int_t trackID;   ///< Track ID
+  Int_t eventID;   ///< Event ID
+  Int_t runID;     ///< Run ID
 
 public:
   ActarSimSimpleTrack();
@@ -103,5 +93,4 @@ public:
 
   ClassDef(ActarSimSimpleTrack,1) //ROOT CINT
 };
-
 #endif

@@ -1,19 +1,12 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 23/12/14
-// --------------------------------------------------------------
-// Description:
-//   Controls the actions to perform during the steps. Note
-// that unneeded code lines at this point will affect performance.
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 30/11/04 Created based on example/novice/N03 structure
-//
-// --------------------------------------------------------------
-//
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 01/2006
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+
 #ifndef ActarSimSteppingAction_h
 #define ActarSimSteppingAction_h 1
 
@@ -23,17 +16,14 @@
 class ActarSimDetectorConstruction;
 class ActarSimEventAction;
 
-class ActarSimSteppingAction : public G4UserSteppingAction
-{
-  public:
-    ActarSimSteppingAction(ActarSimDetectorConstruction*, ActarSimEventAction*);
-   ~ActarSimSteppingAction();
+class ActarSimSteppingAction : public G4UserSteppingAction {
+private:
+  ActarSimDetectorConstruction* detector;    ///< NOT USED
+  ActarSimEventAction*          eventaction; ///< NOT USED
+public:
+  ActarSimSteppingAction(ActarSimDetectorConstruction*, ActarSimEventAction*);
+  ~ActarSimSteppingAction();
 
-    void UserSteppingAction(const G4Step*);
-
-  private:
-    ActarSimDetectorConstruction* detector; //NOT USED
-    ActarSimEventAction*          eventaction; //NOT USED
+  void UserSteppingAction(const G4Step*);
 };
-
 #endif

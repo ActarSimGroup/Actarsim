@@ -1,16 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 16/12/14 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   Messenger for the primary event generator.
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 03/12/04: based on example/novice/N03 structure
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimPrimaryGeneratorMessenger
+/// Messenger for the primary event generator.
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimPrimaryGeneratorMessenger.hh"
@@ -29,11 +27,63 @@
 #include "G4ios.hh"
 #include "G4Tokenizer.hh"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor
+/// command included in this ActarSimPrimaryGeneratorMessenger:
+/// - /ActarSim/gun/List
+/// - /ActarSim/gun/particle
+/// - /ActarSim/gun/realisticBeam
+/// - /ActarSim/gun/beamInteraction
+/// - /ActarSim/gun/emittance
+/// - /ActarSim/gun/beamDirection
+/// - /ActarSim/gun/beamTheta
+/// - /ActarSim/gun/beamPhi
+/// - /ActarSim/gun/beamPosition
+/// - /ActarSim/gun/beamRadiusAtEntrance
+/// - /ActarSim/gun/reactionFromEvGen
+/// - /ActarSim/gun/reactionFromFile
+/// - /ActarSim/gun/reactionFromCrossSection
+/// - /ActarSim/gun/reactionFile
+/// - /ActarSim/gun/reactionFromCine
+/// - /ActarSim/gun/Cine/randomTheta
+/// - /ActarSim/gun/randomTheta
+/// - /ActarSim/gun/randomPhi
+/// - /ActarSim/gun/alphaSource
+/// - /ActarSim/gun/randomThetaVal
+/// - /ActarSim/gun/randomPhiVal
+/// - /ActarSim/gun/Cine/randomThetaVal
+/// - /ActarSim/gun/Cine/incidentIon
+/// - /ActarSim/gun/Cine/targetIon
+/// - /ActarSim/gun/Cine/scatteredIon
+/// - /ActarSim/gun/Cine/recoilIon
+/// - /ActarSim/gun/Cine/reactionQ
+/// - /ActarSim/gun/Cine/labEnergy
+/// - /ActarSim/gun/Cine/thetaLabAngle
+/// - /ActarSim/gun/reactionFromKine
+/// - /ActarSim/gun/Kine/randomThetaCM
+/// - /ActarSim/gun/Kine/randomPhiAngle
+/// - /ActarSim/gun/Kine/randomThetaRange
+/// - /ActarSim/gun/Kine/incidentIon
+/// - /ActarSim/gun/Kine/targetIon
+/// - /ActarSim/gun/Kine/scatteredIon
+/// - /ActarSim/gun/Kine/recoilIon
+/// - /ActarSim/gun/Kine/labEnergy
+/// - /ActarSim/gun/Kine/userThetaCM
+/// - /ActarSim/gun/Kine/userPhiAngle
+/// - /ActarSim/gun/Kine/vertexPosition
+/// - /ActarSim/gun/energy
+/// - /ActarSim/gun/direction
+/// - /ActarSim/gun/position
+/// - /ActarSim/gun/time
+/// - /ActarSim/gun/randomVertexZPosition
+/// - /ActarSim/gun/randomVertexZRange
+/// - /ActarSim/gun/vertexZPosition
+/// - /ActarSim/gun/polarization
+/// - /ActarSim/gun/number
+/// - /ActarSim/gun/ion
 ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPrimaryGeneratorAction* actarSimGun)
   : actarSimActionGun(actarSimGun) {
-  //
-  // Constructor including commands definition
-  //
+
   particleTable = G4ParticleTable::GetParticleTable();
 
   G4bool omitable;
@@ -101,7 +151,7 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   beamThetaCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
   beamPhiCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/beamPhi",this);
-  beamPhiCmd->SetGuidance("Sets theta angle for beam (in degrees)");
+  beamPhiCmd->SetGuidance("Sets phi angle for beam (in degrees)");
   beamPhiCmd->SetParameterName("beamPhi",false);
   //beamPhiCmd->SetRange("userPhiCM>=0.");
   beamPhiCmd->SetUnitCategory("Angle");
@@ -134,7 +184,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   reactionFromEvGenCmd->SetCandidates("on off");
   reactionFromEvGenCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-
   //commands affecting the input file selection for the reaction
   reactionFromFileCmd = new G4UIcmdWithAString("/ActarSim/gun/reactionFromFile",this);
   reactionFromFileCmd->SetGuidance("Select a reaction from an input file");
@@ -152,7 +201,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   reactionFromCrossSectionCmd->SetDefaultValue("off");
   reactionFromCrossSectionCmd->SetCandidates("on off");
   reactionFromCrossSectionCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
 
   reactionFileCmd = new G4UIcmdWithAString("/ActarSim/gun/reactionFile",this);
   reactionFileCmd->SetGuidance("Select the reaction definition file.");
@@ -203,7 +251,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   alphaSourceCmd->SetCandidates("on off");
   alphaSourceCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-
   randomThetaValCmd = new G4UIcommand("/ActarSim/gun/randomThetaVal", this);
   randomThetaValCmd->SetGuidance("Sets the limits in the Theta angle for the scattered particle.");
   randomThetaValCmd->SetGuidance("The value is randomly chosen between the limits.");
@@ -230,8 +277,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   parameter->SetDefaultValue("deg");
   randomPhiValCmd->SetParameter(parameter);
 
-
-
   CinerandomThetaValCmd = new G4UIcommand("/ActarSim/gun/Cine/randomThetaVal", this);
   CinerandomThetaValCmd->SetGuidance("Sets the limist in the Theta angle for the scattered particle.");
   CinerandomThetaValCmd->SetGuidance("The value is randomly chosen between the limits.");
@@ -244,7 +289,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   parameter = new G4UIparameter("unit", 's', omitable = true);
   parameter->SetDefaultValue("deg");
   CinerandomThetaValCmd->SetParameter(parameter);
-
 
   incidentIonCmd = new G4UIcommand("/ActarSim/gun/Cine/incidentIon",this);
   incidentIonCmd->SetGuidance("Set properties of incident ion to be generated.");
@@ -357,8 +401,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   thetaLabAngleCmd->SetUnitCategory("Angle");
   thetaLabAngleCmd->SetDefaultValue(0.5);
   thetaLabAngleCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
-
-// --------------------------------------------------------------commands for Kine dypang 080227
 
   //commands affecting the Cine kinematic reaction generator
   reactionFromKineCmd = new G4UIcmdWithAString("/ActarSim/gun/reactionFromKine",this);
@@ -521,7 +563,7 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   KineUserThetaCMCmd->SetDefaultValue(0.);
   KineUserThetaCMCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-// user set the phi angle of particles, useful when testing the kinematics reconstruction methods
+  // user set the phi angle of particles, useful when testing the kinematics reconstruction methods
   KineUserPhiAngleCmd = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/Kine/userPhiAngle",this);
   KineUserPhiAngleCmd->SetGuidance("User set phi angle for outgoing particle in the Lab system (in degrees)");
   KineUserPhiAngleCmd->SetParameterName("userPhiAngle",false);
@@ -534,8 +576,6 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   vertexPositionCmd->SetGuidance("Set the position of the vertex.");
   vertexPositionCmd->SetParameterName("X","Y","Z",true,true);
   vertexPositionCmd->SetDefaultUnit("cm");
-
-// --------------------------------------------------------------end of commands for Kine dypang 080227
 
   //commands affecting individual particles
   energyCmd  = new G4UIcmdWithADoubleAndUnit("/ActarSim/gun/energy",this);
@@ -626,13 +666,11 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   param = new G4UIparameter("E",'d',true);
   param->SetDefaultValue("0.0");
   ionCmd->SetParameter(param);
-
 }
 
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimPrimaryGeneratorMessenger::~ActarSimPrimaryGeneratorMessenger() {
-  //
-  // Destructor
-  //
   delete gunDir;
   delete listCmd;
   delete particleCmd;
@@ -674,8 +712,6 @@ ActarSimPrimaryGeneratorMessenger::~ActarSimPrimaryGeneratorMessenger() {
   delete reactionQCmd;
   delete labEnergyCmd;
   delete thetaLabAngleCmd;
-
-// Added Kine part, dypang 080228
   delete reactionFromKineCmd;
   delete KineDir;
   delete KineRandomThetaCmd;
@@ -685,18 +721,16 @@ ActarSimPrimaryGeneratorMessenger::~ActarSimPrimaryGeneratorMessenger() {
   delete KineTargetIonCmd;
   delete KineScatteredIonCmd;
   delete KineRecoilIonCmd;
-  delete KineLabEnergyCmd;            // in MeV
+  delete KineLabEnergyCmd;           // in MeV
   delete KineUserThetaCMCmd;         // in degrees
-  delete KineUserPhiAngleCmd;           // in degrees
+  delete KineUserPhiAngleCmd;        // in degrees
   delete vertexPositionCmd;
-// end of Kine part, dypang 080228
 }
 
+//////////////////////////////////////////////////////////////////
+/// Setting the values using the interface
 void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 						    G4String newValues) {
-  //
-  // Setting the values from the interface
-  //
   if( command==listCmd )
     particleTable->DumpTable();
 
@@ -755,10 +789,10 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
   if( command == randomThetaCmd )
     actarSimActionGun->SetRandomThetaFlag(newValues);
 
- if( command == randomPhiCmd )
+  if( command == randomPhiCmd )
     actarSimActionGun->SetRandomPhiFlag(newValues);
 
- if( command == alphaSourceCmd )
+  if( command == alphaSourceCmd )
     actarSimActionGun->SetAlphaSourceFlag(newValues);
 
   if( command == CinerandomThetaCmd )
@@ -777,11 +811,10 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     thetaMin = x*G4UIcommand::ValueOf(unt);
     thetaMax = y*G4UIcommand::ValueOf(unt);
 
-
     actarSimActionGun->SetRandomThetaVal(thetaMin,thetaMax);
   }
 
- if( command == randomPhiValCmd ){
+  if( command == randomPhiValCmd ){
     G4double phiMax, phiMin;
     //    ConvertToDoublePair(newValues, thetaMin, thetaMax);
 
@@ -794,11 +827,10 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     phiMin = x*G4UIcommand::ValueOf(unt);
     phiMax = y*G4UIcommand::ValueOf(unt);
 
-
     actarSimActionGun->SetRandomPhiVal(phiMin,phiMax);
   }
 
- if( command == CinerandomThetaValCmd ){
+  if( command == CinerandomThetaValCmd ){
     G4double thetaMax, thetaMin;
     //    ConvertToDoublePair(newValues, thetaMin, thetaMax);
 
@@ -810,7 +842,6 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
     thetaMin = x*G4UIcommand::ValueOf(unt);
     thetaMax = y*G4UIcommand::ValueOf(unt);
-
 
     actarSimActionGun->SetRandomThetaVal(thetaMin,thetaMax);
   }
@@ -827,7 +858,6 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
   if( command == recoilIonCmd )
     recoilIonCommand(newValues);
 
-// ------------------------corresponding part for Kine, dypang 080228
   if( command == reactionFromKineCmd )
     actarSimActionGun->SetReactionFromKineFlag(newValues);
 
@@ -885,7 +915,6 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
   if( command==vertexPositionCmd )
     actarSimActionGun->SetVertexPosition(vertexPositionCmd->GetNew3VectorValue(newValues));
 
-// ---------------- end of corresponding part for Kine, dypang 080228
 
   if( command == reactionQCmd )
     actarSimActionGun->
@@ -913,7 +942,6 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
   if( command==timeCmd )
     actarSimActionGun->SetParticleTime(timeCmd->GetNewDoubleValue(newValues));
 
-// vertexZPosition dypang 080704
   if( command==vertexZPositionCmd )
     actarSimActionGun->SetVertexZPosition(vertexZPositionCmd->GetNewDoubleValue(newValues));
 
@@ -942,27 +970,34 @@ void ActarSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     IonCommand(newValues);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Get current value from commands
 G4String ActarSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand * command)
 {
   G4String cv;
 
-  if( command==directionCmd )
-  { cv = directionCmd->ConvertToString(actarSimActionGun->GetParticleMomentumDirection()); }
-  else if( command==particleCmd )
-  { cv = actarSimActionGun->GetParticleDefinition()->GetParticleName(); }
-  else if( command==energyCmd )
-  { cv = energyCmd->ConvertToString(actarSimActionGun->GetParticleEnergy(),"GeV"); }
-  else if( command==positionCmd )
-  { cv = positionCmd->ConvertToString(actarSimActionGun->GetParticlePosition(),"cm"); }
-  else if( command==timeCmd )
-  { cv = timeCmd->ConvertToString(actarSimActionGun->GetParticleTime(),"ns"); }
-  else if( command==polCmd )
-  { cv = polCmd->ConvertToString(actarSimActionGun->GetParticlePolarization()); }
-  else if( command==numberCmd )
-  { cv = numberCmd->ConvertToString(actarSimActionGun->GetNumberOfParticles()); }
-  else if( command==ionCmd )
-  {
+  if( command==directionCmd) {
+    cv = directionCmd->ConvertToString(actarSimActionGun->GetParticleMomentumDirection());
+  }
+  else if( command==particleCmd) {
+    cv = actarSimActionGun->GetParticleDefinition()->GetParticleName();
+  }
+  else if( command==energyCmd) {
+    cv = energyCmd->ConvertToString(actarSimActionGun->GetParticleEnergy(),"GeV");
+  }
+  else if( command==positionCmd) {
+    cv = positionCmd->ConvertToString(actarSimActionGun->GetParticlePosition(),"cm");
+  }
+  else if( command==timeCmd) {
+    cv = timeCmd->ConvertToString(actarSimActionGun->GetParticleTime(),"ns");
+  }
+  else if( command==polCmd) {
+    cv = polCmd->ConvertToString(actarSimActionGun->GetParticlePolarization());
+  }
+  else if( command==numberCmd) {
+    cv = numberCmd->ConvertToString(actarSimActionGun->GetNumberOfParticles());
+  }
+  else if( command==ionCmd) {
     if (fShootIon) {
       cv = ItoS(fAtomicNumber) + " " + ItoS(fAtomicMass) + " ";
       cv += ItoS(fIonCharge);
@@ -973,58 +1008,56 @@ G4String ActarSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand * comman
   return cv;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::IonCommand(G4String newValues) {
-  //
-  // Particular behavior of the ion command. Ion state should be selected.
-  //
   //if (fShootIon) {
-    G4Tokenizer next( newValues );
-    // check argument
-    fAtomicNumber = StoI(next());
-    fAtomicMass = StoI(next());
-    G4String sQ = next();
-    if (sQ.isNull()) {
-      fIonCharge = fAtomicNumber;
-    } else {
-	fIonCharge = StoI(sQ);
-      sQ = next();
-      if (sQ.isNull()) {
-        fIonExciteEnergy = 0.0;
-      } else {
-        fIonExciteEnergy = StoD(sQ) * keV;
-      }
-    }
-
-    G4ParticleDefinition* ion;
-    ion =  particleTable->GetIon( fAtomicNumber, fAtomicMass, fIonExciteEnergy);
-    if (ion==0) {
-      G4cout << "##################################################################"
-	     << G4endl
-	     << "#######   ActarSimPrimaryGeneratorMessenger::IonCommand()  #######"
-	     << "Ion with Z=" << fAtomicNumber
-	     << " A=" << fAtomicMass << "can not be defined" << G4endl;
-      G4cout << "##################################################################"
-	     << G4endl;
-    } else {
-      actarSimActionGun->SetParticleDefinition(ion);
-      actarSimActionGun->SetParticleCharge(fIonCharge*eplus);
-    }/*
+  G4Tokenizer next( newValues );
+  // check argument
+  fAtomicNumber = StoI(next());
+  fAtomicMass = StoI(next());
+  G4String sQ = next();
+  if (sQ.isNull()) {
+    fIonCharge = fAtomicNumber;
   } else {
+    fIonCharge = StoI(sQ);
+    sQ = next();
+    if (sQ.isNull()) {
+      fIonExciteEnergy = 0.0;
+    } else {
+      fIonExciteEnergy = StoD(sQ) * keV;
+    }
+  }
+
+  G4ParticleDefinition* ion;
+  ion =  particleTable->GetIon( fAtomicNumber, fAtomicMass, fIonExciteEnergy);
+  if (ion==0) {
+    G4cout << "##################################################################"
+	   << G4endl
+	   << "#######   ActarSimPrimaryGeneratorMessenger::IonCommand()  #######"
+	   << "Ion with Z=" << fAtomicNumber
+	   << " A=" << fAtomicMass << "can not be defined" << G4endl;
+    G4cout << "##################################################################"
+	   << G4endl;
+  } else {
+    actarSimActionGun->SetParticleDefinition(ion);
+    actarSimActionGun->SetParticleCharge(fIonCharge*eplus);
+  }
+  /*
+    } else {
     G4cout << "##################################################################"
 	   << G4endl
 	   << "#######   ActarSimPrimaryGeneratorMessenger::IonCommand()  #######"
 	   << "Set /gun/particle to ion before using /gun/ion command" << G4endl;
     G4cout << "##################################################################"
 	   << G4endl;
-	   }*/
+	   }
+  */
 }
 
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the incident ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::incidentIonCommand(G4String newValues){
-  //
-  // Selection of incident ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1061,12 +1094,9 @@ void ActarSimPrimaryGeneratorMessenger::incidentIonCommand(G4String newValues){
   }
 }
 
-// ------------------------------------------------incidentIonCommand for Kine, dypang 080228
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the (KINE) incident ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::KineIncidentIonCommand(G4String newValues){
-  //
-  // Selection of incident ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1095,13 +1125,10 @@ void ActarSimPrimaryGeneratorMessenger::KineIncidentIonCommand(G4String newValue
     //actarSimActionGun->SetIncidentIonExcEnergy(fIonExciteEnergy);
   }
 }
-// ------------------------------------------------end of incidentIonCommand for Kine, dypang 080228
 
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the target ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::targetIonCommand(G4String newValues){
-  //
-  // Selection of target ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1138,13 +1165,9 @@ void ActarSimPrimaryGeneratorMessenger::targetIonCommand(G4String newValues){
   }
 }
 
-// ------------------------------------------------ targetIonCommand for Kine, dypang 080228
-
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the (KINE) target ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::KineTargetIonCommand(G4String newValues){
-  //
-  // Selection of target ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1174,13 +1197,10 @@ void ActarSimPrimaryGeneratorMessenger::KineTargetIonCommand(G4String newValues)
     //actarSimActionGun->SetTargetIonExcEnergy(fIonExciteEnergy);
   }
 }
-// ------------------------------------------------ end of targetIonCommand for Kine, dypang 080228
 
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the scattered ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::scatteredIonCommand(G4String newValues){
-  //
-  // Selection of scattered ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1217,12 +1237,10 @@ void ActarSimPrimaryGeneratorMessenger::scatteredIonCommand(G4String newValues){
   }
 }
 
-// ----------------------------------------------------- scatteredIonCommand for Kine, dypang 080228
-
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the (KINE) scattered ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::KineScatteredIonCommand(G4String newValues){
-  //
   // Selection of scattered ion command. Ion state should be selected.
-  //
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1248,17 +1266,14 @@ void ActarSimPrimaryGeneratorMessenger::KineScatteredIonCommand(G4String newValu
     actarSimActionGun->SetScatteredIonCharge(fIonCharge*eplus);
     actarSimActionGun->SetMassOfScattered(fIonMass);
     actarSimActionGun->SetExEnergyOfScattered(fIonExciteEnergy);
-//    G4cout << "ActarSimPrimaryGeneratorMessenger::KineScatteredIonCommand(): excitation energy=" << fIonExciteEnergy << G4endl;
+    //    G4cout << "ActarSimPrimaryGeneratorMessenger::KineScatteredIonCommand(): excitation energy=" << fIonExciteEnergy << G4endl;
     //actarSimActionGun->SetScatteredIonExcEnergy(fIonExciteEnergy);
   }
 }
-// ----------------------------------------------------- end of scatteredIonCommand for Kine, dypang 080228
 
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the recoil ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::recoilIonCommand(G4String newValues){
-  //
-  // Selection of recoil ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1295,13 +1310,9 @@ void ActarSimPrimaryGeneratorMessenger::recoilIonCommand(G4String newValues){
   }
 }
 
-// --------------------------------------------- recoilIonCommand for Kine, dypang 080228
-
+//////////////////////////////////////////////////////////////////
+/// Particular behavior of the (KINE) recoil ion command. Ion state should be selected.
 void ActarSimPrimaryGeneratorMessenger::KineRecoilIonCommand(G4String newValues){
-  //
-  // Selection of recoil ion command. Ion state should be selected.
-  //
-
   G4Tokenizer next( newValues );
   // check argument
   fAtomicNumber = StoI(next());
@@ -1329,4 +1340,3 @@ void ActarSimPrimaryGeneratorMessenger::KineRecoilIonCommand(G4String newValues)
     actarSimActionGun->SetExEnergyOfRecoiled(fIonExciteEnergy);
   }
 }
-// --------------------------------------------- end of recoilIonCommand for Kine, dypang 080228

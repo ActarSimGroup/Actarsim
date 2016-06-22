@@ -1,17 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez
-//*-- Date: 04/2008
-//*-- Last Update: 07/01/15 by Hector Alvarez
-// --------------------------------------------------------------
-// Description:
-//   Scintillator detector description
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 17/04/08 Modularizing the ACTAR geometry
-//
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 04/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimSciRingDetectorConstruction
+/// Scintillator detector description
 /////////////////////////////////////////////////////////////////
 
 #include "ActarSimSciRingDetectorConstruction.hh"
@@ -37,14 +34,11 @@
 
 #include "globals.hh"
 
+//////////////////////////////////////////////////////////////////
+/// Constructor. Sets the material and the pointer to the Messenger
 ActarSimSciRingDetectorConstruction::
 ActarSimSciRingDetectorConstruction(ActarSimDetectorConstruction* det)
   :	sciBulkMaterial(0),detConstruction(det) {
-  //
-  // Constructor. Sets the material and the pointer to the Messenger
-  //
-
-
   SetSciBulkMaterial("CsI");
 
   //Options for Silicon and scintillator coverage:
@@ -66,30 +60,24 @@ ActarSimSciRingDetectorConstruction(ActarSimDetectorConstruction* det)
   // sciMessenger = new ActarSimSciDetectorMessenger(this);
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Destructor
 ActarSimSciRingDetectorConstruction::~ActarSimSciRingDetectorConstruction(){
-  //
-  // Destructor
-  //
   // delete sciMessenger;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Wrap for the construction functions
 G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::Construct(G4LogicalVolume* worldLog) {
-  //
-  // Wrap for the construction functions within the TOF
-  //
-
   //Introduce here other constructors for materials around the TOF (windows, frames...)
   //which can be controlled by the calMessenger
   //ConstructTOFWorld(worldLog);
   return ConstructSci(worldLog);
 }
 
-
-
+//////////////////////////////////////////////////////////////////
+/// Real construction work is performed here.
 G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVolume* worldLog) {
-
   //Chamber Y,Z length
   //G4double chamberSizeY=detConstruction->GetChamberYLength();
   G4double chamberSizeZ=detConstruction->GetChamberSizeZ();
@@ -98,8 +86,7 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
   ActarSimGasDetectorConstruction* gasDet = detConstruction->GetGasDetector();
   G4double zGasBoxPosition=gasDet->GetGasBoxCenterZ();
 
-
-   //----------------------------- the Silicon and CsI disks
+  //----------------------------- the Silicon and CsI disks
   G4double Rmax=48*mm;
   G4double Rmin=24*mm;
   G4double Phi_0=0*deg;
@@ -110,49 +97,35 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
 
   G4LogicalVolume* CsIring_log= new G4LogicalVolume(CsIring,sciBulkMaterial,"CsIring_log",0,0,0);
 
-
-
   G4double sectorPhi=Phi_f/16.;
 
+  G4Tubs *CsISector=new G4Tubs("CsISector",Rmin,Rmax,ZlengthCsI,0.,sectorPhi);
 
-    G4Tubs *CsISector=new G4Tubs("CsISector",Rmin,Rmax,ZlengthCsI,0.,sectorPhi);
+  G4LogicalVolume *CsISector_log=new G4LogicalVolume(CsISector,sciBulkMaterial,"CsISector_log",0,0,0);
+  G4VisAttributes* CsISectorVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
 
+  CsISectorVisAtt->SetVisibility(true);
 
-    G4LogicalVolume *CsISector_log=new G4LogicalVolume(CsISector,sciBulkMaterial,"CsISector_log",0,0,0);
-    G4VisAttributes* CsISectorVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+  G4double CsIPos_x=0*mm;
+  //G4double CsIPos_y=chamberSizeY/2-1*mm;
+  G4double CsIPos_y=0;
+  G4double CsIPos_z=0.0*mm;
 
-    CsISectorVisAtt->SetVisibility(true);
+  G4double distance[3]={320*mm,550*mm,1090*mm}; //For 10Li experiment
 
-
-    G4double CsIPos_x=0*mm;
-    //G4double CsIPos_y=chamberSizeY/2-1*mm;
-    G4double CsIPos_y=0;
-    G4double CsIPos_z=0.0*mm;
-
-    G4double distance[3]={320*mm,550*mm,1090*mm}; //For 10Li experiment
-
-	//G4double distance[3]={570*mm,0*mm,0*mm}; //For 16C experiment Only one ring detector
+  //G4double distance[3]={570*mm,0*mm,0*mm}; //For 16C experiment Only one ring detector
 
   for(G4int k=0;k<3;k++){
+    CsIPos_z=distance[k]+chamberSizeZ-zGasBoxPosition;
 
-      CsIPos_z=distance[k]+chamberSizeZ-zGasBoxPosition;
+    G4VPhysicalVolume *CsIring_phys=new G4PVPlacement(0,
+						      G4ThreeVector(CsIPos_x,CsIPos_y,CsIPos_z),
+						      CsIring_log,"CsIringdet",worldLog,false,k);
 
-
-
-
-      G4VPhysicalVolume *CsIring_phys=new G4PVPlacement(0,
-                                                             G4ThreeVector(CsIPos_x,CsIPos_y,CsIPos_z),
-                                                             CsIring_log,"CsIringdet",worldLog,false,k);
-
-      if(CsIring_phys){;}
+    if(CsIring_phys){;}
   }
 
-
-
-    G4VPhysicalVolume *CsISector_phys=new G4PVReplica("CsISector",CsISector_log,CsIring_log,kPhi,16,sectorPhi);
-
-
-
+  G4VPhysicalVolume *CsISector_phys=new G4PVReplica("CsISector",CsISector_log,CsIring_log,kPhi,16,sectorPhi);
 
   //------------------------------------------------
   // Sensitive detectors
@@ -162,40 +135,31 @@ G4VPhysicalVolume* ActarSimSciRingDetectorConstruction::ConstructSci(G4LogicalVo
   //------------------------------------------------------------------
   // Visualization attributes
   //------------------------------------------------------------------
-
-
   return CsISector_phys;
 }
 
+//////////////////////////////////////////////////////////////////
+/// Set the material the scintillator bulk is made of
 void ActarSimSciRingDetectorConstruction::SetSciBulkMaterial (G4String mat) {
-  //
-  // Set the material the scintillator bulk is made of
-  //
-
   G4Material* pttoMaterial = G4Material::GetMaterial(mat);
   if (pttoMaterial) sciBulkMaterial = pttoMaterial;
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Updates Scintillator detector
 void ActarSimSciRingDetectorConstruction::UpdateGeometry() {
-  //
-  // Updates Scintillator detector
-  //
   Construct(detConstruction->GetWorldLogicalVolume());
   G4RunManager::GetRunManager()->
     DefineWorldVolume(detConstruction->GetWorldPhysicalVolume());
 }
 
-
+//////////////////////////////////////////////////////////////////
+/// Prints Scintillator detector parameters. To be filled
 void ActarSimSciRingDetectorConstruction::PrintDetectorParameters() {
-  //
-  // Prints Scintillator detector parameters. To be filled
-  //
-
   G4cout << "##################################################################"
 	 << G4endl
 	 << "####  ActarSimSciRingDetectorConstruction::PrintDetectorParameters() ####"
 	 << G4endl;
-    G4cout << "##################################################################"
+  G4cout << "##################################################################"
 	 << G4endl;
 }

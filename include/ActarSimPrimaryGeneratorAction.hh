@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 04/12/15 by Hector Alvarez Pol
-// --------------------------------------------------------------
-// Description:
-//   Actions to perform to generate a primary vertex
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 04/12/15 Complete cleanup and recovering of functions
-//   - 25/11/04 Created based on example/novice/N01 structure
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimPrimaryGeneratorAction_h
 #define ActarSimPrimaryGeneratorAction_h 1
@@ -35,74 +28,71 @@ class ActarSimGasDetectorConstruction;
 
 class ActarSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 private:
-
-  G4ParticleGun* particleGun;
-  G4ParticleTable* particleTable;
-  ActarSimPrimaryGeneratorMessenger* gunMessenger; // pointer to messenger
+  G4ParticleGun* particleGun;                       ///< Pointer to G4particleGun object initialized in constructor
+  G4ParticleTable* particleTable;                   ///< Pointer to the G4ParticleTable
+  ActarSimPrimaryGeneratorMessenger* gunMessenger;  ///< Pointer to messenger
   //ActarSimEventGenerator *pReadEvGen;
 
-  ActarSimGasDetectorConstruction* gasDetector;  //to get some geometrical info
+  ActarSimGasDetectorConstruction* gasDetector;    ///< Pointer to gas detector constructor, to get some geometrical info
 
-  G4Ions* incidentIon;          // Reaction and CINE/KINE parameters
-  G4Ions* targetIon;
-  G4Ions* scatteredIon;
-  G4Ions* recoilIon;
-  G4double incidentIonCharge;
-  G4double targetIonCharge;
-  G4double scatteredIonCharge;
-  G4double recoilIonCharge;
-  G4double reactionQ;
-  G4double labEnergy;
-  G4double incidentEnergy;
-  G4double thetaLabAngle;
+  G4Ions* incidentIon;          ///< Pointer to incident ion
+  G4Ions* targetIon;            ///< Pointer to target ion
+  G4Ions* scatteredIon;         ///< Pointer to scattered ion
+  G4Ions* recoilIon;            ///< Pointer to recoil ion
+  G4double incidentIonCharge;   ///< Charge of incident ion
+  G4double targetIonCharge;     ///< Charge of target ion
+  G4double scatteredIonCharge;  ///< Charge of scattered ion
+  G4double recoilIonCharge;     ///< Charge of recoil ion
+  G4double reactionQ;           ///< Reaction Q
+  G4double labEnergy;           ///< Laboratory energy
+  G4double incidentEnergy;      ///< Total incident ion energy
+  G4double thetaLabAngle;       ///< Polar angle in the laboratory system
 
-  G4String randomVertexZPositionFlag;
-  G4double randomVertexZPositionMin;
-  G4double randomVertexZPositionMax;
-  G4double vertexZPosition;
+  G4String randomVertexZPositionFlag; ///< Flag to control the (random) Z position of the vertex
+  G4double randomVertexZPositionMin;  ///< Minimum value for the (random) Z position of the vertex
+  G4double randomVertexZPositionMax;  ///< Maximum value for the (random) Z position of the vertex
+  G4double vertexZPosition;           ///< Value for the (random) Z position of the vertex
 
   //beam parameters
-  G4double emittance;
-  G4double beamRadiusAtEntrance;
+  G4double emittance;            ///< Beam emittance
+  G4double beamRadiusAtEntrance; ///< Beam radius at the entrance point
 
-  G4ThreeVector beamPosition;
-  G4ParticleMomentum beamMomentumDirection;
-  G4bool  beamDirectionFlag;      // flag for a beam direction defined by angles (0) or vector (1)
+  G4ThreeVector beamPosition;               ///< Beam position at the entrance
+  G4ParticleMomentum beamMomentumDirection; ///< Beam (momentum) direction
+  G4bool  beamDirectionFlag;                ///< Flag for a beam direction defined by angles (0) or vector (1)
 
-  G4double lengthParameter;       //parameter coming from the geometry selection
-  G4double  randomThetaMin;       // min random theta angle in CINE
-  G4double  randomThetaMax;       // max  for a random theta angle in CINE
+  G4double lengthParameter;       ///< Parameter coming from the geometry selection
+  G4double  randomThetaMin;       ///< Minimum random theta angle in CINE
+  G4double  randomThetaMax;       ///< Maximum random theta angle in CINE
 
-  G4double  randomPhiMin;         // min random theta angle in CINE
-  G4double  randomPhiMax;         // max  for a random theta angle in CINE
+  G4double  randomPhiMin;         ///< Minimum random phi angle in CINE
+  G4double  randomPhiMax;         ///< Maximum random phi angle in CINE
 
-  G4String  beamInteractionFlag;  // flag for beam interaction mode
-  G4String  realisticBeamFlag;    // flag for realistic beam interaction
-  G4String  reactionFromEvGenFlag; // flag for a reaction taken from the tabulated Ev Generator
-  G4String  reactionFromCrossSectionFlag; // flag for a reaction taken from the Ev Generator+CINE
-  G4String  reactionFromFileFlag; // flag for a reaction taken from a file
-  G4String  reactionFromCineFlag; // flag for a reaction calculated using Cine
-  G4String  randomThetaFlag;      // flag for a random theta angle in CINE
-  G4String  randomPhiFlag;        // flag for a random phi angle in CINE
-  G4String  alphaSourceFlag;      //
-  G4String  reactionFile;         // file definition for a reaction
+  G4String  beamInteractionFlag;          ///< Flag for beam interaction mode
+  G4String  realisticBeamFlag;            ///< Flag for realistic beam interaction
+  G4String  reactionFromEvGenFlag;        ///< Flag for a reaction taken from the tabulated Ev Generator
+  G4String  reactionFromCrossSectionFlag; ///< Flag for a reaction taken from the Ev Generator+CINE
+  G4String  reactionFromFileFlag;         ///< Flag for a reaction taken from a file
+  G4String  reactionFromCineFlag;         ///< Flag for a reaction calculated using Cine
+  G4String  randomThetaFlag;              ///< Flag for a random theta angle in CINE
+  G4String  randomPhiFlag;                ///< Flag for a random phi angle in CINE
+  G4String  alphaSourceFlag;              ///< Flag for a alpha source emitter
+  G4String  reactionFile;                 ///< File definition for a reaction
 
-  // Kine data members
-  G4String  reactionFromKineFlag;
-  G4double  thetaCMAngle;
-  G4double  userThetaAngle;
-  G4double  userPhiAngle;
-  G4double  massOfProjectile;
-  G4double  massOfTarget;
-  G4double  massOfScattered;
-  G4double  massOfRecoiled;
-  G4double  exEnergyOfProjectile;
-  G4double  exEnergyOfTarget;
-  G4double  exEnergyOfScattered;
-  G4double  exEnergyOfRecoiled;
-  G4ThreeVector vertexPosition;
-  G4String  randomPhiAngleFlag;
-
+  G4String  reactionFromKineFlag;  ///< Flag for using KINE
+  G4double  thetaCMAngle;          ///< Center of mass polar angle
+  G4double  userThetaAngle;        ///< User theta angle
+  G4double  userPhiAngle;          ///< User phi angle
+  G4double  massOfProjectile;      ///< Mass of the projectile ion
+  G4double  massOfTarget;          ///< Mass of target ion
+  G4double  massOfScattered;       ///< Mass of the scattered ion
+  G4double  massOfRecoiled;        ///< Mass of the recoil ion
+  G4double  exEnergyOfProjectile;  ///< Energy of the projectile ion
+  G4double  exEnergyOfTarget;      ///< Energy of the target ion
+  G4double  exEnergyOfScattered;   ///< Energy of the scattered ion
+  G4double  exEnergyOfRecoiled;    ///< Energy of the recoil ion
+  G4ThreeVector vertexPosition;    ///< Position of the vertex
+  G4String  randomPhiAngleFlag;    ///< Flag for a random phi angle
 
 public:
   ActarSimPrimaryGeneratorAction();
@@ -111,33 +101,20 @@ public:
   void GeneratePrimaries(G4Event* anEvent);
 
   void SetReactionFromCineFlag(G4String val) { reactionFromCineFlag = val;}
-  void SetIncidentIon(G4Ions* aIonDef)
-     { incidentIon = aIonDef;}
-  void SetTargetIon(G4Ions* aIonDef)
-     { targetIon = aIonDef;}
-  void SetScatteredIon(G4Ions* aIonDef)
-     { scatteredIon = aIonDef;}
-  void SetRecoilIon(G4Ions* aIonDef)
-     { recoilIon = aIonDef;}
-  void SetIncidentIonCharge(G4double aCharge)
-     { incidentIonCharge = aCharge; }
-  void SetTargetIonCharge(G4double aCharge)
-     { targetIonCharge = aCharge; }
-  void SetScatteredIonCharge(G4double aCharge)
-     { scatteredIonCharge = aCharge; }
-  void SetRecoilIonCharge(G4double aCharge)
-     { recoilIonCharge = aCharge; }
-  //  void SetIncidentIonExcEnergy(G4double aExcEnergy)
-  // { incidentIonExcEnergy = aExcEnergy; }
-  //void SetTargetIonExcEnergy(G4double aExcEnergy)
-  // { targetIonExcEnergy = aExcEnergy; }
-  //void SetScatteredIonExcEnergy(G4double aExcEnergy)
-  // { scatteredIonExcEnergy = aExcEnergy; }
-  // void SetRecoilIonExcEnergy(G4double aExcEnergy)
-  // { recoilIonExcEnergy = aExcEnergy; }
+  void SetIncidentIon(G4Ions* aIonDef) { incidentIon = aIonDef;}
+  void SetTargetIon(G4Ions* aIonDef) { targetIon = aIonDef;}
+  void SetScatteredIon(G4Ions* aIonDef) { scatteredIon = aIonDef;}
+  void SetRecoilIon(G4Ions* aIonDef) { recoilIon = aIonDef;}
+  void SetIncidentIonCharge(G4double aCharge) { incidentIonCharge = aCharge; }
+  void SetTargetIonCharge(G4double aCharge) { targetIonCharge = aCharge; }
+  void SetScatteredIonCharge(G4double aCharge) { scatteredIonCharge = aCharge; }
+  void SetRecoilIonCharge(G4double aCharge) { recoilIonCharge = aCharge; }
+  //void SetIncidentIonExcEnergy(G4double aExcEnergy) { incidentIonExcEnergy = aExcEnergy; }
+  //void SetTargetIonExcEnergy(G4double aExcEnergy) { targetIonExcEnergy = aExcEnergy; }
+  //void SetScatteredIonExcEnergy(G4double aExcEnergy) { scatteredIonExcEnergy = aExcEnergy; }
+  //void SetRecoilIonExcEnergy(G4double aExcEnergy) { recoilIonExcEnergy = aExcEnergy; }
 
-// ---------------------------------------------------- corresponding Kine part, dypang 080228
-
+  // corresponding Kine part
   void SetReactionFromKineFlag(G4String val) { reactionFromKineFlag = val;}
 
   void SetThetaCMAngle(G4double val){thetaCMAngle=val; beamDirectionFlag=0;}
@@ -174,18 +151,13 @@ public:
   G4ThreeVector GetVertexPosition(){return vertexPosition;}
 
   void SetRandomPhiAngleFlag(G4String val) { randomPhiAngleFlag = val;}
-
-// ---------------------------------------------------- end of Corresponding Kine part, dypang 080228
+  // end of corresponding Kine part
 
   void SetReactionQ(G4double val) { reactionQ = val;}
 
-  void SetLabEnergy(G4double val) {
-       labEnergy = val;
-       }
+  void SetLabEnergy(G4double val) { labEnergy = val;}
 
-  void SetIncidentEnergy(G4double val) {
-       incidentEnergy = val;
-       }
+  void SetIncidentEnergy(G4double val) { incidentEnergy = val;}
 
   void SetThetaLabAngle(G4double val) { thetaLabAngle = val;}
   void SetVertexZPosition(G4double val) { vertexZPosition = val;} // vertex Z position, dypang 080704
@@ -226,45 +198,45 @@ public:
   G4double GetBeamRadiusAtEntrance(){return beamRadiusAtEntrance;}
 
   void SetParticleDefinition(G4ParticleDefinition * aParticleDefinition)
-     { particleGun->SetParticleDefinition(aParticleDefinition);}
+    { particleGun->SetParticleDefinition(aParticleDefinition);}
   inline void SetParticleMomentum(G4ParticleMomentum aMomentum)
-     { particleGun->SetParticleMomentum(aMomentum);}
+    { particleGun->SetParticleMomentum(aMomentum);}
   inline void SetParticleMomentumDirection(G4ParticleMomentum aMomentumDirection)
-     { particleGun->SetParticleMomentumDirection(aMomentumDirection); }
+    { particleGun->SetParticleMomentumDirection(aMomentumDirection); }
   inline void SetParticleEnergy(G4double aKineticEnergy)
-     { particleGun->SetParticleEnergy(aKineticEnergy); incidentEnergy = aKineticEnergy;}
+    { particleGun->SetParticleEnergy(aKineticEnergy); incidentEnergy = aKineticEnergy;}
   inline void SetParticleCharge(G4double aCharge)
-     { particleGun->SetParticleCharge(aCharge); }
+    { particleGun->SetParticleCharge(aCharge); }
   inline void SetParticlePolarization(G4ThreeVector aVal)
-     { particleGun->SetParticlePolarization(aVal); }
+    { particleGun->SetParticlePolarization(aVal); }
   inline void SetParticlePosition(G4ThreeVector aPos)
-     { particleGun->SetParticlePosition(aPos); }
+    { particleGun->SetParticlePosition(aPos); }
   inline void SetParticleTime(G4double aTime)
-     { particleGun->SetParticleTime(aTime); }
+    { particleGun->SetParticleTime(aTime); }
   inline void SetNumberOfParticles(G4int i)
-     { particleGun->SetNumberOfParticles(i); }
+    { particleGun->SetNumberOfParticles(i); }
 
-   void SetBeamMomentumDirection(G4ParticleMomentum aMomentumDirection)
-     { beamMomentumDirection=aMomentumDirection; beamDirectionFlag=1;}
-   void SetBeamPosition(G4ThreeVector aPos)
-     { beamPosition=aPos;}
+  void SetBeamMomentumDirection(G4ParticleMomentum aMomentumDirection)
+    { beamMomentumDirection=aMomentumDirection; beamDirectionFlag=1;}
+  void SetBeamPosition(G4ThreeVector aPos)
+    { beamPosition=aPos;}
 
   inline G4ParticleDefinition* GetParticleDefinition()
-     { return particleGun->GetParticleDefinition(); }
+    { return particleGun->GetParticleDefinition(); }
   inline G4ParticleMomentum GetParticleMomentumDirection()
-     { return particleGun->GetParticleMomentumDirection(); }
+    { return particleGun->GetParticleMomentumDirection(); }
   inline G4double GetParticleEnergy()
-     { return particleGun->GetParticleEnergy(); }
+    { return particleGun->GetParticleEnergy(); }
   inline G4double GetParticleCharge()
-     { return particleGun->GetParticleCharge(); }
+    { return particleGun->GetParticleCharge(); }
   inline G4ThreeVector GetParticlePolarization()
-     { return particleGun->GetParticlePolarization(); }
+    { return particleGun->GetParticlePolarization(); }
   inline G4ThreeVector GetParticlePosition()
-     { return particleGun->GetParticlePosition(); }
+    { return particleGun->GetParticlePosition(); }
   inline G4double GetParticleTime()
-     { return particleGun->GetParticleTime(); }
+    { return particleGun->GetParticleTime(); }
   inline G4int GetNumberOfParticles()
-     { return particleGun->GetNumberOfParticles(); }
+    { return particleGun->GetNumberOfParticles(); }
 
   G4double GetRandomThetaMin() {return randomThetaMin;}
   G4double GetRandomThetaMax() {return randomThetaMax;}
@@ -285,8 +257,6 @@ public:
   G4double GetLabEnergy(){return labEnergy;}
   G4double GetIncidentEnergy(){return incidentEnergy;}
   G4double GetThetaLabAngle(){return thetaLabAngle;}
-  G4double GetVertexZPosition(){return vertexZPosition;} // vertex Z position, dypang 080704
-
+  G4double GetVertexZPosition(){return vertexZPosition;}
 };
-
 #endif

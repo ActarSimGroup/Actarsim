@@ -1,18 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 1/12/14
-// --------------------------------------------------------------
-// Description:
-//   Actions to be performed before or after each event
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 30/11/04 Created based on example/novice/N03 structure
-//   - 1/12/14 Cleaning old data structure
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimEventAction_h
 #define ActarSimEventAction_h 1
@@ -24,13 +17,11 @@
 class ActarSimEventActionMessenger;
 
 class ActarSimEventAction : public G4UserEventAction {
-
 private:
-
   G4String  drawFlag;
   G4int     printModulo;
 
-  ActarSimEventActionMessenger*  eventMessenger;
+  ActarSimEventActionMessenger*  eventMessenger;              ///< Pointer to the messenger
 
 public:
   ActarSimEventAction();
@@ -41,9 +32,5 @@ public:
 
   void SetDrawFlag   (G4String val)  {drawFlag = val;};
   void SetPrintModulo(G4int    val)  {printModulo = val;};
-
 };
-
 #endif
-
-

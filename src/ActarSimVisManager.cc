@@ -1,16 +1,14 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol (H. Alvarez-Pol)
-//*-- Date: 11/2004
-//*-- Last Update: 07/01/15
-// --------------------------------------------------------------
-// Description:
-//   Visualization manager. Common to all G4 programs.   
-//
-// --------------------------------------------------------------
-// Comments:
-//   - 25/11/04: based on example/novice/N03 structure
-// 
-// --------------------------------------------------------------
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
+//////////////////////////////////////////////////////////////////
+/// \class ActarSimVisManager
+/// Visualization manager. Common to all G4 programs.
 /////////////////////////////////////////////////////////////////
 
 #ifdef G4VIS_USE
@@ -18,7 +16,6 @@
 #include "ActarSimVisManager.hh"
 
 // Supported drivers...
-
 // Not needing external packages or libraries...
 #include "G4ASCIITree.hh"
 #include "G4DAWNFILE.hh"
@@ -67,11 +64,13 @@
 #include "G4OpenGLStoredQt.hh"
 #endif
 
+//////////////////////////////////////////////////////////////////
+/// Constructor. Nothing to do.
 ActarSimVisManager::ActarSimVisManager () {}
 
+//////////////////////////////////////////////////////////////////
+/// Graphics Systems not needing external packages or libraries...
 void ActarSimVisManager::RegisterGraphicsSystems () {
-
-  // Graphics Systems not needing external packages or libraries...
   RegisterGraphicsSystem (new G4ASCIITree);
   RegisterGraphicsSystem (new G4DAWNFILE);
   RegisterGraphicsSystem (new G4HepRepFile);
@@ -81,7 +80,6 @@ void ActarSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4VRML2File);
 
   // Graphics systems needing external packages or libraries...
-
 #ifdef G4VIS_USE_DAWN
   RegisterGraphicsSystem (new G4FukuiRenderer);
 #endif
@@ -118,12 +116,12 @@ void ActarSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4OpenGLImmediateQt);
   RegisterGraphicsSystem (new G4OpenGLStoredQt);
 #endif
-  
+
   if (fVerbose > 0) {
     G4cout << "##################################################################"
            << G4endl
            << "#######   ActarSimVisManager::RegisterGraphicsSystems ()   #######"
-	         << G4endl
+	   << G4endl
            << "You have successfully chosen to use the following graphics systems."
            << G4endl;
     PrintAvailableGraphicsSystems ();
@@ -131,4 +129,3 @@ void ActarSimVisManager::RegisterGraphicsSystems () {
 }
 
 #endif
-

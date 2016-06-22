@@ -1,22 +1,11 @@
-/////////////////////////////////////////////////////////////////
-//*-- AUTHOR : Hector Alvarez-Pol
-//*-- Date: 11/2004
-//*-- Last Update: 26/11/15
-// --------------------------------------------------------------
-// Description:
-//   Detector construction and complementary definitions
-//
-// --------------------------------------------------------------
-// Comments:
-//
-//   - 26/11/15 Recovering old functionality and correcting
-//   - 17/04/08 Modularizing the detectors construction
-//   - 04/04/06 Multigeometry with the possibility of updating.
-//              Gas as a sensitive detector...
-//   - 24/05/05 Created based on calGamma simulation
-//
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: Hector Alvarez-Pol 11/2004
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimDetectorConstruction_h
 #define ActarSimDetectorConstruction_h 1
@@ -51,83 +40,72 @@ class ActarSimPlaDetectorConstruction;
 
 class ActarSimDetectorConstruction : public G4VUserDetectorConstruction {
 private:
+  ActarSimGasSD* gasSD;          ///< Pointer to gas sensitive detector
+  ActarSimSilSD* silSD;          ///< Pointer to silicon sensitive detector
+  ActarSimSilRingSD* silRingSD;  ///< Pointer to silicon ring sensitive detector
+  ActarSimSciSD* sciSD;          ///< Pointer to scintillator sensitive detector
+  ActarSimSciRingSD* sciRingSD;  ///< Pointer to scintillator ring sensitive detector
+  ActarSimPlaSD* plaSD;          ///< Pointer to plastic sensitive detector
 
-  ActarSimGasSD* gasSD;
-  ActarSimSilSD* silSD;
-  ActarSimSilRingSD* silRingSD;
-  ActarSimSciSD* sciSD;
-  ActarSimSciRingSD* sciRingSD;
-  ActarSimPlaSD* plaSD;
-
-  // Volumes
   G4Box* solidWorld;
 
-  // Logical volumes
-  G4LogicalVolume* worldLog;      //pointer to logic world
-  G4LogicalVolume* chamberLog;    //pointer to logic chamber
-  G4LogicalVolume* AlplateLog;    //pointer to logic aluminium plate
-  G4LogicalVolume* DiamondLog;    //pointer to logic Diamond detector
-  G4LogicalVolume* SupportLog;    //pointer to logic CageField support
+  G4LogicalVolume* worldLog;      ///< Pointer to logic world
+  G4LogicalVolume* chamberLog;    ///< Pointer to logic chamber
+  G4LogicalVolume* AlplateLog;    ///< Pointer to logic aluminium plate
+  G4LogicalVolume* DiamondLog;    ///< Pointer to logic Diamond detector
+  G4LogicalVolume* SupportLog;    ///< Pointer to logic CageField support
 
-  // Physical volumes
-  G4VPhysicalVolume* worldPhys;   //pointer to physical world
-  G4VPhysicalVolume* chamberPhys; //pointer to physical chamber
-  G4VPhysicalVolume* AlplatePhys; //pointer to physical Al plate
-  G4VPhysicalVolume* DiamondPhys; //pointer to physical Diamond detector
-  G4VPhysicalVolume* SupportPhys; //pointer to physical CageField support
+  G4VPhysicalVolume* worldPhys;   ///< Pointer to physical world
+  G4VPhysicalVolume* chamberPhys; ///< Pointer to physical chamber
+  G4VPhysicalVolume* AlplatePhys; ///< Pointer to physical Al plate
+  G4VPhysicalVolume* DiamondPhys; ///< Pointer to physical Diamond detector
+  G4VPhysicalVolume* SupportPhys; ///< Pointer to physical CageField support
 
   //Assembly of slits
   //G4AssemblyVolume* SlitMask;  //NOT USED IN THIS FILE
 
-  // Materials
-  G4Material* mediumMaterial;
-  G4Material* defaultMaterial;
-  G4Material* chamberMaterial;
-  G4Material* windowMaterial;
+  G4Material* mediumMaterial;    ///< Pointer to the medium material
+  G4Material* defaultMaterial;   ///< Pointer to the default material
+  G4Material* chamberMaterial;   ///< Pointer to the chamber material
+  G4Material* windowMaterial;    ///< Pointer to the window material
 
-  ActarSimUniformEMField* emField; //pointer to the uniform em. field
+  ActarSimUniformEMField* emField; ///< Pointer to the uniform em. field
 
-  //electric and magnetic field
-  G4ThreeVector eField;
-  G4ThreeVector mField;
+  G4ThreeVector eField;           ///< Electric field vector
+  G4ThreeVector mField;           ///< Magnetic field vector
 
-  //World X,Y,Z half-lengths (always centered at (0,0,0))
-  G4double worldSizeX;
-  G4double worldSizeY;
-  G4double worldSizeZ;
+  G4double worldSizeX;    ///< World X half-lengths (always centered at (0,0,0))
+  G4double worldSizeY;    ///< World Y half-lengths (always centered at (0,0,0))
+  G4double worldSizeZ;    ///< World Z half-lengths (always centered at (0,0,0))
 
-  //Chamber X,Y,Z half-lengths
-  G4double chamberSizeX;
-  G4double chamberSizeY;
-  G4double chamberSizeZ;
+  G4double chamberSizeX;  ///< Chamber X half-lengths
+  G4double chamberSizeY;  ///< Chamber Y half-lengths
+  G4double chamberSizeZ;  ///< Chamber Z half-lengths
 
-  //Chamber X,Y,Z Center
-  G4double chamberCenterX;
-  G4double chamberCenterY;
-  G4double chamberCenterZ;
+  G4double chamberCenterX;  ///< Chamber X Center
+  G4double chamberCenterY;  ///< Chamber Y Center
+  G4double chamberCenterZ;  ///< Chamber Z Center
 
-  //Control of the geometry of the experiment
-  G4String MaikoGeoIncludedFlag;
-  G4String ACTARTPCDEMOGeoIncludedFlag;
-  G4String ACTARTPCGeoIncludedFlag;
-  G4String gasGeoIncludedFlag;
-  G4String silGeoIncludedFlag;
-  G4String sciGeoIncludedFlag;
-  G4String SpecMATGeoIncludedFlag;
-  G4String OthersGeoIncludedFlag;
+  G4String MaikoGeoIncludedFlag;        ///< Control variable for including MAIKO
+  G4String ACTARTPCDEMOGeoIncludedFlag; ///< Control variable for including ACTARTPCDEMO
+  G4String ACTARTPCGeoIncludedFlag;     ///< Control variable for including ACTARTPC
+  G4String gasGeoIncludedFlag;          ///< Control variable for including a gas volume
+  G4String silGeoIncludedFlag;          ///< Control variable for including the silicons
+  G4String sciGeoIncludedFlag;          ///< Control variable for including the scintillators
+  G4String SpecMATGeoIncludedFlag;      ///< Control variable for including SpecMAT
+  G4String OthersGeoIncludedFlag;       ///< Control variable for including other geometries
 
-  //Detectors
-  ActarSimGasDetectorConstruction* gasDet;          //target
-  ActarSimSilDetectorConstruction* silDet;          //recoil si
-  ActarSimSilRingDetectorConstruction* silRingDet;  //silRing for MAIKO
-  ActarSimSciDetectorConstruction* sciDet;          //calorimeter
-  ActarSimSciRingDetectorConstruction* sciRingDet;  //sciRing for MAIKO
-  ActarSimPlaDetectorConstruction* plaDet;          //Hodoscope
+  ActarSimGasDetectorConstruction* gasDet;          ///< Pointer to target constructor
+  ActarSimSilDetectorConstruction* silDet;          ///< Pointer to recoil silicon constructor
+  ActarSimSilRingDetectorConstruction* silRingDet;  ///< Pointer to silRing for MAIKO constructor
+  ActarSimSciDetectorConstruction* sciDet;          ///< Pointer to scintillator constructor
+  ActarSimSciRingDetectorConstruction* sciRingDet;  ///< Pointer to sciRing for MAIKO constructor
+  ActarSimPlaDetectorConstruction* plaDet;          ///< Pointer to Hodoscope constructor
 
-  ActarSimDetectorMessenger* detectorMessenger;  //pointer to the Messenger
+  ActarSimDetectorMessenger* detectorMessenger;  ///< Pointer to the Messenger
 
   void DefineMaterials();
-  G4VPhysicalVolume* ConstructEmptyWorld();  
+  G4VPhysicalVolume* ConstructEmptyWorld();
   G4VPhysicalVolume* ConstructActarTPC();
   G4VPhysicalVolume* ConstructActarTPCDEMO();
   G4VPhysicalVolume* ConstructSpecMAT();
@@ -135,7 +113,6 @@ private:
   G4VPhysicalVolume* ConstructOthers();
 
 public:
-
   ActarSimDetectorConstruction();
   ~ActarSimDetectorConstruction();
 
@@ -153,7 +130,6 @@ public:
   void SetChamberCenterY(G4double val){chamberCenterY = val;}
   void SetChamberCenterZ(G4double val){chamberCenterZ = val;}
 
-
   void SetMediumMaterial(G4String);
   void SetDefaultMaterial(G4String);
   void SetChamberMaterial(G4String);
@@ -166,7 +142,6 @@ public:
   void SetSpecMATGeoIncludedFlag(G4String val){SpecMATGeoIncludedFlag=val;}
   void SetOthersGeoIncludedFlag(G4String val){OthersGeoIncludedFlag=val;}
 
-  
   void SetGasGeoIncludedFlag(G4String val){gasGeoIncludedFlag=val;}
   void SetSilGeoIncludedFlag(G4String val){silGeoIncludedFlag=val;}
   void SetSciGeoIncludedFlag(G4String val){sciGeoIncludedFlag=val;}
@@ -214,7 +189,6 @@ public:
   G4String GetSpecMATGeoIncludedFlag(void){return SpecMATGeoIncludedFlag;}
   G4String GetOthersGeoIncludedFlag(void){return OthersGeoIncludedFlag;}
 
-
   void UpdateGeometry();
   void UpdateEMField();
 
@@ -223,5 +197,4 @@ public:
 
   void PrintDetectorParameters();
 };
-
 #endif

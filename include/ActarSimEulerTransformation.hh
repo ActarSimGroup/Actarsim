@@ -1,16 +1,11 @@
-/////////////////////////////////////////////////////////////////
-// Euler transformation, converted from Fortran subroutine
-// author: M.S. Golovkov
-// date: 02/18/08
-// --------------------------------------------------------------
-// Description:
-//   Euler transformation between beam system and lab system
-// --------------------------------------------------------------
-// Comments:
-//   - 02/18/08 translation from the original FORTRAN
-//      to Geant4-like C++
-// --------------------------------------------------------------
-/////////////////////////////////////////////////////////////////
+// - AUTHOR: M.S.  Golovkov 02/2008
+/******************************************************************
+ * Copyright (C) 2005-2016, Hector Alvarez-Pol                     *
+ * All rights reserved.                                            *
+ *                                                                 *
+ * License according to GNU LESSER GPL (see lgpl-3.0.txt).         *
+ * For the list of contributors see CREDITS.                       *
+ ******************************************************************/
 
 #ifndef ActarSimEulerTransformation_h
 #define ActarSimEulerTransformation_h 1
@@ -20,17 +15,13 @@
 
 class ActarSimEulerTransformation {
 private:
+  G4double ThetaInBeamSystem;          ///<
+  G4double PhiInBeamSystem;            ///<
+  G4double BeamDirectionAtVertexTheta; ///<
+  G4double BeamDirectionAtVertexPhi;   ///<
 
-// inputs: teta0,phi0, beamdirection=>(alpha,beta,gamma)
-// outputs: theta_1,phi_1
-
-  G4double ThetaInBeamSystem;
-  G4double PhiInBeamSystem;
-  G4double BeamDirectionAtVertexTheta;
-  G4double BeamDirectionAtVertexPhi;
-
-  G4double ThetaInLabSystem;
-  G4double PhiInLabSystem;
+  G4double ThetaInLabSystem;           ///<
+  G4double PhiInLabSystem;             ///<
 
 public:
   ActarSimEulerTransformation();
@@ -53,6 +44,5 @@ public:
   void Dump();
 
   void PrintResults();
-
 };
 #endif

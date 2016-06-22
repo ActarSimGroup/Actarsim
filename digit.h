@@ -35,7 +35,7 @@
 //                                        Double_t padSize);
 //      where all distances are in mm
 //
-//      or use a predefined geometry 
+//      or use a predefined geometry
 //      thePadsGeometry.SetGeometryValues("ActarTPCDemo")
 //
 //      theDriftManager.SetDriftVelocity(Double_t velocity);      in mm/ns
@@ -390,10 +390,18 @@ class padsGeometry{
       xBeamShift = 0.; yBeamShift = 15.;
       sideBlankSpaceX=5.; sideBlankSpaceZ=5.;
     }
+    if(DetectorConfig=="ActarTPC"){
+      geoType=0;  padType=0; padLayout=0;
+      radius=0.; padSize=2.;
+      xLength = 133.; yLength = 85.; zLength = 133.;
+      xBeamShift = 0.; yBeamShift = 15.;
+      sideBlankSpaceX=5.; sideBlankSpaceZ=5.;
+    }
 
     SetPadsGeometry();
     if(DIGI_DEBUG>3) cout << "Exits padsGeometry::SetGeometryValues()" << endl;
   }
+
 
   void SetNumberOfColumns(Int_t col){numberOfColumns=col;}
   void SetNumberOfRows(Int_t row){numberOfRows=row;}

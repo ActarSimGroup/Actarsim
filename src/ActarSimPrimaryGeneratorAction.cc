@@ -209,7 +209,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       particleGun->SetParticleDefinition(incidentIon);
       particleGun->SetParticleCharge(incidentIonCharge);
       pBeamInfo->SetCharge(incidentIonCharge);
-      pBeamInfo->SetMass(incidentIon->GetMass());
+      pBeamInfo->SetMass(incidentIon->GetPDGMass());
 
       // vertex_z0 decides the z position of the vertex. The beam is tracked till z0 is reached ...
       G4double vertex_z0 = 0;

@@ -26,13 +26,16 @@
 #include "G4Step.hh"
 #include "G4Types.hh"
 
+//#include "G4PhysicalConstants.hh"
+//#include "G4SystemOfUnits.hh"
+
 #include "TROOT.h"
-#include "TApplication.h"
-#include "TSystem.h"
-#include "TH1.h"
-#include "TH2.h"
-#include "TPad.h"
-#include "TCanvas.h"
+//#include "TApplication.h"
+//#include "TSystem.h"
+//#include "TH1.h"
+//#include "TTree.h"
+//#include "TPad.h"
+//#include "TCanvas.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TClonesArray.h"
@@ -405,14 +408,14 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
 
     cHit->SetDetectorID(gHit->GetDetID());
 
-    cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
-    cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
-    cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
+    cHit->SetXPos(gHit->GetLocalPrePos().x()/CLHEP::mm);
+    cHit->SetYPos(gHit->GetLocalPrePos().y()/CLHEP::mm);
+    cHit->SetZPos(gHit->GetLocalPrePos().z()/CLHEP::mm);
 
-    cHit->SetTime(gHit->GetToF()/ns);
-    cHit->SetEnergy(gHit->GetEdep()/MeV);
-    cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
-    cHit->SetEAfterPla(gHit->GetEAfterPla()/MeV);
+    cHit->SetTime(gHit->GetToF()/CLHEP::ns);
+    cHit->SetEnergy(gHit->GetEdep()/CLHEP::MeV);
+    cHit->SetEBeforePla(gHit->GetEBeforePla()/CLHEP::MeV);
+    cHit->SetEAfterPla(gHit->GetEAfterPla()/CLHEP::MeV);
 
     cHit->SetTrackID(gHit->GetTrackID());
     cHit->SetEventID(GetTheEventID());
@@ -472,11 +475,11 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
     */
   }
   else if(mode==1){ //addition
-    cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ MeV);
+    cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ CLHEP::MeV);
     //taking the smaller outgoing energy of the geantHits
-    if(cHit->GetEAfterPla()>gHit->GetEAfterPla()) cHit->SetEAfterPla(gHit->GetEAfterPla()/MeV);
+    if(cHit->GetEAfterPla()>gHit->GetEAfterPla()) cHit->SetEAfterPla(gHit->GetEAfterPla()/CLHEP::MeV);
     //taking the larger incoming energy of the geantHits
-    if(cHit->GetEBeforePla()<gHit->GetEBeforePla()) cHit->SetEBeforePla(gHit->GetEBeforePla()/MeV);
+    if(cHit->GetEBeforePla()<gHit->GetEBeforePla()) cHit->SetEBeforePla(gHit->GetEBeforePla()/CLHEP::MeV);
 
     cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
     // The mean value of a distribution {x_i} can also be computed iteratively
@@ -490,7 +493,7 @@ void ActarSimROOTAnalPla::AddCalPlaHit(ActarSimPlaHit* cHit,
 		  (gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
 
     //taking the shorter time of the geantHits
-    if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ns);
+    if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/CLHEP::ns);
 
     //TODO-> Recover here the simhit/hit duality if needed!!
     /*

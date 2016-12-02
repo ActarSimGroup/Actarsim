@@ -20,6 +20,9 @@
 #include "G4ChordFinder.hh"
 #include "G4TransportationManager.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 ///  Default zero field constructor
 ActarSimUniformEMField::ActarSimUniformEMField() {

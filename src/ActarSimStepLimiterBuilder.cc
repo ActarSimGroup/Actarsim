@@ -39,6 +39,7 @@
 
 #include "ActarSimStepLimiterBuilder.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
 #include "G4ProcessManager.hh"
 #include "G4StepLimiterPerRegion.hh"
 
@@ -67,7 +68,7 @@ void ActarSimStepLimiterBuilder::ConstructParticle()
 
 void ActarSimStepLimiterBuilder::ConstructProcess()
 {
-
+  G4ParticleTable::G4PTblDicIterator* theParticleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
@@ -81,4 +82,3 @@ void ActarSimStepLimiterBuilder::ConstructProcess()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

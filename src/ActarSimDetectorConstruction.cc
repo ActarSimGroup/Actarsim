@@ -43,6 +43,9 @@
 #include "globals.hh"
 #include "G4AssemblyVolume.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 /// Constructor: initialize all variables, materials and pointers
 ActarSimDetectorConstruction::ActarSimDetectorConstruction()
@@ -291,11 +294,11 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPC() {
   G4Box* solidChamber = new G4Box("Chamber",         //its name
 				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
 
-  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+  chamberLog = new G4LogicalVolume(solidChamber, //its solid
 						    chamberMaterial,
 						    "Chamber");            //its name
 
-  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+  chamberPhys = new G4PVPlacement(0,                     //no rotation
 						     G4ThreeVector(chamberCenterX,
 								   chamberCenterY,
 								   chamberCenterZ),
@@ -435,11 +438,11 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPCDEMO() {
   G4Box* solidChamber = new G4Box("Chamber",         //its name
 				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
 
-  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+  chamberLog = new G4LogicalVolume(solidChamber, //its solid
 						    chamberMaterial,
 						    "Chamber");            //its name
 
-  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+  chamberPhys = new G4PVPlacement(0,                     //no rotation
 						     G4ThreeVector(chamberCenterX,
 								   chamberCenterY,
 								   chamberCenterZ),
@@ -702,11 +705,11 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructMAIKO() {
   G4Box* solidChamber = new G4Box("Chamber",         //its name
 				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
 
-  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+  chamberLog = new G4LogicalVolume(solidChamber, //its solid
 						    chamberMaterial,
 						    "Chamber");            //its name
 
-  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+  chamberPhys = new G4PVPlacement(0,                     //no rotation
 						     G4ThreeVector(chamberCenterX,
 								   chamberCenterY,
 								   chamberCenterZ),
@@ -837,11 +840,11 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructOthers() {
   G4Box* solidChamber = new G4Box("Chamber",         //its name
 				  chamberSizeX,chamberSizeY,chamberSizeZ);   //its size
 
-  G4LogicalVolume* chamberLog = new G4LogicalVolume(solidChamber, //its solid
+  chamberLog = new G4LogicalVolume(solidChamber, //its solid
 						    chamberMaterial,
 						    "Chamber");            //its name
 
-  G4VPhysicalVolume* chamberPhys = new G4PVPlacement(0,                     //no rotation
+  chamberPhys = new G4PVPlacement(0,                     //no rotation
 						     G4ThreeVector(chamberCenterX,
 								   chamberCenterY,
 								   chamberCenterZ),

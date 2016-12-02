@@ -24,14 +24,17 @@
 #include "G4Step.hh"
 #include "G4Types.hh"
 
+//#include "G4PhysicalConstants.hh"
+//#include "G4SystemOfUnits.hh"
+
 //ROOT INCLUDES
 #include "TROOT.h"
-#include "TApplication.h"
-#include "TSystem.h"
-#include "TH1.h"
-#include "TH2.h"
-#include "TPad.h"
-#include "TCanvas.h"
+//#include "TApplication.h"
+//#include "TSystem.h"
+//#include "TH1.h"
+//#include "TH2.h"
+//#include "TPad.h"
+//#include "TCanvas.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TClonesArray.h"
@@ -204,14 +207,14 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
   if(mode == 0) { //creation
     cHit->SetDetectorID(gHit->GetDetID());
 
-    cHit->SetXPos(gHit->GetLocalPrePos().x()/mm);
-    cHit->SetYPos(gHit->GetLocalPrePos().y()/mm);
-    cHit->SetZPos(gHit->GetLocalPrePos().z()/mm);
+    cHit->SetXPos(gHit->GetLocalPrePos().x()/CLHEP::mm);
+    cHit->SetYPos(gHit->GetLocalPrePos().y()/CLHEP::mm);
+    cHit->SetZPos(gHit->GetLocalPrePos().z()/CLHEP::mm);
 
-    cHit->SetTime(gHit->GetToF()/ns);
-    cHit->SetEnergy(gHit->GetEdep()/MeV);
-    cHit->SetEBeforeSil(gHit->GetEBeforeSil()/MeV);
-    cHit->SetEAfterSil(gHit->GetEAfterSil()/MeV);
+    cHit->SetTime(gHit->GetToF()/CLHEP::ns);
+    cHit->SetEnergy(gHit->GetEdep()/CLHEP::MeV);
+    cHit->SetEBeforeSil(gHit->GetEBeforeSil()/CLHEP::MeV);
+    cHit->SetEAfterSil(gHit->GetEAfterSil()/CLHEP::MeV);
 
     cHit->SetTrackID(gHit->GetTrackID());
     cHit->SetEventID(GetTheEventID());
@@ -227,9 +230,9 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
   else if(mode==1){ //addition
     cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep());
     //taking the smaller outgoing energy of the geantHits
-    if(cHit->GetEAfterSil()>gHit->GetEAfterSil()) cHit->SetEAfterSil(gHit->GetEAfterSil()/MeV);
+    if(cHit->GetEAfterSil()>gHit->GetEAfterSil()) cHit->SetEAfterSil(gHit->GetEAfterSil()/CLHEP::MeV);
     //taking the larger incoming energy of the geantHits
-    if(cHit->GetEBeforeSil()<gHit->GetEBeforeSil()) cHit->SetEBeforeSil(gHit->GetEBeforeSil()/MeV);
+    if(cHit->GetEBeforeSil()<gHit->GetEBeforeSil()) cHit->SetEBeforeSil(gHit->GetEBeforeSil()/CLHEP::MeV);
 
     cHit->SetStepsContributing(cHit->GetStepsContributing()+1);
     // The mean value of a distribution {x_i} can also be computed iteratively
@@ -243,7 +246,7 @@ void ActarSimROOTAnalSilRing::AddSilRingHit(ActarSimSilRingHit* cHit,
 		  (gHit->GetLocalPrePos().z()-cHit->GetZPos())/((G4double)cHit->GetStepsContributing()));
 
     //taking the shorter time of the geantHits
-    if(cHit->GetTime()>gHit->GetToF()) cHit->SetTime(gHit->GetToF()/ns);
+    if(cHit->GetTime()>gHit->GetToF()) cHit->SetTime(gHit->GetToF()/CLHEP::ns);
   }
 }
 

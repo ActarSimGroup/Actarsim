@@ -35,6 +35,9 @@
 #include "HodoParametrisation.hh"
 #include "G4PVParameterised.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 /// Constructor. Sets the material and the pointer to the Messenger
 ActarSimPlaDetectorConstruction::

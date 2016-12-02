@@ -16,6 +16,8 @@
 
 #include "ActarSimBeamInfo.hh"
 #include "G4ThreeVector.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 ClassImp(ActarSimBeamInfo)
 

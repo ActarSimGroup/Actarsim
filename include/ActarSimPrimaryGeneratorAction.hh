@@ -13,6 +13,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ThreeVector.hh"
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4Ions.hh"
 #include "G4ParticleGun.hh"
@@ -30,6 +31,7 @@ class ActarSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 private:
   G4ParticleGun* particleGun;                       ///< Pointer to G4particleGun object initialized in constructor
   G4ParticleTable* particleTable;                   ///< Pointer to the G4ParticleTable
+  G4IonTable* ionTable;                             ///< Pointer to the G4IonTable
   ActarSimPrimaryGeneratorMessenger* gunMessenger;  ///< Pointer to messenger
   //ActarSimEventGenerator *pReadEvGen;
 

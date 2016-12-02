@@ -27,6 +27,9 @@
 #include "G4ios.hh"
 #include "G4Tokenizer.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 /// Constructor
 /// command included in this ActarSimPrimaryGeneratorMessenger:
@@ -85,6 +88,7 @@ ActarSimPrimaryGeneratorMessenger::ActarSimPrimaryGeneratorMessenger(ActarSimPri
   : actarSimActionGun(actarSimGun) {
 
   particleTable = G4ParticleTable::GetParticleTable();
+  ionTable = G4IonTable::GetIonTable();
 
   G4bool omitable;
   G4UIparameter* parameter;
@@ -1030,7 +1034,7 @@ void ActarSimPrimaryGeneratorMessenger::IonCommand(G4String newValues) {
   }
 
   G4ParticleDefinition* ion;
-  ion =  particleTable->GetIon( fAtomicNumber, fAtomicMass, fIonExciteEnergy);
+  ion =  ionTable->GetIon( fAtomicNumber, fAtomicMass, fIonExciteEnergy);
   if (ion==0) {
     G4cout << "##################################################################"
 	   << G4endl
@@ -1076,7 +1080,7 @@ void ActarSimPrimaryGeneratorMessenger::incidentIonCommand(G4String newValues){
   }
 
   G4Ions* ion;
-  ion = (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion = (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					fAtomicMass,
 					fIonExciteEnergy);
   if (ion==0) {
@@ -1106,7 +1110,7 @@ void ActarSimPrimaryGeneratorMessenger::KineIncidentIonCommand(G4String newValue
   fIonMass=StoD(next());
 
   G4Ions* ion;
-  ion = (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion = (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					fAtomicMass,
 					fIonExciteEnergy);
   if (ion==0) {
@@ -1147,7 +1151,7 @@ void ActarSimPrimaryGeneratorMessenger::targetIonCommand(G4String newValues){
   }
 
   G4Ions* ion;
-  ion = (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion = (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					fAtomicMass,
 					fIonExciteEnergy);
   if (ion==0) {
@@ -1177,7 +1181,7 @@ void ActarSimPrimaryGeneratorMessenger::KineTargetIonCommand(G4String newValues)
   fIonMass=StoD(next());
 
   G4Ions* ion;
-  ion = (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion = (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					fAtomicMass,
 					fIonExciteEnergy);
   if (ion==0) {
@@ -1219,7 +1223,7 @@ void ActarSimPrimaryGeneratorMessenger::scatteredIonCommand(G4String newValues){
   }
 
   G4Ions* ion;
-  ion = (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion = (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					fAtomicMass,
 					fIonExciteEnergy);
   if (ion==0) {
@@ -1250,7 +1254,7 @@ void ActarSimPrimaryGeneratorMessenger::KineScatteredIonCommand(G4String newValu
   fIonMass=StoD(next());
 
   G4Ions* ion;
-  ion = (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion = (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					fAtomicMass,
 					fIonExciteEnergy);
   if (ion==0) {
@@ -1292,7 +1296,7 @@ void ActarSimPrimaryGeneratorMessenger::recoilIonCommand(G4String newValues){
   }
 
   G4Ions* ion;
-  ion =  (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion =  (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					 fAtomicMass,
 					 fIonExciteEnergy);
   if (ion==0) {
@@ -1322,7 +1326,7 @@ void ActarSimPrimaryGeneratorMessenger::KineRecoilIonCommand(G4String newValues)
   fIonMass=StoD(next());
 
   G4Ions* ion;
-  ion =  (G4Ions*) particleTable->GetIon(fAtomicNumber,
+  ion =  (G4Ions*) ionTable->GetIon(fAtomicNumber,
 					 fAtomicMass,
 					 fIonExciteEnergy);
   if (ion==0) {

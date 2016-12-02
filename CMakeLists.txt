@@ -1,11 +1,11 @@
 #--------------------CMake file for ActarSim in Geant 4.9.6.p02--------------
-#Author: D. Perez-Loureiro 28/08/2013
-#
+# Author: D. Perez-Loureiro 28/08/2013
+# Modified and updated for newer cmake, root and geant4 versions 2015-2017
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(ACTARSim)
-
+set(CMAKE_MACOSX_RPATH 1)
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
@@ -172,24 +172,21 @@ foreach(_script ${ACTARSIM_SCRIPTS})
     )
 endforeach()
 
-
 #----------------------------------------------------------------------------
 # Add DOXYGEN DOCUMENTATION
 # The documentation is created in the binary (build) directory subdir /html
 # To read the documentation open the index.html file using a browser
 #
 #
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/build_tools/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-add_custom_target(doc ALL
-${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-COMMENT "Generating API documentation with Doxygen" VERBATIM
-)
-endif(DOXYGEN_FOUND)
-
-
+#find_package(Doxygen)
+#if(DOXYGEN_FOUND)
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxygen/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+#add_custom_target(doc ALL
+#${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+#WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#COMMENT "Generating API documentation with Doxygen" VERBATIM
+#)
+#endif(DOXYGEN_FOUND)
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this

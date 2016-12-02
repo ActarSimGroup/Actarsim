@@ -124,7 +124,7 @@ void ActarSimVisManager::RegisterGraphicsSystems () {
 	   << G4endl
            << "You have successfully chosen to use the following graphics systems."
            << G4endl;
-    PrintAvailableGraphicsSystems ();
+    PrintAvailableGraphicsSystems (all);
   }
 }
 

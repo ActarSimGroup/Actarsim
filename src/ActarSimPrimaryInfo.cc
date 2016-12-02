@@ -17,6 +17,10 @@
 #include "G4PrimaryParticle.hh"
 #include "G4ThreeVector.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
+
 ClassImp(ActarSimPrimaryInfo)
 
 //////////////////////////////////////////////////////////////////

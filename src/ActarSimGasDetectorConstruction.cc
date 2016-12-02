@@ -32,6 +32,9 @@
 
 #include "globals.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 /// Constructor
 /// Sets the material and the pointer to the Messenger
@@ -202,7 +205,7 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   G4LogicalVolume* beamShieldLog(0);                //pointer to logic
   G4VPhysicalVolume* beamShieldPhys;                //pointer to physic
 
-  if( beamShieldPhys){;}
+  //if( beamShieldPhys){;}
 
   if( beamShieldGeometry == "tube"){
     G4cout << "##################################################################" << G4endl

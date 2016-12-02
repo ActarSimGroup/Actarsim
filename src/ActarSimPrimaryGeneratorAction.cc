@@ -34,6 +34,8 @@
 #include "Randomize.hh"
 
 #include "G4ParticleDefinition.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 # include <cstdlib>
 # include <iostream>
@@ -52,6 +54,7 @@ ActarSimPrimaryGeneratorAction::ActarSimPrimaryGeneratorAction()
 
   G4ThreeVector zero;
   particleTable = G4ParticleTable::GetParticleTable();
+  ionTable = G4IonTable::GetIonTable();
 
   //create a particleGun
   particleGun = new G4ParticleGun(1);
@@ -226,7 +229,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         G4cout << " *************************************************** "<< G4endl;
       }
       if(!incidentIon) {
-        incidentIon = (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S1)
+        incidentIon = (G4Ions*) ionTable->GetIon(2, 8, 0.);  // 8He (S1)
         incidentIonCharge =  2;
         G4cout << G4endl
                << " *************************************************** " << G4endl
@@ -514,7 +517,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       }
       else{
         G4Ions* ion1;
-        ion1 = (G4Ions*) particleTable->GetIon(ion1Z, ion1A, 0.0);
+        ion1 = (G4Ions*) ionTable->GetIon(ion1Z, ion1A, 0.0);
         particleGun->SetParticleDefinition(ion1);
         particleGun->SetParticleCharge(ion1Charge);
       }
@@ -543,7 +546,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       }
       else{
         G4Ions* ion2;
-        ion2 = (G4Ions*) particleTable->GetIon(ion2Z, ion2Z, 0.0);
+        ion2 = (G4Ions*) ionTable->GetIon(ion2Z, ion2Z, 0.0);
         particleGun->SetParticleDefinition(ion2);
         particleGun->SetParticleCharge(ion2Charge);
       }
@@ -586,19 +589,19 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     }
     //Initial values for CINE. It is not allowed to create this initial values in the constructor...
     if(!incidentIon) {
-      incidentIon =  (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S1)
+      incidentIon =  (G4Ions*) ionTable->GetIon(2, 8, 0.);  // 8He (S1)
       incidentIonCharge =  2;
     }
     if(!targetIon) {
-      targetIon = (G4Ions*) particleTable->GetIon(6, 12, 0.);     // C12 (S2)
+      targetIon = (G4Ions*) ionTable->GetIon(6, 12, 0.);     // C12 (S2)
       targetIonCharge = 6;
     }
     if(!scatteredIon){
-      scatteredIon = (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S3)
+      scatteredIon = (G4Ions*) ionTable->GetIon(2, 8, 0.);  // 8He (S3)
       scatteredIonCharge = 2;
     }
     if(!recoilIon){
-      recoilIon = (G4Ions*) particleTable->GetIon(6, 12, 0.);   // C12 (S4)
+      recoilIon = (G4Ions*) ionTable->GetIon(6, 12, 0.);   // C12 (S4)
       recoilIonCharge = 6;
     }
 
@@ -826,19 +829,19 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     //Initial values for KINE. It is not allowed to create this initial values
     //in the constructor...
     if(!incidentIon) {
-      incidentIon =  (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S1)
+      incidentIon =  (G4Ions*) ionTable->GetIon(2, 8, 0.);  // 8He (S1)
       incidentIonCharge =  2;
     }
     if(!targetIon) {
-      targetIon = (G4Ions*) particleTable->GetIon(6, 12, 0.);     // C12 (S2)
+      targetIon = (G4Ions*) ionTable->GetIon(6, 12, 0.);     // C12 (S2)
       targetIonCharge = 6;
     }
     if(!scatteredIon){
-      scatteredIon = (G4Ions*) particleTable->GetIon(2, 8, 0.);  // 8He (S3)
+      scatteredIon = (G4Ions*) ionTable->GetIon(2, 8, 0.);  // 8He (S3)
       scatteredIonCharge = 2;
     }
     if(!recoilIon){
-      recoilIon = (G4Ions*) particleTable->GetIon(6, 12, 0.);   // C12 (S4)
+      recoilIon = (G4Ions*) ionTable->GetIon(6, 12, 0.);   // C12 (S4)
       recoilIonCharge = 6;
     }
 
@@ -958,7 +961,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     //time, including the beam tracking before the vertex formation
     if(beamInteractionFlag == "on") {
-      ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
+      //ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
       if(gActarSimROOTAnalysis) {
         pBeamInfo = gActarSimROOTAnalysis->GetBeamInfo();
         particleGun->SetParticleTime(pBeamInfo->GetTimeVertex());
@@ -979,7 +982,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     //time, including the beam tracking before the vertex formation
     if(beamInteractionFlag == "on") {
-      ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
+      //ActarSimBeamInfo *pBeamInfo = (ActarSimBeamInfo*) 0;
       if(gActarSimROOTAnalysis) {
         pBeamInfo = gActarSimROOTAnalysis->GetBeamInfo();
         particleGun->SetParticleTime(pBeamInfo->GetTimeVertex());
@@ -1002,7 +1005,7 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       G4double sinTheta_gamma;
       cosTheta_gamma = -1.0 + 2.0*G4UniformRand();
       sinTheta_gamma = sqrt(1 - cosTheta_gamma*cosTheta_gamma);
-      G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+      //G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
       G4String particleName;
       particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="gamma"));
       particleGun->SetParticleMomentumDirection(G4ThreeVector(sinTheta_gamma*cos(phi_gamma),

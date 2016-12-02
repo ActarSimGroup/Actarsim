@@ -42,8 +42,8 @@ private:
   G4double radiusGasTub;             ///< Radius of the Gas Tube
   G4double lengthGasTub;             ///< Length of the Gas Tube
 
-  G4LogicalVolume* wireFoilLog;      ///< Pointer to the wire foil logical volume
-  G4VPhysicalVolume* wireFoilPhys;   ///< Pointer to the wire foil physical volume
+  //G4LogicalVolume* wireFoilLog;      ///< Pointer to the wire foil logical volume
+  //G4VPhysicalVolume* wireFoilPhys;   ///< Pointer to the wire foil physical volume
 
   G4double innerRadiusBeamShieldTub; ///< Inner radius of the beam shielding tube
   G4double outerRadiusBeamShieldTub; ///< Outer radius of the beam shielding tube

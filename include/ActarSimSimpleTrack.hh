@@ -77,9 +77,9 @@ public:
   void SetYPost(Double_t yc){yPost = yc;}
   void SetZPost(Double_t zc){zPost = zc;}
   void SetEnergyStride(Double_t energy){energyStride = energy;}
-  void SetParticleCharge(Double_t pc){particleCharge=pc;}
+  void SetParticleCharge(Double_t parcha){particleCharge=parcha;}
   void SetParticleMass(Double_t pm){particleMass=pm;}
-  void SetParticleID(Int_t pi){particleID=pi;}
+  void SetParticleID(Int_t piD){particleID=piD;}
   void SetStrideLength(Double_t len){strideLength = len;}
   void SetParticleEnergy(Double_t penergy){particleEnergy = penergy;}
   void SetTimePre(Double_t te){timePre = te;}

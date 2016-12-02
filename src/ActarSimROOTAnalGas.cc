@@ -24,19 +24,22 @@
 #include "G4Step.hh"
 #include "G4Types.hh"
 
+//#include "G4PhysicalConstants.hh"
+//#include "G4SystemOfUnits.hh"
+
 #include "ActarSimTrack.hh"
 #include "ActarSimSimpleTrack.hh"
 #include "ActarSimData.hh"
 
 //ROOT INCLUDES
 #include "TROOT.h"
-#include "TApplication.h"
-#include "TSystem.h"
+//#include "TApplication.h"
+//#include "TSystem.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TH3.h"
-#include "TPad.h"
-#include "TCanvas.h"
+//#include "TPad.h"
+//#include "TCanvas.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TClonesArray.h"
@@ -106,7 +109,7 @@ void ActarSimROOTAnalGas::init(){
   eventTree->Branch("simpleTrackData",&simpleTrackCA);
 
   //minStrideLength = 0.1 * mm; //default value for the minimum stride length
-  minStrideLength = 1.0 * mm; //default value for the minimum stride length
+  minStrideLength = 1.0 * CLHEP::mm; //default value for the minimum stride length
 }
 
 //////////////////////////////////////////////////////////////////

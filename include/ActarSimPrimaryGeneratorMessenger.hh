@@ -15,6 +15,7 @@
 
 class ActarSimPrimaryGeneratorAction;
 class G4ParticleTable;
+class G4IonTable;
 class G4UIdirectory;
 class G4UIcommand;
 class G4UIcmdWithoutParameter;
@@ -29,6 +30,7 @@ class ActarSimPrimaryGeneratorMessenger: public G4UImessenger {
 private:
   ActarSimPrimaryGeneratorAction* actarSimActionGun; ///< Pointer to main primary generator class
   G4ParticleTable* particleTable;                    ///< Pointer to the global particle table
+  G4IonTable* ionTable;                              ///< Pointer to the global particle table
 
   G4UIdirectory*               gunDir;                 ///< Directory for gun commands
   G4UIdirectory*               CineDir;                ///< Directory for CINE commands

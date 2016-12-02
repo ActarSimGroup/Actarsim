@@ -48,17 +48,20 @@
 
 #include "G4Trajectory.hh"
 
+//#include "G4PhysicalConstants.hh"
+//#include "G4SystemOfUnits.hh"
+
 #include <time.h>
 
 #include "TROOT.h"
-#include "TApplication.h"
+//#include "TApplication.h"
 #include "TSystem.h"
 #include "TH1.h"
 #include "TH2.h"
-#include "TH3.h"
+//#include "TH3.h"
 #include "TTree.h"
-#include "TPad.h"
-#include "TCanvas.h"
+//#include "TPad.h"
+//#include "TCanvas.h"
 #include "TFile.h"
 #include "TClonesArray.h"
 
@@ -238,10 +241,10 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
 
   //TODO->Remove this assymetry!!! There should be only one GeneratePrimaries
   //and all information should come in objects, nor arguments!!!!
-  Double_t aTheta1 = (Theta1 / deg);   // in [deg]
-  Double_t aTheta2 = (Theta2 / deg);   // in [deg]
-  Double_t aEnergy1 = (Energy1 / MeV); // in [MeV]
-  Double_t aEnergy2 = (Energy2 / MeV); // in [MeV]
+  Double_t aTheta1 = (Theta1 / CLHEP::deg);   // in [deg]
+  Double_t aTheta2 = (Theta2 / CLHEP::deg);   // in [deg]
+  Double_t aEnergy1 = (Energy1 / CLHEP::MeV); // in [MeV]
+  Double_t aEnergy2 = (Energy2 / CLHEP::MeV); // in [MeV]
 
   G4int nbOfPrimaryVertex = anEvent->GetNumberOfPrimaryVertex();
   G4int* nbOfPrimaries = new G4int[nbOfPrimaryVertex];
@@ -268,9 +271,9 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
       //do really need this datamember
       thePrimaryInfo[countingPrimaries]->SetRunID(GetTheRunID());
       thePrimaryInfo[countingPrimaries]->SetEventID(GetTheEventID());
-      thePrimaryInfo[countingPrimaries]->SetVertexPosition(anEvent->GetPrimaryVertex(i)->GetX0() / mm,
-							   anEvent->GetPrimaryVertex(i)->GetY0() / mm,
-							   anEvent->GetPrimaryVertex(i)->GetZ0() / mm );
+      thePrimaryInfo[countingPrimaries]->SetVertexPosition(anEvent->GetPrimaryVertex(i)->GetX0() / CLHEP::mm,
+							   anEvent->GetPrimaryVertex(i)->GetY0() / CLHEP::mm,
+							   anEvent->GetPrimaryVertex(i)->GetZ0() / CLHEP::mm );
       //thePrimaryInfo[i]->print();
       countingPrimaries++;
     }
@@ -286,7 +289,7 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent,
   for (G4int i=0;i<totalPrimaries;i++) delete thePrimaryInfo[i];
   delete thePrimaryInfo;
 
-  delete nbOfPrimaries;
+  delete [] nbOfPrimaries;
 
   if (hScatteredIonKinematic) hScatteredIonKinematic->Fill(aTheta1,aEnergy1);
   if (hRecoilIonKinematic) hRecoilIonKinematic->Fill(aTheta2,aEnergy2);
@@ -308,10 +311,10 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
   if (gSystem) gSystem->ProcessEvents();
   SetTheEventID(anEvent->GetEventID());
 
-  Double_t aTheta1 = beamInfo->GetThetaEntrance() / deg;   // in [deg]
-  Double_t aTheta2 = beamInfo->GetThetaVertex() / deg;   // in [deg]
-  Double_t aEnergy1 = beamInfo->GetEnergyEntrance() / MeV; // in [MeV]
-  Double_t aEnergy2 = beamInfo->GetEnergyVertex() / MeV; // in [MeV]
+  Double_t aTheta1 = beamInfo->GetThetaEntrance() / CLHEP::deg;   // in [deg]
+  Double_t aTheta2 = beamInfo->GetThetaVertex() / CLHEP::deg;   // in [deg]
+  Double_t aEnergy1 = beamInfo->GetEnergyEntrance() / CLHEP::MeV; // in [MeV]
+  Double_t aEnergy2 = beamInfo->GetEnergyVertex() / CLHEP::MeV; // in [MeV]
 
 
   G4int nbOfPrimaryVertex = anEvent->GetNumberOfPrimaryVertex();
@@ -339,9 +342,9 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
       //do really need this datamember
       thePrimaryInfo[countingPrimaries]->SetRunID(GetTheRunID());
       thePrimaryInfo[countingPrimaries]->SetEventID(GetTheEventID());
-      thePrimaryInfo[countingPrimaries]->SetVertexPosition(anEvent->GetPrimaryVertex(i)->GetX0() / mm,
-							   anEvent->GetPrimaryVertex(i)->GetY0() / mm,
-							   anEvent->GetPrimaryVertex(i)->GetZ0() / mm );
+      thePrimaryInfo[countingPrimaries]->SetVertexPosition(anEvent->GetPrimaryVertex(i)->GetX0() / CLHEP::mm,
+							   anEvent->GetPrimaryVertex(i)->GetY0() / CLHEP::mm,
+							   anEvent->GetPrimaryVertex(i)->GetZ0() / CLHEP::mm );
       //thePrimaryInfo[i]->print();
       countingPrimaries++;
     }
@@ -357,7 +360,7 @@ void ActarSimROOTAnalysis::GeneratePrimaries(const G4Event *anEvent, ActarSimBea
   }
   for (G4int i=0;i<totalPrimaries;i++) delete thePrimaryInfo[i];
   delete thePrimaryInfo;
-  delete nbOfPrimaries;
+  delete [] nbOfPrimaries;
 
   if (hScatteredIonKinematic) hScatteredIonKinematic->Fill(aTheta1,aEnergy1);
   if (hRecoilIonKinematic) hRecoilIonKinematic->Fill(aTheta2,aEnergy2);
@@ -667,11 +670,11 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
 		 << " * aborting the present event and moving to "<< G4endl;
           G4cout << " *************************************************** "<< G4endl;
         }
-	pBeamInfo->SetXVertex(aStep->GetPreStepPoint()->GetPosition().x()/mm);
-	pBeamInfo->SetYVertex(aStep->GetPreStepPoint()->GetPosition().y()/mm);
-	pBeamInfo->SetZVertex(aStep->GetPreStepPoint()->GetPosition().z()/mm);
-	pBeamInfo->SetEnergyVertex(aStep->GetTrack()->GetKineticEnergy()/MeV);
-	pBeamInfo->SetTimeVertex(aStep->GetTrack()->GetGlobalTime()/ns);
+	pBeamInfo->SetXVertex(aStep->GetPreStepPoint()->GetPosition().x()/CLHEP::mm);
+	pBeamInfo->SetYVertex(aStep->GetPreStepPoint()->GetPosition().y()/CLHEP::mm);
+	pBeamInfo->SetZVertex(aStep->GetPreStepPoint()->GetPosition().z()/CLHEP::mm);
+	pBeamInfo->SetEnergyVertex(aStep->GetTrack()->GetKineticEnergy()/CLHEP::MeV);
+	pBeamInfo->SetTimeVertex(aStep->GetTrack()->GetGlobalTime()/CLHEP::ns);
 
         // beam direction calculated by beam position at entrance and at vertex, needed for Euler transformation
         G4ThreeVector beamDirection(pBeamInfo->GetXVertex()-pBeamInfo->GetXEntrance(),

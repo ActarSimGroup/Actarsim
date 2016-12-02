@@ -24,6 +24,9 @@
 #include "G4TouchableHistory.hh"
 #include "G4VTouchable.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 /// Constructor
 ActarSimGasSD::ActarSimGasSD(G4String name):G4VSensitiveDetector(name){

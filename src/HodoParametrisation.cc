@@ -1,7 +1,9 @@
-// HodoParametrisation.cc 
-// Sunyelei  ËïÒ¶ÀÚ
+// HodoParametrisation.cc
+// Sunyelei  ï¿½ï¿½Ò¶ï¿½ï¿½
 //email:sunyp09@gmail.com
-#include "HodoParametrisation.hh" 
+#include "HodoParametrisation.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "G4VPhysicalVolume.hh"
 #include "G4ThreeVector.hh"
@@ -56,9 +58,9 @@ HodoParametrisation::HodoParametrisation(G4int  NodE, G4int Noe1,G4int Noe2,G4do
 	E2HodoPos[6] = 0.0  *mm;
 	E2HodoPos[7] = 76   *mm;
 	E2HodoPos[8] = 152  *mm;
-	E2HodoPos[9] = 228  *mm;	  
-	E2HodoPos[10] = 304 *mm; 
-	E2HodoPos[11] = 380 *mm; 
+	E2HodoPos[9] = 228  *mm;
+	E2HodoPos[10] = 304 *mm;
+	E2HodoPos[11] = 380 *mm;
 	E2HodoPos[12] = 456 *mm;
 
 	DEwidth1=100.*mm;DEwidth2=40.0*mm;

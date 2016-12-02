@@ -30,6 +30,9 @@
 #include "G4RunManager.hh"
 #include "G4Transform3D.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include "globals.hh"
 
 //////////////////////////////////////////////////////////////////

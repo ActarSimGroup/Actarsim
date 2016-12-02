@@ -26,13 +26,16 @@
 #include "G4Step.hh"
 #include "G4Types.hh"
 
+//#include "G4PhysicalConstants.hh"
+//#include "G4SystemOfUnits.hh"
+
 #include "TROOT.h"
-#include "TApplication.h"
-#include "TSystem.h"
-#include "TH1.h"
-#include "TH2.h"
-#include "TPad.h"
-#include "TCanvas.h"
+//#include "TApplication.h"
+//#include "TSystem.h"
+//#include "TH1.h"
+//#include "TH2.h"
+//#include "TPad.h"
+//#include "TCanvas.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TClonesArray.h"
@@ -328,8 +331,8 @@ void ActarSimROOTAnalSci::AddCalCrystalHit(ActarSimSciHit* cHit,
 
     cHit->SetCopy(gHit->GetDetID());
 
-    cHit->SetEnergy(gHit->GetEdep()/ MeV);
-    cHit->SetTime(gHit->GetToF() / ns);
+    cHit->SetEnergy(gHit->GetEdep()/ CLHEP::MeV);
+    cHit->SetTime(gHit->GetToF() / CLHEP::ns);
 
     cHit->SetEventID(GetTheEventID());
     cHit->SetRunID(GetTheRunID());
@@ -371,8 +374,8 @@ void ActarSimROOTAnalSci::AddCalCrystalHit(ActarSimSciHit* cHit,
     */
   }
   else if(mode==1){ //addition
-    cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ MeV);
-    if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ ns);
+    cHit->SetEnergy(cHit->GetEnergy() + gHit->GetEdep()/ CLHEP::MeV);
+    if(gHit->GetToF()<cHit->GetTime()) cHit->SetTime(gHit->GetToF()/ CLHEP::ns);
 
     //TODO-> Recover here the simhit/hit duality if needed!!
     /*

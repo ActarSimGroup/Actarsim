@@ -20,6 +20,9 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 G4Allocator<ActarSimGasGeantHit> ActarSimGasGeantHitAllocator;
 
 //////////////////////////////////////////////////////////////////

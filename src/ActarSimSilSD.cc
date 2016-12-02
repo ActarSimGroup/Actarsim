@@ -25,6 +25,9 @@
 #include "G4TouchableHistory.hh"
 #include "G4VTouchable.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //////////////////////////////////////////////////////////////////
 /// Constructor, just naming the Hit collection
 ActarSimSilSD::ActarSimSilSD(G4String name)

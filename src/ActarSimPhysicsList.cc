@@ -53,6 +53,9 @@
 #include "G4BraggIonGasModel.hh"
 #include "G4BetheBlochIonGasModel.hh"
 
+#include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
+
 #include "G4IonPhysics.hh"
 
 //////////////////////////////////////////////////////////////////
@@ -327,9 +330,11 @@ void ActarSimPhysicsList::SetCutForPositron(G4double cut) {
 /// Adds the ion gas model
 void ActarSimPhysicsList::AddIonGasModels() {
   G4EmConfigurator* em_config = G4LossTableManager::Instance()->EmConfigurator();
-  theParticleIterator->reset();
-  while ((*theParticleIterator)()) {
-    G4ParticleDefinition* particle = theParticleIterator->value();
+
+  G4ParticleTable::G4PTblDicIterator* aaParticleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+  aaParticleIterator->reset();
+  while ((*aaParticleIterator)()) {
+    G4ParticleDefinition* particle = aaParticleIterator->value();
     G4String partname = particle->GetParticleName();
     if(partname == "alpha" || partname == "He3" || partname == "GenericIon") {
       G4BraggIonGasModel* mod1 = new G4BraggIonGasModel();

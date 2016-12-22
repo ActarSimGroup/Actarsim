@@ -36,6 +36,7 @@ ActarSimBeamInfo::ActarSimBeamInfo() {
   xVertex = 0.;            // reaction vertex position
   yVertex = 0.;
   zVertex = 0.;
+  nextZVertex = 0.;
   timeVertex = 0.;         // time at vertex formation
   mass = 0.0;              // mass
   charge = 0.0;            // charge
@@ -67,6 +68,7 @@ void ActarSimBeamInfo::print(void){
   G4cout << " xVertex: " << xVertex / mm << " mm"
          << " yVertex: " << yVertex / mm << " mm"
 	 << " zVertex: " << zVertex / mm << " mm"<< G4endl;
+  G4cout << " Next event zVertex: " << nextZVertex / mm << " mm"<< G4endl;
   G4cout << " thetaVertex: " << thetaVertex / rad << " rad"
 	 << " phiVertex: " << phiVertex / rad << " rad"<< G4endl;
   G4cout << " Time at the reaction vertex:  " << timeVertex/ns << " ns" << G4endl;

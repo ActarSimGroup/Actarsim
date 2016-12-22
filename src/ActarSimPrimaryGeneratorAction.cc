@@ -261,8 +261,8 @@ void ActarSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
       // the reaction cross section, or even a simple exponential if a constant cross sections
       // approximation is suitable (non-resonant beam)
 
-      pBeamInfo->SetZVertex(vertex_z0);
-      pBeamInfo->SetEnergyEntrance(GetIncidentEnergy());
+      pBeamInfo->SetNextZVertex(vertex_z0);
+      pBeamInfo->SetEnergyEntrance(GetIncidentEnergy()); //no need of nextEnergyEntrance, as all entry energies are the same. If this is not true in future, an additional datamember for beamInfo will be needed
 
       if(realisticBeamFlag == "on") {
         // Emittance is defined in mm mrad

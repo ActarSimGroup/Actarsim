@@ -77,16 +77,16 @@
 #
 # Control of the material outside the chamber (by default Air)
 #/ActarSim/det/setMediumMat Galactic
-#/ActarSim/det/setMediumMat D2_STP
+#/ActarSim/det/setMediumMat Air
 #/ActarSim/det/setMediumMat Water
 #Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0
 #/ActarSim/det/setMagField 0 0 0 T
 #
 #
-# GAS material: isoC4H10STP, D2_STP, H2_STP
+# GAS material:
 #
-/ActarSim/det/gas/setGasMat D2_STP
+/ActarSim/det/gas/setGasMat CH4_STP
 #
 #
 /ActarSim/det/MaikoGeoIncludedFlag off
@@ -214,8 +214,8 @@
 
 #/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
-#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
-/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325
+/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
 /ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207

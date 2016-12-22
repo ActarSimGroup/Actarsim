@@ -656,7 +656,7 @@ void ActarSimROOTAnalysis::UserSteppingAction(const G4Step *aStep){
   // is reached. If so, store the ion position and use it for vertex generation and abort the event.
 
   if(beamInteractionFlag=="on" && pBeamInfo->GetStatus() == 1){
-    G4double zVertex = pBeamInfo->GetZVertex();
+    G4double zVertex = pBeamInfo->GetNextZVertex();
     if(aStep->GetTrack()->GetParentID()==0){
       if(aStep->GetPreStepPoint()->GetPosition().z() < zVertex &&
 	 aStep->GetPostStepPoint()->GetPosition().z() > zVertex){

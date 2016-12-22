@@ -76,15 +76,15 @@
 /ActarSim/det/MaikoGeoIncludedFlag on           #Includes the Maiko geometry in the simulation
 /ActarSim/det/ACTARTPCDEMOGeoIncludedFlag off   #Includes the ACTARTPC Demonstrator geometry in the simulation
 /ActarSim/det/ACTARTPCGeoIncludedFlag off        #Includes the ACTARTPC geometry in the simulation
-# Control of the materials (options: Galactic, D2_STP, Water, ...)
-/ActarSim/det/setMediumMat D2                #Selects Material outside the Chamber.
+# Control of the materials (options: Galactic, Water, ...)
+/ActarSim/det/setMediumMat Air                    #Selects Material outside the Chamber.
 #/ActarSim/det/setChamberMat Galactic             #Selects Material in the Chamber (but not in the gas!)
 # Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0               #Defines electric field
 #/ActarSim/det/setMagField 0 0 0 T                #Defines magnetic field
 #
 #
-# GAS CHARACTERISTICS (options are H2, D2, He, Ar, CF4, CH4, iC4H10, set both in GasBox and GasChamber) 
+# GAS CHARACTERISTICS (options are H2, D2, He, Ar, CF4, CH4, iC4H10, set both in GasBox and GasChamber)
 #
 /ActarSim/det/gas/setGasPressure 1.01325         #Select the Gas Pressure for the Gas box
 /ActarSim/det/gas/setGasTemperature 293.15       #Select the Gas Temperature for the Gas box
@@ -173,7 +173,7 @@
 #/ActarSim/gun/beamRadiusAtEntrance 18. mm        #Selects the beam radius at entrance of ACTAR. Used with the emittance to calculate the position and angle distributions of the beam when a realisticBeam option is set
 #/ActarSim/gun/beamDirection 0 0 1                #Set beam momentum direction
 #/ActarSim/gun/beamPosition 0 0 -69 mm           #Set beam starting position
-#/ActarSim/gun/beamPosition 0 0 -54 mm  
+#/ActarSim/gun/beamPosition 0 0 -54 mm
 #/ActarSim/gun/randomTheta off                    #Select a random Theta angle for the scattered particle
 #/ActarSim/gun/randomThetaVal 0 180              #Sets the limits in the Theta angle for the scattered particle. The value is randomly chosen between the limits
 #/ActarSim/gun/randomPhi off                        #Select a random Phi angle for the scattered particle

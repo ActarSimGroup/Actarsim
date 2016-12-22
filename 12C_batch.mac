@@ -68,7 +68,7 @@
 /ActarSim/det/ACTARTPCDEMOGeoIncludedFlag on
 #
 # Control of the material outside the chamber (by default Air)
-#/ActarSim/det/setMediumMat D2_STP
+#/ActarSim/det/setMediumMat Air
 #/ActarSim/det/setMediumMat Galactic
 #/ActarSim/det/setMediumMat Water
 #Electric and Magnetic fields
@@ -82,7 +82,7 @@
 #/ActarSim/det/gas/setGasMat iC4H10
 #
 # Make a gas mixture : first select number of elements (up to 10)
-# And then set all gases with their ratio 
+# And then set all gases with their ratio
 /ActarSim/det/gas/mixture/GasMixture 2
 /ActarSim/det/gas/mixture/setGasMix 1 He 0.90
 /ActarSim/det/gas/mixture/setGasMix 2 iC4H10 0.10
@@ -166,7 +166,7 @@
 #/ActarSim/gun/beamRadiusAtEntrance 1.5 mm
 #/ActarSim/gun/emittance 200.0
 /ActarSim/gun/beamDirection 0 0 1
-/ActarSim/gun/beamPosition 0 100 -19 mm 
+/ActarSim/gun/beamPosition 0 100 -19 mm
 #
 # Realistic Event-Generator on
 /ActarSim/gun/reactionFromEvGen off
@@ -202,13 +202,13 @@
 
 #/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125
-#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325 
+#/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325
 /ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
-#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 
 #/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
-#/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
+#/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141
 /ActarSim/gun/Kine/recoilIon 2 4 2 0.0 4.00260325415
 
 #/ActarSim/gun/energy 11. MeV
@@ -264,7 +264,7 @@
 # create an empty scene and add the detector geometry to it
 #/vis/drawVolume
 #/vis/scene/add/axes 0 0 0 0.1 m
-#/vis/scene/add/trajectories 
+#/vis/scene/add/trajectories
 #/vis/scene/add/hits
 #/ActarSim/event/drawTracks all
 #/ActarSim/event/printModulo 10
@@ -278,7 +278,7 @@
 /ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
 /ActarSim/gun/Kine/targetIon 2 4 2 0.0 4.00260325415
 /ActarSim/gun/Kine/recoilIon 2 3 2 0.0 3.01602931914
-/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778
 #
 #
 /run/beamOn 20000

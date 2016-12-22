@@ -59,7 +59,10 @@ void ActarSimGasSD::Initialize(G4HCofThisEvent* HCE){
 G4bool ActarSimGasSD::ProcessHits(G4Step* aStep,G4TouchableHistory*){
 
   //G4double edep = aStep->GetTotalEnergyDeposit()/MeV;
-  G4double edep = -aStep->GetDeltaEnergy()/MeV;
+  //G4double edep = -aStep->GetDeltaEnergy()/MeV;
+  //To avoid warning messages about removing GetDeltaEnergy, the behaviour of the
+  //function is directly implemented here:
+  G4double edep = -(aStep->GetPostStepPoint()->GetKineticEnergy() - aStep->GetPreStepPoint()->GetKineticEnergy())/MeV;
 
   if(edep==0.) return false;
 

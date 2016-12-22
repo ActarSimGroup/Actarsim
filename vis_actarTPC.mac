@@ -75,23 +75,23 @@
 /run/initialize
 #
 # DETECTOR CHARACTERIZATION
-# 
+#
 # PRE-DEFINED DETECTORS (if any of this predefined detectors is on, most detector commands are not used)
 /ActarSim/det/MaikoGeoIncludedFlag off           #Includes the Maiko geometry in the simulation
 /ActarSim/det/ACTARTPCDEMOGeoIncludedFlag off    #Includes the ACTARTPC Demonstrator geometry in the simulation
 /ActarSim/det/ACTARTPCGeoIncludedFlag on        #Includes the ACTARTPC geometry in the simulation
-# Control of the materials (options: Galactic, D2_STP, Water, ...)
-/ActarSim/det/setMediumMat D2_STP                #Selects Material outside the Chamber.
+# Control of the materials (options: Galactic, Water, ...)
+/ActarSim/det/setMediumMat Air                   #Selects Material outside the Chamber.
 /ActarSim/det/setChamberMat Galactic             #Selects Material in the Chamber (but not in the gas!)
 # Electric and Magnetic fields
 #/ActarSim/det/setEleField 0 5e-3 0               #Defines electric field
 #/ActarSim/det/setMagField 0 0 0 T                #Defines magnetic field
 #
 #
-# GAS CHARACTERISTICS (options are H2, D2, He, Ar, CF4, CH4, iC4H10, set both in GasBox and GasChamber) 
+# GAS CHARACTERISTICS (options are H2, D2, He, Ar, CF4, CH4, iC4H10, set both in GasBox and GasChamber)
 #
 #/ActarSim/det/gas/setGasPressure 1.01325         #Select the Gas Pressure for the Gas box
-/ActarSim/det/gas/setGasPressure 0.2 bar 
+/ActarSim/det/gas/setGasPressure 0.2 bar
 /ActarSim/det/gas/setGasTemperature 293.15       #Select the Gas Temperature for the Gas box
 #
 /ActarSim/det/gas/setGasMat iC4H10               #Select Material of the Gas for the Gas box
@@ -207,7 +207,7 @@
 #/ActarSim/gun/Kine/incidentIon 2 4 2 0.0 4.00260325
 #/ActarSim/gun/Kine/incidentIon 6 12 6 0.0 12.
 #/ActarSim/gun/Kine/incidentIon 6 13 6 0.0 13.00335483778
-/ActarSim/gun/Kine/incidentIon 9 17 9 0.0 17.002095237   #Set properties of incident ion to be generated  
+/ActarSim/gun/Kine/incidentIon 9 17 9 0.0 17.002095237   #Set properties of incident ion to be generated
 #/ActarSim/gun/Kine/incidentIon 50 132 50 0.0 131.9178
 
 /ActarSim/gun/Kine/targetIon 1 1 1 0.0 1.00782503207   #Set properties of target ion to be generated
@@ -216,13 +216,13 @@
 #/ActarSim/gun/Kine/scatteredIon 1 2 1 0.0 2.0141
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125 #alpha
 #/ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.00260325415 #4He
-#/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12. 
-#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778 
+#/ActarSim/gun/Kine/scatteredIon 6 12 6 0.0 12.
+#/ActarSim/gun/Kine/scatteredIon 6 13 6 0.0 13.00335483778
 #/ActarSim/gun/Kine/scatteredIon 50 133 50 0.854 132.9238
 /ActarSim/gun/Kine/scatteredIon 2 4 2 0.0 4.001506179125   #Set properties of scattered ion to be generated
 
 #/ActarSim/gun/Kine/recoilIon 1 1 1 0.0 1.00782503207
-#/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141 
+#/ActarSim/gun/Kine/recoilIon 1 2 1 0.0 2.0141
 /ActarSim/gun/Kine/recoilIon 8 14 8 0.0 14.00859625    #Set properties of recoil ion to be generated
 
 #/ActarSim/gun/time 0

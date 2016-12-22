@@ -69,7 +69,7 @@
 /ActarSim/det/silGeoIncludedFlag off             #Includes the geometry of the silicons in the simulation
 /ActarSim/det/sciGeoIncludedFlag off             #Includes the geometry of the scintillator in the simulation
 
-# Control of the materials (options: Galactic, D2_STP, Water, ...)
+# Control of the materials (options: Galactic, Water, ...)
 /ActarSim/det/setMediumMat Galactic              #Selects Material outside the Chamber.
 /ActarSim/det/setChamberMat Galactic             #Selects Material in the Chamber (but not in the gas!)
 # Electric and Magnetic fields

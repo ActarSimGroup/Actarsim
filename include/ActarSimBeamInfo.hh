@@ -32,6 +32,8 @@ private:
   Double_t yVertex;            ///< Y beam at reaction vertex position
   Double_t zVertex;            ///< Z beam at reaction vertex position
 
+  Double_t nextZVertex;        ///< Z beam for next reaction
+
   Double_t timeVertex;         ///< Time at reaction vertex postion
 
   Double_t mass;               ///< Mass of beam
@@ -68,6 +70,8 @@ public:
   inline Double_t GetYVertex() const { return yVertex; }
   inline Double_t GetZVertex() const { return zVertex; }
 
+  inline Double_t GetNextZVertex() const { return nextZVertex; }
+
   inline Double_t GetTimeVertex() const { return timeVertex; }
 
   inline Double_t GetMass() const { return mass; }
@@ -93,6 +97,8 @@ public:
   inline void SetXVertex(Double_t x) { xVertex = x; }
   inline void SetYVertex(Double_t y) { yVertex = y; }
   inline void SetZVertex(Double_t z) { zVertex = z; }
+
+  inline void SetNextZVertex(Double_t z) { nextZVertex = z; }
 
   inline void SetTimeVertex(Double_t t) { timeVertex = t; }
 

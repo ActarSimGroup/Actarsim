@@ -53,9 +53,11 @@ ActarSimDetectorConstruction::ActarSimDetectorConstruction()
       solidWorld(0), worldLog(0), chamberLog(0), AlplateLog(0), DiamondLog(0), SupportLog(0),
   worldPhys(0), chamberPhys(0), AlplatePhys(0), DiamondPhys(0), SupportPhys(0),
   mediumMaterial(0), defaultMaterial(0), chamberMaterial(0), windowMaterial(0),
-  emField(0), MaikoGeoIncludedFlag("off"), ACTARTPCGeoIncludedFlag("off"),
-      gasGeoIncludedFlag("on"), silGeoIncludedFlag("off"), sciGeoIncludedFlag("off"),
-      gasDet(0), silDet(0),silRingDet(0), sciDet(0), sciRingDet(0), plaDet(0) {
+  emField(0), MaikoGeoIncludedFlag("off"),
+  ACTARTPCDEMOGeoIncludedFlag("off"), ACTARTPCGeoIncludedFlag("off"),
+  gasGeoIncludedFlag("on"), silGeoIncludedFlag("off"), sciGeoIncludedFlag("off"),
+  SpecMATGeoIncludedFlag("off"), OthersGeoIncludedFlag("off"),
+  gasDet(0), silDet(0),silRingDet(0), sciDet(0), sciRingDet(0), plaDet(0) {
   //default values of half-length -> size of World (2x2x2 m3)
   worldSizeX = 1.*m;
   worldSizeY = 1.*m;
@@ -1101,7 +1103,7 @@ void ActarSimDetectorConstruction::DefineMaterials() {
   //Methane (default  0.7174*mg/cm3 STP)
   density = 0.7174*mg/cm3;
   G4Material* methane =
-    new G4Material("CH4", density, ncomponents=2) ;
+    new G4Material("CH4_STP", density, ncomponents=2) ;
   methane->AddElement(C,1);
   methane->AddElement(H,4);
 

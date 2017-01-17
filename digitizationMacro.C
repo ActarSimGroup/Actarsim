@@ -20,7 +20,7 @@
 // 2 - Open a root session
 //      root -l
 // 3 - Run this macro inside root
-//      gSystem->Load("actarsim.sl");
+//      gSystem->Load("libactar.sl");
 //      .L digitizationMacro.C+
 //
 //      thePadsGeometry.SetGeometryValues(Int_t geometryType,
@@ -45,7 +45,7 @@
 //       h: distance between the amplification wire and induction pads: 10 mm
 //
 //      (Optionally you can set theAmplificationManager.SetOldChargeCalculation(); for old Style calculations)
-//      digitEvents(inputFile, outputFile, run#, numberOfEvents);
+//      digitEvents(inputFile, outputFile, numberOfEvents);
 //
 //  the number within brackets means:
 //  the geometryType (0 for a box, 1 for cylinder)

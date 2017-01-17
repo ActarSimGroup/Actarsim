@@ -21,7 +21,7 @@
 //      root -l
 // 3 - Run this macro inside root
 //      gSystem->Load("libactar.sl");
-//      .L digitizationMacro.C+;
+//      .L digitizationMacro.C+
 //
 //      thePadsGeometry.SetGeometryValues(Int_t geometryType,
 //                                        Int_t padType,
@@ -52,7 +52,7 @@
 //       h: distance between the amplification wire and induction pads: 10 mm
 //
 //      (Optionally you can set theAmplificationManager.SetOldChargeCalculation(); for old Style calculations)
-//      digitEvents(inputFile, outputFile, run#, numberOfEvents);
+//      digitEvents(inputFile, outputFile, numberOfEvents);
 //
 //  the number within brackets means:
 //  the geometryType (0 for a box, 1 for cylinder)
@@ -134,7 +134,8 @@ Float_t Polya(Float_t param=3.2){
   Int_t check=0;
   Int_t i=0;
 
-  Float_t f,buff[1000];
+  Float_t f = 0.;
+  Float_t buff[1000];
   Float_t lambda;
   Float_t step=0.01;
   Float_t shift=0.005;

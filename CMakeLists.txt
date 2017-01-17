@@ -157,6 +157,9 @@ kine_batch.mac
 12C_batch.mac
 digitizationMacro.C
 digit.h
+readerPads.C
+runDigitization.C
+runReaderPads.C
 MTrack.h
 Reducer.C
 Analysis_Reduce.C

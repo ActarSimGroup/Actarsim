@@ -8,38 +8,34 @@
 
 using namespace std;
 
-class MTrack
-{
+class MTrack {
 	public:
 	MTrack();
 	//MTrack(char*);
 	~MTrack();
-	//void ResetLines();
-	
+	void ResetLines();
+
 	Int_t zx_s;
 	Int_t zx_e;
 	Int_t zy_s;
-	Int_t zy_e;	
-	
+	Int_t zy_e;
+
 	Double_t Xm;
 	Double_t Ym;
 	Double_t Zm;
 	Double_t Xh;
 	Double_t Yh;
 	Double_t Zh;
-	
+
 	TLine* L2DXY;
 	TLine* L2DXZ;
 	TLine* L2DYZ;
 	TLine* L3D;
-	
+
 	//Double_t ElossTable[NPADX][2];
 };
 
-
-
-MTrack::MTrack()
-{
+MTrack::MTrack() {
 	L2DXY=new TLine();
 	L2DXZ=new TLine();
 	L2DYZ=new TLine();
@@ -52,7 +48,7 @@ MTrack::MTrack(char* path)
 	L2DXZ=new TLine();
 	L2DYZ=new TLine();
 	L3D=new TLine();
-	
+
 	FILE* f=fopen(path,"r");
 	if(f!=NULL)
 	{
@@ -68,8 +64,7 @@ MTrack::MTrack(char* path)
 }
 */
 
-MTrack::~MTrack()
-{
+MTrack::~MTrack() {
 	delete L2DXY;
 	delete L2DXZ;
 	delete L2DYZ;
@@ -79,16 +74,12 @@ MTrack::~MTrack()
 	//delete [] ElossTable;
 }
 
-
-
-
-void MTrack::ResetLines()
-{
+void MTrack::ResetLines() {
 	L2DXY->SetX1(-1);
 	L2DXY->SetY1(-1);
 	L2DXY->SetX2(-1);
 	L2DXY->SetY2(-1);
-	
+
 	L2DXZ->SetX1(-1);
 	L2DXZ->SetY1(-1);
 	L2DXZ->SetX2(-1);
@@ -104,6 +95,4 @@ void MTrack::ResetLines()
 	L3D->SetX2(-1);
 	L3D->SetY2(-1);
 }
-
-
 //#endif

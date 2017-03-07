@@ -107,8 +107,8 @@ using namespace std;
 #pragma link C++ class driftManager;
 #endif
 
-char* inputSimFile_g;
-char* inputDigiFile_g;
+const char* inputSimFile_g;
+const char* inputDigiFile_g;
 Int_t run_g = 0;
 Int_t event_g = 0;
 TTimer* timer;
@@ -119,13 +119,13 @@ Int_t shown=0;
 padsGeometry thePadsGeometry;
 driftManager theDriftManager;
 
-void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int_t select);
+void reader(const char* inputSimFile, const char* inputDigiFile, Int_t run, Int_t event, Int_t select);
 
 void guiForPads(Int_t firstEvent=0) {
   // This macro shows one event and the derivative in both sides of
   // the twon ionization chamber (left and right labels have no meaning)
   //.L readTree.C;
-  
+
   event_g=firstEvent;
   TControlBar *menu = new TControlBar("vertical","ACTARSIM Pads Viewer",800,650);
   menu->AddButton("      First      ","reader(inputSimFile_g,inputDigiFile_g,run_g, 0)","First event");
@@ -141,8 +141,8 @@ void guiForPads(Int_t firstEvent=0) {
   reader(inputSimFile_g,inputDigiFile_g,run_g, 0, 0);
 }
 
-void loop(){   
-  timer = new TTimer(1000);   
+void loop(){
+  timer = new TTimer(1000);
   timer->SetCommand("reader(inputSimFile_g,inputDigiFile_g,run_g, event_g)");
   timer->TurnOn();
   cout <<" loop() recalled"<<endl;
@@ -152,8 +152,8 @@ void loopStop(){
   timer->Stop();
 }
 
-void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int_t select=0){
-  
+void reader(const char* inputSimFile, const char* inputDigiFile, Int_t run, Int_t event, Int_t select=0){
+
   gROOT->SetStyle("Default");
   //gSystem->Load("actarsim.sl");
   gStyle->SetOptTitle(0);
@@ -168,14 +168,14 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
   inputDigiFile_g = inputDigiFile;
   run_g = run;
   event_g = event;
-  
+
   //HERE THE HISTOGRAMS ARE DEFINED...
   //IT IS POSSIBLE TO CHANGE THE RANGE AND THE BINNING
   UInt_t histoBins = 250;
   UInt_t histoBins2 = 250;
   histoBins = thePadsGeometry.GetNumberOfRows();
   histoBins2 = thePadsGeometry.GetNumberOfColumns();
-  
+
   if(!shown){
   cout << "Values taken for the visualization" << endl
        << "bins in X: " <<  histoBins<< endl
@@ -196,37 +196,37 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       htrackInPads =
 	new TH2D("htrackInPads",
 		 "All tracks in the XY Pads Plane (endCup mode)",
-		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(), 
+		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(),
 		 thePadsGeometry.GetXLength()-thePadsGeometry.GetSideBlankSpaceX(),
-		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 		 thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());//in [mm]
       htrackInPads->SetYTitle("Y [mm]");
       htrackInPads->SetXTitle("X [mm]");
-      
+
       hdriftTimeInPads =
 	new TH2D("hdriftTimeInPads",
 		 "All tracks in the XZ Pads Plane with drift time",
-		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(), 
+		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(),
 		 thePadsGeometry.GetXLength()-thePadsGeometry.GetSideBlankSpaceX(),
-		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 		 thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());//in [mm]
       hdriftTimeInPads->SetYTitle("Y [mm]");
       hdriftTimeInPads->SetXTitle("X [mm]");
-      
+
       hdepth1InPads =
 	new TH2D("hdepth1InPads",
 		 "track In the Drift-Z Pads Plane",
 		 histoBins, 0., 2.1*thePadsGeometry.GetYLength()/theDriftManager.GetDriftVelocity(),
-		 histoBins2,  -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+		 histoBins2,  -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 		 thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());
       hdepth1InPads->SetYTitle("Y [mm]");
       hdepth1InPads->SetXTitle("(drift) time [ns]");
-      
+
       hdepth2InPads =
 	new TH2D("hdepth2InPads",
 		 "track In the Drift-X Pads Plane",
 		 histoBins, 0, 2.1*thePadsGeometry.GetYLength()/theDriftManager.GetDriftVelocity(),
-		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(), 
+		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(),
 		 thePadsGeometry.GetXLength()-thePadsGeometry.GetSideBlankSpaceX());
       hdepth2InPads->SetYTitle("X [mm]");
       hdepth2InPads->SetXTitle("(drift) time [ns]");
@@ -235,37 +235,37 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       htrackInPads =
 	new TH2D("htrackInPads",
 		 "All tracks in the XZ Pads Plane",
-		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(), 
+		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(),
 		 thePadsGeometry.GetXLength()-thePadsGeometry.GetSideBlankSpaceX(),
-		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 		 thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());// in [mm]
       htrackInPads->SetYTitle("Z [mm]");
       htrackInPads->SetXTitle("X [mm]");
-      
+
       hdriftTimeInPads =
 	new TH2D("hdriftTimeInPads",
 		 "All tracks in the XZ Pads Plane with drift time",
-		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(), 
+		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(),
 		 thePadsGeometry.GetXLength()-thePadsGeometry.GetSideBlankSpaceX(),
-		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 		 thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());// in [mm]
       hdriftTimeInPads->SetYTitle("Z [mm]");
       hdriftTimeInPads->SetXTitle("X [mm]");
-      
+
       hdepth1InPads =
 	new TH2D("hdepth1InPads",
 		 "track In the Drift-Z Pads Plane",
-		 histoBins, 0, 2.1*thePadsGeometry.GetYLength()/theDriftManager.GetDriftVelocity(), 
-		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+		 histoBins, 0, 2.1*thePadsGeometry.GetYLength()/theDriftManager.GetDriftVelocity(),
+		 histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 		 thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());
       hdepth1InPads->SetYTitle("Z [mm]");
       hdepth1InPads->SetXTitle("(drift) time [ns]");
-      
+
       hdepth2InPads =
 	new TH2D("hdepth2InPads",
 		 "track In the Drift-X Pads Plane",
 		 histoBins, 0, 2.1*thePadsGeometry.GetYLength()/theDriftManager.GetDriftVelocity(),
-		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(), 
+		 histoBins, -(thePadsGeometry.GetXLength())+thePadsGeometry.GetSideBlankSpaceX(),
 		 thePadsGeometry.GetXLength()-thePadsGeometry.GetSideBlankSpaceX());
       hdepth2InPads->SetYTitle("X [mm]");
       hdepth2InPads->SetXTitle("(drift) time [ns]");
@@ -275,8 +275,8 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
     htrackInPads =
       new TH2D("htrackInPads",
 	       "All tracks in the #phi; Z Pads Plane",
-	       histoBins, -3.1416, 3.1416, 
-	       histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+	       histoBins, -3.1416, 3.1416,
+	       histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 	       thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());// in [mm]
     htrackInPads->SetYTitle("Z [mm]");
     htrackInPads->SetXTitle("#phi [rad]");
@@ -284,34 +284,34 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
     hdriftTimeInPads =
       new TH2D("hdriftTimeInPads",
 	       "All tracks in the #phi; Z Pads Plane with drift time",
-	       histoBins, -3.1416, 3.1416, 
-	       histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+	       histoBins, -3.1416, 3.1416,
+	       histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 	       thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());// in [mm]
     hdriftTimeInPads->SetYTitle("Z [mm]");
     hdriftTimeInPads->SetXTitle("#phi [rad]");
-    
+
     hdepth1InPads =
       new TH2D("hdepth1InPads",
 	       "track In the Drift-Z Pads Plane",
-	       histoBins, 0, 1.1*thePadsGeometry.GetRadius()/theDriftManager.GetDriftVelocity(), 
-	       histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(), 
+	       histoBins, 0, 1.1*thePadsGeometry.GetRadius()/theDriftManager.GetDriftVelocity(),
+	       histoBins2, -(thePadsGeometry.GetZLength())+thePadsGeometry.GetSideBlankSpaceZ(),
 	       thePadsGeometry.GetZLength()-thePadsGeometry.GetSideBlankSpaceZ());
     hdepth1InPads->SetYTitle("Z [mm]");
     hdepth1InPads->SetXTitle("(drift) time [ns]");
-    
+
     hdepth2InPads =
       new TH2D("hdepth2InPads",
 	       "track In the Drift-phi Pads Plane",
 	       histoBins, 0, 1.1*thePadsGeometry.GetRadius()/theDriftManager.GetDriftVelocity(),
 	       histoBins, -3.1416, 3.1416);
     hdepth2InPads->SetYTitle("#phi [rad]");
-    hdepth2InPads->SetXTitle("(drift) time [ns]"); 
+    hdepth2InPads->SetXTitle("(drift) time [ns]");
   }
-  
+
   TFile *simFile = TFile::Open(inputSimFile);
   TTree *eventTree = (TTree*)simFile->Get("The_ACTAR_Event_Tree");
   Int_t neventsSim = eventTree->GetEntries();
-  
+
   TFile *digiFile = TFile::Open(inputDigiFile);
   TTree *digiTree = (TTree*)digiFile->Get("digiTree");
   Int_t nevents = digiTree->GetEntries();
@@ -335,17 +335,17 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
   ActarPadSignal** productPadSignal;
   padSignalCA = new TClonesArray("ActarPadSignal",50);
   digiTree -> Branch("padSignals",&padSignalCA);
-  
+
   ActarPadSignal* padSignal = new ActarPadSignal;
-  
+
   TBranch *branchDigi = digiTree->GetBranch("padSignals");
   branchDigi->SetAddress(&padSignalCA);
   branchDigi->SetAutoDelete(kTRUE);
-  
+
   Int_t padsPerEvent = 0;
   Int_t nb = 0;
   Int_t beamPadsWithSignalPerEvent, productPadsWithSignalPerEvent;
-  
+
 
   if(event!=-1){ //only one event to be displayed
     padSignalCA->Clear();
@@ -358,7 +358,7 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       //}
       for(Int_t h=0;h<padsPerEvent;h++){
 	padSignal = (ActarPadSignal*) padSignalCA->At(h);
-	
+
 	if(thePadsGeometry.GetGeoType() == 0){
 	  if(thePadsGeometry.GetEndCapMode()){
 	    htrackInPads->Fill(thePadsGeometry.CoordinatesCenterOfPad(padSignal->GetPadNumber()).X()+thePadsGeometry.GetSideBlankSpaceX(),
@@ -398,7 +398,7 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
 			     padSignal->GetChargeDeposited());
 	  hdriftTimeInPads->Fill(thePadsGeometry.CoordinatesCenterOfPad(padSignal->GetPadNumber()).Phi(),
 				 thePadsGeometry.CoordinatesCenterOfPad(padSignal->GetPadNumber()).Z()+thePadsGeometry.GetSideBlankSpaceZ(),
-				 padSignal->GetInitTime());	  
+				 padSignal->GetInitTime());
 	  hdepth1InPads->Fill(padSignal->GetInitTime(),
 			      thePadsGeometry.CoordinatesCenterOfPad(padSignal->GetPadNumber()).Z()+thePadsGeometry.GetSideBlankSpaceZ(),
 			      padSignal->GetChargeDeposited());
@@ -415,7 +415,7 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       padSignalCA->Clear();
       nb += digiTree->GetEvent(i);
       padsPerEvent = padSignalCA->GetEntries();
-      
+
       if(padsPerEvent>0) {
 	//padSignal = new ActarPadSignal*[padsPerEvent];
 	//for(Int_t w=0;w<padsPerEvent;w++){
@@ -423,7 +423,7 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
 	//}
 	for(Int_t h=0;h<padsPerEvent;h++){
 	  padSignal = (ActarPadSignal*) padSignalCA->At(h);
-	  
+
 	  if(thePadsGeometry.GetGeoType() == 0){  //box
 	    if(thePadsGeometry.GetEndCapMode()){  //projection on endcap
 	      htrackInPads->Fill(thePadsGeometry.CoordinatesCenterOfPad(padSignal->GetPadNumber()).X()+thePadsGeometry.GetSideBlankSpaceX(),
@@ -482,26 +482,26 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       TLatex l;
       l.SetTextAlign(12);
       l.SetTextSize(0.05);
-      l.DrawLatex(0.1,0.1,"Pads in pad (XY) plane; box geometry; end cap mode");
-    
+      //l.DrawLatex(0.1,0.1,"Pads in pad (XY) plane; box geometry; end cap mode");
+
       c3->SetFillColor(0);
       c3->Divide(2,2);
       c3->Draw();
       c3->cd(1);
       htrackInPads->Draw("ZCOL");
-      
+
       l.SetTextAlign(12);
       l.SetTextSize(0.05);
       l.DrawLatex(-0.6*thePadsGeometry.GetXLength(),1.08*thePadsGeometry.GetZLength(),"Color code: induced charge");
-      
+
       c3->cd(2);
       hdriftTimeInPads->Draw("ZCOL");
-      
+
       TLatex l2;
       l2.SetTextAlign(12);
       l2.SetTextSize(0.05);
       l2.DrawLatex(-0.5*thePadsGeometry.GetXLength(),1.08*thePadsGeometry.GetZLength(),"Color code: drift time");
-      
+
       c3->cd(3);
       hdepth1InPads->Draw("ZCOL");
       c3->cd(4);
@@ -512,7 +512,7 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       TLatex l;
       l.SetTextAlign(12);
       l.SetTextSize(0.05);
-      l.DrawLatex(0.1,0.1,"Pads in pad (XZ) plane; box geometry");
+      //l.DrawLatex(0.1,0.1,"Pads in pad (XZ) plane; box geometry");
 
       c3->SetFillColor(0);
       c3->Divide(2,2);
@@ -520,35 +520,35 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
       TVirtualPad * c3_1 = c3->cd(1);
       c3_1->SetLogz();
       htrackInPads->Draw("ZCOL");
-      
+
       l.SetTextAlign(12);
       l.SetTextSize(0.05);
       l.DrawLatex(-0.6*thePadsGeometry.GetXLength(),1.08*thePadsGeometry.GetZLength(),"Color code: induced charge");
-      
+
       TVirtualPad * c3_2 = c3->cd(2);
       c3_2->SetLogz();
       hdriftTimeInPads->Draw("ZCOL");
-      
+
       TLatex l2;
       l2.SetTextAlign(12);
       l2.SetTextSize(0.05);
       l2.DrawLatex(-0.5*thePadsGeometry.GetXLength(),1.08*thePadsGeometry.GetZLength(),"Color code: drift time");
-      
+
       TVirtualPad * c3_3 = c3->cd(3);
       c3_3->SetLogz();
       hdepth1InPads->Draw("ZCOL");
-      
+
       l.SetTextAlign(12);
       l.SetTextSize(0.05);
       l.DrawLatex(800,1.08*thePadsGeometry.GetZLength(),"Color code: induced charge");
-      
+
       TVirtualPad * c3_4 = c3->cd(4);
       c3_4->SetLogz();
       hdepth2InPads->Draw("ZCOL");
-      
+
       l.SetTextAlign(12);
       l.SetTextSize(0.05);
-      l.DrawLatex(800,1.08*thePadsGeometry.GetZLength(),"Color code: induced charge");  
+      l.DrawLatex(800,1.08*thePadsGeometry.GetZLength(),"Color code: induced charge");
     }
   }
   else if(thePadsGeometry.GetGeoType() == 1){
@@ -556,26 +556,26 @@ void reader(char* inputSimFile, char* inputDigiFile, Int_t run, Int_t event, Int
     TLatex l;
     l.SetTextAlign(12);
     l.SetTextSize(0.05);
-    l.DrawLatex(0.1,0.1,"Pads in pad (phi Z) plane; cylinder geometry");
+    //l.DrawLatex(0.1,0.1,"Pads in pad (phi Z) plane; cylinder geometry");
 
     c3->SetFillColor(0);
     c3->Divide(2,2);
     c3->Draw();
     c3->cd(1);
     htrackInPads->Draw("ZCOL");
-    
+
     l.SetTextAlign(12);
     l.SetTextSize(0.05);
     l.DrawLatex(-2,1.08*thePadsGeometry.GetZLength(),"Color code: induced charge");
-    
+
     c3->cd(2);
     hdriftTimeInPads->Draw("ZCOL");
-    
+
     TLatex l2;
     l2.SetTextAlign(12);
     l2.SetTextSize(0.05);
     l2.DrawLatex(-2,1.08*thePadsGeometry.GetZLength(),"Color code: drift time");
-    
+
     c3->cd(3);
     hdepth1InPads->Draw("ZCOL");
     c3->cd(4);

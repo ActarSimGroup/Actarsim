@@ -162,7 +162,7 @@ void reader(const char* inputSimFile, const char* inputDigiFile, Int_t run, Int_
 
   if(!shown){
     cout << "Reading input simulation file " << inputSimFile << endl;
-    cout << " input digitization file " << inputSimFile << endl;
+    cout << " input digitization file " << inputDigiFile << endl;
     cout << " for run " << run << " and event " << event << " (- 1 means all events)." << endl;}
   inputSimFile_g = inputSimFile;
   inputDigiFile_g = inputDigiFile;

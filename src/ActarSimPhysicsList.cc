@@ -34,6 +34,10 @@
 #include "PhysListEmStandardGS.hh"
 #include "HadrontherapyIonStandard.hh"
 
+//TESTING PAI MODELS (as in test_em8)
+#include "G4PAIModel.hh"
+#include "G4PAIPhotModel.hh"
+
 //#include "ActarSimParticlesBuilder.hh"
 #include "ActarSimStepLimiterBuilder.hh"
 
@@ -88,6 +92,8 @@ ActarSimPhysicsList::ActarSimPhysicsList():  G4VModularPhysicsList(){
   RegisterPhysics(new G4DecayPhysics());
   //RegisterPhysics(new ActarSimParticlesBuilder());
   steplimiter = new ActarSimStepLimiterBuilder();
+  //Trying to add PAI
+  fConfig = G4LossTableManager::Instance()->EmConfigurator();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -193,6 +199,12 @@ void ActarSimPhysicsList::AddPhysicsList(const G4String& name){
   } else if(!emBuilderIsRegisted) {
     G4cout << "PhysicsList::AddPhysicsList <" << name << ">"
            << " fail - EM physics should be registered first " << G4endl;
+  } else if (name == "pai") {
+    AddPAIModel(name);
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
+  } else if (name == "pai_photon") {
+    AddPAIModel(name);
+    G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">" << G4endl;
   } else {
     G4cout << "ActarSimPhysicsList::AddPhysicsList <" << name << ">"
            << " fail - module is already regitered or is unknown " << G4endl;
@@ -345,5 +357,37 @@ void ActarSimPhysicsList::AddIonGasModels() {
       em_config->SetExtraEmModel(partname,"ionIoni",mod2,"",eth,100*TeV,
                                  new G4UniversalFluctuation());
     }
+  }
+}
+
+void ActarSimPhysicsList::AddPAIModel(const G4String& modname){
+  G4ParticleTable::G4PTblDicIterator* aaaParticleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+  aaaParticleIterator->reset();
+  while ((*aaaParticleIterator)()) {
+    G4ParticleDefinition* particle = aaaParticleIterator->value();
+    G4String partname = particle->GetParticleName();
+    if(partname == "e-" || partname == "e+") {
+      NewPAIModel(particle, modname, "eIoni");
+    } else if(partname == "mu-" || partname == "mu+") {
+      NewPAIModel(particle, modname, "muIoni");
+    } else if(partname == "proton" ||
+              partname == "pi+" ||
+              partname == "pi-") {
+      NewPAIModel(particle, modname, "hIoni");
+    }
+  }
+}
+void ActarSimPhysicsList::NewPAIModel(const G4ParticleDefinition* part,
+                                      const G4String& modname,
+                                      const G4String& procname){
+  G4String partname = part->GetParticleName();
+  if(modname == "pai") {
+    G4PAIModel* pai = new G4PAIModel(part,"PAIModel");
+    fConfig->SetExtraEmModel(partname,procname,pai,"ActiveGas",
+                                 0.0,100.*TeV,pai);
+  } else if(modname == "pai_photon") {
+    G4PAIPhotModel* pai = new G4PAIPhotModel(part,"PAIPhotModel");
+    fConfig->SetExtraEmModel(partname,procname,pai,"ActiveGas",
+                                 0.0,100.*TeV,pai);
   }
 }

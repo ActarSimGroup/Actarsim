@@ -12,6 +12,7 @@
 
 #include "G4VModularPhysicsList.hh"
 #include "globals.hh"
+#include "G4EmConfigurator.hh"
 
 class ActarSimPhysicsListMessenger;
 class ActarSimStepLimiterBuilder;
@@ -36,6 +37,7 @@ private:
 
   ActarSimPhysicsListMessenger* pMessenger;  ///< Pointer to messenger
   ActarSimStepLimiterBuilder* steplimiter;   ///< Pointer to step limiter
+  G4EmConfigurator* fConfig;        ///< Pointer to a Em physics configurator
 
   G4VPhysicsConstructor*  emPhysicsList;     ///< Pointer to Physics list
 
@@ -53,6 +55,10 @@ public:
   void SetCutForPositron(G4double);
 
   void AddPhysicsList(const G4String&);
+  void AddPAIModel(const G4String& modname);
+  void NewPAIModel(const G4ParticleDefinition* part,
+                                          const G4String& modname,
+                                          const G4String& procname);
   void SetVerbose(G4int val);
 };
 #endif

@@ -30,6 +30,8 @@
 #include "G4RunManager.hh"
 #include "G4Transform3D.hh"
 
+#include "G4Region.hh"
+
 #include "globals.hh"
 
 #include "G4PhysicalConstants.hh"
@@ -234,6 +236,10 @@ G4VPhysicalVolume* ActarSimGasDetectorConstruction::ConstructGas(G4LogicalVolume
   //------------------------------------------------
   gasLog->SetSensitiveDetector( detConstruction->GetGasSD() );
 
+  //Region (test for PAI)
+  G4Region* activeGas = new G4Region("ActiveGas");
+  activeGas->AddRootLogicalVolume(gasLog);
+
   //------------------------------------------------------------------
   // Visualization attributes
   //------------------------------------------------------------------
@@ -329,7 +335,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   //density	=(0.16642*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;
   density	= (39.9481/Vm)*mg/cm3;
   G4Material* Ar =
-    new G4Material("Ar", z=2, a=39.9481*g/mole, density, kStateGas, temperature, pressure);
+    new G4Material("Ar", z=18, a=39.9481*g/mole, density, kStateGas, temperature, pressure);
 
   //CF4 (default  3.6586*mg/cm3 STP)
   //density	=(3.6586*293.15*kelvin*pressure)/(1.01325*bar*temperature)*mg/cm3;

@@ -392,7 +392,7 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
   else if(mat=="GasMix"){
 
     density = 0*mg/cm3;
-    G4double DensitySum=0;
+    //G4double DensitySum=0;
     //G4double FractionMass[NGasMix];
     G4double FractionMass[10];
     //G4Material pttoMaterial[NGasMix];
@@ -410,11 +410,12 @@ void ActarSimGasDetectorConstruction::SetGasMaterial (G4String mat) {
 
       density+= ((gasMixRatio[i]*pttoMaterial[i]->GetDensity()));
       //G4cout <<" Gas Mat "<<gasMixMaterial[i]<<" Gas Ratio "<<gasMixRatio[i]<<" Mat Density "<<gasMixRatio[i]*pttoMaterial[i]->GetDensity()*cm3/mg<< G4endl;
-      DensitySum+=pttoMaterial[i]->GetDensity();
+      //DensitySum+=pttoMaterial[i]->GetDensity();
+
     }
 
     for(G4int i=0;i<NumberOfGasMix;i++) {
-      FractionMass[i]=pttoMaterial[i]->GetDensity()/DensitySum;
+      FractionMass[i]=((gasMixRatio[i]*pttoMaterial[i]->GetDensity()))/density;
     }
 
     G4Material* GasMix =

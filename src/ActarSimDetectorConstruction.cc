@@ -459,9 +459,9 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPCDEMO() {
   //--------------------------
   //Beam entrance Window in Chamber
   //--------------------------
-  G4double window_outer_radius =  36.*mm;
+  G4double window_outer_radius =  5.*mm;
   G4double window_inner_radius =   0.*mm;
-  G4double window_half_length  =   5.*mm;
+  G4double window_half_length  =   0.003*mm;
   G4double startAngle          =   0.*deg;
   G4double spanningAngle       = 360.*deg;
 
@@ -470,12 +470,13 @@ G4VPhysicalVolume* ActarSimDetectorConstruction::ConstructActarTPCDEMO() {
   G4VisAttributes* windowVisAtt= new G4VisAttributes(G4Colour(1.0,0.,0.));
   windowVisAtt->SetVisibility(true);
 
-  G4LogicalVolume* window_log = new G4LogicalVolume(window,chamberMaterial,"window_log",0,0,0);
+  G4LogicalVolume* window_log = new G4LogicalVolume(window,windowMaterial,"window_log",0,0,0);
   window_log->SetVisAttributes(windowVisAtt);
 
   G4double windowPosX = 0.*mm;
   G4double windowPosY = 0.*mm;
-  G4double windowPosZ = -chamberSizeZ+window_half_length+22.*mm;//enter window is situated 22mm inside chamber
+  //G4double windowPosZ = -chamberSizeZ+window_half_length+22.*mm;//enter window is situated 22mm inside chamber
+  G4double windowPosZ = -chamberSizeZ+window_half_length+21.*mm;//enter window is situated 35mm from padPlane (test LNS Dec 2018, 6 microns mylar window)
 
   G4VPhysicalVolume* window_phys=new G4PVPlacement(0,G4ThreeVector(windowPosX,windowPosY,windowPosZ),
 						   window_log,"window",chamberLog,false,0);

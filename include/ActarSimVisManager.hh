@@ -10,7 +10,6 @@
 #ifndef ActarSimVisManager_h
 #define ActarSimVisManager_h 1
 
-#ifdef G4VIS_USE
 
 #include "G4VisManager.hh"
 
@@ -20,5 +19,4 @@ private:
 public:
   ActarSimVisManager ();
 };
-#endif
 #endif

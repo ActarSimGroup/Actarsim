@@ -11,7 +11,6 @@
 /// Visualization manager. Common to all G4 programs.
 /////////////////////////////////////////////////////////////////
 
-#ifdef G4VIS_USE
 
 #include "ActarSimVisManager.hh"
 
@@ -127,5 +126,3 @@ void ActarSimVisManager::RegisterGraphicsSystems () {
     PrintAvailableGraphicsSystems (all);
   }
 }
-
-#endif
